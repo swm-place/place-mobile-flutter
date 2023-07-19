@@ -48,7 +48,22 @@ class LoginPage extends StatelessWidget {
                           Icons.lock_rounded
                       )
                   ),
-                )
+                ),
+                const SizedBox(height: 10,),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: 1000,
+                    minHeight: 48
+                  ),
+                  child: Container(
+                    child: FilledButton(
+                        onPressed: () {
+                          print("login");
+                        },
+                        child: Text("로그인")
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
