@@ -7,10 +7,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final newTextTheme = Theme.of(context).textTheme.apply(
-      bodyColor: Colors.pink,
-      displayColor: Colors.pink,
-    );
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -51,17 +47,15 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 10,),
                 ConstrainedBox(
-                  constraints: BoxConstraints(
+                  constraints: const BoxConstraints(
                     minWidth: 1000,
                     minHeight: 48
                   ),
-                  child: Container(
-                    child: FilledButton(
-                        onPressed: () {
-                          print("login");
-                        },
-                        child: Text("로그인")
-                    ),
+                  child: FilledButton(
+                      onPressed: () {
+                        print("login");
+                      },
+                      child: const Text("로그인")
                   ),
                 ),
               ],
