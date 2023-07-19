@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'theme/color_schemes.g.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,10 +13,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'OURS',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+      darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
       home: const MainPage(),
     );
   }
@@ -35,6 +34,11 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('OURS'),
+      ),
+      body: Center(
+        child: FilledButton(child: Text("로그인"), onPressed: () => {
+          print("tewst")
+        },),
       ),
     );
   }
