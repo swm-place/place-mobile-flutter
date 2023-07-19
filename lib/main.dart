@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/login.dart';
 import 'theme/color_schemes.g.dart';
 
 void main() {
@@ -37,7 +38,7 @@ class _MainPageState extends State<MainPage> {
       ),
       body: Center(
         child: FilledButton(child: Text("로그인"), onPressed: () => {
-          print("tewst")
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()))
         },),
       ),
     );
