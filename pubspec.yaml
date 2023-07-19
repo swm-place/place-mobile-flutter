@@ -38,6 +38,7 @@ dependencies:
   firebase_core: ^2.15.0
   change_app_package_name: ^1.1.0
   firebase_auth: ^4.7.1
+  flutter_svg: ^2.0.7
 
 dev_dependencies:
   flutter_test:
@@ -62,7 +63,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - assets/images/navigation_icon.svg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
