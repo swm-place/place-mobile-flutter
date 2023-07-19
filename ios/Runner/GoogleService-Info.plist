@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>935689841961-m7t813lpb96bs9bfa442l9edirnbtjid.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.935689841961-m7t813lpb96bs9bfa442l9edirnbtjid</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCHexbbGEBzdRX4PXRaf5bxN5E380cWIFg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>935689841961</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.placeMobileFlutter</string>
+	<key>PROJECT_ID</key>
+	<string>yeoksi-ours-dev</string>
+	<key>STORAGE_BUCKET</key>
+	<string>yeoksi-ours-dev.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:935689841961:ios:a64592e18cb56a13851b38</string>
+</dict>
+</plist>
