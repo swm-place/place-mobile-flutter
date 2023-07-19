@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBmU3dSI4wjslJf5QojAJoovRokg2eyncI',
-    appId: '1:935689841961:android:fc0b7bf01b5dc838851b38',
+    appId: '1:935689841961:android:cdb74a5ee00935c7851b38',
     messagingSenderId: '935689841961',
     projectId: 'yeoksi-ours-dev',
     storageBucket: 'yeoksi-ours-dev.appspot.com',
@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCHexbbGEBzdRX4PXRaf5bxN5E380cWIFg',
-    appId: '1:935689841961:ios:a64592e18cb56a13851b38',
+    appId: '1:935689841961:ios:a09aefb1d0840759851b38',
     messagingSenderId: '935689841961',
     projectId: 'yeoksi-ours-dev',
     storageBucket: 'yeoksi-ours-dev.appspot.com',
-    iosClientId: '935689841961-m7t813lpb96bs9bfa442l9edirnbtjid.apps.googleusercontent.com',
-    iosBundleId: 'com.example.placeMobileFlutter',
+    iosClientId: '935689841961-mhlvcubu0ub0vvocm85ot3acmv54qgbt.apps.googleusercontent.com',
+    iosBundleId: 'com.ours.place',
   );
 }
