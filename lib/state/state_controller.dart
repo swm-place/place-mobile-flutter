@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/main.dart';
 
@@ -73,11 +74,42 @@ class AuthController extends GetxController {
     }
   }
 
-  void signInFacebook() {
+  void signInFacebook() async {
     try {
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+      final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+      await authInstance.signInWithCredential(facebookAuthCredential);
 
+      Get.snackbar(
+        "로그인 성공",
+        "'${authInstance.currentUser!.email}'님, 환영합니다.",
+        backgroundColor: Colors.blue,
+        snackPosition: SnackPosition.BOTTOM,
+        titleText: const Text(
+          "로그인 성공",
+          style: TextStyle(color: Colors.white),
+        ),
+        messageText: Text(
+          "'${authInstance.currentUser!.email}'님, 환영합니다.",
+          style: const TextStyle(color: Colors.white),
+        ),
+      );
+      Get.offAll(() => const MyApp());
     } catch(e) {
-
+      Get.snackbar(
+        "로그인 실패",
+        "로그인에 문제가 발생했습니다",
+        backgroundColor: Colors.red,
+        snackPosition: SnackPosition.BOTTOM,
+        titleText: const Text(
+          "로그인 실패",
+          style: TextStyle(color: Colors.white),
+        ),
+        messageText: Text(
+          e.toString(),
+          style: const TextStyle(color: Colors.white),
+        ),
+      );
     }
   }
 
