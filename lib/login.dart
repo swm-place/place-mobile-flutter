@@ -33,13 +33,15 @@ class LoginPage extends StatelessWidget {
                     minHeight: 48
                   ),
                   child: const TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "email",
-                        prefixIcon: Icon(
-                            Icons.mail_rounded
-                        ),
-                      )
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "email",
+                      prefixIcon: Icon(
+                          Icons.mail_rounded
+                      ),
+                    ),
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.emailAddress,
                   ),
                 ),
                 const SizedBox(height: 10,),
@@ -57,6 +59,10 @@ class LoginPage extends StatelessWidget {
                             Icons.lock_rounded
                         )
                     ),
+                    textInputAction: TextInputAction.done,
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
                   ),
                 ),
                 const SizedBox(height: 10,),
