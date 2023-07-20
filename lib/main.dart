@@ -1,9 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/login.dart';
+import 'package:place_mobile_flutter/state/state_controller.dart';
 import 'theme/color_schemes.g.dart';
+import 'package:get/get.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp()
+    .then((value) => Get.put(AuthController()));
+
+  runApp(const GetMaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
