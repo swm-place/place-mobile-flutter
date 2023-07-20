@@ -18,4 +18,8 @@ class AuthController extends GetxController {
   void registerEmail(String email, password) {
 
   }
+
+  void signInEmail(String email, password) {
+
+  }
 }
