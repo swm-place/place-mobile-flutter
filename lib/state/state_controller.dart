@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
-
   late Rx<User?> _user;
   FirebaseAuth authInstance = FirebaseAuth.instance;
 
@@ -20,6 +19,6 @@ class AuthController extends GetxController {
   }
 
   void signInEmail(String email, password) {
-
+    print('$email, $password');
   }
 }

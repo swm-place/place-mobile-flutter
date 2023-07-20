@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/utils.dart';
 import 'package:place_mobile_flutter/screen/size.dart';
+import 'package:place_mobile_flutter/state/state_controller.dart';
 import 'theme/text_style.dart';
 
 class LoginPage extends StatelessWidget {
@@ -8,6 +11,9 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var emailController = TextEditingController();
+    var passwordController = TextEditingController();
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -22,8 +28,8 @@ class LoginPage extends StatelessWidget {
                   height: getDynamicPixel(context, 80),
                 ),
                 const Text(
-                    "로그인",
-                    style: title_large
+                  "로그인",
+                  style: title_large,
                 ),
                 const SizedBox(height: 10,),
                 Container(
@@ -32,8 +38,8 @@ class LoginPage extends StatelessWidget {
                   constraints: const BoxConstraints(
                     minHeight: 48
                   ),
-                  child: const TextField(
-                    decoration: InputDecoration(
+                  child: TextField(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: "email",
                       prefixIcon: Icon(
@@ -42,6 +48,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.emailAddress,
+                    controller: emailController,
                   ),
                 ),
                 const SizedBox(height: 10,),
@@ -51,18 +58,19 @@ class LoginPage extends StatelessWidget {
                   constraints: const BoxConstraints(
                       minHeight: 48
                   ),
-                  child: const TextField(
-                    decoration: InputDecoration(
+                  child: TextField(
+                    decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "password",
                         prefixIcon: Icon(
                             Icons.lock_rounded
-                        )
+                        ),
                     ),
                     textInputAction: TextInputAction.done,
                     obscureText: true,
                     enableSuggestions: false,
                     autocorrect: false,
+                    controller: passwordController,
                   ),
                 ),
                 const SizedBox(height: 10,),
@@ -75,7 +83,10 @@ class LoginPage extends StatelessWidget {
                   ),
                   child: FilledButton(
                       onPressed: () {
-                        print("login");
+                        AuthController.to.signInEmail(
+                            emailController.text.tr,
+                            passwordController.text.tr
+                        );
                       },
                       child: const Text("로그인")
                   ),
