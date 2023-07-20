@@ -4,19 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/utils.dart';
-import 'package:place_mobile_flutter/screen/size.dart';
+import 'package:place_mobile_flutter/util/size.dart';
 import 'package:place_mobile_flutter/state/state_controller.dart';
+import 'package:place_mobile_flutter/util/validator.dart';
 import 'theme/text_style.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   final _formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    var emailController = TextEditingController();
-    var passwordController = TextEditingController();
 
     return Scaffold(
       body: SafeArea(
@@ -39,74 +40,7 @@ class LoginPage extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                Form(
-                  key: _formKey,
-                  child: Container(
-                    width: double.infinity,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "email",
-                            prefixIcon: Icon(
-                                Icons.mail_rounded
-                            ),
-                            contentPadding: EdgeInsets.symmetric(vertical: 0)
-                          ),
-                          textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.emailAddress,
-                          controller: emailController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return '이메일을 입력해주세요.';
-                            }
-                            if (!value.isEmail) {
-                              return '형식에 맞는 이메일을 입력해주세요.';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 10,),
-                        TextField(
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: "password",
-                              prefixIcon: Icon(
-                                  Icons.lock_rounded
-                              ),
-                              contentPadding: EdgeInsets.symmetric(vertical: 0)
-                          ),
-                          textInputAction: TextInputAction.done,
-                          obscureText: true,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          controller: passwordController,
-                        ),
-                        const SizedBox(height: 10,),
-                        Container(
-                          width: double.infinity,
-                          height: getDynamicPixel(context, 20),
-                          constraints: const BoxConstraints(
-                              minHeight: 34,
-                              maxHeight: 48
-                          ),
-                          child: FilledButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  AuthController.to.signInEmail(
-                                      emailController.text.tr,
-                                      passwordController.text.tr
-                                  );
-                                }
-                              },
-                              child: const Text("로그인")
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ),
+                const _LoginFrom(),
                 const SizedBox(height: 10,),
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -264,91 +198,78 @@ class _LoginFrom extends StatefulWidget {
 
 class _LoginFormState extends State<_LoginFrom> {
   final _formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    var emailController = TextEditingController();
-    var passwordController = TextEditingController();
 
     return Form(
-      key: _formKey,
-      child: Container(
-        width: double.infinity,
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              height: getDynamicPixel(context, 20),
-              constraints: const BoxConstraints(
-                  minHeight: 48
-              ),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "email",
-                  prefixIcon: Icon(
-                      Icons.mail_rounded
+        key: _formKey,
+        child: Container(
+          width: double.infinity,
+          child: Column(
+            children: [
+              TextFormField(
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "email",
+                      prefixIcon: Icon(
+                          Icons.mail_rounded
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 0,
+                        horizontal: 14
+                      )
                   ),
-                ),
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.emailAddress,
-                controller: emailController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '이메일을 입력해주세요.';
-                  }
-                  if (!value.isEmail) {
-                    return '형식에 맞는 이메일을 입력해주세요.';
-                  }
-                  return null;
-                },
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.emailAddress,
+                  controller: emailController,
+                  validator: emailTextFieldValidator
               ),
-            ),
-            const SizedBox(height: 10,),
-            Container(
-              width: double.infinity,
-              height: getDynamicPixel(context, 20),
-              constraints: const BoxConstraints(
-                  minHeight: 48
-              ),
-              child: TextField(
+              const SizedBox(height: 10,),
+              TextFormField(
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "password",
-                  prefixIcon: Icon(
-                      Icons.lock_rounded
-                  ),
+                    border: OutlineInputBorder(),
+                    labelText: "password",
+                    prefixIcon: Icon(
+                        Icons.lock_rounded
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 0,
+                      horizontal: 14
+                    )
                 ),
                 textInputAction: TextInputAction.done,
                 obscureText: true,
                 enableSuggestions: false,
                 autocorrect: false,
                 controller: passwordController,
+                validator: passwordTextFieldValidator,
               ),
-            ),
-            const SizedBox(height: 10,),
-            Container(
-              width: double.infinity,
-              height: getDynamicPixel(context, 20),
-              constraints: const BoxConstraints(
-                  minHeight: 34,
-                  maxHeight: 48
+              const SizedBox(height: 10,),
+              Container(
+                width: double.infinity,
+                height: getDynamicPixel(context, 18),
+                constraints: const BoxConstraints(
+                    minHeight: 34,
+                    maxHeight: 48
+                ),
+                child: FilledButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        AuthController.to.signInEmail(
+                            emailController.text.tr,
+                            passwordController.text.tr
+                        );
+                      }
+                    },
+                    child: const Text("로그인")
+                ),
               ),
-              child: FilledButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      AuthController.to.signInEmail(
-                          emailController.text.tr,
-                          passwordController.text.tr
-                      );
-                    }
-                  },
-                  child: const Text("로그인")
-              ),
-            ),
-          ],
-        ),
-      )
+            ],
+          ),
+        )
     );
   }
 }
