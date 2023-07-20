@@ -58,6 +58,50 @@ class LoginPage extends StatelessWidget {
                       child: const Text("로그인")
                   ),
                 ),
+                const SizedBox(height: 10,),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Divider(
+                        thickness: 1,
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: Text('OR'),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        thickness: 1,
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                )
+                // ConstrainedBox(
+                //   constraints: const BoxConstraints(
+                //       minWidth: 1000,
+                //   ),
+                //   child:
+                //   const Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Divider(
+                //         thickness: 1,
+                //         height: 1,
+                //       ),
+                //       Text('OR'),
+                //       Divider(
+                //         thickness: 1,
+                //         height: 1,
+                //       ),
+                //     ],
+                //   )
+                // ),
               ],
             ),
           ),
