@@ -45,10 +45,20 @@ class _MainPageState extends State<MainPage> {
         title: const Text('OURS'),
       ),
       body: Center(
-        child: FilledButton(child: Text("로그인"), onPressed: () => {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()))
+        child: GetBuilder<AuthController>(
+          init: AuthController(),
+          builder: (controller) {
+            if (controller.user.value == null) {
+              return FilledButton(child: Text("로그인"), onPressed: () => {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()))
+              });
+            } else {
+              return FilledButton(child: Text("로그아웃"), onPressed: () => {
+                controller.signOut()
+              });
+            }
           },
-        ),
+        )
       ),
     );
   }
