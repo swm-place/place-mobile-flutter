@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/utils.dart';
+import 'package:place_mobile_flutter/signup.dart';
 import 'package:place_mobile_flutter/util/size.dart';
 import 'package:place_mobile_flutter/state/state_controller.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
@@ -20,6 +21,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      appBar: AppBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(48, 0, 48, 0),
@@ -161,7 +163,9 @@ class LoginPage extends StatelessWidget {
                     Container(
                       height: 20,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
+                        },
                         child: Text('회원가입'),
                         style: TextButton.styleFrom(
                             padding: EdgeInsets.fromLTRB(4, 0, 4, 0)
