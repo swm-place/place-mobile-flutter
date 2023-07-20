@@ -46,7 +46,7 @@ class _MainPageState extends State<MainPage> {
       ),
       body: Center(
         child: FilledButton(child: Text("로그인"), onPressed: () => {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()))
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()))
           },
         ),
       ),

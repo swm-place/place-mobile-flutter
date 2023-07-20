@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
 double getDynamicPixel(BuildContext context, double pixel) {
-  MediaQueryData queryData = MediaQuery.of(context);
-  double devicePixelRatio = queryData.devicePixelRatio;
+  double devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
   return pixel * devicePixelRatio;
 }

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -7,7 +9,9 @@ import 'package:place_mobile_flutter/state/state_controller.dart';
 import 'theme/text_style.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  LoginPage({super.key});
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -22,74 +26,86 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                getDynamicPixel(context, 80) > 80 ?
                 SvgPicture.asset(
                   'assets/images/navigation_icon.svg',
                   width: getDynamicPixel(context, 80),
                   height: getDynamicPixel(context, 80),
-                ),
+                ) : Container(width: 0, height: 0,),
                 const Text(
                   "로그인",
                   style: title_large,
                 ),
-                const SizedBox(height: 10,),
-                Container(
-                  width: double.infinity,
-                  height: getDynamicPixel(context, 20),
-                  constraints: const BoxConstraints(
-                    minHeight: 48
-                  ),
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "email",
-                      prefixIcon: Icon(
-                          Icons.mail_rounded
-                      ),
-                    ),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.emailAddress,
-                    controller: emailController,
-                  ),
+                SizedBox(
+                  height: 10,
                 ),
-                const SizedBox(height: 10,),
-                Container(
-                  width: double.infinity,
-                  height: getDynamicPixel(context, 20),
-                  constraints: const BoxConstraints(
-                      minHeight: 48
-                  ),
-                  child: TextField(
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "password",
-                        prefixIcon: Icon(
-                            Icons.lock_rounded
+                Form(
+                  key: _formKey,
+                  child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "email",
+                            prefixIcon: Icon(
+                                Icons.mail_rounded
+                            ),
+                            contentPadding: EdgeInsets.symmetric(vertical: 0)
+                          ),
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.emailAddress,
+                          controller: emailController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return '이메일을 입력해주세요.';
+                            }
+                            if (!value.isEmail) {
+                              return '형식에 맞는 이메일을 입력해주세요.';
+                            }
+                            return null;
+                          },
                         ),
+                        const SizedBox(height: 10,),
+                        TextField(
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: "password",
+                              prefixIcon: Icon(
+                                  Icons.lock_rounded
+                              ),
+                              contentPadding: EdgeInsets.symmetric(vertical: 0)
+                          ),
+                          textInputAction: TextInputAction.done,
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          controller: passwordController,
+                        ),
+                        const SizedBox(height: 10,),
+                        Container(
+                          width: double.infinity,
+                          height: getDynamicPixel(context, 20),
+                          constraints: const BoxConstraints(
+                              minHeight: 34,
+                              maxHeight: 48
+                          ),
+                          child: FilledButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  AuthController.to.signInEmail(
+                                      emailController.text.tr,
+                                      passwordController.text.tr
+                                  );
+                                }
+                              },
+                              child: const Text("로그인")
+                          ),
+                        ),
+                      ],
                     ),
-                    textInputAction: TextInputAction.done,
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    controller: passwordController,
-                  ),
-                ),
-                const SizedBox(height: 10,),
-                Container(
-                  width: double.infinity,
-                  height: getDynamicPixel(context, 20),
-                  constraints: const BoxConstraints(
-                    minHeight: 34,
-                    maxHeight: 48
-                  ),
-                  child: FilledButton(
-                      onPressed: () {
-                        AuthController.to.signInEmail(
-                            emailController.text.tr,
-                            passwordController.text.tr
-                        );
-                      },
-                      child: const Text("로그인")
-                  ),
+                  )
                 ),
                 const SizedBox(height: 10,),
                 const Row(
@@ -232,6 +248,106 @@ class LoginPage extends StatelessWidget {
             ),
           ),
         )
+      )
+    );
+  }
+}
+
+class _LoginFrom extends StatefulWidget {
+  const _LoginFrom({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _LoginFormState();
+  }
+}
+
+class _LoginFormState extends State<_LoginFrom> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    var emailController = TextEditingController();
+    var passwordController = TextEditingController();
+
+    return Form(
+      key: _formKey,
+      child: Container(
+        width: double.infinity,
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: getDynamicPixel(context, 20),
+              constraints: const BoxConstraints(
+                  minHeight: 48
+              ),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "email",
+                  prefixIcon: Icon(
+                      Icons.mail_rounded
+                  ),
+                ),
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.emailAddress,
+                controller: emailController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '이메일을 입력해주세요.';
+                  }
+                  if (!value.isEmail) {
+                    return '형식에 맞는 이메일을 입력해주세요.';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(height: 10,),
+            Container(
+              width: double.infinity,
+              height: getDynamicPixel(context, 20),
+              constraints: const BoxConstraints(
+                  minHeight: 48
+              ),
+              child: TextField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "password",
+                  prefixIcon: Icon(
+                      Icons.lock_rounded
+                  ),
+                ),
+                textInputAction: TextInputAction.done,
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
+                controller: passwordController,
+              ),
+            ),
+            const SizedBox(height: 10,),
+            Container(
+              width: double.infinity,
+              height: getDynamicPixel(context, 20),
+              constraints: const BoxConstraints(
+                  minHeight: 34,
+                  maxHeight: 48
+              ),
+              child: FilledButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      AuthController.to.signInEmail(
+                          emailController.text.tr,
+                          passwordController.text.tr
+                      );
+                    }
+                  },
+                  child: const Text("로그인")
+              ),
+            ),
+          ],
+        ),
       )
     );
   }
