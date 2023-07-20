@@ -138,6 +138,14 @@ class LoginPage extends StatelessWidget {
                     )
                   ],
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("계정이 없으신가요?"),
+                    TextButton(onPressed: () {}, child: Text('회원가입'))
+                  ],
+                ),
+                TextButton(onPressed: () {}, child: Text('비밀번호 찾기'))
                 // ConstrainedBox(
                 //   constraints: const BoxConstraints(
                 //       minWidth: 1000,
