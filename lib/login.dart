@@ -81,7 +81,63 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                   ],
-                )
+                ),
+                const SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Image.asset(
+                        'assets/logos/google_logo.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith((states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return Color.fromARGB(255, 231, 91, 75);
+                          }
+                          return Color.fromARGB(255, 220, 74, 58);
+                        }),
+                      ),
+                    ),
+                    const SizedBox(width: 10,),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Image.asset(
+                        'assets/logos/apple_logo.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith((states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return Color.fromARGB(255, 42, 42, 42);
+                          }
+                          return Color.fromARGB(255, 26, 26, 26);
+                        }),
+                      ),
+                    ),
+                    const SizedBox(width: 10,),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Image.asset(
+                        'assets/logos/facebook_logo.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith((states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return Color.fromARGB(255, 66, 102, 180);
+                          }
+                          return Color.fromARGB(255, 59, 88, 153);
+                        }),
+                      ),
+                    )
+                  ],
+                ),
                 // ConstrainedBox(
                 //   constraints: const BoxConstraints(
                 //       minWidth: 1000,
