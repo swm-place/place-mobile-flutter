@@ -51,7 +51,7 @@ class AuthController extends GetxController {
           ),
           messageText: Text(
             "'${authInstance.currentUser!.email}'님, 환영합니다.",
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
       );
       Get.offAll(() => const MyApp());
@@ -70,6 +70,14 @@ class AuthController extends GetxController {
           style: const TextStyle(color: Colors.white),
         ),
       );
+    }
+  }
+
+  void signInFacebook() {
+    try {
+
+    } catch(e) {
+
     }
   }
 
