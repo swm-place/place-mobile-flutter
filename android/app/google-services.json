@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "935689841961",
+    "project_id": "yeoksi-ours-dev",
+    "storage_bucket": "yeoksi-ours-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935689841961:android:cdb74a5ee00935c7851b38",
+        "android_client_info": {
+          "package_name": "com.ours.place"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "935689841961-er4qmb7vilcp0ft83tm6lmg23o6rq379.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmU3dSI4wjslJf5QojAJoovRokg2eyncI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "935689841961-er4qmb7vilcp0ft83tm6lmg23o6rq379.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "935689841961-m7t813lpb96bs9bfa442l9edirnbtjid.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.placeMobileFlutter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
