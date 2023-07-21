@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
@@ -14,63 +16,10 @@ class SignUpPage extends StatefulWidget {
 }
 
 class SignUpPageState extends State<SignUpPage> {
+  final PageController pageController = PageController();
   final emailController = TextEditingController();
   var emailError;
   var pageIdx = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    final PageController pageController = PageController();
-
-    return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView(
-                controller: pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _emailPage(),
-                  _passwordPage()
-                ],
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
-                child: FilledButton(
-                  child: Text("다음"),
-                  onPressed: () {
-                    setState(() {
-                      switch (pageController.page!.toInt()) {
-                        case 0: {
-                          final email = emailController.text.tr;
-                          emailError = emailTextFieldValidator(email);
-                          if (emailError == null) {
-                            pageController.nextPage(
-                              duration: const Duration(milliseconds: 250),
-                              curve: Curves.easeInOut
-                            );
-                          }
-                          break;
-                        }
-                        case 1: {
-                          break;
-                        }
-                      }
-                    });
-                  },
-                ),
-              )
-            )
-          ],
-        )
-      ),
-    );
-  }
 
   Widget _emailPage() {
     return Padding(
@@ -119,5 +68,76 @@ class SignUpPageState extends State<SignUpPage> {
         ],
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: Platform.isAndroid ? IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: _pressedBack,
+        ) : IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: _pressedBack,
+        ),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: PageView(
+                controller: pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  _emailPage(),
+                  _passwordPage()
+                ],
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
+                child: FilledButton(
+                  child: Text("다음"),
+                  onPressed: () {
+                    setState(() {
+                      switch (pageController.page!.toInt()) {
+                        case 0: {
+                          final email = emailController.text.tr;
+                          emailError = emailTextFieldValidator(email);
+                          if (emailError == null) {
+                            pageController.nextPage(
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeInOut
+                            );
+                          }
+                          break;
+                        }
+                        case 1: {
+                          break;
+                        }
+                      }
+                    });
+                  },
+                ),
+              )
+            )
+          ],
+        )
+      ),
+    );
+  }
+
+  void _pressedBack() {
+    if (pageController.page!.toInt() == 0) {
+      Navigator.pop(context);
+    } else {
+      pageController.previousPage(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut
+      );
+    }
   }
 }
