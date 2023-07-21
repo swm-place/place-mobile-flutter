@@ -186,7 +186,9 @@ class SignUpPageState extends State<SignUpPage> {
                   SingleChildScrollView(
                     child: _emailPage(),
                   ),
-                  _passwordPage()
+                  SingleChildScrollView(
+                    child: _passwordPage(),
+                  )
                 ],
               ),
             ),
