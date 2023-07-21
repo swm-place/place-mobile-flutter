@@ -20,6 +20,9 @@ class SignUpPageState extends State<SignUpPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordCheckController = TextEditingController();
+
+  var hideEmail = true;
+
   var emailError;
   var pageIdx = 0;
 
@@ -87,17 +90,43 @@ class SignUpPageState extends State<SignUpPage> {
                 hintText: "비밀번호",
                 hintStyle: headlineSmallGray,
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.visibility),
+                  icon: Icon(hideEmail ? Icons.visibility : Icons.visibility_off),
                   onPressed: () {
-
+                    setState(() {
+                      hideEmail = !hideEmail;
+                    });
+                  },
+                ),
+              ),
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.emailAddress,
+              controller: passwordController,
+              style: headlineSmall,
+              obscureText: hideEmail,
+              enableSuggestions: false,
+              autocorrect: false,
+            ),
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: "비밀번호 재입력",
+                hintStyle: headlineSmallGray,
+                suffixIcon: IconButton(
+                  icon: Icon(hideEmail ? Icons.visibility : Icons.visibility_off),
+                  onPressed: () {
+                    setState(() {
+                      hideEmail = !hideEmail;
+                    });
                   },
                 ),
               ),
               textInputAction: TextInputAction.done,
               keyboardType: TextInputType.emailAddress,
-              controller: passwordController,
+              controller: passwordCheckController,
               style: headlineSmall,
-              obscureText: true,
+              obscureText: hideEmail,
               enableSuggestions: false,
               autocorrect: false,
             ),
