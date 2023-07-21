@@ -31,3 +31,11 @@ const headlineSmallGray = TextStyle(
   color: Color(0xff525151),
   height: 32/24,
 );
+
+const headlineSmall = TextStyle(
+  fontFamily: "Roboto",
+  fontSize: 24,
+  fontWeight: FontWeight.w400,
+  color: Color(0xff000000),
+  height: 32/24,
+);
