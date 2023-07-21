@@ -183,7 +183,9 @@ class SignUpPageState extends State<SignUpPage> {
                 controller: pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  _emailPage(),
+                  SingleChildScrollView(
+                    child: _emailPage(),
+                  ),
                   _passwordPage()
                 ],
               ),
@@ -219,23 +221,27 @@ class SignUpPageState extends State<SignUpPage> {
                               passwordCheckError = null;
 
                               showModalBottomSheet(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Container(
+                                constraints: BoxConstraints(
+                                  maxWidth: 600
+                                ),
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return const Padding(
+                                    padding: EdgeInsets.all(24),
+                                    child: SizedBox(
                                       width: double.infinity,
-                                      child: Padding(
-                                        padding: EdgeInsets.all(24),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              "약관 동의",
-                                              style: titleLarge,
-                                            ),
-                                          ],
-                                        ),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            "약관 동의",
+                                            style: titleLarge,
+                                          ),
+                                          Text("dsdsdsd")
+                                        ],
                                       ),
-                                    );
-                                  }
+                                    )
+                                  );
+                                }
                               );
                               // pageController.nextPage(
                               //     duration: const Duration(milliseconds: 250),
