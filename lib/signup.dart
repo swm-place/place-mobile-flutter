@@ -18,29 +18,31 @@ class SignUpPage extends StatefulWidget {
 class SignUpPageState extends State<SignUpPage> {
   final PageController pageController = PageController();
   final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final passwordCheckController = TextEditingController();
   var emailError;
   var pageIdx = 0;
 
   Widget _emailPage() {
     return Padding(
-      padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
         children: [
-          Container(
+          const SizedBox(
             width: double.infinity,
             child: Text(
               "이메일을 입력해주세요",
               style: titleLarge,
             ),
           ),
-          Container(
+          const SizedBox(
             width: double.infinity,
             child: Text(
               "로그인에 필요합니다",
               style: bodyLargeGray,
             ),
           ),
-          Container(
+          SizedBox(
             width: double.infinity,
             child: TextField(
               decoration: InputDecoration(
@@ -61,10 +63,45 @@ class SignUpPageState extends State<SignUpPage> {
 
   Widget _passwordPage() {
     return Padding(
-      padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
         children: [
-          Text("password")
+          const SizedBox(
+            width: double.infinity,
+            child: Text(
+              "비밀번호를 입력해주세요",
+              style: titleLarge,
+            ),
+          ),
+          const SizedBox(
+            width: double.infinity,
+            child: Text(
+              "6자 이상 필요합니다",
+              style: bodyLargeGray,
+            ),
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: "비밀번호",
+                hintStyle: headlineSmallGray,
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.visibility),
+                  onPressed: () {
+
+                  },
+                ),
+              ),
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.emailAddress,
+              controller: passwordController,
+              style: headlineSmall,
+              obscureText: true,
+              enableSuggestions: false,
+              autocorrect: false,
+            ),
+          )
         ],
       ),
     );
