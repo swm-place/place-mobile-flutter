@@ -209,6 +209,40 @@ class SignUpPageState extends State<SignUpPage> {
                           break;
                         }
                         case 1: {
+                          final password = passwordController.text.tr;
+                          passwordError = passwordTextFieldValidator(password);
+                          if (passwordError == null) {
+                            final passwordCheck = passwordCheckController.text.tr;
+                            if (password != passwordCheck) {
+                              passwordCheckError = "비밀번호가 일치하지 않습니다!";
+                            } else {
+                              passwordCheckError = null;
+
+                              showModalBottomSheet(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      width: double.infinity,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(24),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "약관 동의",
+                                              style: titleLarge,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                              );
+                              // pageController.nextPage(
+                              //     duration: const Duration(milliseconds: 250),
+                              //     curve: Curves.easeInOut
+                              // );
+                            }
+                          }
                           break;
                         }
                       }
