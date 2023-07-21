@@ -21,12 +21,14 @@ class SignUpPageState extends State<SignUpPage> {
   final passwordController = TextEditingController();
   final passwordCheckController = TextEditingController();
 
-  var hideEmail = true;
+  var hidePassword = true;
 
   var emailError;
+  var passwordError;
+  var passwordCheckError;
   var pageIdx = 0;
 
-  Widget _emailPage() {
+    Widget _emailPage() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
@@ -48,6 +50,12 @@ class SignUpPageState extends State<SignUpPage> {
           SizedBox(
             width: double.infinity,
             child: TextField(
+              onChanged: (text) {
+                setState(() {
+                  final email = text.tr;
+                  emailError = emailTextFieldValidator(email);
+                });
+              },
               decoration: InputDecoration(
                   hintText: "example@example.com",
                   hintStyle: headlineSmallGray,
@@ -86,14 +94,22 @@ class SignUpPageState extends State<SignUpPage> {
           SizedBox(
             width: double.infinity,
             child: TextField(
+              onChanged: (text) {
+                setState(() {
+                  final password = text.tr;
+                  passwordError = passwordTextFieldValidator(password);
+                });
+              },
               decoration: InputDecoration(
                 hintText: "비밀번호",
                 hintStyle: headlineSmallGray,
+                // helperText: "hdusiah",
+                errorText: passwordError,
                 suffixIcon: IconButton(
-                  icon: Icon(hideEmail ? Icons.visibility : Icons.visibility_off),
+                  icon: Icon(hidePassword ? Icons.visibility : Icons.visibility_off),
                   onPressed: () {
                     setState(() {
-                      hideEmail = !hideEmail;
+                      hidePassword = !hidePassword;
                     });
                   },
                 ),
@@ -102,7 +118,7 @@ class SignUpPageState extends State<SignUpPage> {
               keyboardType: TextInputType.emailAddress,
               controller: passwordController,
               style: headlineSmall,
-              obscureText: hideEmail,
+              obscureText: hidePassword,
               enableSuggestions: false,
               autocorrect: false,
             ),
@@ -110,14 +126,25 @@ class SignUpPageState extends State<SignUpPage> {
           SizedBox(
             width: double.infinity,
             child: TextField(
+              onChanged: (text) {
+                setState(() {
+                  final passwordCheck = text.tr;
+                  if (passwordController.text.tr != passwordCheck) {
+                    passwordCheckError = "비밀번호가 일치하지 않습니다!";
+                  } else {
+                    passwordCheckError = null;
+                  }
+                });
+              },
               decoration: InputDecoration(
                 hintText: "비밀번호 재입력",
                 hintStyle: headlineSmallGray,
+                errorText: passwordCheckError,
                 suffixIcon: IconButton(
-                  icon: Icon(hideEmail ? Icons.visibility : Icons.visibility_off),
+                  icon: Icon(hidePassword ? Icons.visibility : Icons.visibility_off),
                   onPressed: () {
                     setState(() {
-                      hideEmail = !hideEmail;
+                      hidePassword = !hidePassword;
                     });
                   },
                 ),
@@ -126,7 +153,7 @@ class SignUpPageState extends State<SignUpPage> {
               keyboardType: TextInputType.emailAddress,
               controller: passwordCheckController,
               style: headlineSmall,
-              obscureText: hideEmail,
+              obscureText: hidePassword,
               enableSuggestions: false,
               autocorrect: false,
             ),
