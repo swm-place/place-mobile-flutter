@@ -37,7 +37,7 @@ class LoginPage extends StatelessWidget {
                 ) : Container(width: 0, height: 0,),
                 const Text(
                   "로그인",
-                  style: title_large,
+                  style: titleLarge,
                 ),
                 SizedBox(
                   height: 10,
