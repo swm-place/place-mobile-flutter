@@ -5,11 +5,13 @@ class CheckTos extends StatefulWidget {
   CheckTos({
     Key? key,
     required this.tosText,
-    required this.require
+    required this.require,
+    required this.callback,
   }) : super(key: key);
 
   String tosText = "";
   bool require = false;
+  final Function(bool val) callback;
 
   @override
   State<StatefulWidget> createState() {
@@ -50,6 +52,7 @@ class CheckTosState extends State<CheckTos> {
               onTap: () {
                 setState(() {
                   _tosAgree = !_tosAgree;
+                  widget.callback(_tosAgree);
                 });
               },
             ),

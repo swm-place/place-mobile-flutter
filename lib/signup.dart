@@ -187,6 +187,9 @@ class SignUpPageState extends State<SignUpPage> {
                   child: CheckTos(
                     tosText: "개인정보처리 약관",
                     require: true,
+                    callback: (val) {
+                      print(val);
+                    },
                   ),
                 ),
                 SizedBox(
@@ -194,6 +197,9 @@ class SignUpPageState extends State<SignUpPage> {
                   child: CheckTos(
                     tosText: "위치정보기반 서비스 제공",
                     require: true,
+                    callback: (val) {
+                      print(val);
+                    },
                   ),
                 ),
                 SizedBox(
@@ -201,6 +207,9 @@ class SignUpPageState extends State<SignUpPage> {
                   child: CheckTos(
                     tosText: "마케팅 알림 동의",
                     require: false,
+                    callback: (val) {
+                      print(val);
+                    },
                   ),
                 ),
                 SizedBox(
@@ -213,7 +222,11 @@ class SignUpPageState extends State<SignUpPage> {
                       child: FilledButton(
                         child: Text("다음"),
                         onPressed: () {
-
+                          Navigator.pop(context);
+                          pageController.nextPage(
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeInOut
+                          );
                         },
                       ),
                     )
@@ -290,12 +303,9 @@ class SignUpPageState extends State<SignUpPage> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return _tosAgreePage();
-                                }
+                                },
+                                enableDrag: false
                               );
-                              // pageController.nextPage(
-                              //     duration: const Duration(milliseconds: 250),
-                              //     curve: Curves.easeInOut
-                              // );
                             }
                           }
                           break;
