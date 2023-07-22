@@ -29,6 +29,24 @@ class SignUpPageState extends State<SignUpPage> {
   var passwordCheckError;
   var pageIdx = 0;
 
+  final tosList = {
+    {
+      "text": "개인정보처리 약관",
+      "required": true,
+      "agree": false
+    },
+    {
+      "text": "위치정보기반 서비스 제공",
+      "required": true,
+      "agree": false
+    },
+    {
+      "text": "마케팅 알림 동의",
+      "required": false,
+      "agree": false
+    },
+  };
+
     Widget _emailPage() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
@@ -164,6 +182,27 @@ class SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  Widget __tosWidgetList() {
+    List<Widget> tosWidget = [];
+    tosList.forEach((element) {
+      // print(element);
+      tosWidget.add(SizedBox(
+          width: double.infinity,
+          child: CheckTos(
+            tosText: element['text'].toString(),
+            require: element['required'] as bool,
+            callback: (val) {
+              element['agree'] = val;
+            },
+          ),
+        )
+      );
+    });
+    return Column(
+      children: tosWidget,
+    );
+  }
+
   Widget _tosAgreePage() {
       return Padding(
           padding: EdgeInsets.all(24),
@@ -182,36 +221,7 @@ class SignUpPageState extends State<SignUpPage> {
                 SizedBox(
                   height: 10,
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: CheckTos(
-                    tosText: "개인정보처리 약관",
-                    require: true,
-                    callback: (val) {
-                      print(val);
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: CheckTos(
-                    tosText: "위치정보기반 서비스 제공",
-                    require: true,
-                    callback: (val) {
-                      print(val);
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: CheckTos(
-                    tosText: "마케팅 알림 동의",
-                    require: false,
-                    callback: (val) {
-                      print(val);
-                    },
-                  ),
-                ),
+                __tosWidgetList(),
                 SizedBox(
                   height: 10,
                 ),
