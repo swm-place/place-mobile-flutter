@@ -29,6 +29,9 @@ class SignUpPageState extends State<SignUpPage> {
   var passwordCheckError;
   var pageIdx = 0;
 
+  var tosButtonText = "다음";
+  var tosButtonNextColor = lightColorScheme.primary;
+
   final tosList = {
     {
       "text": "개인정보처리 약관",
@@ -189,6 +192,7 @@ class SignUpPageState extends State<SignUpPage> {
       tosWidget.add(SizedBox(
           width: double.infinity,
           child: CheckTos(
+            agreeValue: element['agree'] as bool,
             tosText: element['text'].toString(),
             require: element['required'] as bool,
             callback: (val) {
@@ -204,46 +208,79 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _tosAgreePage() {
-      return Padding(
-          padding: EdgeInsets.all(24),
-          child: SizedBox(
-            width: double.infinity,
-            height: 190,
-            child: Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    "약관 동의",
-                    style: titleLarge,
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                __tosWidgetList(),
-                SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      child: FilledButton(
-                        child: Text("다음"),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          pageController.nextPage(
-                              duration: const Duration(milliseconds: 250),
-                              curve: Curves.easeInOut
-                          );
-                        },
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter bottomState) {
+          return Padding(
+              padding: EdgeInsets.all(24),
+              child: SizedBox(
+                width: double.infinity,
+                height: 190,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        "약관 동의",
+                        style: titleLarge,
                       ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    __tosWidgetList(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                        width: double.infinity,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                          child: FilledButton(
+                            style: FilledButton.styleFrom(
+                              backgroundColor: tosButtonNextColor
+                            ),
+                            child: Text(tosButtonText),
+                            onPressed: () {
+                              bool checkTos = true;
+                              for (var element in tosList) {
+                                if (element['required'] as bool) {
+                                  if (!(element['agree'] as bool)) {
+                                    checkTos = false;
+                                    break;
+                                  }
+                                }
+                              }
+
+                              if (checkTos) {
+                                bottomState(() {
+                                  setState(() {
+                                    tosButtonText = "다음";
+                                    tosButtonNextColor = lightColorScheme.primary;
+                                  });
+                                });
+
+                                Navigator.pop(context);
+                                pageController.nextPage(
+                                    duration: const Duration(milliseconds: 250),
+                                    curve: Curves.easeInOut
+                                );
+                              } else{
+                                bottomState(() {
+                                  setState(() {
+                                    tosButtonText = "필수 약관을 동의해주세요";
+                                    tosButtonNextColor = Colors.red;
+                                  });
+                                });
+                              }
+                            },
+                          ),
+                        )
                     )
-                )
-              ],
-            ),
-          )
+                  ],
+                ),
+              )
+          );
+        },
       );
   }
 

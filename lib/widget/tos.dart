@@ -7,10 +7,12 @@ class CheckTos extends StatefulWidget {
     required this.tosText,
     required this.require,
     required this.callback,
+    required this.agreeValue,
   }) : super(key: key);
 
   String tosText = "";
   bool require = false;
+  bool agreeValue = false;
   final Function(bool val) callback;
 
   @override
@@ -20,8 +22,6 @@ class CheckTos extends StatefulWidget {
 }
 
 class CheckTosState extends State<CheckTos> {
-  bool _tosAgree = false;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -39,7 +39,7 @@ class CheckTosState extends State<CheckTos> {
                       height: 24,
                       child: Icon(
                         Icons.check,
-                        color: _tosAgree ? Colors.blue : null,
+                        color: widget.agreeValue ? Colors.blue : null,
                       ),
                     ),
                   ),
@@ -51,8 +51,8 @@ class CheckTosState extends State<CheckTos> {
               ),
               onTap: () {
                 setState(() {
-                  _tosAgree = !_tosAgree;
-                  widget.callback(_tosAgree);
+                  widget.agreeValue = !widget.agreeValue;
+                  widget.callback(widget.agreeValue);
                 });
               },
             ),
