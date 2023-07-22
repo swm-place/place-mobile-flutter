@@ -71,25 +71,5 @@ class CheckTosState extends State<CheckTos> {
         ],
       )
     );
-
-        // Expanded(
-          // child: CheckboxListTile(
-          //   contentPadding: EdgeInsets.zero,
-          //   value: _tosAgree,
-          //   title: Text("${widget.require ? "(필수)" : "(선택)"}${widget.tosText}"),
-          //   onChanged: (value) {
-          //     setState(() {
-          //       _tosAgree = value!;
-          //     });
-          //   },
-          //   controlAffinity: ListTileControlAffinity.leading,
-          // ),
-        // ),
-        // IconButton(
-        //   onPressed: () {},
-        //   icon: Icon(Icons.arrow_forward_ios_rounded)
-        // )
-    //   ],
-    // );
   }
 }

@@ -169,6 +169,7 @@ class SignUpPageState extends State<SignUpPage> {
           padding: EdgeInsets.all(24),
           child: SizedBox(
             width: double.infinity,
+            height: 190,
             child: Column(
               children: [
                 SizedBox(
@@ -202,6 +203,21 @@ class SignUpPageState extends State<SignUpPage> {
                     require: false,
                   ),
                 ),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      child: FilledButton(
+                        child: Text("다음"),
+                        onPressed: () {
+
+                        },
+                      ),
+                    )
+                )
               ],
             ),
           )
