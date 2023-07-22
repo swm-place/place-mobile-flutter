@@ -39,3 +39,11 @@ const headlineSmall = TextStyle(
   color: Color(0xff000000),
   height: 32/24,
 );
+
+const labelLarge = TextStyle(
+  fontFamily: "Roboto",
+  fontSize: 14,
+  fontWeight: FontWeight.w500,
+  color: Color(0xff000000),
+  height: 20/14,
+);

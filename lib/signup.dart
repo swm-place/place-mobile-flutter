@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
+import 'package:place_mobile_flutter/widget/tos.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -163,6 +164,50 @@ class SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  Widget _tosAgreePage() {
+      return Padding(
+          padding: EdgeInsets.all(24),
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    "약관 동의",
+                    style: titleLarge,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: CheckTos(
+                    tosText: "개인정보처리 약관",
+                    require: true,
+                  ),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: CheckTos(
+                    tosText: "위치정보기반 서비스 제공",
+                    require: true,
+                  ),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: CheckTos(
+                    tosText: "마케팅 알림 동의",
+                    require: false,
+                  ),
+                ),
+              ],
+            ),
+          )
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -228,21 +273,7 @@ class SignUpPageState extends State<SignUpPage> {
                                 ),
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return const Padding(
-                                    padding: EdgeInsets.all(24),
-                                    child: SizedBox(
-                                      width: double.infinity,
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            "약관 동의",
-                                            style: titleLarge,
-                                          ),
-                                          Text("dsdsdsd")
-                                        ],
-                                      ),
-                                    )
-                                  );
+                                  return _tosAgreePage();
                                 }
                               );
                               // pageController.nextPage(
