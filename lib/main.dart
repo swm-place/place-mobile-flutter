@@ -22,17 +22,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      //앱 자체 언어 설정 함으로써 캘린더를 한국어로 변경
       localizationsDelegates: [
-        // 앱의 로컬라이제이션을 구성합니다.
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: [
-        // 앱에서 지원하는 언어 목록을 설정합니다.
-        const Locale('ko', 'KR'), // 한국어
-        const Locale('en', 'US'), // 영어
+        const Locale('ko', 'KR'),
+        const Locale('en', 'US'),
       ],
       title: 'OURS',
       themeMode: ThemeMode.light,
