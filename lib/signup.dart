@@ -24,11 +24,15 @@ class SignUpPageState extends State<SignUpPage> {
   final passwordController = TextEditingController();
   final passwordCheckController = TextEditingController();
 
+  final nicknameController = TextEditingController();
+
   var hidePassword = true;
 
   var emailError;
   var passwordError;
   var passwordCheckError;
+
+  var nicknameCheckError;
   var pageIdx = 0;
 
   var tosButtonText = "다음";
@@ -320,20 +324,18 @@ class SignUpPageState extends State<SignUpPage> {
                   ),
                   TextFormField(
                     onChanged: (text) {
-
+                      setState(() {
+                        nicknameCheckError = nicknameTextFieldValidator(text.tr);
+                      });
                     },
                     decoration: InputDecoration(
-                        hintText: "닉네임",
-                        hintStyle: headlineSmallGray,
-                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10)
-                      // contentPadding: EdgeInsets.symmetric(
-                      //     vertical: 0,
-                      //     horizontal: 14
-                      // )
-                      // errorText: passwordCheckError,
+                      hintText: "닉네임",
+                      hintStyle: headlineSmallGray,
+                      contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                      errorText: nicknameCheckError,
                     ),
                     textInputAction: TextInputAction.next,
-                    // controller: passwordCheckController,
+                    controller: nicknameController,
                     style: headlineSmall,
                   ),
                 ],
