@@ -285,6 +285,7 @@ class SignUpPageState extends State<SignUpPage> {
                                   });
                                 });
 
+                                FocusScope.of(context).unfocus();
                                 Navigator.pop(context);
                                 pageController.nextPage(
                                     duration: const Duration(milliseconds: 250),
@@ -522,6 +523,7 @@ class SignUpPageState extends State<SignUpPage> {
                           final email = emailController.text.tr;
                           emailError = emailTextFieldValidator(email);
                           if (emailError == null) {
+                            FocusScope.of(context).unfocus();
                             pageController.nextPage(
                               duration: const Duration(milliseconds: 250),
                               curve: Curves.easeInOut
@@ -539,6 +541,7 @@ class SignUpPageState extends State<SignUpPage> {
                             } else {
                               passwordCheckError = null;
 
+                              FocusScope.of(context).unfocus();
                               showModalBottomSheet(
                                 constraints: BoxConstraints(
                                   maxWidth: 600
@@ -562,6 +565,7 @@ class SignUpPageState extends State<SignUpPage> {
                             final sex = selectedSex;
                             final birth = birthController.text.tr;
 
+                            FocusScope.of(context).unfocus();
                             AuthController.to.registerEmail(
                                 context,
                                 emailController.text.tr,
@@ -586,6 +590,7 @@ class SignUpPageState extends State<SignUpPage> {
     if (pageController.page!.toInt() == 0) {
       Navigator.pop(context);
     } else {
+      FocusScope.of(context).unfocus();
       pageController.previousPage(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut
