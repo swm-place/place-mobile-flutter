@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:place_mobile_flutter/login.dart';
+import 'package:place_mobile_flutter/page/login.dart';
 import 'package:place_mobile_flutter/state/state_controller.dart';
 import 'theme/color_schemes.g.dart';
 import 'package:get/get.dart';

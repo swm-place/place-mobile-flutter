@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/utils.dart';
-import 'package:place_mobile_flutter/signup.dart';
+import 'package:place_mobile_flutter/page/signup.dart';
 import 'package:place_mobile_flutter/util/size.dart';
 import 'package:place_mobile_flutter/state/state_controller.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
-import 'theme/text_style.dart';
+import '../theme/text_style.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
