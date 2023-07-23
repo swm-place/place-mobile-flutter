@@ -531,12 +531,14 @@ class SignUpPageState extends State<SignUpPage> {
                         }
                         case 2: {
                           if (_formKey.currentState!.validate()) {
+                            final email = emailController.text.tr;
+                            final password = passwordController.text.tr;
                             final nickname = nicknameController.text.tr;
                             final phoneNumber = phoneNumberController.text.tr;
                             final sex = selectedSex;
                             final birth = birthController.text.tr;
 
-                            AuthController.to.signInEmail(
+                            AuthController.to.registerEmail(
                                 emailController.text.tr,
                                 passwordController.text.tr
                             );
