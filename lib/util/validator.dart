@@ -37,3 +37,19 @@ String? nicknameTextFieldValidator(value) {
   }
   return null;
 }
+
+String? phoneNumberTextFieldValidator(value) {
+  RegExp regExp = new RegExp(r'^010(\d{8})$',);
+  RegExp regExpHype = new RegExp(r'-',);
+
+  if (value == null || value.isEmpty) {
+    return '전화번호를 입력해주세요.';
+  }
+  if (regExpHype.hasMatch(value)) {
+    return '하이픈(-) 기호는 제외해주세요';
+  }
+  if (!regExp.hasMatch(value)) {
+    return '전화번호 형식에 맞게 입력해주세요';
+  }
+  return null;
+}

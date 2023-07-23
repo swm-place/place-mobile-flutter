@@ -25,6 +25,7 @@ class SignUpPageState extends State<SignUpPage> {
   final passwordCheckController = TextEditingController();
 
   final nicknameController = TextEditingController();
+  final phoneNumberController = TextEditingController();
 
   var hidePassword = true;
 
@@ -33,6 +34,7 @@ class SignUpPageState extends State<SignUpPage> {
   var passwordCheckError;
 
   var nicknameCheckError;
+  var phoneNumberCheckError;
   var pageIdx = 0;
 
   var tosButtonText = "다음";
@@ -355,17 +357,18 @@ class SignUpPageState extends State<SignUpPage> {
                     ),
                     TextFormField(
                       onChanged: (text) {
-
+                        setState(() {
+                          phoneNumberCheckError = phoneNumberTextFieldValidator(text.tr);
+                        });
                       },
                       decoration: InputDecoration(
-                        hintText: "010-0000-0000",
+                        hintText: "01012341234",
                         hintStyle: headlineSmallGray,
-                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10)
-                        // errorText: passwordCheckError,
+                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                        errorText: phoneNumberCheckError,
                       ),
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.phone,
-                      // controller: passwordCheckController,
+                      textInputAction: TextInputAction.done,
+                      controller: phoneNumberController,
                       style: headlineSmall,
                     ),
                   ],
