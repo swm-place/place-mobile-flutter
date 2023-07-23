@@ -18,8 +18,22 @@ class AuthController extends GetxController {
   void registerEmail(String email, password) async {
     try {
       await authInstance.createUserWithEmailAndPassword(email: email, password: password);
+      Get.snackbar(
+        "회원가입 성공",
+        "'${authInstance.currentUser!.email}'님, 환영합니다.",
+        backgroundColor: Colors.blue,
+        snackPosition: SnackPosition.BOTTOM,
+        titleText: const Text(
+          "회원가입 성공",
+          style: TextStyle(color: Colors.white),
+        ),
+        messageText: Text(
+          "'${authInstance.currentUser!.email}'님, 환영합니다.",
+          style: const TextStyle(color: Colors.white),
+        ),
+      );
+      Get.offAll(() => const MyApp());
     } catch(e) {
-      print(e);
       Get.snackbar(
         "회원가입 실패",
         "회원가입에 문제가 발생했습니다",
@@ -40,7 +54,6 @@ class AuthController extends GetxController {
   void signInEmail(String email, password) async {
     try {
       await authInstance.signInWithEmailAndPassword(email: email, password: password);
-      Get.offAll(() => const MyApp());
       Get.snackbar(
           "로그인 성공",
           "'${authInstance.currentUser!.email}'님, 환영합니다.",
