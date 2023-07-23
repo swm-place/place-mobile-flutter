@@ -310,154 +310,160 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _userInformPage() {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-        child: Column(
-          children: [
-            const SizedBox(
-              width: double.infinity,
-              child: Text(
-                "사용자 정보를 입력해주세요",
-                style: titleLarge,
-              ),
+    final FocusNode phoneNumberFocusNode = FocusNode();
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+      child: Column(
+        children: [
+          const SizedBox(
+            width: double.infinity,
+            child: Text(
+              "사용자 정보를 입력해주세요",
+              style: titleLarge,
             ),
-            const SizedBox(
-              width: double.infinity,
-              child: Text(
-                "서비스를 이용할 때 필요합니다",
-                style: bodyLargeGray,
-              ),
+          ),
+          const SizedBox(
+            width: double.infinity,
+            child: Text(
+              "서비스를 이용할 때 필요합니다",
+              style: bodyLargeGray,
             ),
-            SizedBox(
-              height: 24,
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Form(
-                autovalidateMode: AutovalidateMode.always,
-                key: _formKey,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: Text("닉네임 *"),
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              hintText: "닉네임",
-                              hintStyle: headlineSmallGray,
-                              contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              errorText: nicknameError,
-                            ),
-                            textInputAction: TextInputAction.next,
-                            controller: nicknameController,
-                            style: headlineSmall,
-                            validator: nicknameTextFieldValidator,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Text("전화번호 *"),
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "01012341234",
-                        hintStyle: headlineSmallGray,
-                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                        errorText: phoneNumberError,
-                      ),
-                      textInputAction: TextInputAction.done,
-                      controller: phoneNumberController,
-                      style: headlineSmall,
-                      validator: phoneNumberTextFieldValidator,
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Text("성별 *"),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: SegmentedButton<Sex>(
-                        segments: [
-                          ButtonSegment<Sex>(
-                            value: Sex.male,
-                            label: Text("남성"),
-                            icon: Icon(Icons.male)
-                          ),
-                          ButtonSegment<Sex>(
-                            value: Sex.female,
-                            label: Text("여성"),
-                              icon: Icon(Icons.female)
-                          ),
-                        ],
-                        selected: <Sex>{selectedSex},
-                        onSelectionChanged: (newValue) {
-                          setState(() {
-                            selectedSex = newValue.first;
-                          });
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: 24,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Text("생년월일 *"),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        selectedBirth = await showDatePicker(
-                            locale: Locale('ko', 'KR'),
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime.now()
-                        );
-                        if (selectedBirth != null) {
-                          birthController.text = DateFormat('yyyy/MM/dd').format(selectedBirth!);
-                        }
-                      },
-                      child: TextFormField(
-                        enabled: false,
-                        decoration: InputDecoration(
-                            hintText: "yyyy/mm/dd",
+          ),
+          SizedBox(
+            height: 24,
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: Form(
+              autovalidateMode: AutovalidateMode.always,
+              key: _formKey,
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: Text("닉네임 *"),
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            hintText: "닉네임",
                             hintStyle: headlineSmallGray,
                             contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                            errorText: birthError
+                            errorText: nicknameError,
+                          ),
+                          textInputAction: TextInputAction.next,
+                          controller: nicknameController,
+                          style: headlineSmall,
+                          validator: nicknameTextFieldValidator,
+                          onFieldSubmitted: (String value) {
+                            FocusScope.of(context).requestFocus(phoneNumberFocusNode);
+                          },
                         ),
-                        controller: birthController,
-                        style: headlineSmall,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "생년월일을 선택해주세요";
-                          }
-                          return null;
-                        },
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              )
-            ),
-          ],
-        ),
-      );
+                  ),
+                  SizedBox(
+                    height: 24,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text("전화번호 *"),
+                  ),
+                  TextFormField(
+                    focusNode: phoneNumberFocusNode,
+                    decoration: InputDecoration(
+                      hintText: "01012341234",
+                      hintStyle: headlineSmallGray,
+                      contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                      errorText: phoneNumberError,
+                    ),
+                    textInputAction: TextInputAction.done,
+                    controller: phoneNumberController,
+                    style: headlineSmall,
+                    validator: phoneNumberTextFieldValidator,
+                  ),
+                  SizedBox(
+                    height: 24,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text("성별 *"),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: SegmentedButton<Sex>(
+                      segments: [
+                        ButtonSegment<Sex>(
+                          value: Sex.male,
+                          label: Text("남성"),
+                          icon: Icon(Icons.male)
+                        ),
+                        ButtonSegment<Sex>(
+                          value: Sex.female,
+                          label: Text("여성"),
+                            icon: Icon(Icons.female)
+                        ),
+                      ],
+                      selected: <Sex>{selectedSex},
+                      onSelectionChanged: (newValue) {
+                        setState(() {
+                          selectedSex = newValue.first;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 24,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text("생년월일 *"),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      selectedBirth = await showDatePicker(
+                          locale: Locale('ko', 'KR'),
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime.now()
+                      );
+                      if (selectedBirth != null) {
+                        birthController.text = DateFormat('yyyy/MM/dd').format(selectedBirth!);
+                      }
+                    },
+                    child: TextFormField(
+                      enabled: false,
+                      decoration: InputDecoration(
+                          hintText: "yyyy/mm/dd",
+                          hintStyle: headlineSmallGray,
+                          contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                          errorText: birthError
+                      ),
+                      controller: birthController,
+                      style: headlineSmall,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "생년월일을 선택해주세요";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ),
+        ],
+      ),
+    );
   }
 
   @override
