@@ -74,6 +74,7 @@ class AuthController extends GetxController {
 
   void signInEmail(BuildContext context, String email, password) async {
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return const AlertDialog(
