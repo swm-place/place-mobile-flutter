@@ -265,8 +265,9 @@ class _LoginFormState extends State<_LoginFrom> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         AuthController.to.signInEmail(
-                            emailController.text.tr,
-                            passwordController.text.tr
+                          context,
+                          emailController.text.tr,
+                          passwordController.text.tr
                         );
                       }
                     },
