@@ -16,6 +16,8 @@ class SignUpPage extends StatefulWidget {
   }
 }
 
+enum Sex {male, female}
+
 class SignUpPageState extends State<SignUpPage> {
   final PageController pageController = PageController();
   final emailController = TextEditingController();
@@ -49,6 +51,8 @@ class SignUpPageState extends State<SignUpPage> {
       "agree": false
     },
   };
+
+  Sex selected = Sex.male;
 
     Widget _emailPage() {
     return Padding(
@@ -284,6 +288,177 @@ class SignUpPageState extends State<SignUpPage> {
       );
   }
 
+  Widget _userInformPage() {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+        child: Column(
+          children: [
+            const SizedBox(
+              width: double.infinity,
+              child: Text(
+                "사용자 정보를 입력해주세요",
+                style: titleLarge,
+              ),
+            ),
+            const SizedBox(
+              width: double.infinity,
+              child: Text(
+                "서비스를 이용할 때 필요합니다",
+                style: bodyLargeGray,
+              ),
+            ),
+            SizedBox(
+              height: 24,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text("닉네임 *"),
+                  ),
+                  TextFormField(
+                    onChanged: (text) {
+
+                    },
+                    decoration: InputDecoration(
+                        hintText: "닉네임",
+                        hintStyle: headlineSmallGray,
+                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10)
+                      // contentPadding: EdgeInsets.symmetric(
+                      //     vertical: 0,
+                      //     horizontal: 14
+                      // )
+                      // errorText: passwordCheckError,
+                    ),
+                    textInputAction: TextInputAction.next,
+                    // controller: passwordCheckController,
+                    style: headlineSmall,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 24,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: Form(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: Text("전화번호 *"),
+                    ),
+                    TextFormField(
+                      onChanged: (text) {
+
+                      },
+                      decoration: InputDecoration(
+                        hintText: "010-0000-0000",
+                        hintStyle: headlineSmallGray,
+                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10)
+                        // errorText: passwordCheckError,
+                      ),
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.phone,
+                      // controller: passwordCheckController,
+                      style: headlineSmall,
+                    ),
+                  ],
+                ),
+              )
+            ),
+            SizedBox(
+              height: 24,
+            ),
+            SizedBox(
+                width: double.infinity,
+                child: Form(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text("성별 *"),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: SegmentedButton<Sex>(
+                          segments: [
+                            ButtonSegment<Sex>(
+                                value: Sex.male,
+                                label: Text("남성")
+                            ),
+                            ButtonSegment<Sex>(
+                                value: Sex.female,
+                                label: Text("여성")
+                            ),
+                          ],
+                          selected: <Sex>{selected},
+                          onSelectionChanged: (newValue) {
+                            setState(() {
+                              selected = newValue.first;
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      SizedBox(
+                          width: double.infinity,
+                          child: Form(
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: Text("생년월일 *"),
+                                ),
+                                GestureDetector(
+                                  onTap: () async {
+                                    final DateTime? selected = await showDatePicker(
+                                      locale: Locale('ko', 'KR'),
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime.now()
+                                    );
+                                    print(selected);
+                                  },
+                                  child: TextFormField(
+                                    enabled: false,
+                                    onChanged: (text) {
+
+                                    },
+                                    decoration: InputDecoration(
+                                        hintText: "010-0000-0000",
+                                        hintStyle: headlineSmallGray,
+                                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10)
+                                      // errorText: passwordCheckError,
+                                    ),
+                                    textInputAction: TextInputAction.next,
+                                    keyboardType: TextInputType.phone,
+                                    // controller: passwordCheckController,
+                                    style: headlineSmall,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                      ),
+                    ],
+                  ),
+                )
+            )
+          ],
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -309,6 +484,9 @@ class SignUpPageState extends State<SignUpPage> {
                   ),
                   SingleChildScrollView(
                     child: _passwordPage(),
+                  ),
+                  SingleChildScrollView(
+                    child: _userInformPage(),
                   )
                 ],
               ),
