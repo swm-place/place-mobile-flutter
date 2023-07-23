@@ -23,6 +23,9 @@ enum Sex {male, female}
 class SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
 
+  final FocusNode passwordCheckFocusNode = FocusNode();
+  final FocusNode phoneNumberFocusNode = FocusNode();
+
   final PageController pageController = PageController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -113,8 +116,6 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _passwordPage() {
-    final FocusNode passwordCheckFocusNode = FocusNode();
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
@@ -310,8 +311,6 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _userInformPage() {
-    final FocusNode phoneNumberFocusNode = FocusNode();
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
