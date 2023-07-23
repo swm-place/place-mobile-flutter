@@ -68,7 +68,7 @@ class SignUpPageState extends State<SignUpPage> {
 
   Sex selectedSex = Sex.male;
 
-    Widget _emailPage() {
+  Widget _emailPage() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
@@ -113,6 +113,8 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _passwordPage() {
+    final FocusNode passwordCheckFocusNode = FocusNode();
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
@@ -161,11 +163,15 @@ class SignUpPageState extends State<SignUpPage> {
               obscureText: hidePassword,
               enableSuggestions: false,
               autocorrect: false,
+              onSubmitted: (String value) {
+                FocusScope.of(context).requestFocus(passwordCheckFocusNode);
+              },
             ),
           ),
           SizedBox(
             width: double.infinity,
             child: TextField(
+              focusNode: passwordCheckFocusNode,
               onChanged: (text) {
                 setState(() {
                   final passwordCheck = text.tr;
@@ -181,6 +187,7 @@ class SignUpPageState extends State<SignUpPage> {
                 hintStyle: headlineSmallGray,
                 errorText: passwordCheckError,
                 suffixIcon: IconButton(
+                  focusNode: null,
                   icon: Icon(hidePassword ? Icons.visibility : Icons.visibility_off),
                   onPressed: () {
                     setState(() {
@@ -451,6 +458,18 @@ class SignUpPageState extends State<SignUpPage> {
           ],
         ),
       );
+  }
+
+  @override
+  void dispose() {
+    passwordController.dispose();
+    passwordCheckController.dispose();
+    emailController.dispose();
+    nicknameController.dispose();
+    phoneNumberController.dispose();
+    birthController.dispose();
+
+    super.dispose();
   }
 
   @override
