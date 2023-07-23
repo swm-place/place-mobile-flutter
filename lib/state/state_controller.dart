@@ -213,4 +213,55 @@ class AuthController extends GetxController {
       );
     }
   }
+
+  void resetPassword(BuildContext context, String email) async {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          title: Text("이메일 전송중"),
+          content: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 18,),
+              Text("곧 완료됩니다.")
+            ],
+          ),
+        );
+      }
+    );
+
+    String dialogTitle = "";
+    String dialogMessage = "";
+    try {
+      await authInstance.sendPasswordResetEmail(email: email);
+      Navigator.of(context, rootNavigator: true).pop();
+      dialogTitle = "이메일 전송 완료";
+      dialogMessage = "전송된 비밀번호 재설정 링크로 비밀번호 재설정을 완료해주세요.";
+    } catch(e) {
+      Navigator.of(context, rootNavigator: true).pop();
+      dialogTitle = "이메일 전송 실패";
+      dialogMessage = "다시 요청해 주세요.";
+    }
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(dialogTitle),
+            content: Text(dialogMessage),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                child: Text("확인")
+              )
+            ],
+          );
+        }
+    );
+  }
 }
