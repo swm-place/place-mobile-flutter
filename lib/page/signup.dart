@@ -564,6 +564,7 @@ class SignUpPageState extends State<SignUpPage> {
                             final birth = birthController.text.tr;
 
                             AuthController.to.registerEmail(
+                                context,
                                 emailController.text.tr,
                                 passwordController.text.tr
                             );
