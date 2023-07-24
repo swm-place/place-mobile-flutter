@@ -6,12 +6,30 @@ import 'package:place_mobile_flutter/main.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
+
   FirebaseAuth authInstance = FirebaseAuth.instance;
+
   late Rx<User?> user = Rx<User?>(authInstance.currentUser);
+  late Rx<String?> idToken = Rx<String?>(null);
+  // String? token;
+
+  Stream<String?> getIdTokenStream() async* {
+    await for (final User? user in user.stream) {
+      if (user != null) {
+        final String? idToken = await user.getIdToken();
+        print("user: ${user.email}\nidToken: $idToken");
+        yield idToken;
+      } else {
+        print("idToken: null");
+        yield null;
+      }
+    }
+  }
 
   @override
   void onReady() {
     super.onReady();
+    idToken.bindStream(getIdTokenStream());
     user.bindStream(authInstance.userChanges());
   }
 
@@ -173,6 +191,7 @@ class AuthController extends GetxController {
           duration: const Duration(seconds: 2),
         )
       );
+      return;
     }
   }
 
@@ -247,21 +266,21 @@ class AuthController extends GetxController {
     }
 
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(dialogTitle),
-            content: Text(dialogMessage),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
-                child: Text("확인")
-              )
-            ],
-          );
-        }
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(dialogTitle),
+          content: Text(dialogMessage),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              child: Text("확인")
+            )
+          ],
+        );
+      }
     );
   }
 }
