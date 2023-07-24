@@ -28,11 +28,11 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                getDynamicPixel(context, 80) > 80 ?
+                getDynamicPixel(context, 60) > 60 ?
                 SvgPicture.asset(
                   'assets/images/navigation_icon.svg',
-                  width: getDynamicPixel(context, 80),
-                  height: getDynamicPixel(context, 80),
+                  width: getDynamicPixel(context, 60),
+                  height: getDynamicPixel(context, 60),
                 ) : Container(width: 0, height: 0,),
                 const Text(
                   "로그인",
