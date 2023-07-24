@@ -11,10 +11,9 @@ class AuthController extends GetxController {
 
   late Rx<User?> user = Rx<User?>(authInstance.currentUser);
   late Rx<String?> idToken = Rx<String?>(null);
-  // String? token;
 
   Stream<String?> getIdTokenStream() async* {
-    await for (final User? user in user.stream) {
+    await for (final User? user in authInstance.idTokenChanges()) {
       if (user != null) {
         final String? idToken = await user.getIdToken();
         print("user: ${user.email}\nidToken: $idToken");
