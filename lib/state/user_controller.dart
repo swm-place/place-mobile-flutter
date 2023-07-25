@@ -10,12 +10,11 @@ class ProfileController extends GetxController {
 
   RxnString nickname = RxnString();
 
-  void getUserProfile() async {
+  Future<int?> getUserProfile() async {
     String? idToken = AuthController.to.idToken;
     if (idToken != null) {
       http.Response? response = await _userProvider.getProfile(idToken);
       if (response != null) {
-        print(response.statusCode);
         if (response.statusCode == 200) {
 
         } else if (response.statusCode == 400) {
@@ -23,7 +22,9 @@ class ProfileController extends GetxController {
         } else {
 
         }
+        return response.statusCode;
       }
     }
+    return null;
   }
 }

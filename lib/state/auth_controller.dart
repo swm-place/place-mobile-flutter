@@ -4,7 +4,10 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/provider/user.dart';
 import 'package:place_mobile_flutter/main.dart';
+import 'package:place_mobile_flutter/page/signup.dart';
 import 'dart:convert';
+
+import 'package:place_mobile_flutter/state/user_controller.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
@@ -79,6 +82,7 @@ class AuthController extends GetxController {
     await for (final User? user in authInstance.userChanges()) {
       print("user: $user");
       await getIdTokenStream();
+      _loginSuccess();
       yield user;
     }
   }
@@ -86,7 +90,19 @@ class AuthController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    Get.put(ProfileController());
     user.bindStream(getUser());
+  }
+
+  void _loginSuccess() async {
+    int? status = await ProfileController.to.getUserProfile();
+    if (status != null) {
+      if (status == 200) {
+        Get.offAll(() => const MyApp());
+      } else if (status == 400) {
+        Get.offAll(() => const SignUpPage());
+      }
+    }
   }
 
   void registerEmail(BuildContext context, String email, password) async {
@@ -146,7 +162,8 @@ class AuthController extends GetxController {
         duration: const Duration(seconds: 2),
       )
     );
-    Get.offAll(() => const MyApp());
+
+    // _loginSuccess();
   }
 
   void signInEmail(BuildContext context, String email, password) async {
@@ -206,7 +223,8 @@ class AuthController extends GetxController {
         duration: const Duration(seconds: 2),
       )
     );
-    Get.offAll(() => const MyApp());
+
+    // _loginSuccess();
   }
 
   void signInFacebook() async {
@@ -230,7 +248,8 @@ class AuthController extends GetxController {
           duration: const Duration(seconds: 2),
         )
       );
-      Get.offAll(() => const MyApp());
+
+      // _loginSuccess();
     } catch(e) {
       Get.showSnackbar(
         GetSnackBar(
