@@ -515,9 +515,8 @@ class SignUpPageState extends State<SignUpPage> {
                   SingleChildScrollView(
                     child: _emailPage(),
                   ),
-                  SingleChildScrollView(
-                    child: _passwordPage(),
-                  ),
+                  if (AuthController.to.user.value == null)
+                    SingleChildScrollView(child: _passwordPage()),
                   SingleChildScrollView(
                     child: _userInformPage(),
                   )
@@ -537,12 +536,25 @@ class SignUpPageState extends State<SignUpPage> {
                           final email = emailController.text.tr;
                           emailError = emailTextFieldValidator(email);
                           if (emailError == null) {
-                            FocusScope.of(context).unfocus();
-                            pageController.nextPage(
-                              duration: const Duration(milliseconds: 250),
-                              curve: Curves.easeInOut
-                            );
-                          }
+                              FocusScope.of(context).unfocus();
+                              if (AuthController.to.user.value == null) {
+                                pageController.nextPage(
+                                    duration: const Duration(milliseconds: 250),
+                                    curve: Curves.easeInOut);
+                              } else {
+                                FocusScope.of(context).unfocus();
+                                showModalBottomSheet(
+                                    constraints: BoxConstraints(
+                                        maxWidth: 600
+                                    ),
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return _tosAgreePage();
+                                    },
+                                    enableDrag: false
+                                );
+                              }
+                            }
                           break;
                         }
                         case 1: {
