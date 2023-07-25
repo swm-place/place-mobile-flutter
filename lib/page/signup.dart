@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -38,6 +39,7 @@ class SignUpPageState extends State<SignUpPage> {
   final TextEditingController birthController = TextEditingController();
 
   bool hidePassword = true;
+  bool emailEnable = true;
 
   String? emailError;
   String? passwordError;
@@ -74,6 +76,15 @@ class SignUpPageState extends State<SignUpPage> {
   Sex selectedSex = Sex.male;
 
   Widget _emailPage() {
+    User? user = AuthController.to.user.value;
+    if (user != null) {
+      if (user.email != null) {
+        emailEnable = false;
+        emailController.text = user.email!;
+
+        FocusScope.of(context).unfocus();
+      }
+    }
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
@@ -102,6 +113,7 @@ class SignUpPageState extends State<SignUpPage> {
                 });
               },
               decoration: InputDecoration(
+                enabled: emailEnable,
                   hintText: "example@example.com",
                   hintStyle: headlineSmallGray,
                   errorText: emailError
