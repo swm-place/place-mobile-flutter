@@ -10,7 +10,12 @@ import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/tos.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+  SignUpPage({
+    Key? key,
+    required canBack,
+  }) : super(key: key);
+
+  bool canBack = false;
 
   @override
   State<StatefulWidget> createState() {

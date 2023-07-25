@@ -163,7 +163,7 @@ class LoginPage extends StatelessWidget {
                       height: 20,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage(canBack: true,)));
                         },
                         child: Text('회원가입'),
                         style: TextButton.styleFrom(

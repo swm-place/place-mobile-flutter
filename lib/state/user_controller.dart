@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:place_mobile_flutter/api/provider/user.dart';
+import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:http/http.dart' as http;
 

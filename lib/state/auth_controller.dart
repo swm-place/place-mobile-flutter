@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
-import 'package:place_mobile_flutter/api/provider/user.dart';
+import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/main.dart';
 import 'package:place_mobile_flutter/page/signup.dart';
 import 'dart:convert';
@@ -100,7 +100,10 @@ class AuthController extends GetxController {
       if (status == 200) {
         Get.offAll(() => const MyApp());
       } else if (status == 400) {
-        Get.offAll(() => const SignUpPage());
+        if (Get.previousRoute.isEmpty) {
+          Get.offAll(() => const MyApp());
+          Get.to(() => SignUpPage(canBack: false,));
+        }
       }
     }
   }
