@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/main.dart';
+import 'dart:convert';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
@@ -10,26 +11,81 @@ class AuthController extends GetxController {
   FirebaseAuth authInstance = FirebaseAuth.instance;
 
   late Rx<User?> user = Rx<User?>(authInstance.currentUser);
-  late Rx<String?> idToken = Rx<String?>(null);
 
-  Stream<String?> getIdTokenStream() async* {
-    await for (final User? user in authInstance.idTokenChanges()) {
-      if (user != null) {
-        final String? idToken = await user.getIdToken();
-        print("user: ${user.email}\nidToken: $idToken");
-        yield idToken;
+  String? idToken;
+  DateTime? expireDate;
+
+  String _decodeBase64(String str) {
+    String output = str.replaceAll('-', '+').replaceAll('_', '/');
+
+    switch (output.length % 4) {
+      case 0:
+        break;
+      case 2:
+        output += '==';
+        break;
+      case 3:
+        output += '=';
+        break;
+      default:
+        throw Exception('Illegal base64url string!"');
+    }
+    return utf8.decode(base64Url.decode(output));
+  }
+
+  int _parseJwtExpiredDate(String token) {
+    final parts = token.split('.');
+    if (parts.length != 3) {
+      throw Exception('invalid token');
+    }
+
+    final payload = _decodeBase64(parts[1]);
+    final payloadMap = json.decode(payload);
+    if (payloadMap is! Map<String, dynamic>) {
+      throw Exception('invalid payload');
+    }
+    return payloadMap['exp'];
+  }
+
+  Future<bool> checkTokenValid() async {
+    if (idToken == null || expireDate == null) {
+      await getIdTokenStream();
+      return false;
+    }
+    if (expireDate!.isAfter(DateTime.now())) {
+      await getIdTokenStream();
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> getIdTokenStream() async {
+    if (user.value == null) {
+      idToken = null;
+    } else {
+      idToken = await user.value!.getIdToken();
+      if (idToken == null) {
+        expireDate = null;
       } else {
-        print("idToken: null");
-        yield null;
+        expireDate = DateTime.fromMillisecondsSinceEpoch(_parseJwtExpiredDate(idToken!) * 1000).subtract(const Duration(minutes: 10));
       }
+      print("idToken: $idToken");
+      print("expireDate: $expireDate");
+    }
+  }
+
+  Stream<User?> getUser() async* {
+    await for (final User? user in authInstance.userChanges()) {
+      print("user: $user");
+      await getIdTokenStream();
+      yield user;
     }
   }
 
   @override
   void onReady() {
     super.onReady();
-    idToken.bindStream(getIdTokenStream());
-    user.bindStream(authInstance.userChanges());
+    user.bindStream(getUser());
   }
 
   void registerEmail(BuildContext context, String email, password) async {
