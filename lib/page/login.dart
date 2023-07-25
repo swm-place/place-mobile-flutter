@@ -7,7 +7,7 @@ import 'package:get/utils.dart';
 import 'package:place_mobile_flutter/page/find_password.dart';
 import 'package:place_mobile_flutter/page/signup.dart';
 import 'package:place_mobile_flutter/util/size.dart';
-import 'package:place_mobile_flutter/state/state_controller.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
 import '../theme/text_style.dart';
 

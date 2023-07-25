@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
+import 'package:place_mobile_flutter/api/provider/user.dart';
 import 'package:place_mobile_flutter/main.dart';
 import 'dart:convert';
 
