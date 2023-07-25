@@ -596,7 +596,29 @@ class SignUpPageState extends State<SignUpPage> {
       if (widget.canBack) {
         Navigator.pop(context);
       } else {
-
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("회원가입 필요"),
+              content: Text("${AuthController.to.user.value!.email!} 계정은 회원가입이 완료되지 않았습니다. 현재 계정을 로그아웃 하고 다른 계정으로 로그인 하시겠습니다?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    AuthController.to.signOut();
+                  },
+                  child: Text("로그아웃")
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                  child: Text("회원가입 하기")
+                ),
+              ],
+            );
+          },
+        );
       }
     } else {
       FocusScope.of(context).unfocus();
