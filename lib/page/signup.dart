@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
+import 'package:place_mobile_flutter/state/user_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
@@ -592,11 +593,15 @@ class SignUpPageState extends State<SignUpPage> {
                             final birth = birthController.text.tr;
 
                             FocusScope.of(context).unfocus();
-                            AuthController.to.registerEmail(
-                                context,
-                                emailController.text.tr,
-                                passwordController.text.tr
-                            );
+                            if (AuthController.to.user.value == null) {
+                              AuthController.to.registerEmail(
+                                  context,
+                                  emailController.text.tr,
+                                  passwordController.text.tr
+                              );
+                            } else {
+                              ProfileController.to.getUserProfile();
+                            }
                           }
                           break;
                         }

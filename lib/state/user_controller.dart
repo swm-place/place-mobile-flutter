@@ -27,4 +27,8 @@ class ProfileController extends GetxController {
     }
     return null;
   }
+
+  void makeUserProfile() async {
+
+  }
 }
