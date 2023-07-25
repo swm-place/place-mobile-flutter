@@ -106,7 +106,7 @@ class AuthController extends GetxController {
       } else if (status == 400) {
         if (Get.currentRoute != "/SignUpPage") {
           Get.offAll(() => const MyApp());
-          Get.to(() => SignUpPage(canBack: false,));
+          Get.to(() => SignUpPage());
         }
       }
     }

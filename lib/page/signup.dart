@@ -12,10 +12,7 @@ import 'package:place_mobile_flutter/widget/tos.dart';
 class SignUpPage extends StatefulWidget {
   SignUpPage({
     Key? key,
-    required canBack,
   }) : super(key: key);
-
-  bool canBack = false;
 
   @override
   State<StatefulWidget> createState() {
@@ -593,7 +590,7 @@ class SignUpPageState extends State<SignUpPage> {
 
   void _pressedBack() {
     if (pageController.page!.toInt() == 0) {
-      if (widget.canBack) {
+      if (AuthController.to.user.value == null) {
         Navigator.pop(context);
       } else {
         showDialog(
