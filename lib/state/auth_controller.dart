@@ -53,21 +53,21 @@ class AuthController extends GetxController {
 
   Future<bool> checkTokenValid() async {
     if (idToken == null || expireDate == null) {
-      await getIdTokenStream();
+      await getIdTokenStream(AuthController.to.user.value);
       return false;
     }
     if (expireDate!.isAfter(DateTime.now())) {
-      await getIdTokenStream();
+      await getIdTokenStream(AuthController.to.user.value);
       return false;
     }
     return true;
   }
 
-  Future<void> getIdTokenStream() async {
-    if (user.value == null) {
+  Future<void> getIdTokenStream(User? user) async {
+    if (user == null) {
       idToken = null;
     } else {
-      idToken = await user.value!.getIdToken();
+      idToken = await user.getIdToken();
       if (idToken == null) {
         expireDate = null;
       } else {
@@ -81,8 +81,12 @@ class AuthController extends GetxController {
   Stream<User?> getUser() async* {
     await for (final User? user in authInstance.userChanges()) {
       print("user: $user");
-      await getIdTokenStream();
-      _loginSuccess();
+      await getIdTokenStream(user);
+      if (user != null) {
+        _loginSuccess(user);
+      } else {
+        Get.offAll(() => const MyApp());
+      }
       yield user;
     }
   }
@@ -94,13 +98,13 @@ class AuthController extends GetxController {
     user.bindStream(getUser());
   }
 
-  void _loginSuccess() async {
+  void _loginSuccess(User user) async {
     int? status = await ProfileController.to.getUserProfile();
     if (status != null) {
       if (status == 200) {
         Get.offAll(() => const MyApp());
       } else if (status == 400) {
-        if (Get.previousRoute.isEmpty) {
+        if (Get.currentRoute != "/SignUpPage") {
           Get.offAll(() => const MyApp());
           Get.to(() => SignUpPage(canBack: false,));
         }

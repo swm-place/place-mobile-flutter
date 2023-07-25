@@ -593,7 +593,11 @@ class SignUpPageState extends State<SignUpPage> {
 
   void _pressedBack() {
     if (pageController.page!.toInt() == 0) {
-      Navigator.pop(context);
+      if (widget.canBack) {
+        Navigator.pop(context);
+      } else {
+
+      }
     } else {
       FocusScope.of(context).unfocus();
       pageController.previousPage(
