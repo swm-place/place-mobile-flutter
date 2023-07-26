@@ -29,6 +29,18 @@ class ProfileController extends GetxController {
   }
 
   void makeUserProfile() async {
-
+    String? idToken = AuthController.to.idToken;
+    if (idToken != null) {
+      Map<String, dynamic> profileData = {
+        "nickname": "string",
+        "phoneNumber": "string",
+        "gender": 0,
+        "birthday": "string",
+        "termIndex": [
+          0
+        ]
+      };
+    }
+    // return null;
   }
 }

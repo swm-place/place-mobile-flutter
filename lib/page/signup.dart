@@ -83,7 +83,7 @@ class SignUpPageState extends State<SignUpPage> {
         emailEnable = false;
         emailController.text = user.email!;
 
-        FocusScope.of(context).unfocus();
+        // FocusScope.of(context).unfocus();
       }
     }
     return Padding(
@@ -363,20 +363,29 @@ class SignUpPageState extends State<SignUpPage> {
                           width: double.infinity,
                           child: Text("닉네임 *"),
                         ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            hintText: "닉네임",
-                            hintStyle: headlineSmallGray,
-                            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                            errorText: nicknameError,
-                          ),
-                          textInputAction: TextInputAction.next,
-                          controller: nicknameController,
-                          style: headlineSmall,
-                          validator: nicknameTextFieldValidator,
-                          onFieldSubmitted: (String value) {
-                            FocusScope.of(context).requestFocus(phoneNumberFocusNode);
-                          },
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: "닉네임",
+                                  hintStyle: headlineSmallGray,
+                                  contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  errorText: nicknameError,
+                                ),
+                                textInputAction: TextInputAction.next,
+                                controller: nicknameController,
+                                style: headlineSmall,
+                                validator: nicknameTextFieldValidator,
+                                onFieldSubmitted: (String value) {
+                                  FocusScope.of(context).requestFocus(phoneNumberFocusNode);
+                                },
+                              ),
+                            ),
+                            ElevatedButton(onPressed: (){}, child: Text("중복확인"))
+                          ],
                         ),
                       ],
                     ),
@@ -543,7 +552,6 @@ class SignUpPageState extends State<SignUpPage> {
                                     duration: const Duration(milliseconds: 250),
                                     curve: Curves.easeInOut);
                               } else {
-                                FocusScope.of(context).unfocus();
                                 showModalBottomSheet(
                                     constraints: BoxConstraints(
                                         maxWidth: 600
