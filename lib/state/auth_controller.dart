@@ -102,7 +102,9 @@ class AuthController extends GetxController {
     int? status = await ProfileController.to.getUserProfile();
     if (status != null) {
       if (status == 200) {
-        Get.offAll(() => const MyApp());
+        if (Get.currentRoute != "/MyApp") {
+          Get.offAll(() => const MyApp());
+        }
       } else if (status == 400) {
         if (Get.currentRoute != "/SignUpPage") {
           Get.offAll(() => const MyApp());
