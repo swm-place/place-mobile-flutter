@@ -11,7 +11,7 @@ class UserProvider {
   Future<http.Response?> getProfile(String token) async {
     User? user = AuthController.to.user.value;
     if (user != null) {
-      Uri uri = Uri.parse("$baseUrl/user/${user.uid}");
+      Uri uri = Uri.parse("$baseUrl/v1/user/${user.uid}");
       final response = await http.get(uri, headers: {"Authorization": "Bearer ${AuthController.to.idToken!}"});
       return response;
     }
