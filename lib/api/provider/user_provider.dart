@@ -31,6 +31,16 @@ class UserProvider extends DefaultProvider {
     return null;
   }
 
+  Future<int?> checkNickname(String nickname, String token) async {
+    User? user = AuthController.to.user.value;
+    if (user != null) {
+      Uri uri = Uri.parse("$baseUrl/v1/user/nickname?nickname=$nickname");
+      final response = await http.get(uri, headers: setHeader(token));
+      return response.statusCode;
+    }
+    return null;
+  }
+
   Future<Map<String, dynamic>?> getTermDialog(String token, BuildContext context) async {
     showDialog(
         barrierDismissible: false,
