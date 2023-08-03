@@ -220,7 +220,8 @@ class SignUpPageState extends State<SignUpPage> {
           width: double.infinity,
           child: CheckTos(
             agreeValue: element['agree'],
-            tosText: element['contents'].toString(),
+            tosContent: element['contents'],
+            tosText: "element['contents']",
             require: element['required'],
             callback: (val) {
               element['agree'] = val;

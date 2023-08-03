@@ -5,12 +5,14 @@ class CheckTos extends StatefulWidget {
   CheckTos({
     Key? key,
     required this.tosText,
+    required this.tosContent,
     required this.require,
     required this.callback,
     required this.agreeValue,
   }) : super(key: key);
 
   String tosText = "";
+  String tosContent = "";
   bool require = false;
   bool agreeValue = false;
   final Function(bool val) callback;
@@ -63,7 +65,7 @@ class CheckTosState extends State<CheckTos> {
             child: IconButton(
               padding: EdgeInsets.zero,
                 onPressed: () {
-
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => TosContentPage(content: widget.tosContent)));
                 },
                 icon: Icon(
                   Icons.arrow_forward_ios_rounded,
@@ -73,6 +75,30 @@ class CheckTosState extends State<CheckTos> {
           )
         ],
       )
+    );
+  }
+}
+
+class TosContentPage extends StatelessWidget {
+  TosContentPage({
+    Key? key,
+    required this.content,
+  }) : super(key: key);
+
+  String content = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+            child: Text(content),
+          ),
+        ),
+      ),
     );
   }
 }
