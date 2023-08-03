@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:place_mobile_flutter/page/login.dart';
-import 'package:place_mobile_flutter/state/state_controller.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'theme/color_schemes.g.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,16 +12,8 @@ Future<void> main() async {
   await Firebase.initializeApp()
     .then((value) => Get.put(AuthController()));
 
-  runApp(const GetMaterialApp(home: MyApp()));
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  runApp(GetMaterialApp(
+      home: MyApp(),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -34,7 +26,29 @@ class MyApp extends StatelessWidget {
       title: 'OURS',
       themeMode: ThemeMode.light,
       theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+  ));
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       home: const MainPage(),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('ko', 'KR'),
+        const Locale('en', 'US'),
+      ],
+      title: 'OURS',
+      themeMode: ThemeMode.light,
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
     );
   }
 }

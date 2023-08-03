@@ -2,17 +2,116 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
+import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/main.dart';
+import 'package:place_mobile_flutter/page/signup.dart';
+import 'dart:convert';
+
+import 'package:place_mobile_flutter/state/user_controller.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
+
   FirebaseAuth authInstance = FirebaseAuth.instance;
+
   late Rx<User?> user = Rx<User?>(authInstance.currentUser);
+
+  String? idToken;
+  DateTime? expireDate;
+
+  String _decodeBase64(String str) {
+    String output = str.replaceAll('-', '+').replaceAll('_', '/');
+
+    switch (output.length % 4) {
+      case 0:
+        break;
+      case 2:
+        output += '==';
+        break;
+      case 3:
+        output += '=';
+        break;
+      default:
+        throw Exception('Illegal base64url string!"');
+    }
+    return utf8.decode(base64Url.decode(output));
+  }
+
+  int _parseJwtExpiredDate(String token) {
+    final parts = token.split('.');
+    if (parts.length != 3) {
+      throw Exception('invalid token');
+    }
+
+    final payload = _decodeBase64(parts[1]);
+    final payloadMap = json.decode(payload);
+    if (payloadMap is! Map<String, dynamic>) {
+      throw Exception('invalid payload');
+    }
+    return payloadMap['exp'];
+  }
+
+  Future<bool> checkTokenValid() async {
+    if (idToken == null || expireDate == null) {
+      await getIdTokenStream(AuthController.to.user.value);
+      return false;
+    }
+    if (expireDate!.isAfter(DateTime.now())) {
+      await getIdTokenStream(AuthController.to.user.value);
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> getIdTokenStream(User? user) async {
+    if (user == null) {
+      idToken = null;
+    } else {
+      idToken = await user.getIdToken();
+      if (idToken == null) {
+        expireDate = null;
+      } else {
+        expireDate = DateTime.fromMillisecondsSinceEpoch(_parseJwtExpiredDate(idToken!) * 1000).subtract(const Duration(minutes: 10));
+      }
+      print("idToken: $idToken");
+      print("expireDate: $expireDate");
+    }
+  }
+
+  Stream<User?> getUser() async* {
+    await for (final User? user in authInstance.userChanges()) {
+      print("user: $user");
+      await getIdTokenStream(user);
+      if (user != null) {
+        _loginSuccess(user);
+      } else {
+        Get.offAll(() => const MyApp());
+      }
+      yield user;
+    }
+  }
 
   @override
   void onReady() {
     super.onReady();
-    user.bindStream(authInstance.userChanges());
+    Get.put(ProfileController());
+    user.bindStream(getUser());
+  }
+
+  void _loginSuccess(User user) async {
+    int? status = await ProfileController.to.getUserProfile();
+    if (status != null) {
+      if (status == 200) {
+        if (Get.currentRoute != "/MyApp") {
+          Get.offAll(() => const MyApp());
+        }
+      } else if (status == 400) {
+        if (Get.currentRoute != "/SignUpPage") {
+          Get.offAll(() => const MyApp());
+          Get.to(() => SignUpPage());
+        }
+      }
+    }
   }
 
   void registerEmail(BuildContext context, String email, password) async {
@@ -72,7 +171,8 @@ class AuthController extends GetxController {
         duration: const Duration(seconds: 2),
       )
     );
-    Get.offAll(() => const MyApp());
+
+    // _loginSuccess();
   }
 
   void signInEmail(BuildContext context, String email, password) async {
@@ -132,7 +232,8 @@ class AuthController extends GetxController {
         duration: const Duration(seconds: 2),
       )
     );
-    Get.offAll(() => const MyApp());
+
+    // _loginSuccess();
   }
 
   void signInFacebook() async {
@@ -156,7 +257,8 @@ class AuthController extends GetxController {
           duration: const Duration(seconds: 2),
         )
       );
-      Get.offAll(() => const MyApp());
+
+      // _loginSuccess();
     } catch(e) {
       Get.showSnackbar(
         GetSnackBar(
@@ -173,6 +275,7 @@ class AuthController extends GetxController {
           duration: const Duration(seconds: 2),
         )
       );
+      return;
     }
   }
 
@@ -247,21 +350,21 @@ class AuthController extends GetxController {
     }
 
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(dialogTitle),
-            content: Text(dialogMessage),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
-                child: Text("확인")
-              )
-            ],
-          );
-        }
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(dialogTitle),
+          content: Text(dialogMessage),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              child: Text("확인")
+            )
+          ],
+        );
+      }
     );
   }
 }

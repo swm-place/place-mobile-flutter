@@ -1,16 +1,21 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:place_mobile_flutter/state/state_controller.dart';
+import 'package:place_mobile_flutter/api/provider/user_provider.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
+import 'package:place_mobile_flutter/state/user_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/tos.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+  SignUpPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -35,7 +40,11 @@ class SignUpPageState extends State<SignUpPage> {
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController birthController = TextEditingController();
 
+  final UserProvider userProvider = UserProvider();
+
   bool hidePassword = true;
+  bool emailEnable = true;
+  bool checkNicknameDup = false;
 
   String? emailError;
   String? passwordError;
@@ -51,27 +60,20 @@ class SignUpPageState extends State<SignUpPage> {
 
   DateTime? selectedBirth;
 
-  final tosList = {
-    {
-      "text": "개인정보처리 약관",
-      "required": true,
-      "agree": false
-    },
-    {
-      "text": "위치정보기반 서비스 제공",
-      "required": true,
-      "agree": false
-    },
-    {
-      "text": "마케팅 알림 동의",
-      "required": false,
-      "agree": false
-    },
-  };
+  List? tosList;
 
   Sex selectedSex = Sex.male;
 
   Widget _emailPage() {
+    User? user = AuthController.to.user.value;
+    if (user != null) {
+      if (user.email != null) {
+        emailEnable = false;
+        emailController.text = user.email!;
+
+        // FocusScope.of(context).unfocus();
+      }
+    }
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
@@ -100,6 +102,7 @@ class SignUpPageState extends State<SignUpPage> {
                 });
               },
               decoration: InputDecoration(
+                enabled: emailEnable,
                   hintText: "example@example.com",
                   hintStyle: headlineSmallGray,
                   errorText: emailError
@@ -213,21 +216,21 @@ class SignUpPageState extends State<SignUpPage> {
 
   Widget __tosWidgetList() {
     List<Widget> tosWidget = [];
-    tosList.forEach((element) {
-      // print(element);
+    for (var element in tosList!) {
       tosWidget.add(SizedBox(
           width: double.infinity,
           child: CheckTos(
-            agreeValue: element['agree'] as bool,
-            tosText: element['text'].toString(),
-            require: element['required'] as bool,
+            agreeValue: element['agree'],
+            tosContent: element['contents'],
+            tosText: element['title'],
+            require: element['required'],
             callback: (val) {
               element['agree'] = val;
             },
           ),
         )
       );
-    });
+    }
     return Column(
       children: tosWidget,
     );
@@ -268,9 +271,9 @@ class SignUpPageState extends State<SignUpPage> {
                             child: Text(tosButtonText),
                             onPressed: () {
                               bool checkTos = true;
-                              for (var element in tosList) {
-                                if (element['required'] as bool) {
-                                  if (!(element['agree'] as bool)) {
+                              for (var element in tosList!) {
+                                if (element['required']) {
+                                  if (!(element['agree'])) {
                                     checkTos = false;
                                     break;
                                   }
@@ -311,6 +314,48 @@ class SignUpPageState extends State<SignUpPage> {
       );
   }
 
+  Future<void> checkNickname(String nickname) async {
+    setState(() {
+      nicknameError = nicknameTextFieldValidator(nickname);
+    });
+    if (nicknameError == null) {
+      int? result = await userProvider.checkNickname(nickname, AuthController.to.idToken!);
+      if (result == 200) {
+        checkNicknameDup = true;
+        setState(() {
+          nicknameError = null;
+        });
+      } else if (result == 409) {
+        checkNicknameDup = false;
+        setState(() {
+          nicknameError = "이미 사용중인 닉네임입니다.";
+        });
+      } else {
+        setState(() {
+          nicknameError = "이미 사용중인 닉네임입니다.";
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("오류"),
+                  content: Text("닉네임 중복 체크 중 오류가 발생했습니다. 다시 시도해주세요."),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).pop();
+                        },
+                        child: Text("확인")
+                    )
+                  ],
+                );
+              }
+          );
+        });
+      }
+    }
+  }
+
   Widget _userInformPage() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
@@ -348,20 +393,34 @@ class SignUpPageState extends State<SignUpPage> {
                           width: double.infinity,
                           child: Text("닉네임 *"),
                         ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            hintText: "닉네임",
-                            hintStyle: headlineSmallGray,
-                            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                            errorText: nicknameError,
-                          ),
-                          textInputAction: TextInputAction.next,
-                          controller: nicknameController,
-                          style: headlineSmall,
-                          validator: nicknameTextFieldValidator,
-                          onFieldSubmitted: (String value) {
-                            FocusScope.of(context).requestFocus(phoneNumberFocusNode);
-                          },
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: "닉네임",
+                                  hintStyle: headlineSmallGray,
+                                  contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  errorText: nicknameError,
+                                ),
+                                textInputAction: TextInputAction.next,
+                                controller: nicknameController,
+                                style: headlineSmall,
+                                validator: nicknameTextFieldValidator,
+                                onFieldSubmitted: (String value) {
+                                  FocusScope.of(context).requestFocus(phoneNumberFocusNode);
+                                },
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                await checkNickname(nicknameController.text.tr);
+                              },
+                              child: Text("중복확인")
+                            )
+                          ],
                         ),
                       ],
                     ),
@@ -479,6 +538,42 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+      Map<String, dynamic>? tos = await userProvider.getTermDialog(AuthController.to.idToken!, context);
+      if (tos == null) {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("오류"),
+                content: Text("회원가입 데이터를 가져오지 못했습니다. 다시 로그인 후 회원가입을 완료하세요."),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      AuthController.to.signOut();
+                      },
+                    child: Text("확인")
+                  )
+                ],
+              );
+            }
+        );
+      } else {
+        setState(() {
+          tosList = tos['result'];
+          for (int idx = 0;idx < tosList!.length;idx++) {
+            tosList![idx]['agree'] = false;
+            tosList![idx]['required'] = tosList![idx]['required'] == 1;
+          }
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -501,9 +596,8 @@ class SignUpPageState extends State<SignUpPage> {
                   SingleChildScrollView(
                     child: _emailPage(),
                   ),
-                  SingleChildScrollView(
-                    child: _passwordPage(),
-                  ),
+                  if (AuthController.to.user.value == null)
+                    SingleChildScrollView(child: _passwordPage()),
                   SingleChildScrollView(
                     child: _userInformPage(),
                   )
@@ -516,66 +610,83 @@ class SignUpPageState extends State<SignUpPage> {
                 padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
                 child: FilledButton(
                   child: Text("다음"),
-                  onPressed: () {
-                    setState(() {
-                      switch (pageController.page!.toInt()) {
-                        case 0: {
+                  onPressed: () async {
+                    switch (pageController.page!.toInt()) {
+                      case 0: {
+                        setState(() {
                           final email = emailController.text.tr;
                           emailError = emailTextFieldValidator(email);
                           if (emailError == null) {
                             FocusScope.of(context).unfocus();
-                            pageController.nextPage(
-                              duration: const Duration(milliseconds: 250),
-                              curve: Curves.easeInOut
-                            );
-                          }
-                          break;
-                        }
-                        case 1: {
-                          final password = passwordController.text.tr;
-                          passwordError = passwordTextFieldValidator(password);
-                          if (passwordError == null) {
-                            final passwordCheck = passwordCheckController.text.tr;
-                            if (password != passwordCheck) {
-                              passwordCheckError = "비밀번호가 일치하지 않습니다!";
+                            if (AuthController.to.user.value == null) {
+                              pageController.nextPage(
+                                  duration: const Duration(milliseconds: 250),
+                                  curve: Curves.easeInOut);
                             } else {
-                              passwordCheckError = null;
-
-                              FocusScope.of(context).unfocus();
-                              showModalBottomSheet(
-                                constraints: BoxConstraints(
-                                  maxWidth: 600
-                                ),
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return _tosAgreePage();
-                                },
-                                enableDrag: false
-                              );
+                              if (tosList != null) {
+                                showModalBottomSheet(
+                                    constraints: BoxConstraints(
+                                        maxWidth: 600
+                                    ),
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return _tosAgreePage();
+                                    },
+                                    enableDrag: false
+                                );
+                              } else {
+                                pageController.nextPage(
+                                    duration: const Duration(milliseconds: 250),
+                                    curve: Curves.easeInOut);
+                              }
                             }
                           }
-                          break;
-                        }
-                        case 2: {
-                          if (_formKey.currentState!.validate()) {
-                            final email = emailController.text.tr;
-                            final password = passwordController.text.tr;
-                            final nickname = nicknameController.text.tr;
-                            final phoneNumber = phoneNumberController.text.tr;
-                            final sex = selectedSex;
-                            final birth = birthController.text.tr;
-
-                            FocusScope.of(context).unfocus();
-                            AuthController.to.registerEmail(
-                                context,
-                                emailController.text.tr,
-                                passwordController.text.tr
-                            );
-                          }
-                          break;
-                        }
+                        });
+                        break;
                       }
-                    });
+                      case 1: {
+                        if (AuthController.to.user.value == null) {
+                          setState(() {
+                            final password = passwordController.text.tr;
+                            passwordError = passwordTextFieldValidator(password);
+                            if (passwordError == null) {
+                              final passwordCheck = passwordCheckController.text.tr;
+                              if (password != passwordCheck) {
+                                passwordCheckError = "비밀번호가 일치하지 않습니다!";
+                              } else {
+                                passwordCheckError = null;
+
+                                FocusScope.of(context).unfocus();
+
+                                if (tosList != null) {
+                                  showModalBottomSheet(
+                                      constraints: BoxConstraints(
+                                          maxWidth: 600
+                                      ),
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return _tosAgreePage();
+                                      },
+                                      enableDrag: false
+                                  );
+                                } else {
+                                  pageController.nextPage(
+                                      duration: const Duration(milliseconds: 250),
+                                      curve: Curves.easeInOut);
+                                }
+                              }
+                            }
+                          });
+                        } else {
+                          _registerUser();
+                        }
+                        break;
+                      }
+                      case 2: {
+                        _registerUser();
+                        break;
+                      }
+                    }
                   },
                 ),
               )
@@ -586,9 +697,66 @@ class SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  void _registerUser() async {
+    final email = emailController.text.tr;
+    final password = passwordController.text.tr;
+    final nickname = nicknameController.text.tr;
+    final phoneNumber = phoneNumberController.text.tr;
+    final sex = selectedSex;
+    final birth = birthController.text.tr;
+    await checkNickname(nickname);
+
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        FocusScope.of(context).unfocus();
+        if (AuthController.to.user.value == null) {
+          AuthController.to.registerEmail(
+              context,
+              emailController.text.tr,
+              passwordController.text.tr
+          );
+        } else {
+          List<int> agreeTermIdx = [];
+          if (tosList != null) {
+            for (var t in tosList!) {
+              if (t['agree']) agreeTermIdx.add(t['id']);
+            }
+          }
+          ProfileController.to.makeUserProfile(context, nickname, phoneNumber, birth.replaceAll('/', ''), sex.index, agreeTermIdx);
+        }
+      });
+    }
+  }
+
   void _pressedBack() {
     if (pageController.page!.toInt() == 0) {
-      Navigator.pop(context);
+      if (AuthController.to.user.value == null) {
+        Navigator.pop(context);
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("회원가입 필요"),
+              content: Text("${AuthController.to.user.value!.email!} 계정은 회원가입이 완료되지 않았습니다. 현재 계정을 로그아웃 하고 다른 계정으로 로그인 하시겠습니다?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    AuthController.to.signOut();
+                  },
+                  child: Text("로그아웃")
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                  child: Text("회원가입 하기")
+                ),
+              ],
+            );
+          },
+        );
+      }
     } else {
       FocusScope.of(context).unfocus();
       pageController.previousPage(

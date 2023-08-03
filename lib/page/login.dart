@@ -7,7 +7,7 @@ import 'package:get/utils.dart';
 import 'package:place_mobile_flutter/page/find_password.dart';
 import 'package:place_mobile_flutter/page/signup.dart';
 import 'package:place_mobile_flutter/util/size.dart';
-import 'package:place_mobile_flutter/state/state_controller.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
 import '../theme/text_style.dart';
 
@@ -28,11 +28,11 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                getDynamicPixel(context, 80) > 80 ?
+                getDynamicPixel(context, 60) > 60 ?
                 SvgPicture.asset(
                   'assets/images/navigation_icon.svg',
-                  width: getDynamicPixel(context, 80),
-                  height: getDynamicPixel(context, 80),
+                  width: getDynamicPixel(context, 60),
+                  height: getDynamicPixel(context, 60),
                 ) : Container(width: 0, height: 0,),
                 const Text(
                   "로그인",
