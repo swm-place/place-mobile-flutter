@@ -41,6 +41,18 @@ class UserProvider extends DefaultProvider {
     return null;
   }
 
+  Future<int?> createProfile(Map<String, dynamic> profileData, String token) async {
+    User? user = AuthController.to.user.value;
+    if (user != null) {
+      Uri uri = Uri.parse("$baseUrl/v1/user");
+      Map<String, String>? header = setHeader(token);
+      header!["Content-Type"] = 'application/json';
+      final response = await http.post(uri, headers: header, body: json.encode(profileData));
+      return response.statusCode;
+    }
+    return null;
+  }
+
   Future<Map<String, dynamic>?> getTermDialog(String token, BuildContext context) async {
     showDialog(
         barrierDismissible: false,

@@ -222,7 +222,7 @@ class SignUpPageState extends State<SignUpPage> {
           child: CheckTos(
             agreeValue: element['agree'],
             tosContent: element['contents'],
-            tosText: "element['contents']",
+            tosText: element['title'],
             require: element['required'],
             callback: (val) {
               element['agree'] = val;
@@ -315,7 +315,6 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> checkNickname(String nickname) async {
-    print("check name");
     setState(() {
       nicknameError = nicknameTextFieldValidator(nickname);
     });
@@ -679,54 +678,12 @@ class SignUpPageState extends State<SignUpPage> {
                             }
                           });
                         } else {
-                          final email = emailController.text.tr;
-                          final password = passwordController.text.tr;
-                          final nickname = nicknameController.text.tr;
-                          final phoneNumber = phoneNumberController.text.tr;
-                          final sex = selectedSex;
-                          final birth = birthController.text.tr;
-                          await checkNickname(nickname);
-
-                          if (_formKey.currentState!.validate()) {
-                            setState(() {
-                              FocusScope.of(context).unfocus();
-                              if (AuthController.to.user.value == null) {
-                                AuthController.to.registerEmail(
-                                    context,
-                                    emailController.text.tr,
-                                    passwordController.text.tr
-                                );
-                              } else {
-                                ProfileController.to.getUserProfile();
-                              }
-                            });
-                          }
+                          _registerUser();
                         }
                         break;
                       }
                       case 2: {
-                        final email = emailController.text.tr;
-                        final password = passwordController.text.tr;
-                        final nickname = nicknameController.text.tr;
-                        final phoneNumber = phoneNumberController.text.tr;
-                        final sex = selectedSex;
-                        final birth = birthController.text.tr;
-                        await checkNickname(nickname);
-
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            FocusScope.of(context).unfocus();
-                            if (AuthController.to.user.value == null) {
-                              AuthController.to.registerEmail(
-                                  context,
-                                  emailController.text.tr,
-                                  passwordController.text.tr
-                              );
-                            } else {
-                              ProfileController.to.getUserProfile();
-                            }
-                          });
-                        }
+                        _registerUser();
                         break;
                       }
                     }
@@ -738,6 +695,37 @@ class SignUpPageState extends State<SignUpPage> {
         )
       ),
     );
+  }
+
+  void _registerUser() async {
+    final email = emailController.text.tr;
+    final password = passwordController.text.tr;
+    final nickname = nicknameController.text.tr;
+    final phoneNumber = phoneNumberController.text.tr;
+    final sex = selectedSex;
+    final birth = birthController.text.tr;
+    await checkNickname(nickname);
+
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        FocusScope.of(context).unfocus();
+        if (AuthController.to.user.value == null) {
+          AuthController.to.registerEmail(
+              context,
+              emailController.text.tr,
+              passwordController.text.tr
+          );
+        } else {
+          List<int> agreeTermIdx = [];
+          if (tosList != null) {
+            for (var t in tosList!) {
+              if (t['agree']) agreeTermIdx.add(t['id']);
+            }
+          }
+          ProfileController.to.makeUserProfile(context, nickname, phoneNumber, birth.replaceAll('/', ''), sex.index, agreeTermIdx);
+        }
+      });
+    }
   }
 
   void _pressedBack() {
