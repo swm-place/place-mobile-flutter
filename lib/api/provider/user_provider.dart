@@ -17,4 +17,14 @@ class UserProvider {
     }
     return null;
   }
+
+  Future<http.Response?> getTerm(String token) async {
+    User? user = AuthController.to.user.value;
+    if (user != null) {
+      Uri uri = Uri.parse("$baseUrl/v1/user/term");
+      final response = await http.get(uri, headers: {"Authorization": "Bearer ${AuthController.to.idToken!}"});
+      return response;
+    }
+    return null;
+  }
 }
