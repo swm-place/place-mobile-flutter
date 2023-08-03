@@ -65,7 +65,7 @@ class CheckTosState extends State<CheckTos> {
             child: IconButton(
               padding: EdgeInsets.zero,
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => TosContentPage(content: widget.tosContent)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => TosContentPage(content: widget.tosContent, title: widget.tosText,)));
                 },
                 icon: Icon(
                   Icons.arrow_forward_ios_rounded,
@@ -83,14 +83,16 @@ class TosContentPage extends StatelessWidget {
   TosContentPage({
     Key? key,
     required this.content,
+    required this.title,
   }) : super(key: key);
 
   String content = "";
+  String title = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text(title),),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
