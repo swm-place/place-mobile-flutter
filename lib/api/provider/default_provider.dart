@@ -1,11 +1,12 @@
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 
 class DefaultProvider {
-  Map<String, String>? setHeader(bool authRequired) {
-    if (authRequired) {
-      return {"Authorization": "Bearer ${AuthController.to.idToken!}"};
-    } else {
-      return null;
-    }
+  Map<String, String>? setHeader(String? token) {
+    // if (token != null) {
+    //   return {"Authorization": "Bearer $token"};
+    // } else {
+    //   return null;
+    // }
+    return {"X-User-Uid": "z", "X-User-Email": "z"};
   }
 }
