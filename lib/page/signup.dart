@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/state/user_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
@@ -39,6 +40,8 @@ class SignUpPageState extends State<SignUpPage> {
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController birthController = TextEditingController();
 
+  final UserProvider userProvider = UserProvider();
+
   bool hidePassword = true;
   bool emailEnable = true;
 
@@ -56,23 +59,7 @@ class SignUpPageState extends State<SignUpPage> {
 
   DateTime? selectedBirth;
 
-  final tosList = {
-    {
-      "text": "개인정보처리 약관",
-      "required": true,
-      "agree": false
-    },
-    {
-      "text": "위치정보기반 서비스 제공",
-      "required": true,
-      "agree": false
-    },
-    {
-      "text": "마케팅 알림 동의",
-      "required": false,
-      "agree": false
-    },
-  };
+  List? tosList;
 
   Sex selectedSex = Sex.male;
 
@@ -228,21 +215,20 @@ class SignUpPageState extends State<SignUpPage> {
 
   Widget __tosWidgetList() {
     List<Widget> tosWidget = [];
-    tosList.forEach((element) {
-      // print(element);
+    for (var element in tosList!) {
       tosWidget.add(SizedBox(
           width: double.infinity,
           child: CheckTos(
-            agreeValue: element['agree'] as bool,
-            tosText: element['text'].toString(),
-            require: element['required'] as bool,
+            agreeValue: element['agree'],
+            tosText: element['contents'].toString(),
+            require: element['required'],
             callback: (val) {
               element['agree'] = val;
             },
           ),
         )
       );
-    });
+    }
     return Column(
       children: tosWidget,
     );
@@ -283,9 +269,9 @@ class SignUpPageState extends State<SignUpPage> {
                             child: Text(tosButtonText),
                             onPressed: () {
                               bool checkTos = true;
-                              for (var element in tosList) {
-                                if (element['required'] as bool) {
-                                  if (!(element['agree'] as bool)) {
+                              for (var element in tosList!) {
+                                if (element['required']) {
+                                  if (!(element['agree'])) {
                                     checkTos = false;
                                     break;
                                   }
@@ -503,6 +489,42 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+      Map<String, dynamic>? tos = await userProvider.getTermDialog(AuthController.to.idToken!, context);
+      if (tos == null) {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("오류"),
+                content: Text("회원가입 데이터를 가져오지 못했습니다. 다시 로그인 후 회원가입을 완료하세요."),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      AuthController.to.signOut();
+                      },
+                    child: Text("확인")
+                  )
+                ],
+              );
+            }
+        );
+      } else {
+        setState(() {
+          tosList = tos['result'];
+          for (int idx = 0;idx < tosList!.length;idx++) {
+            tosList![idx]['agree'] = false;
+            tosList![idx]['required'] = tosList![idx]['required'] == 1;
+          }
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -552,16 +574,22 @@ class SignUpPageState extends State<SignUpPage> {
                                     duration: const Duration(milliseconds: 250),
                                     curve: Curves.easeInOut);
                               } else {
-                                showModalBottomSheet(
-                                    constraints: BoxConstraints(
-                                        maxWidth: 600
-                                    ),
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return _tosAgreePage();
-                                    },
-                                    enableDrag: false
-                                );
+                                if (tosList != null) {
+                                  showModalBottomSheet(
+                                      constraints: BoxConstraints(
+                                          maxWidth: 600
+                                      ),
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return _tosAgreePage();
+                                      },
+                                      enableDrag: false
+                                  );
+                                } else {
+                                  pageController.nextPage(
+                                      duration: const Duration(milliseconds: 250),
+                                      curve: Curves.easeInOut);
+                                }
                               }
                             }
                           break;
@@ -577,16 +605,23 @@ class SignUpPageState extends State<SignUpPage> {
                               passwordCheckError = null;
 
                               FocusScope.of(context).unfocus();
-                              showModalBottomSheet(
-                                constraints: BoxConstraints(
-                                  maxWidth: 600
-                                ),
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return _tosAgreePage();
-                                },
-                                enableDrag: false
-                              );
+
+                              if (tosList != null) {
+                                showModalBottomSheet(
+                                    constraints: BoxConstraints(
+                                        maxWidth: 600
+                                    ),
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return _tosAgreePage();
+                                    },
+                                    enableDrag: false
+                                );
+                              } else {
+                                pageController.nextPage(
+                                    duration: const Duration(milliseconds: 250),
+                                    curve: Curves.easeInOut);
+                              }
                             }
                           }
                           break;
