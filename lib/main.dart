@@ -28,7 +28,7 @@ Future<void> main() async {
     ],
     title: 'OURS',
     themeMode: ThemeMode.light,
-    theme: ThemeData(useMaterial3: false, colorScheme: lightColorScheme),
+    theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
     home: MyApp(),
   ));
 }
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
       ],
       title: 'OURS',
       themeMode: ThemeMode.light,
-      theme: ThemeData(useMaterial3: false, colorScheme: lightColorScheme),
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
       home: const MainPage(),
     );
   }
@@ -99,7 +99,7 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         selectedIndex: _selectedPageIndex,
-        destinations: [
+        destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'home'),
           NavigationDestination(icon: Icon(Icons.bookmark_border_outlined), label: 'bookmark'),
           NavigationDestination(icon: Icon(Icons.lightbulb_outline), label: 'discover'),

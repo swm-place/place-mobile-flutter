@@ -26,7 +26,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
             builder: (controller) {
               if (controller.user.value == null) {
                 return FilledButton(child: Text("로그인"), onPressed: () => {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()))
+                  Get.to(() => LoginPage())
                 });
               } else {
                 return FilledButton(child: Text("로그아웃"), onPressed: () => {
