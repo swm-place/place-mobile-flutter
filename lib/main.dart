@@ -93,10 +93,11 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         children: _pages,
       ),
       bottomNavigationBar: NavigationBar(
+        height: 62,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         selectedIndex: _selectedPageIndex,
         destinations: const [
@@ -112,26 +113,6 @@ class _MainPageState extends State<MainPage> {
           });
         }
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   showSelectedLabels: false,
-      //   showUnselectedLabels: false,
-      //   unselectedItemColor: lightColorScheme.onSurface,
-      //   selectedIconTheme: IconThemeData(color: Colors.red),
-      //   backgroundColor: lightColorScheme.primaryContainer,
-      //   items: const [
-      //     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
-      //     BottomNavigationBarItem(icon: Icon(Icons.bookmark_border_outlined), label: 'bookmark'),
-      //     BottomNavigationBarItem(icon: Icon(Icons.lightbulb_outline), label: 'discover'),
-      //     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'profile'),
-      //   ],
-      //   currentIndex: _selectedPageIndex,
-      //   onTap: (selectedPageIndex) {
-      //     setState(() {
-      //       _selectedPageIndex = selectedPageIndex;
-      //       _pageController.jumpToPage(selectedPageIndex);
-      //     });
-      //   },
-      // ),
     );
   }
 }
