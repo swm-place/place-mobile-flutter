@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/utils.dart';
 import 'package:place_mobile_flutter/page/find_password.dart';
@@ -163,7 +164,7 @@ class LoginPage extends StatelessWidget {
                       height: 20,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
+                          Get.to(() => SignUpPage());
                         },
                         child: Text('회원가입'),
                         style: TextButton.styleFrom(
@@ -177,7 +178,7 @@ class LoginPage extends StatelessWidget {
                   height: 20,
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => FindPasswordPage()));
+                      Get.to(() => FindPasswordPage());
                     },
                     child: Text('비밀번호 찾기'),
                     style: TextButton.styleFrom(
