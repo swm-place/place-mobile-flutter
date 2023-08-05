@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:place_mobile_flutter/widget/search_bar.dart';
+import 'package:place_mobile_flutter/widget/tag/tag_search_bar.dart';
 
 class HomePage extends StatefulWidget {
   @override
