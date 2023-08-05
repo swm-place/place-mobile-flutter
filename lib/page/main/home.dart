@@ -93,7 +93,10 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
       width: double.infinity,
       child: Padding(
         padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
-        child: MainSection(),
+        child: MainSection(
+          title: "스토리",
+          message: "마음에 드는 스토리를 찾아보세요",
+        ),
       ),
     );
   }
