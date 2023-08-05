@@ -84,35 +84,33 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     super.initState();
   }
 
-  Widget __searchSection() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-      child: Column(
-        children: [
-          TagSearchBar(
-            elevation: 2,
-            borderRadius: 8,
-            hintText: "장소/코스 검색",
-            contentPadding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-            onSuffixIconPressed: () {
-              print("searchbar clicked");
-            },
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
-            child: Container(
-              key: _tagSection,
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: _recommendTags,
-              ),
+  Widget __searchSection() => Padding(
+    padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+    child: Column(
+      children: [
+        TagSearchBar(
+          elevation: 2,
+          borderRadius: 8,
+          hintText: "장소/코스 검색",
+          contentPadding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+          onSuffixIconPressed: () {
+            print("searchbar clicked");
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
+          child: Container(
+            key: _tagSection,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: _recommendTags,
             ),
-          )
-        ],
-      ),
-    );
-  }
+          ),
+        )
+      ],
+    ),
+  );
 
   Widget _storyCarouselItem(String imageUrl, String location, String title, String message) => ClipRRect(
     borderRadius: BorderRadius.circular(8),
@@ -130,9 +128,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           Container(
             width: double.infinity,
             height: double.infinity,
-            color: Color.fromARGB(102, 1, 1, 1),
+            color: const Color.fromARGB(102, 1, 1, 1),
             child: Padding(
-              padding: EdgeInsets.fromLTRB(24, 20, 24, 20),
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -170,71 +168,92 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     ),
   );
 
-  Widget __storySection() {
-    return SizedBox(
-      width: double.infinity,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
-        child: MainSection(
-          title: "스토리",
-          message: "마음에 드는 스토리를 찾아보세요",
-          content: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: CarouselSlider.builder(
-                  options: CarouselOptions(
-                      initialPage: 0,
-                      enlargeCenterPage: true,
-                      viewportFraction: 0.9,
-                      autoPlay: true,
-                      aspectRatio: 16/8,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          activeIndex = index;
-                        });
-                      }
-                  ),
-                  itemCount: _storyData.length,
-                  itemBuilder: (context, index, realIndex) {
-                    return _storyCarouselItem(
-                        _storyData[index]['background'],
-                        _storyData[index]['location'],
-                        _storyData[index]['title'],
-                        _storyData[index]['message']
-                    );
-                  },
-                ),
+  Widget __storySection() => SizedBox(
+    width: double.infinity,
+    child: MainSection(
+      title: "스토리",
+      message: "마음에 드는 스토리를 찾아보세요",
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: CarouselSlider.builder(
+              options: CarouselOptions(
+                  initialPage: 0,
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.9,
+                  autoPlay: true,
+                  aspectRatio: 16/8,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      activeIndex = index;
+                    });
+                  }
               ),
-              SizedBox(height: 8,),
-              AnimatedSmoothIndicator(
-                activeIndex: activeIndex,
-                count: _storyData.length,
-                effect: JumpingDotEffect(
-                  dotHeight: 10,
-                  dotWidth: 10
-                ),
-              )
-            ],
+              itemCount: _storyData.length,
+              itemBuilder: (context, index, realIndex) {
+                return _storyCarouselItem(
+                    _storyData[index]['background'],
+                    _storyData[index]['location'],
+                    _storyData[index]['title'],
+                    _storyData[index]['message']
+                );
+              },
+            ),
           ),
-        ),
+          const SizedBox(height: 8,),
+          AnimatedSmoothIndicator(
+            activeIndex: activeIndex,
+            count: _storyData.length,
+            effect: const JumpingDotEffect(
+                dotHeight: 10,
+                dotWidth: 10
+            ),
+          )
+        ],
       ),
-    );
-  }
+    ),
+  );
+
+  Widget __recommendSection() => SizedBox(
+    width: double.infinity,
+    child: MainSection(
+        title: "연인과 함께",
+        message: "멘트",
+        content: Text("ssss")
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
       body: SafeArea(
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            children: [
-              __searchSection(),
-              __storySection()
-            ],
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0, 24, 0, 24),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                __searchSection(),
+                SizedBox(
+                  height: 24,
+                ),
+                __storySection(),
+                SizedBox(
+                  height: 24,
+                ),
+                __recommendSection(),
+                SizedBox(
+                  height: 24,
+                ),
+                __recommendSection(),
+                SizedBox(
+                  height: 24,
+                ),
+                __recommendSection(),
+              ],
+            ),
           ),
         ),
       ),
