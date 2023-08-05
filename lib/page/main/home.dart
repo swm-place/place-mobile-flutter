@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/widget/tag/tag_button.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_search_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,6 +26,14 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             onSuffixIconPressed: () {
               print("searchbar clicked");
             },
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
+            child: Row(
+              children: [
+                RoundedRectangleTagButton()
+              ],
+            ),
           )
         ],
       ),
