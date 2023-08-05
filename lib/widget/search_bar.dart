@@ -5,6 +5,7 @@ class TagSearchBar extends StatefulWidget {
     this.elevation=4,
     this.borderRadius=8.0,
     this.hintText,
+    this.contentPadding,
     Key? key,
   }) : super(key: key);
 
@@ -12,6 +13,8 @@ class TagSearchBar extends StatefulWidget {
   double borderRadius;
 
   String? hintText;
+
+  EdgeInsets? contentPadding;
 
   @override
   State<StatefulWidget> createState() {
@@ -40,6 +43,7 @@ class _TagSearchBarState extends State<TagSearchBar> {
           ),
           filled: true,
           fillColor: Colors.white,
+          contentPadding: widget.contentPadding,
         ),
       ),
     );
