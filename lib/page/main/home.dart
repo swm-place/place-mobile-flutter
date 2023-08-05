@@ -14,14 +14,17 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
 
   Widget __searchSection() {
     return Padding(
-      padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
       child: Column(
         children: [
           TagSearchBar(
             elevation: 2,
             borderRadius: 8,
             hintText: "장소/코스 검색",
-            contentPadding: EdgeInsets.fromLTRB(18, 18, 18, 18),
+            contentPadding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+            onSuffixIconPressed: () {
+              print("searchbar clicked");
+            },
           )
         ],
       ),

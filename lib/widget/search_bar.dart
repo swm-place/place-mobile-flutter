@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
 class TagSearchBar extends StatefulWidget {
+  final Function()? onSuffixIconPressed;
+
   TagSearchBar({
     this.elevation=4,
     this.borderRadius=8.0,
     this.hintText,
     this.contentPadding,
+    this.textEditingController,
+    this.onSuffixIconPressed,
     Key? key,
   }) : super(key: key);
 
@@ -15,6 +19,8 @@ class TagSearchBar extends StatefulWidget {
   String? hintText;
 
   EdgeInsets? contentPadding;
+
+  TextEditingController? textEditingController;
 
   @override
   State<StatefulWidget> createState() {
@@ -36,15 +42,14 @@ class _TagSearchBarState extends State<TagSearchBar> {
           ),
           hintText: widget.hintText,
           suffixIcon: IconButton(
-            onPressed: () {
-              print("search clicked");
-            },
+            onPressed: widget.onSuffixIconPressed,
             icon: const Icon(Icons.search),
           ),
           filled: true,
           fillColor: Colors.white,
           contentPadding: widget.contentPadding,
         ),
+        controller: widget.textEditingController,
       ),
     );
   }
