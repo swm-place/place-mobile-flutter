@@ -52,6 +52,7 @@ class MainSection extends StatelessWidget {
             children: __createHead(),
           ),
         ),
+        const SizedBox(height: 10,),
         content
       ],
     );
