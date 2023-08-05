@@ -58,7 +58,7 @@ const sectionContent = TextStyle(
 
 const storyLocation = TextStyle(
   fontSize: 14,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w400,
   color: Color(0xffffffff),
   // height: 14/12,
 );
