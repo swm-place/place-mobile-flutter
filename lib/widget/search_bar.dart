@@ -26,9 +26,11 @@ class _TagSearchBarState extends State<TagSearchBar> {
       child: Container(
         width: widget.width,
         height: widget.height,
-        color: Colors.red,
-        child: Padding(
-
+        color: Colors.white,
+        child: TextField(
+          decoration: InputDecoration(
+            border: InputBorder.none
+          ),
         ),
       ),
     );

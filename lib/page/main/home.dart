@@ -19,7 +19,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
         children: [
           TagSearchBar(
             width: double.infinity,
-            elevation: 1,
+            elevation: 2,
           )
         ],
       ),
