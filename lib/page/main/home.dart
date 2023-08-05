@@ -10,10 +10,35 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<HomePage> {
-  GlobalKey _TagSection = GlobalKey();
+  final GlobalKey _tagSection = GlobalKey();
+
+  final List<Widget> tags = [];
 
   @override
   bool get wantKeepAlive => true;
+
+  void __createTagSection() {
+    final RenderBox tagRow = _tagSection.currentContext!.findRenderObject() as RenderBox;
+    final double tagCount = tagRow.size.width / 75;
+    for (int i = 0;i < tagCount;i++) {
+      tags.add(
+        RoundedRectangleTagButton(
+          width: 60,
+          height: 60,
+        )
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      setState(() {
+        __createTagSection();
+      });
+    });
+    super.initState();
+  }
 
   Widget __searchSection() {
     return Padding(
@@ -31,30 +56,13 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                RoundedRectangleTagButton(
-                  width: 60,
-                  height: 60,
-                ),
-                RoundedRectangleTagButton(
-                  width: 60,
-                  height: 60,
-                ),
-                RoundedRectangleTagButton(
-                  width: 60,
-                  height: 60,
-                ),
-                RoundedRectangleTagButton(
-                  width: 60,
-                  height: 60,
-                ),
-                RoundedRectangleTagButton(
-                  width: 60,
-                  height: 60,
-                ),
-              ],
+            child: Container(
+              key: _tagSection,
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: tags,
+              ),
             ),
           )
         ],
