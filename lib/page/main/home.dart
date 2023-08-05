@@ -12,7 +12,19 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<HomePage> {
   final GlobalKey _tagSection = GlobalKey();
 
-  final List<Widget> tags = [];
+  final List<Widget> _recommendTags = [];
+
+  final List<Map<String, dynamic>> _recommendTagsData = [
+    {'icon': Icons.add, 'title': '조용한'},
+    {'icon': Icons.add, 'title': '조용한'},
+    {'icon': Icons.add, 'title': '조용한'},
+    {'icon': Icons.add, 'title': '조용한'},
+    {'icon': Icons.add, 'title': '조용한'},
+    {'icon': Icons.add, 'title': '조용한'},
+    {'icon': Icons.add, 'title': '조용한'},
+    {'icon': Icons.add, 'title': '조용한'},
+    {'icon': Icons.add, 'title': '조용한'},
+  ];
 
   @override
   bool get wantKeepAlive => true;
@@ -21,10 +33,13 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     final RenderBox tagRow = _tagSection.currentContext!.findRenderObject() as RenderBox;
     final double tagCount = tagRow.size.width / 75;
     for (int i = 0;i < tagCount;i++) {
-      tags.add(
+      _recommendTags.add(
         RoundedRectangleTagButton(
           width: 60,
           height: 60,
+          text: _recommendTagsData[i]['title'],
+          icon: _recommendTagsData[i]['icon'],
+          itemColor: Colors.white,
         )
       );
     }
@@ -61,7 +76,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
               width: double.infinity,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: tags,
+                children: _recommendTags,
               ),
             ),
           )

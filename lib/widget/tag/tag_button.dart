@@ -5,12 +5,24 @@ class RoundedRectangleTagButton extends StatefulWidget {
     this.borderRadius=8.0,
     this.width=48.0,
     this.height=48.0,
+    this.itemColor,
+    this.backgroundColor,
+
+    required this.icon,
+    required this.text,
     Key? key,
   }) : super(key: key);
 
   double borderRadius;
   double width;
   double height;
+
+  IconData icon;
+
+  Color? itemColor;
+  Color? backgroundColor;
+
+  String text;
 
   @override
   State<StatefulWidget> createState() {
@@ -26,7 +38,7 @@ class _RoundedRectangleTagButtonState extends State<RoundedRectangleTagButton> {
       height: widget.height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.borderRadius),
-        color: Colors.blue
+        color: widget.backgroundColor
       ),
       child: InkWell(
         customBorder: RoundedRectangleBorder(
@@ -36,20 +48,20 @@ class _RoundedRectangleTagButtonState extends State<RoundedRectangleTagButton> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.volume_mute,
-              color: Colors.white,
+              widget.icon,
+              color: widget.itemColor,
               size: 32,
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: Text(
-                "조용한",
+                widget.text,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: widget.itemColor,
                 ),
               ),
             )
