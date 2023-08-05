@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_button.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_search_bar.dart';
@@ -112,10 +113,36 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     );
   }
 
-  Widget _storyCarouselItem(String imageUrl) => Container(
-    width: double.infinity,
-    height: 184,
-    child: Image.network(imageUrl, fit: BoxFit.cover,),
+  Widget _storyCarouselItem(String imageUrl, String location) => ClipRRect(
+    borderRadius: BorderRadius.circular(8),
+    child: Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          child: Image.network(imageUrl, fit: BoxFit.cover,),
+        ),
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Color.fromARGB(102, 1, 1, 1),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(24, 20, 24, 20),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    location,
+                    style: storyLocation,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
   );
 
   Widget __storySection() {
@@ -139,7 +166,10 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             ),
             itemCount: _storyData.length,
             itemBuilder: (context, index, realIndex) {
-              return _storyCarouselItem(_storyData[index]['background']);
+              return _storyCarouselItem(
+                _storyData[index]['background'],
+                  _storyData[index]['location']
+              );
             },
           ),
         ),
