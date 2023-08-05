@@ -15,15 +15,13 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   final List<Widget> _recommendTags = [];
 
   final List<Map<String, dynamic>> _recommendTagsData = [
-    {'icon': Icons.add, 'title': '조용한'},
-    {'icon': Icons.add, 'title': '조용한'},
-    {'icon': Icons.add, 'title': '조용한'},
-    {'icon': Icons.add, 'title': '조용한'},
-    {'icon': Icons.add, 'title': '조용한'},
-    {'icon': Icons.add, 'title': '조용한'},
-    {'icon': Icons.add, 'title': '조용한'},
-    {'icon': Icons.add, 'title': '조용한'},
-    {'icon': Icons.add, 'title': '조용한'},
+    {'icon': Icons.add, 'title': 'test1', 'background': Colors.blue},
+    {'icon': Icons.volume_mute, 'title': 'test2', 'background': Colors.red},
+    {'icon': Icons.ac_unit, 'title': 'test3', 'background': Colors.grey},
+    {'icon': Icons.add_a_photo, 'title': 'test4', 'background': Colors.amber},
+    {'icon': Icons.account_balance_wallet, 'title': 'test5', 'background': Colors.cyan},
+    {'icon': Icons.access_alarm, 'title': 'test6', 'background': Colors.orange},
+    {'icon': Icons.accessibility, 'title': 'test7', 'background': Colors.pink},
   ];
 
   @override
@@ -40,6 +38,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           text: _recommendTagsData[i]['title'],
           icon: _recommendTagsData[i]['icon'],
           itemColor: Colors.white,
+          backgroundColor: _recommendTagsData[i]['background'],
         )
       );
     }
