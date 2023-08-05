@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
 class RoundedRectangleTagButton extends StatefulWidget {
+  final Function()? onPressed;
+
   RoundedRectangleTagButton({
     this.borderRadius=8.0,
     this.width=48.0,
     this.height=48.0,
     this.itemColor,
     this.backgroundColor,
+    this.onPressed,
 
     required this.icon,
     required this.text,
@@ -67,9 +70,7 @@ class _RoundedRectangleTagButtonState extends State<RoundedRectangleTagButton> {
             )
           ],
         ),
-        onTap: () {
-          print("tag clicked");
-        },
+        onTap: widget.onPressed,
       ),
     );
   }

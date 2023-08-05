@@ -39,6 +39,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           icon: _recommendTagsData[i]['icon'],
           itemColor: Colors.white,
           backgroundColor: _recommendTagsData[i]['background'],
+          onPressed: () {
+            print(_recommendTagsData[i]['title']);
+          },
         )
       );
     }
