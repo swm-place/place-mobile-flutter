@@ -87,6 +87,12 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     );
   }
 
+  Widget __storySection() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+    )
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -96,7 +102,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           width: double.infinity,
           child: Column(
             children: [
-              __searchSection()
+              __searchSection(),
+              __storySection()
             ],
           ),
         ),
