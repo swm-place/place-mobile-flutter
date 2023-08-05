@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class TagSearchBar extends StatefulWidget {
   TagSearchBar({
-    this.width,
-    this.height,
+    // this.width,
+    // this.height,
     this.elevation,
     Key? key,
   }) : super(key: key);
 
-  double? width = 100.0;
-  double? height = 48.0;
+  // double? width = 100.0;
+  // double? height = 48.0;
   double? elevation = 4;
 
   @override
@@ -23,14 +23,21 @@ class _TagSearchBarState extends State<TagSearchBar> {
   Widget build(BuildContext context) {
     return Card(
       elevation: widget.elevation,
-      child: Container(
-        width: widget.width,
-        height: widget.height,
-        color: Colors.white,
-        child: TextField(
-          decoration: InputDecoration(
-            border: InputBorder.none
+      child: TextField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none
           ),
+          hintText: "장소/코스 검색",
+          suffixIcon: IconButton(
+            onPressed: () {
+              print("search clicked");
+            },
+            icon: Icon(Icons.search),
+          ),
+          filled: true,
+          fillColor: Colors.white,
         ),
       ),
     );
