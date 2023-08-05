@@ -113,7 +113,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     );
   }
 
-  Widget _storyCarouselItem(String imageUrl, String location) => ClipRRect(
+  Widget _storyCarouselItem(String imageUrl, String location, String title, String message) => ClipRRect(
     borderRadius: BorderRadius.circular(8),
     child: Stack(
       children: [
@@ -129,6 +129,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           child: Padding(
             padding: EdgeInsets.fromLTRB(24, 20, 24, 20),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
                   width: double.infinity,
@@ -136,6 +137,24 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                     location,
                     style: storyLocation,
                   ),
+                ),
+                Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        title,
+                        style: storyTitle,
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        message,
+                        style: storyMessage
+                      ),
+                    )
+                  ],
                 )
               ],
             ),
@@ -157,7 +176,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             options: CarouselOptions(
               initialPage: 0,
               enlargeCenterPage: true,
+              viewportFraction: 0.9,
               autoPlay: true,
+              aspectRatio: 16/8,
               onPageChanged: (index, reason) {
                 setState(() {
                   activeIndex = index;
@@ -168,7 +189,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             itemBuilder: (context, index, realIndex) {
               return _storyCarouselItem(
                 _storyData[index]['background'],
-                  _storyData[index]['location']
+                _storyData[index]['location'],
+                _storyData[index]['title'],
+                _storyData[index]['message']
               );
             },
           ),

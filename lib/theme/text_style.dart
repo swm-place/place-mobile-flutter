@@ -62,3 +62,17 @@ const storyLocation = TextStyle(
   color: Color(0xffffffff),
   // height: 14/12,
 );
+
+const storyTitle = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.w600,
+  color: Color(0xffffffff),
+  height: 20/20,
+);
+
+const storyMessage = TextStyle(
+  fontSize: 15,
+  fontWeight: FontWeight.w500,
+  color: Color(0xffffffff),
+  // height: 13/15,
+);
