@@ -10,6 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<HomePage> {
+  GlobalKey _TagSection = GlobalKey();
+
   @override
   bool get wantKeepAlive => true;
 
@@ -30,8 +32,28 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           Padding(
             padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                RoundedRectangleTagButton()
+                RoundedRectangleTagButton(
+                  width: 60,
+                  height: 60,
+                ),
+                RoundedRectangleTagButton(
+                  width: 60,
+                  height: 60,
+                ),
+                RoundedRectangleTagButton(
+                  width: 60,
+                  height: 60,
+                ),
+                RoundedRectangleTagButton(
+                  width: 60,
+                  height: 60,
+                ),
+                RoundedRectangleTagButton(
+                  width: 60,
+                  height: 60,
+                ),
               ],
             ),
           )
