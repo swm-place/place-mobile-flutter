@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_button.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_search_bar.dart';
 
@@ -88,9 +89,13 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   }
 
   Widget __storySection() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
-    )
+    return SizedBox(
+      width: double.infinity,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+        child: MainSection(),
+      ),
+    );
   }
 
   @override

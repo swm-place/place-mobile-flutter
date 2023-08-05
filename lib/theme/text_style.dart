@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 const titleLarge = TextStyle(
-  fontFamily: "Roboto",
   fontSize: 22,
   fontWeight: FontWeight.w400,
   color: Color(0xff000000),
@@ -9,7 +8,6 @@ const titleLarge = TextStyle(
 );
 
 const bodyLarge = TextStyle(
-  fontFamily: "Roboto",
   fontSize: 16,
   fontWeight: FontWeight.w400,
   color: Color(0xff000000),
@@ -17,7 +15,6 @@ const bodyLarge = TextStyle(
 );
 
 const bodyLargeGray = TextStyle(
-  fontFamily: "Roboto",
   fontSize: 16,
   fontWeight: FontWeight.w400,
   color: Color(0xA6000000),
@@ -25,7 +22,6 @@ const bodyLargeGray = TextStyle(
 );
 
 const headlineSmallGray = TextStyle(
-  fontFamily: "Roboto",
   fontSize: 24,
   fontWeight: FontWeight.w400,
   color: Color(0xff525151),
@@ -33,7 +29,6 @@ const headlineSmallGray = TextStyle(
 );
 
 const headlineSmall = TextStyle(
-  fontFamily: "Roboto",
   fontSize: 24,
   fontWeight: FontWeight.w400,
   color: Color(0xff000000),
@@ -41,9 +36,22 @@ const headlineSmall = TextStyle(
 );
 
 const labelLarge = TextStyle(
-  fontFamily: "Roboto",
   fontSize: 14,
   fontWeight: FontWeight.w500,
   color: Color(0xff000000),
   height: 20/14,
+);
+
+const sectionTitle = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.w700,
+  color: Color(0xff000000),
+  height: 20/20,
+);
+
+const sectionContent = TextStyle(
+  fontSize: 14,
+  fontWeight: FontWeight.w500,
+  color: Color(0xff8d8d8d),
+  height: 14/14,
 );
