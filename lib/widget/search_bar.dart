@@ -4,13 +4,15 @@ class TagSearchBar extends StatefulWidget {
   TagSearchBar({
     // this.width,
     // this.height,
-    this.elevation,
+    this.elevation = 4,
+    this.borderRadius = 8.0,
     Key? key,
   }) : super(key: key);
 
   // double? width = 100.0;
   // double? height = 48.0;
-  double? elevation = 4;
+  double elevation = 4;
+  double borderRadius = 8.0;
 
   @override
   State<StatefulWidget> createState() {
@@ -21,12 +23,13 @@ class TagSearchBar extends StatefulWidget {
 class _TagSearchBarState extends State<TagSearchBar> {
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Material(
       elevation: widget.elevation,
+      borderRadius: BorderRadius.circular(widget.borderRadius),
       child: TextField(
         decoration: InputDecoration(
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(widget.borderRadius),
               borderSide: BorderSide.none
           ),
           hintText: "장소/코스 검색",
