@@ -47,13 +47,14 @@ class _RoundedRectangleTagButtonState extends State<RoundedRectangleTagButton> {
         customBorder: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(widget.borderRadius)
         ),
+        onTap: widget.onPressed,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               widget.icon,
               color: widget.itemColor,
-              size: 32,
+              size: 24,
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -62,7 +63,7 @@ class _RoundedRectangleTagButtonState extends State<RoundedRectangleTagButton> {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                   color: widget.itemColor,
                 ),
@@ -70,7 +71,6 @@ class _RoundedRectangleTagButtonState extends State<RoundedRectangleTagButton> {
             )
           ],
         ),
-        onTap: widget.onPressed,
       ),
     );
   }
