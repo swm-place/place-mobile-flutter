@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_button.dart';
@@ -24,6 +25,29 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     {'icon': Icons.access_alarm, 'title': 'test6', 'background': Colors.orange},
     {'icon': Icons.accessibility, 'title': 'test7', 'background': Colors.pink},
   ];
+
+  final List<Map<String, dynamic>> _storyData = [
+    {
+      'background': "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
+      'title': '감성여행',
+      'message': '바쁜 일상에 지친 마음을 회복',
+      'location': '대부도, 안산'
+    },
+    {
+      'background': "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2560&q=80",
+      'title': '피톤치드',
+      'message': '도심에서는 느낄수 없는 맑은 공기',
+      'location': '사려니 숲길, 제주도'
+    },
+    {
+      'background': "https://images.unsplash.com/photo-1548115184-bc6544d06a58?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
+      'title': '전통',
+      'message': '한국의 전통적인 아름다움',
+      'location': '한옥마을, 전주'
+    },
+  ];
+
+  int activeIndex = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -88,6 +112,12 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     );
   }
 
+  Widget _storyCarouselItem(String imageUrl) => Container(
+    width: double.infinity,
+    height: 184,
+    child: Image.network(imageUrl, fit: BoxFit.cover,),
+  );
+
   Widget __storySection() {
     return SizedBox(
       width: double.infinity,
@@ -96,6 +126,22 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
         child: MainSection(
           title: "스토리",
           message: "마음에 드는 스토리를 찾아보세요",
+          content: CarouselSlider.builder(
+            options: CarouselOptions(
+              initialPage: 0,
+              enlargeCenterPage: true,
+              autoPlay: true,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  activeIndex = index;
+                });
+              }
+            ),
+            itemCount: _storyData.length,
+            itemBuilder: (context, index, realIndex) {
+              return _storyCarouselItem(_storyData[index]['background']);
+            },
+          ),
         ),
       ),
     );

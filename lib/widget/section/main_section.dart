@@ -4,12 +4,16 @@ import 'package:place_mobile_flutter/theme/text_style.dart';
 class MainSection extends StatelessWidget {
   MainSection({
     required this.title,
-    required this.message,
+    required this.content,
+
+    this.message,
     Key? key,
   }) : super(key: key);
 
   String title;
   String? message;
+
+  Widget content;
 
   List<Widget> __createHead() {
     List<Widget> colList = [];
@@ -47,7 +51,8 @@ class MainSection extends StatelessWidget {
           child: Column(
             children: __createHead(),
           ),
-        )
+        ),
+        content
       ],
     );
   }
