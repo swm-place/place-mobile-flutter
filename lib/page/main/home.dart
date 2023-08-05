@@ -4,6 +4,7 @@ import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_button.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_search_bar.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -115,52 +116,57 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
 
   Widget _storyCarouselItem(String imageUrl, String location, String title, String message) => ClipRRect(
     borderRadius: BorderRadius.circular(8),
-    child: Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Image.network(imageUrl, fit: BoxFit.cover,),
-        ),
-        Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: Color.fromARGB(102, 1, 1, 1),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(24, 20, 24, 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    location,
-                    style: storyLocation,
-                  ),
-                ),
-                Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        title,
-                        style: storyTitle,
-                      ),
+    child: GestureDetector(
+      onTap: () => {
+        print("$title, $message, $location")
+      },
+      child: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            child: Image.network(imageUrl, fit: BoxFit.cover,),
+          ),
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Color.fromARGB(102, 1, 1, 1),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(24, 20, 24, 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      location,
+                      style: storyLocation,
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        message,
-                        style: storyMessage
+                  ),
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          title,
+                          style: storyTitle,
+                        ),
                       ),
-                    )
-                  ],
-                )
-              ],
+                      SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                            message,
+                            style: storyMessage
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 
@@ -172,28 +178,45 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
         child: MainSection(
           title: "스토리",
           message: "마음에 드는 스토리를 찾아보세요",
-          content: CarouselSlider.builder(
-            options: CarouselOptions(
-              initialPage: 0,
-              enlargeCenterPage: true,
-              viewportFraction: 0.9,
-              autoPlay: true,
-              aspectRatio: 16/8,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  activeIndex = index;
-                });
-              }
-            ),
-            itemCount: _storyData.length,
-            itemBuilder: (context, index, realIndex) {
-              return _storyCarouselItem(
-                _storyData[index]['background'],
-                _storyData[index]['location'],
-                _storyData[index]['title'],
-                _storyData[index]['message']
-              );
-            },
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: CarouselSlider.builder(
+                  options: CarouselOptions(
+                      initialPage: 0,
+                      enlargeCenterPage: true,
+                      viewportFraction: 0.9,
+                      autoPlay: true,
+                      aspectRatio: 16/8,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          activeIndex = index;
+                        });
+                      }
+                  ),
+                  itemCount: _storyData.length,
+                  itemBuilder: (context, index, realIndex) {
+                    return _storyCarouselItem(
+                        _storyData[index]['background'],
+                        _storyData[index]['location'],
+                        _storyData[index]['title'],
+                        _storyData[index]['message']
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 8,),
+              AnimatedSmoothIndicator(
+                activeIndex: activeIndex,
+                count: _storyData.length,
+                effect: JumpingDotEffect(
+                  dotHeight: 10,
+                  dotWidth: 10
+                ),
+              )
+            ],
           ),
         ),
       ),
