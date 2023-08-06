@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_button.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_search_bar.dart';
@@ -221,7 +222,21 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     child: MainSection(
         title: "연인과 함께",
         message: "멘트",
-        content: Text("ssss")
+        content: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              SizedBox(width: 24,),
+              RoundedRectanglePlaceCard(),
+              RoundedRectanglePlaceCard(),
+              RoundedRectanglePlaceCard(),
+              RoundedRectanglePlaceCard(),
+              RoundedRectanglePlaceCard(),
+              RoundedRectanglePlaceCard(),
+              SizedBox(width: 24,),
+            ],
+          ),
+        )
     ),
   );
 
@@ -230,9 +245,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     super.build(context);
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(0, 24, 0, 24),
-          child: SingleChildScrollView(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 24, 0, 24),
             child: Column(
               children: [
                 __searchSection(),
