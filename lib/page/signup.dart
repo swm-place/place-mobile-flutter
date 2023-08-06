@@ -623,7 +623,7 @@ class SignUpPageState extends State<SignUpPage> {
                                   duration: const Duration(milliseconds: 250),
                                   curve: Curves.easeInOut);
                             } else {
-                              if (tosList != null) {
+                              if (tosList != null && tosList!.isNotEmpty) {
                                 showModalBottomSheet(
                                     constraints: BoxConstraints(
                                         maxWidth: 600
@@ -658,7 +658,7 @@ class SignUpPageState extends State<SignUpPage> {
 
                                 FocusScope.of(context).unfocus();
 
-                                if (tosList != null) {
+                                if (tosList != null && tosList!.isNotEmpty) {
                                   showModalBottomSheet(
                                       constraints: BoxConstraints(
                                           maxWidth: 600
@@ -722,7 +722,7 @@ class SignUpPageState extends State<SignUpPage> {
               if (t['agree']) agreeTermIdx.add(t['id']);
             }
           }
-          ProfileController.to.makeUserProfile(context, nickname, phoneNumber, birth.replaceAll('/', ''), sex.index, agreeTermIdx);
+          ProfileController.to.makeUserProfile(context, nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index, agreeTermIdx);
         }
       });
     }

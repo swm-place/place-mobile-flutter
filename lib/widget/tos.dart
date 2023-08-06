@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:get/get.dart';
+import 'package:get/utils.dart';
 
 class CheckTos extends StatefulWidget {
   CheckTos({
@@ -65,7 +67,7 @@ class CheckTosState extends State<CheckTos> {
             child: IconButton(
               padding: EdgeInsets.zero,
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => TosContentPage(content: widget.tosContent, title: widget.tosText,)));
+                  Get.to(() => TosContentPage(content: widget.tosContent, title: widget.tosText,));
                 },
                 icon: Icon(
                   Icons.arrow_forward_ios_rounded,

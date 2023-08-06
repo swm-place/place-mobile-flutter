@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
@@ -18,10 +19,12 @@ class ProfileController extends GetxController {
   RxnInt gender = RxnInt();
   RxnString birthday = RxnString();
 
-  Future<int?> getUserProfile() async {
+  Future<int?> getUserProfile(User? user) async {
     String? idToken = AuthController.to.idToken;
+    // print('getUsaerProfile: $idToken');
     if (idToken != null) {
-      http.Response? response = await _userProvider.getProfile(idToken);
+      http.Response? response = await _userProvider.getProfile(idToken, user);
+      // print('getUsaerProfile: $response');
       if (response != null) {
         if (response.statusCode == 200) {
           Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
@@ -49,7 +52,7 @@ class ProfileController extends GetxController {
       };
       int? result = await _userProvider.createProfile(profileData, idToken);
       if (result == 200) {
-        await getUserProfile();
+        await getUserProfile(AuthController.to.user.value);
         Get.offAll(() => const MyApp());
       } else {
         showDialog(
