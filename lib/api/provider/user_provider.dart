@@ -11,8 +11,9 @@ import 'package:place_mobile_flutter/state/auth_controller.dart';
 class UserProvider extends DefaultProvider {
   String baseUrl = baseUrlDev;
 
-  Future<http.Response?> getProfile(String token) async {
-    User? user = AuthController.to.user.value;
+  Future<http.Response?> getProfile(String token, User? user) async {
+    // User? user = AuthController.to.user.value;
+    // print('getProfile: $user');
     if (user != null) {
       Uri uri = Uri.parse("$baseUrl/v1/user/${user.uid}");
       final response = await http.get(uri, headers: setHeader(token));

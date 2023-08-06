@@ -99,8 +99,8 @@ class AuthController extends GetxController {
   }
 
   void _loginSuccess(User user) async {
-    int? status = await ProfileController.to.getUserProfile();
-    print('login success $status ${Get.currentRoute}');
+    int? status = await ProfileController.to.getUserProfile(user);
+    // print('login success $status ${Get.currentRoute}');
     if (status != null) {
       if (status == 200) {
         if (Get.currentRoute != "/MyApp") {
