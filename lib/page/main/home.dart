@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/unit_converter.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
@@ -7,6 +8,9 @@ import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_button.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_search_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/utils.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -278,7 +282,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           open: data["places"][i]['open'],
           likeCount: UnitConverter.formatNumber(data["places"][i]['likeCount']),
           onPressed: () {
+            Get.to(() => PlaceDetailPage(
 
+            ));
           },
         )
       );
