@@ -4,7 +4,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/main.dart';
-import 'package:place_mobile_flutter/page/signup.dart';
+import 'package:place_mobile_flutter/page/account/signup.dart';
 import 'dart:convert';
 
 import 'package:place_mobile_flutter/state/user_controller.dart';
