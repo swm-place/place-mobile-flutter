@@ -3,8 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/theme/text_style.dart';
 
 import 'dart:math' as math;
+
+import 'package:place_mobile_flutter/widget/tag/tag_chip.dart';
 
 class PlaceDetailPage extends StatefulWidget {
   @override
@@ -49,16 +53,86 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
             ),
             SliverList(
               delegate: SliverChildListDelegate([
-                Container(
-                  height: 100,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.red,
+                Padding(
+                  padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: Text(
+                                "사려니 숲길",
+                                style: placeDetailTitle,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Row(
+                              children: [
+                                TagChip(
+                                  text: "#자연",
+                                  textStyle: placeDetailTagText,
+                                  padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                                ),
+                                SizedBox(width: 4,),
+                                TagChip(
+                                  text: "#자연",
+                                  textStyle: placeDetailTagText,
+                                  padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                                ),
+                                SizedBox(width: 4,),
+                                TagChip(
+                                  text: "#자연",
+                                  textStyle: placeDetailTagText,
+                                  padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              print("bookmark");
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(MdiIcons.bookmarkPlusOutline),
+                                  Text("북마크")
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 12,),
+                          GestureDetector(
+                            onTap: () {
+                              print("like");
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(MdiIcons.heartOutline),
+                                  Text("1.2K")
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
                   ),
-                ),
-                Container(height: 400, width: double.infinity, color: Colors.amber,),
-                Container(height: 330, width: double.infinity, color: Colors.cyan,),
-                Container(height: 820, width: double.infinity, color: Colors.blue,),
+                )
               ]),
             )
           ],
