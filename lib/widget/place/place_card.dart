@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/widget/tag/tag_chip.dart';
 
 class RoundedRectanglePlaceCard extends StatelessWidget {
   RoundedRectanglePlaceCard({
@@ -36,12 +38,37 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Column(
-                children: [
-                  Text("data"),
-                  Text("data"),
-                  Text("data"),
-                ],
+              Padding(
+                padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        // mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "소마카페",
+                            style: placeCardTitle,
+                          ),
+                          Text(
+                            "카페",
+                            style: placeCardCategory,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          TagChip()
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               )
             ],
           ),

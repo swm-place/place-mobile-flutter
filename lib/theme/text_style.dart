@@ -76,3 +76,24 @@ const storyMessage = TextStyle(
   color: Color(0xffffffff),
   // height: 13/15,
 );
+
+const placeCardTitle = TextStyle(
+  fontSize: 14,
+  fontWeight: FontWeight.w500,
+  color: Color(0xff000000),
+  height: 14/14,
+);
+
+const placeCardCategory = TextStyle(
+  fontSize: 10,
+  fontWeight: FontWeight.w500,
+  color: Color(0xff807c7c),
+  height: 9/10,
+);
+
+const placeTagText = TextStyle(
+  fontSize: 8,
+  fontWeight: FontWeight.w500,
+  color: Color(0xff010100),
+  height: 9/8,
+);
