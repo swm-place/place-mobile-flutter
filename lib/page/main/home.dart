@@ -50,6 +50,39 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     },
   ];
 
+  final List<Map<String, dynamic>> _recommendData = [
+    {
+      "title": "연인과 함께",
+      "summary": "데이트 장소 추천",
+      "places": [
+        {
+          "imageUrl": "https://images.unsplash.com/photo-1619536095378-c96a5639ccc5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
+          "placeName": "소마카페",
+          "placeType": "카페",
+          "distance": 2930,
+          "open": "영업중",
+          "likeCount": 13924
+        },
+        {
+          "imageUrl": "https://images.unsplash.com/photo-1508737804141-4c3b688e2546?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=986&q=80",
+          "placeName": "소마 디저트",
+          "placeType": "디저트",
+          "distance": 892,
+          "open": "영업중",
+          "likeCount": 55
+        },
+        {
+          "imageUrl": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2274&q=80",
+          "placeName": "소마 전시",
+          "placeType": "전시회",
+          "distance": 44,
+          "open": "영업종료",
+          "likeCount": 2293845
+        },
+      ]
+    }
+  ];
+
   int activeIndex = 0;
 
   @override
@@ -255,14 +288,6 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                   height: 24,
                 ),
                 __storySection(),
-                SizedBox(
-                  height: 24,
-                ),
-                __recommendSection(),
-                SizedBox(
-                  height: 24,
-                ),
-                __recommendSection(),
                 SizedBox(
                   height: 24,
                 ),

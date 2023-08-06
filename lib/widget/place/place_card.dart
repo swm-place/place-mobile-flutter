@@ -5,20 +5,41 @@ import 'package:place_mobile_flutter/widget/tag/tag_chip.dart';
 
 class RoundedRectanglePlaceCard extends StatelessWidget {
   RoundedRectanglePlaceCard({
+    required this.tags,
+    required this.imageUrl,
+    required this.placeName,
+    required this.placeType,
+    required this.distance,
+    required this.open,
+    required this.likeCount,
+
+    this.width=220,
+    this.aspectRatio=18/15,
     Key? key,
   }) : super(key: key);
+
+  List<TagChip> tags;
+
+  String imageUrl;
+  String placeName;
+  String placeType;
+  String distance;
+  String open;
+  String likeCount;
+
+  double width;
+  double aspectRatio;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 220,
-      // height: 153,
+      width: width,
       child: GestureDetector(
         onTap: () {
           print("card clicked");
         },
         child: AspectRatio(
-          aspectRatio: 18/15,
+          aspectRatio: aspectRatio,
           child: Card(
             clipBehavior: Clip.antiAliasWithSaveLayer,
             surfaceTintColor: Colors.white,
@@ -31,7 +52,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                       children: [
                         Container(
                           width: double.infinity,
-                          child: Image.network("https://images.unsplash.com/photo-1495567720989-cebdbdd97913?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80", fit: BoxFit.fill,),
+                          child: Image.network(imageUrl, fit: BoxFit.fill,),
                         ),
                       ],
                     ),
@@ -48,11 +69,11 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                           // mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              "소마카페",
+                              placeName,
                               style: placeCardTitle,
                             ),
                             Text(
-                              "카페",
+                              placeType,
                               style: placeCardCategory,
                             ),
                           ],
@@ -80,7 +101,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                             children: [
                               Icon(MdiIcons.mapMarkerOutline, size: 18,),
                               Text(
-                                "0.9km",
+                                distance,
                                 style: placeCardDetail,
                               )
                             ],
@@ -93,7 +114,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                                 width: 2,
                               ),
                               Text(
-                                "영업중",
+                                open,
                                 style: placeCardDetail,
                               )
                             ],
@@ -106,7 +127,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                                 width: 2,
                               ),
                               Text(
-                                "1.9k",
+                                likeCount,
                                 style: placeCardDetail,
                               )
                             ],
