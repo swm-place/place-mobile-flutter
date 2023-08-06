@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/unit_converter.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_button.dart';
@@ -61,7 +62,11 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           "placeType": "카페",
           "distance": 2930,
           "open": "영업중",
-          "likeCount": 13924
+          "likeCount": 13924,
+          "tags": [
+            {"text": "조용한", "color": "#3232a8"},
+            {"text": "넓은", "color": "#326da8"},
+          ]
         },
         {
           "imageUrl": "https://images.unsplash.com/photo-1508737804141-4c3b688e2546?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=986&q=80",
@@ -69,7 +74,11 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           "placeType": "디저트",
           "distance": 892,
           "open": "영업중",
-          "likeCount": 55
+          "likeCount": 55,
+          "tags": [
+            {"text": "조용한", "color": "#3232a8"},
+            {"text": "넓은", "color": "#326da8"},
+          ]
         },
         {
           "imageUrl": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2274&q=80",
@@ -77,7 +86,11 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           "placeType": "전시회",
           "distance": 44,
           "open": "영업종료",
-          "likeCount": 2293845
+          "likeCount": 22935,
+          "tags": [
+            {"text": "조용한", "color": "#3232a8"},
+            {"text": "넓은", "color": "#326da8"},
+          ]
         },
       ]
     }
@@ -250,28 +263,48 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     ),
   );
 
-  Widget __recommendSection() => SizedBox(
-    width: double.infinity,
-    child: MainSection(
-        title: "연인과 함께",
-        message: "멘트",
-        content: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              SizedBox(width: 24,),
-              RoundedRectanglePlaceCard(),
-              RoundedRectanglePlaceCard(),
-              RoundedRectanglePlaceCard(),
-              RoundedRectanglePlaceCard(),
-              RoundedRectanglePlaceCard(),
-              RoundedRectanglePlaceCard(),
-              SizedBox(width: 24,),
-            ],
-          ),
+  Widget __recommendSection(Map<String, dynamic> data) {
+    List<Widget> placeCards = [const SizedBox(width: 24,)];
+    for (int i = 0;i < data["places"].length;i++) {
+      placeCards.add(
+        RoundedRectanglePlaceCard(
+          width: 250,
+          aspectRatio: 18/14,
+          tags: data["places"][i]['tags'],
+          imageUrl: data["places"][i]['imageUrl'],
+          placeName: data["places"][i]['placeName'],
+          placeType: data["places"][i]['placeType'],
+          distance: UnitConverter.formatDistance(data["places"][i]['distance']),
+          open: data["places"][i]['open'],
+          likeCount: UnitConverter.formatDistance(data["places"][i]['likeCount'])
         )
-    ),
-  );
+      );
+    }
+    placeCards.add(const SizedBox(width: 24,));
+
+    return SizedBox(
+      width: double.infinity,
+      child: MainSection(
+          title: data['title'],
+          message: data["summary"],
+          content: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: placeCards,
+            ),
+          )
+      ),
+    );
+  }
+
+  List<Widget> _createSection() {
+    List<Widget> section = [__searchSection(), const SizedBox(height: 24,), __storySection(), const SizedBox(height: 24,)];
+    for (int i = 0;i < _recommendData.length;i++) {
+      section.add(__recommendSection(_recommendData[i]));
+      section.add(const SizedBox(height: 24,));
+    }
+    return section;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -282,17 +315,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 24, 0, 24),
             child: Column(
-              children: [
-                __searchSection(),
-                SizedBox(
-                  height: 24,
-                ),
-                __storySection(),
-                SizedBox(
-                  height: 24,
-                ),
-                __recommendSection(),
-              ],
+              children: _createSection(),
             ),
           ),
         ),

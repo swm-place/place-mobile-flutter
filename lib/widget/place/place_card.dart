@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/unit_converter.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_chip.dart';
 
 class RoundedRectanglePlaceCard extends StatelessWidget {
@@ -18,7 +19,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  List<TagChip> tags;
+  List<Map<String, dynamic>> tags;
 
   String imageUrl;
   String placeName;
@@ -29,6 +30,17 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
 
   double width;
   double aspectRatio;
+
+  List<Widget> __createTags() {
+    List<Widget> chips = [];
+    for (int i = 0;i < tags.length;i++) {
+      if (i != 0) chips.add(SizedBox(width: 2,));
+      chips.add(
+        TagChip(text: tags[i]['text'], backgroundColor: UnitConverter.hexToColor(tags[i]['color']),)
+      );
+    }
+    return chips;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,9 +97,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: Row(
-                          children: [
-                            TagChip()
-                          ],
+                          children: __createTags(),
                         ),
                       ),
                       SizedBox(
