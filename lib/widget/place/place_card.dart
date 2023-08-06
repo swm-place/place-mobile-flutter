@@ -71,6 +71,35 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                             TagChip()
                           ],
                         ),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.location_on_outlined, size: 18,),
+                              Text("data")
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.location_on_outlined, size: 18),
+                              Text("data")
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.location_on_outlined, size: 18),
+                              Text("data")
+                            ],
+                          )
+                        ],
                       )
                     ],
                   ),

@@ -97,3 +97,10 @@ const placeTagText = TextStyle(
   color: Color(0xffffffff),
   height: 1,
 );
+
+const placeCardDetail = TextStyle(
+  fontSize: 10,
+  fontWeight: FontWeight.w500,
+  // color: Color(0xff42474e),
+  height: 10/10,
+);
