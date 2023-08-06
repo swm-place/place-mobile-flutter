@@ -81,14 +81,14 @@ const placeCardTitle = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.w500,
   color: Color(0xff000000),
-  height: 14/18,
+  height: 0.9,
 );
 
 const placeCardCategory = TextStyle(
   fontSize: 14,
   fontWeight: FontWeight.w500,
   color: Color(0xff807c7c),
-  height: 9/14,
+  height: 1,
 );
 
 const placeTagText = TextStyle(

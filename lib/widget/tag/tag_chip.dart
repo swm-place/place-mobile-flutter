@@ -14,7 +14,6 @@ class TagChip extends StatelessWidget {
         child: Text(
           "배고파",
           style: placeTagText,
-          // textAlign: TextAlign.center,
         ),
       ),
     );
