@@ -276,7 +276,10 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           placeType: data["places"][i]['placeType'],
           distance: UnitConverter.formatDistance(data["places"][i]['distance']),
           open: data["places"][i]['open'],
-          likeCount: UnitConverter.formatNumber(data["places"][i]['likeCount'])
+          likeCount: UnitConverter.formatNumber(data["places"][i]['likeCount']),
+          onPressed: () {
+
+          },
         )
       );
     }

@@ -5,6 +5,8 @@ import 'package:place_mobile_flutter/util/unit_converter.dart';
 import 'package:place_mobile_flutter/widget/tag/tag_chip.dart';
 
 class RoundedRectanglePlaceCard extends StatelessWidget {
+  final Function()? onPressed;
+
   RoundedRectanglePlaceCard({
     required this.tags,
     required this.imageUrl,
@@ -16,6 +18,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
 
     this.width=220,
     this.aspectRatio=18/15,
+    this.onPressed,
     Key? key,
   }) : super(key: key);
 
@@ -50,9 +53,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
     return Container(
       width: width,
       child: GestureDetector(
-        onTap: () {
-          print("card clicked");
-        },
+        onTap: onPressed,
         child: AspectRatio(
           aspectRatio: aspectRatio,
           child: Card(
