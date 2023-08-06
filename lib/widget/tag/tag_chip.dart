@@ -10,10 +10,11 @@ class TagChip extends StatelessWidget {
         color: Colors.red
       ),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+        padding: EdgeInsets.fromLTRB(6, 4, 6, 4),
         child: Text(
-          "ssss",
+          "배고파",
           style: placeTagText,
+          // textAlign: TextAlign.center,
         ),
       ),
     );

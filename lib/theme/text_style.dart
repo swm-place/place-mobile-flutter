@@ -43,17 +43,17 @@ const labelLarge = TextStyle(
 );
 
 const sectionTitle = TextStyle(
-  fontSize: 20,
+  fontSize: 24,
   fontWeight: FontWeight.w700,
   color: Color(0xff000000),
-  height: 20/20,
+  height: 20/24,
 );
 
 const sectionContent = TextStyle(
-  fontSize: 14,
+  fontSize: 16,
   fontWeight: FontWeight.w500,
   color: Color(0xff8d8d8d),
-  height: 14/14,
+  height: 14/16,
 );
 
 const storyLocation = TextStyle(
@@ -64,36 +64,36 @@ const storyLocation = TextStyle(
 );
 
 const storyTitle = TextStyle(
-  fontSize: 20,
+  fontSize: 22,
   fontWeight: FontWeight.w600,
   color: Color(0xffffffff),
-  height: 20/20,
+  height: 20/22,
 );
 
 const storyMessage = TextStyle(
-  fontSize: 15,
+  fontSize: 17,
   fontWeight: FontWeight.w500,
   color: Color(0xffffffff),
   // height: 13/15,
 );
 
 const placeCardTitle = TextStyle(
-  fontSize: 14,
+  fontSize: 18,
   fontWeight: FontWeight.w500,
   color: Color(0xff000000),
-  height: 14/14,
+  height: 14/18,
 );
 
 const placeCardCategory = TextStyle(
-  fontSize: 10,
+  fontSize: 14,
   fontWeight: FontWeight.w500,
   color: Color(0xff807c7c),
-  height: 9/10,
+  height: 9/14,
 );
 
 const placeTagText = TextStyle(
-  fontSize: 8,
+  fontSize: 14,
   fontWeight: FontWeight.w500,
-  color: Color(0xff010100),
-  height: 9/8,
+  color: Color(0xffffffff),
+  height: 1,
 );
