@@ -17,6 +17,12 @@ Future<void> main() async {
     .then((value) => Get.put(AuthController()));
 
   runApp(GetMaterialApp(
+    // builder: (context, child) {
+    //   return MediaQuery(
+    //     data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+    //     child: child!,
+    //   );
+    // },
     localizationsDelegates: [
       GlobalMaterialLocalizations.delegate,
       GlobalWidgetsLocalizations.delegate,
@@ -28,7 +34,7 @@ Future<void> main() async {
     ],
     title: 'OURS',
     themeMode: ThemeMode.light,
-    theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+    theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme, fontFamily: 'Pretendard'),
     home: MyApp(),
   ));
 }
@@ -51,7 +57,7 @@ class MyApp extends StatelessWidget {
       ],
       title: 'OURS',
       themeMode: ThemeMode.light,
-      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme, fontFamily: 'Pretendard'),
       home: const MainPage(),
     );
   }
