@@ -84,7 +84,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           "imageUrl": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2274&q=80",
           "placeName": "소마 전시",
           "placeType": "전시회",
-          "distance": 44,
+          "distance": 34567,
           "open": "영업종료",
           "likeCount": 22935,
           "tags": [
@@ -276,7 +276,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           placeType: data["places"][i]['placeType'],
           distance: UnitConverter.formatDistance(data["places"][i]['distance']),
           open: data["places"][i]['open'],
-          likeCount: UnitConverter.formatDistance(data["places"][i]['likeCount'])
+          likeCount: UnitConverter.formatNumber(data["places"][i]['likeCount'])
         )
       );
     }
