@@ -102,6 +102,9 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(MdiIcons.heart, size: 18),
+                              SizedBox(
+                                width: 2,
+                              ),
                               Text(
                                 "1.9k",
                                 style: placeCardDetail,
