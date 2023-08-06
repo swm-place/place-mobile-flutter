@@ -34,9 +34,12 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
   List<Widget> __createTags() {
     List<Widget> chips = [];
     for (int i = 0;i < tags.length;i++) {
-      if (i != 0) chips.add(SizedBox(width: 2,));
+      if (i != 0) chips.add(SizedBox(width: 4,));
       chips.add(
-        TagChip(text: tags[i]['text'], backgroundColor: UnitConverter.hexToColor(tags[i]['color']),)
+        TagChip(
+          text: tags[i]['text'],
+          backgroundColor: UnitConverter.hexToColor(tags[i]['color']),
+        )
       );
     }
     return chips;
