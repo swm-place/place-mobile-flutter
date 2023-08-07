@@ -84,6 +84,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   ),
                 ),
                 _detailInform(),
+                _detailReview(),
               ]),
             )
           ],
@@ -375,6 +376,36 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             ],
           ),
         ),
+      ],
+    ),
+  );
+
+  Widget _detailReview() => Padding(
+    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                "한줄평",
+                style: SectionTextStyle.sectionTitle(),
+              ),
+            ),
+            Ink(
+              child: InkWell(
+                onTap: () {
+                  
+                },
+                child: Text(
+                  "더보기 (100)",
+                  style: SectionTextStyle.labelMedium(Colors.blue),
+                ),
+              ),
+            )
+          ],
+        ),
+        SizedBox(height: 14,),
       ],
     ),
   );
