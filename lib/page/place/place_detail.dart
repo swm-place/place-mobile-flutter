@@ -21,12 +21,15 @@ class PlaceDetailPage extends StatefulWidget {
 
 class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderStateMixin {
   late final AnimationController _likeButtonController;
+  late final AnimationController _bookmarkButtonController;
 
   bool likePlace = false;
+  bool bookmarkPlace = false;
 
   @override
   void initState() {
     _likeButtonController = AnimationController(vsync: this);
+    _bookmarkButtonController = AnimationController(vsync: this);
     super.initState();
   }
 
@@ -120,15 +123,42 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           children: [
             GestureDetector(
               onTap: () {
-                print("bookmark");
+                setState(() {
+                  HapticFeedback.lightImpact();
+                  bookmarkPlace = !bookmarkPlace;
+                  if (bookmarkPlace) {
+                    _bookmarkButtonController.animateTo(1);
+                  } else {
+                    _bookmarkButtonController.animateBack(0);
+                  }
+                });
               },
               child: Padding(
-                padding: EdgeInsets.all(4),
+                padding: EdgeInsets.fromLTRB(4, 10, 4, 4),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(MdiIcons.bookmarkPlusOutline),
-                    Text("북마크")
+                    Container(
+                      // width: 24,
+                      // height: 24,
+                      child: Lottie.asset(
+                          "assets/lottie/animation_bookmark.json",
+                          repeat: false,
+                          reverse: false,
+                          width: 28,
+                          height: 28,
+                          controller: _bookmarkButtonController,
+                          onLoaded: (conposition) {
+                            _bookmarkButtonController.duration = conposition.duration;
+                            if (bookmarkPlace) {
+                              _bookmarkButtonController.animateTo(1);
+                            } else {
+                              _bookmarkButtonController.animateBack(0);
+                            }
+                          }
+                      ),
+                    ),
+                    Text("븍마크")
                   ],
                 ),
               ),
