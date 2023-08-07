@@ -69,7 +69,14 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             SliverList(
               delegate: SliverChildListDelegate([
                 _detailHead(),
-
+                Padding(
+                  padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                  child: Text(
+                      "장소에 대한 소개글입니다 장소에대한 소개글입니다 장소에대한 소개글입니다",
+                    style: placeDetailIntroduce,
+                  ),
+                ),
+                _detailInform(),
               ]),
             )
           ],
@@ -210,6 +217,13 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           ],
         )
       ],
+    ),
+  );
+
+  Widget _detailInform() => Padding(
+    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+    child: Row(
+
     ),
   );
 }

@@ -118,3 +118,10 @@ const placeDetailTagText = TextStyle(
   color: Color(0xffffffff),
   height: 1,
 );
+
+const placeDetailIntroduce = TextStyle(
+  fontSize: 18,
+  fontWeight: FontWeight.w400,
+  color: Color(0xff000000),
+  height: 1,
+);
