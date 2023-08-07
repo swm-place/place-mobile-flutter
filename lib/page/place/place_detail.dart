@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:get/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/widget/place/review/place_review.dart';
 
 import 'dart:math' as math;
 
@@ -380,11 +382,11 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     ),
   );
 
-  Widget _detailReview() => Padding(
-    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-    child: Column(
-      children: [
-        Row(
+  Widget _detailReview() => Column(
+    children: [
+      Padding(
+        padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+        child: Row(
           children: [
             Expanded(
               child: Text(
@@ -395,7 +397,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             Ink(
               child: InkWell(
                 onTap: () {
-                  
+
                 },
                 child: Text(
                   "더보기 (100)",
@@ -405,9 +407,35 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             )
           ],
         ),
-        SizedBox(height: 14,),
-      ],
-    ),
+      ),
+      SizedBox(height: 14,),
+      SizedBox(
+        width: double.infinity,
+        child: CarouselSlider.builder(
+          options: CarouselOptions(
+            initialPage: 0,
+            // enlargeCenterPage: true,
+            autoPlay: false,
+            enableInfiniteScroll: false,
+            aspectRatio: 18/6,
+            // onPageChanged: (index, reason) {
+            //   setState(() {
+            //     activeIndex = index;
+            //   });
+            // }
+          ),
+          itemCount: 20,
+          itemBuilder: (context, index, realIndex) {
+            return Padding(
+              padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
+              child: ShortPlaceReviewCard(
+                vsync: this,
+              ),
+            );
+          },
+        ),
+      ),
+    ],
   );
 }
 
