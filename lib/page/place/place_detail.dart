@@ -10,7 +10,7 @@ import 'package:place_mobile_flutter/theme/text_style.dart';
 
 import 'dart:math' as math;
 
-import 'package:place_mobile_flutter/widget/tag/tag_chip.dart';
+import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
