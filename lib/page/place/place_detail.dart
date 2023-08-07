@@ -68,7 +68,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             ),
             SliverList(
               delegate: SliverChildListDelegate([
-                _detailHead()
+                _detailHead(),
+
               ]),
             )
           ],
@@ -145,8 +146,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           "assets/lottie/animation_bookmark.json",
                           repeat: false,
                           reverse: false,
-                          width: 28,
-                          height: 28,
+                          width: 24,
+                          height: 24,
                           controller: _bookmarkButtonController,
                           onLoaded: (conposition) {
                             _bookmarkButtonController.duration = conposition.duration;
@@ -188,8 +189,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           "assets/lottie/animation_like_button.json",
                           repeat: false,
                           reverse: false,
-                          width: 32,
-                          height: 32,
+                          width: 28,
+                          height: 28,
                           controller: _likeButtonController,
                           onLoaded: (conposition) {
                             _likeButtonController.duration = conposition.duration;
