@@ -1,6 +1,8 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
+import 'package:place_mobile_flutter/theme/text_style.dart';
 
 class ShortPlaceReviewCard extends StatefulWidget {
   ShortPlaceReviewCard({
@@ -41,15 +43,20 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
           height: double.infinity,
           padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
                 child: Align(
                   alignment: Alignment.center,
-                  child: Text("ddddddd", textAlign: TextAlign.center,),
+                  child: AutoSizeText(
+                    "숙소도 깔끔해서 좋아요!친구들이랑 갔다왔는데 너무 친절하십니다! 숙소도 깔끔해서 좋아요!",
+                    textAlign: TextAlign.center,
+                    style: SectionTextStyle.sectionContentLine(Colors.black),
+                  ),
                 ),
               ),
+              SizedBox(height: 8,),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   CircleAvatar(
                     radius: 18,
@@ -61,9 +68,13 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "name"
+                          "Name",
+                          style: SectionTextStyle.labelMedium(Colors.black),
                         ),
-                        Text("time")
+                        Text(
+                          "2002.03.07",
+                          style: SectionTextStyle.labelSmall(Colors.grey[600]!),
+                        )
                       ],
                     ),
                   ),

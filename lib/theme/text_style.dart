@@ -74,6 +74,13 @@ class SectionTextStyle {
     height: 1,
   );
 
+  static TextStyle sectionContentLine(Color color) => TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: color,
+    height: 1.1,
+  );
+
   static TextStyle sectionContentLarge(Color color) => TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w500,
