@@ -106,7 +106,7 @@ const placeCardDetail = TextStyle(
 );
 
 const placeDetailTitle = TextStyle(
-  fontSize: 28,
+  fontSize: 30,
   fontWeight: FontWeight.w700,
   color: Color(0xff000000),
   height: 1,
