@@ -11,6 +11,8 @@ import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'dart:math' as math;
 
 import 'package:place_mobile_flutter/widget/tag/tag_chip.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PlaceDetailPage extends StatefulWidget {
   @override
@@ -287,6 +289,32 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
               ),
             )
           ],
+        ),
+        SizedBox(height: 8,),
+        GestureDetector(
+          onTap: () {
+            print("call");
+            launchUrlString("tel:010-0000-0000");
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(MdiIcons.phone, color: Colors.grey[700], size: 24,),
+              SizedBox(width: 10,),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 4,),
+                    Text(
+                      "010-0000-0000",
+                      style: SectionTextStyle.sectionContent(Colors.black),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ],
     ),
