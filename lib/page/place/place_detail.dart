@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:lottie/lottie.dart';
@@ -136,6 +137,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             GestureDetector(
               onTap: () {
                 setState(() {
+                  HapticFeedback.lightImpact();
                   likePlace = !likePlace;
                   if (likePlace) {
                     _likeButtonController.animateTo(1);
