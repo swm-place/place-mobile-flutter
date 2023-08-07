@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
+import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 
@@ -17,7 +18,17 @@ class PlaceDetailPage extends StatefulWidget {
   }
 }
 
-class _PlaceDetailPageState extends State<PlaceDetailPage> {
+class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderStateMixin {
+  late final AnimationController _likeButtonController;
+
+  bool likePlace = false;
+
+  @override
+  void initState() {
+    _likeButtonController = AnimationController(vsync: this);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,86 +64,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
             ),
             SliverList(
               delegate: SliverChildListDelegate([
-                Padding(
-                  padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                "사려니 숲길",
-                                style: placeDetailTitle,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 4,
-                            ),
-                            Row(
-                              children: [
-                                TagChip(
-                                  text: "#자연",
-                                  textStyle: placeDetailTagText,
-                                  padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                                ),
-                                SizedBox(width: 4,),
-                                TagChip(
-                                  text: "#자연",
-                                  textStyle: placeDetailTagText,
-                                  padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                                ),
-                                SizedBox(width: 4,),
-                                TagChip(
-                                  text: "#자연",
-                                  textStyle: placeDetailTagText,
-                                  padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              print("bookmark");
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.all(4),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(MdiIcons.bookmarkPlusOutline),
-                                  Text("북마크")
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 12,),
-                          GestureDetector(
-                            onTap: () {
-                              print("like");
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.all(4),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(MdiIcons.heartOutline),
-                                  Text("1.2K")
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                )
+                _detailHead()
               ]),
             )
           ],
@@ -140,6 +72,113 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
       ),
     );
   }
+
+  Widget _detailHead() => Padding(
+    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: Text(
+                  "사려니 숲길",
+                  style: placeDetailTitle,
+                ),
+              ),
+              SizedBox(
+                height: 6,
+              ),
+              Row(
+                children: [
+                  TagChip(
+                    text: "#자연",
+                    textStyle: placeDetailTagText,
+                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                  ),
+                  SizedBox(width: 4,),
+                  TagChip(
+                    text: "#자연",
+                    textStyle: placeDetailTagText,
+                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                  ),
+                  SizedBox(width: 4,),
+                  TagChip(
+                    text: "#자연",
+                    textStyle: placeDetailTagText,
+                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+        Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                print("bookmark");
+              },
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(MdiIcons.bookmarkPlusOutline),
+                    Text("북마크")
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: 12,),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  likePlace = !likePlace;
+                  if (likePlace) {
+                    _likeButtonController.animateTo(1);
+                  } else {
+                    _likeButtonController.animateBack(0);
+                  }
+                });
+              },
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      // width: 24,
+                      // height: 24,
+                      child: Lottie.asset(
+                          "assets/lottie/animation_like_button.json",
+                          repeat: false,
+                          reverse: false,
+                          width: 32,
+                          height: 32,
+                          controller: _likeButtonController,
+                          onLoaded: (conposition) {
+                            _likeButtonController.duration = conposition.duration;
+                            if (likePlace) {
+                              _likeButtonController.animateTo(1);
+                            } else {
+                              _likeButtonController.animateBack(0);
+                            }
+                          }
+                      ),
+                    ),
+                    Text("1.2K")
+                  ],
+                ),
+              ),
+            )
+          ],
+        )
+      ],
+    ),
+  );
 }
 
 class _PlacePictureFlexibleSpace extends StatelessWidget {
