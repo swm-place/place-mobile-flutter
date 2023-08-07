@@ -26,18 +26,18 @@ class FindPasswordPageState extends State<FindPasswordPage> {
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           child: Column(
             children: [
-              const SizedBox(
+              SizedBox(
                 width: double.infinity,
                 child: Text(
                   "비밀번호 재설정",
-                  style: titleLarge,
+                  style: PageTextStyle.titleLarge(),
                 ),
               ),
-              const SizedBox(
+              SizedBox(
                 width: double.infinity,
                 child: Text(
                   "비밀번호 재설정 이메일에서 링크를 클릭해주세요",
-                  style: bodyLargeGray,
+                  style: PageTextStyle.bodyLarge(Colors.black54),
                 ),
               ),
               Expanded(

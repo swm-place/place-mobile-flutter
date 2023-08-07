@@ -35,9 +35,9 @@ class LoginPage extends StatelessWidget {
                   width: getDynamicPixel(context, 60),
                   height: getDynamicPixel(context, 60),
                 ) : Container(width: 0, height: 0,),
-                const Text(
+                Text(
                   "로그인",
-                  style: titleLarge,
+                  style: PageTextStyle.titleLarge(),
                 ),
                 SizedBox(
                   height: 10,

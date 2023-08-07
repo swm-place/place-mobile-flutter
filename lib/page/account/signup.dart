@@ -78,18 +78,18 @@ class SignUpPageState extends State<SignUpPage> {
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
         children: [
-          const SizedBox(
+          SizedBox(
             width: double.infinity,
             child: Text(
               "이메일을 입력해주세요",
-              style: titleLarge,
+              style: PageTextStyle.titleLarge(),
             ),
           ),
-          const SizedBox(
+          SizedBox(
             width: double.infinity,
             child: Text(
               "로그인에 필요합니다",
-              style: bodyLargeGray,
+              style: PageTextStyle.bodyLarge(Colors.black54),
             ),
           ),
           SizedBox(
@@ -123,18 +123,18 @@ class SignUpPageState extends State<SignUpPage> {
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
         children: [
-          const SizedBox(
+          SizedBox(
             width: double.infinity,
             child: Text(
               "비밀번호를 입력해주세요",
-              style: titleLarge,
+              style: PageTextStyle.titleLarge(),
             ),
           ),
-          const SizedBox(
+          SizedBox(
             width: double.infinity,
             child: Text(
               "6자 이상 필요합니다",
-              style: bodyLargeGray,
+              style: PageTextStyle.bodyLarge(Colors.black54),
             ),
           ),
           SizedBox(
@@ -250,7 +250,7 @@ class SignUpPageState extends State<SignUpPage> {
                       width: double.infinity,
                       child: Text(
                         "약관 동의",
-                        style: titleLarge,
+                        style: PageTextStyle.titleLarge(),
                       ),
                     ),
                     SizedBox(
@@ -361,18 +361,18 @@ class SignUpPageState extends State<SignUpPage> {
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
         children: [
-          const SizedBox(
+          SizedBox(
             width: double.infinity,
             child: Text(
               "사용자 정보를 입력해주세요",
-              style: titleLarge,
+              style: PageTextStyle.titleLarge(),
             ),
           ),
-          const SizedBox(
+          SizedBox(
             width: double.infinity,
             child: Text(
               "서비스를 이용할 때 필요합니다",
-              style: bodyLargeGray,
+              style: PageTextStyle.bodyLarge(Colors.black54),
             ),
           ),
           SizedBox(

@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
 
-const titleLarge = TextStyle(
-  fontSize: 22,
-  fontWeight: FontWeight.w400,
-  color: Color(0xff000000),
-  height: 28/22,
-);
+class PageTextStyle {
+  static TextStyle titleLarge() => const TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w400,
+    color: Color(0xff000000),
+    height: 28/22,
+  );
 
-const bodyLarge = TextStyle(
-  fontSize: 16,
-  fontWeight: FontWeight.w400,
-  color: Color(0xff000000),
-  height: 24/16,
-);
-
-const bodyLargeGray = TextStyle(
-  fontSize: 16,
-  fontWeight: FontWeight.w400,
-  color: Color(0xA6000000),
-  height: 24/16,
-);
+  static TextStyle bodyLarge(Color color) => TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: color,
+    height: 24/16,
+  );
+}
 
 const headlineSmallGray = TextStyle(
   fontSize: 24,
@@ -123,5 +118,12 @@ const placeDetailIntroduce = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.w400,
   color: Color(0xff000000),
+  height: 1,
+);
+
+const placeDetailInfo = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w500,
+  // color: Color(0xff42474e),
   height: 1,
 );
