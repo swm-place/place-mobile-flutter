@@ -104,13 +104,13 @@ class SignUpPageState extends State<SignUpPage> {
               decoration: InputDecoration(
                 enabled: emailEnable,
                   hintText: "example@example.com",
-                  hintStyle: headlineSmallGray,
+                  hintStyle: PageTextStyle.headlineSmall(Colors.grey[700]!),
                   errorText: emailError
               ),
               textInputAction: TextInputAction.done,
               keyboardType: TextInputType.emailAddress,
               controller: emailController,
-              style: headlineSmall,
+              style: PageTextStyle.headlineSmall(Colors.black),
             ),
           )
         ],
@@ -148,7 +148,7 @@ class SignUpPageState extends State<SignUpPage> {
               },
               decoration: InputDecoration(
                 hintText: "비밀번호",
-                hintStyle: headlineSmallGray,
+                hintStyle: PageTextStyle.headlineSmall(Colors.grey[700]!),
                 // helperText: "hdusiah",
                 errorText: passwordError,
                 suffixIcon: IconButton(
@@ -163,7 +163,7 @@ class SignUpPageState extends State<SignUpPage> {
               textInputAction: TextInputAction.next,
               keyboardType: TextInputType.emailAddress,
               controller: passwordController,
-              style: headlineSmall,
+              style: PageTextStyle.headlineSmall(Colors.black),
               obscureText: hidePassword,
               enableSuggestions: false,
               autocorrect: false,
@@ -188,7 +188,7 @@ class SignUpPageState extends State<SignUpPage> {
               },
               decoration: InputDecoration(
                 hintText: "비밀번호 재입력",
-                hintStyle: headlineSmallGray,
+                hintStyle: PageTextStyle.headlineSmall(Colors.grey[700]!),
                 errorText: passwordCheckError,
                 suffixIcon: IconButton(
                   focusNode: null,
@@ -203,7 +203,7 @@ class SignUpPageState extends State<SignUpPage> {
               textInputAction: TextInputAction.done,
               keyboardType: TextInputType.emailAddress,
               controller: passwordCheckController,
-              style: headlineSmall,
+              style: PageTextStyle.headlineSmall(Colors.black),
               obscureText: hidePassword,
               enableSuggestions: false,
               autocorrect: false,
@@ -401,13 +401,13 @@ class SignUpPageState extends State<SignUpPage> {
                               child: TextFormField(
                                 decoration: InputDecoration(
                                   hintText: "닉네임",
-                                  hintStyle: headlineSmallGray,
+                                  hintStyle: PageTextStyle.headlineSmall(Colors.grey[700]!),
                                   contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                                   errorText: nicknameError,
                                 ),
                                 textInputAction: TextInputAction.next,
                                 controller: nicknameController,
-                                style: headlineSmall,
+                                style: PageTextStyle.headlineSmall(Colors.black),
                                 validator: nicknameTextFieldValidator,
                                 onFieldSubmitted: (String value) {
                                   FocusScope.of(context).requestFocus(phoneNumberFocusNode);
@@ -436,13 +436,13 @@ class SignUpPageState extends State<SignUpPage> {
                     focusNode: phoneNumberFocusNode,
                     decoration: InputDecoration(
                       hintText: "01012341234",
-                      hintStyle: headlineSmallGray,
+                      hintStyle: PageTextStyle.headlineSmall(Colors.grey[700]!),
                       contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                       errorText: phoneNumberError,
                     ),
                     textInputAction: TextInputAction.done,
                     controller: phoneNumberController,
-                    style: headlineSmall,
+                    style: PageTextStyle.headlineSmall(Colors.black),
                     validator: phoneNumberTextFieldValidator,
                   ),
                   SizedBox(
@@ -502,12 +502,12 @@ class SignUpPageState extends State<SignUpPage> {
                       enabled: false,
                       decoration: InputDecoration(
                           hintText: "yyyy/mm/dd",
-                          hintStyle: headlineSmallGray,
+                          hintStyle: PageTextStyle.headlineSmall(Colors.grey[700]!),
                           contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                           errorText: birthError
                       ),
                       controller: birthController,
-                      style: headlineSmall,
+                      style: PageTextStyle.headlineSmall(Colors.black),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "생년월일을 선택해주세요";

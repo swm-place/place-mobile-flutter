@@ -86,11 +86,11 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                           children: [
                             Text(
                               placeName,
-                              style: placeCardTitle,
+                              style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
                             ),
                             Text(
                               placeType,
-                              style: placeCardCategory,
+                              style: SectionTextStyle.labelMedium(Colors.grey[600]!),
                             ),
                           ],
                         ),
@@ -116,7 +116,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                               Icon(MdiIcons.mapMarkerOutline, size: 18,),
                               Text(
                                 distance,
-                                style: placeCardDetail,
+                                style: SectionTextStyle.labelMedium(Colors.grey[700]!),
                               )
                             ],
                           ),
@@ -129,7 +129,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                               ),
                               Text(
                                 open,
-                                style: placeCardDetail,
+                                style: SectionTextStyle.labelMedium(Colors.grey[700]!),
                               )
                             ],
                           ),
@@ -142,7 +142,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                               ),
                               Text(
                                 likeCount,
-                                style: placeCardDetail,
+                                style: SectionTextStyle.labelMedium(Colors.grey[700]!),
                               )
                             ],
                           )

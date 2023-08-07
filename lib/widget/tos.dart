@@ -49,7 +49,7 @@ class CheckTosState extends State<CheckTos> {
                   ),
                   Text(
                     "${widget.require ? "(필수)" : "(선택)"}${widget.tosText}",
-                    style: labelLarge,
+                    style: SectionTextStyle.labelMedium(Colors.black),
                   ),
                 ],
               ),

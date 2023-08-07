@@ -60,6 +60,9 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   ),
                 ),
               ),
+              // forceElevated: true,
+              // elevation: 20,
+              // floating: true,
               pinned: true,
               expandedHeight: 220.0,
               surfaceTintColor: Colors.white,
@@ -73,7 +76,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
                   child: Text(
                       "장소에 대한 소개글입니다 장소에대한 소개글입니다 장소에대한 소개글입니다",
-                    style: placeDetailIntroduce,
+                    style: SectionTextStyle.sectionContentLargeLine(Colors.black),
                   ),
                 ),
                 _detailInform(),
@@ -97,7 +100,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 width: double.infinity,
                 child: Text(
                   "사려니 숲길",
-                  style: placeDetailTitle,
+                  style: PageTextStyle.headlineExtraLarge(Colors.black),
                 ),
               ),
               SizedBox(
@@ -107,19 +110,19 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 children: [
                   TagChip(
                     text: "#자연",
-                    textStyle: placeDetailTagText,
+                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
                     padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
                   ),
                   SizedBox(width: 4,),
                   TagChip(
                     text: "#자연",
-                    textStyle: placeDetailTagText,
+                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
                     padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
                   ),
                   SizedBox(width: 4,),
                   TagChip(
                     text: "#자연",
-                    textStyle: placeDetailTagText,
+                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
                     padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
                   ),
                 ],
@@ -222,8 +225,70 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   Widget _detailInform() => Padding(
     padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-    child: Row(
-
+    child: Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: Text(
+            "정보",
+            style: SectionTextStyle.sectionTitle(),
+          ),
+        ),
+        SizedBox(height: 14,),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(MdiIcons.mapMarkerOutline, color: Colors.grey[700], size: 24,),
+            SizedBox(width: 10,),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 4,),
+                  Text(
+                    "제주 제주시 봉개동 산 64-5",
+                    style: SectionTextStyle.sectionContent(Colors.black),
+                  ),
+                  Row(
+                    children: [
+                      Text("지번"),
+                      SizedBox(width: 4,),
+                      Text("제주 제주시 봉개동 산 64-5")
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+        SizedBox(height: 8,),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(MdiIcons.clockOutline, color: Colors.grey[700], size: 24,),
+            SizedBox(width: 10,),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 4,),
+                  Text(
+                    "현재 운영중",
+                    style: SectionTextStyle.sectionContent(Colors.black),
+                  ),
+                  Row(
+                    children: [
+                      Text("지번"),
+                      SizedBox(width: 4,),
+                      Text("제주 제주시 봉개동 산 64-5")
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ],
     ),
   );
 }

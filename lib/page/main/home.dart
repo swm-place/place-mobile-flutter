@@ -188,7 +188,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                     width: double.infinity,
                     child: Text(
                       location,
-                      style: storyLocation,
+                      style: SectionTextStyle.labelMedium(Colors.white),
                     ),
                   ),
                   Column(
@@ -197,14 +197,14 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                         width: double.infinity,
                         child: Text(
                           title,
-                          style: storyTitle,
+                          style: SectionTextStyle.sectionTitleSmall(Colors.white),
                         ),
                       ),
                       SizedBox(
                         width: double.infinity,
                         child: Text(
                             message,
-                            style: storyMessage
+                            style: SectionTextStyle.sectionContentLarge(Colors.white)
                         ),
                       )
                     ],
