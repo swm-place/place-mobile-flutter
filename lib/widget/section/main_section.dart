@@ -22,7 +22,7 @@ class MainSection extends StatelessWidget {
         width: double.infinity,
         child: Text(
           title,
-          style: sectionTitle,
+          style: SectionTextStyle.sectionTitle(),
         ),
       )
     );
@@ -34,7 +34,7 @@ class MainSection extends StatelessWidget {
             width: double.infinity,
             child: Text(
               message!,
-              style: sectionContent,
+              style: SectionTextStyle.sectionContent(Colors.grey[500]!),
             ),
           )
       );

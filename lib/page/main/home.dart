@@ -1,12 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/unit_converter.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
-import 'package:place_mobile_flutter/widget/tag/tag_button.dart';
-import 'package:place_mobile_flutter/widget/tag/tag_search_bar.dart';
+import 'package:place_mobile_flutter/widget/place/tag/tag_button.dart';
+import 'package:place_mobile_flutter/widget/place/tag/tag_search_bar.dart';
+import 'package:place_mobile_flutter/widget/story/story_card.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:get/get.dart';
+import 'package:get/utils.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -159,62 +163,6 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     ),
   );
 
-  Widget _storyCarouselItem(String imageUrl, String location, String title, String message) => ClipRRect(
-    borderRadius: BorderRadius.circular(8),
-    child: GestureDetector(
-      onTap: () => {
-        print("$title, $message, $location")
-      },
-      child: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            child: Image.network(imageUrl, fit: BoxFit.cover,),
-          ),
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: const Color.fromARGB(102, 1, 1, 1),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      location,
-                      style: storyLocation,
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          title,
-                          style: storyTitle,
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                            message,
-                            style: storyMessage
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-
   Widget __storySection() => SizedBox(
     width: double.infinity,
     child: MainSection(
@@ -240,11 +188,11 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
               ),
               itemCount: _storyData.length,
               itemBuilder: (context, index, realIndex) {
-                return _storyCarouselItem(
-                    _storyData[index]['background'],
-                    _storyData[index]['location'],
-                    _storyData[index]['title'],
-                    _storyData[index]['message']
+                return RoundedRectangleStoryCard(
+                    imageUrl: _storyData[index]['background'],
+                    location: _storyData[index]['location'],
+                    title: _storyData[index]['title'],
+                    message: _storyData[index]['message']
                 );
               },
             ),
@@ -276,7 +224,12 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           placeType: data["places"][i]['placeType'],
           distance: UnitConverter.formatDistance(data["places"][i]['distance']),
           open: data["places"][i]['open'],
-          likeCount: UnitConverter.formatNumber(data["places"][i]['likeCount'])
+          likeCount: UnitConverter.formatNumber(data["places"][i]['likeCount']),
+          onPressed: () {
+            Get.to(() => PlaceDetailPage(
+
+            ));
+          },
         )
       );
     }
@@ -301,7 +254,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     List<Widget> section = [__searchSection(), const SizedBox(height: 24,), __storySection(), const SizedBox(height: 24,)];
     for (int i = 0;i < _recommendData.length;i++) {
       section.add(__recommendSection(_recommendData[i]));
-      section.add(const SizedBox(height: 24,));
+      // section.add(const SizedBox(height: 24,));
     }
     return section;
   }

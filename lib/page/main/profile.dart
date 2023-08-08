@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:place_mobile_flutter/page/login.dart';
+import 'package:place_mobile_flutter/page/account/login.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 
 class ProfilePage extends StatefulWidget {
