@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:place_mobile_flutter/widget/tag/tag_search_bar.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:place_mobile_flutter/widget/place/tag/tag_search_bar.dart';
 
 class RandomPage extends StatefulWidget {
   @override
@@ -13,36 +14,52 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
   @override
   bool get wantKeepAlive => true;
 
-  List<Widget> _createSection() {
-    List<Widget> sections = [];
-    sections.add(
-      Container(
-        padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-        child: TagSearchBar(
-          elevation: 2,
-          borderRadius: 8,
-          hintText: "검색어",
-          contentPadding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-          onSuffixIconPressed: () {
-            print("searchbar clicked");
-          },
-        ),
-      )
-    );
-    return sections;
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(0, 24, 0, 24),
-          child: Column(
-            children: _createSection()
-          ),
-        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+              child: TagSearchBar(
+                elevation: 0,
+                borderRadius: 8,
+                hintText: "검색어",
+                fillColor: Colors.grey[200]!,
+                contentPadding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+                onSuffixIconPressed: () {
+                  print("searchbar clicked");
+                },
+              ),
+            ),
+            Expanded(
+              child: GridView.custom(
+                // physics: NeverScrollableScrollPhysics(),
+                // shrinkWrap: true,
+                gridDelegate: SliverQuiltedGridDelegate(
+                    mainAxisSpacing: 6,
+                    repeatPattern: QuiltedGridRepeatPattern.inverted,
+                    crossAxisSpacing: 6,
+                    crossAxisCount: 4,
+                    pattern: [
+                      QuiltedGridTile(2, 2),
+                      QuiltedGridTile(1, 1),
+                      QuiltedGridTile(1, 1),
+                      QuiltedGridTile(1, 2),
+                    ]
+                ),
+                childrenDelegate: SliverChildBuilderDelegate(((context, index) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network("https://source.unsplash.com/random?sig=$index", fit: BoxFit.cover,),
+                  );
+                })),
+              ),
+            )
+          ],
+        )
       ),
     );
   }
