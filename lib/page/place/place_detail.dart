@@ -16,6 +16,7 @@ import 'package:place_mobile_flutter/widget/place/review/place_review.dart';
 import 'dart:math' as math;
 
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
+import 'package:place_mobile_flutter/widget/story/story_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -109,6 +110,27 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     },
   ];
 
+  final List<Map<String, dynamic>> _relevanceStoryData = [
+    {
+      'background': "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
+      'title': '감성여행',
+      'message': '바쁜 일상에 지친 마음을 회복',
+      'location': '대부도, 안산'
+    },
+    {
+      'background': "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2560&q=80",
+      'title': '피톤치드',
+      'message': '도심에서는 느낄수 없는 맑은 공기',
+      'location': '사려니 숲길, 제주도'
+    },
+    {
+      'background': "https://images.unsplash.com/photo-1548115184-bc6544d06a58?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
+      'title': '전통',
+      'message': '한국의 전통적인 아름다움',
+      'location': '한옥마을, 전주'
+    },
+  ];
+
   @override
   void initState() {
     _likeButtonController = AnimationController(vsync: this);
@@ -166,7 +188,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 _detailReview(),
                 _detailPicture(),
                 _detailRelevantPlace(),
-                _detailRelevantStory()
+                _detailRelevantStory(),
+                SizedBox(height: 24,)
               ]),
             )
           ],
@@ -652,24 +675,18 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     List<Widget> placeCards = [const SizedBox(width: 24,)];
     for (int i = 0;i < _relevantPlaceData.length;i++) {
       placeCards.add(
-          RoundedRectanglePlaceCard(
+          RoundedRectangleStoryCard(
+            title: _relevanceStoryData[i]['title'],
+            message: _relevanceStoryData[i]['message'],
+            location: _relevanceStoryData[i]['location'],
+            imageUrl: _relevanceStoryData[i]['background'],
             width: 250,
-            aspectRatio: 18/14,
-            tags: _relevantPlaceData[i]['tags'],
-            imageUrl: _relevantPlaceData[i]['imageUrl'],
-            placeName: _relevantPlaceData[i]['placeName'],
-            placeType: _relevantPlaceData[i]['placeType'],
-            distance: UnitConverter.formatDistance(_relevantPlaceData[i]['distance']),
-            open: _relevantPlaceData[i]['open'],
-            likeCount: UnitConverter.formatNumber(_relevantPlaceData[i]['likeCount']),
-            onPressed: () {
-              print("place");
-              Get.to(() => PlaceDetailPage(), preventDuplicates: false);
-            },
+            height: 194,
           )
       );
+      placeCards.add(const SizedBox(width: 8,));
     }
-    placeCards.add(const SizedBox(width: 24,));
+    placeCards.add(const SizedBox(width: 16,));
 
     return Column(
       children: [

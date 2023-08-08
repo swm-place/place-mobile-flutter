@@ -7,6 +7,8 @@ class RoundedRectangleStoryCard extends StatelessWidget {
     required this.message,
     required this.location,
     required this.imageUrl,
+    this.width,
+    this.height,
     Key? key,
   }) : super(key: key);
 
@@ -15,8 +17,13 @@ class RoundedRectangleStoryCard extends StatelessWidget {
   String location;
   String imageUrl;
 
+  double? width;
+  double? height;
+
   @override
   Widget build(BuildContext context) {
+    width ??= double.infinity;
+    height ??= double.infinity;
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: GestureDetector(
@@ -25,14 +32,14 @@ class RoundedRectangleStoryCard extends StatelessWidget {
         },
         child: Stack(
           children: [
-            Container(
-              width: double.infinity,
-              height: double.infinity,
+            SizedBox(
+              width: width,
+              height: height,
               child: Image.network(imageUrl, fit: BoxFit.cover,),
             ),
             Container(
-              width: double.infinity,
-              height: double.infinity,
+              width: width,
+              height: height,
               color: const Color.fromARGB(102, 1, 1, 1),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
