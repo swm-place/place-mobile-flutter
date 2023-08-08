@@ -37,6 +37,9 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
         onTap: () => {
           print("clicked")
         },
+        onLongPress: () {
+          print("report");
+        },
         child: Container(
           color: Colors.grey[300],
           width: double.infinity,
