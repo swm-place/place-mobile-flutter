@@ -7,6 +7,7 @@ class MainSection extends StatelessWidget {
     required this.content,
 
     this.message,
+    this.action,
     Key? key,
   }) : super(key: key);
 
@@ -14,8 +15,9 @@ class MainSection extends StatelessWidget {
   String? message;
 
   Widget content;
+  Widget? action;
 
-  List<Widget> __createHead() {
+  Widget __createHead() {
     List<Widget> colList = [];
     colList.add(
       SizedBox(
@@ -39,7 +41,18 @@ class MainSection extends StatelessWidget {
           )
       );
     }
-    return colList;
+    if (action != null) {
+      return Row(
+        children: [
+          Expanded(
+            child: Column(children: colList,),
+          ),
+          action!
+        ],
+      );
+    } else {
+      return Column(children: colList,);
+    }
   }
 
   @override
@@ -48,9 +61,7 @@ class MainSection extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-          child: Column(
-            children: __createHead(),
-          ),
+          child: __createHead(),
         ),
         const SizedBox(height: 10,),
         content
