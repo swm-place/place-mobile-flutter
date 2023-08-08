@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:lottie/lottie.dart';
@@ -123,6 +124,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 ),
                 _detailInform(),
                 _detailReview(),
+                _detailPicture(),
+                _detailRelevantPlace()
               ]),
             )
           ],
@@ -479,6 +482,74 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       ),
     ],
   );
+
+  List<Widget> __createImageTile() {
+    List<Widget> tiles = [];
+    for (int i = 0;i < 8;i++) {
+      tiles.add(
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.network(
+            'https://source.unsplash.com/random?sig=$i',
+            fit: BoxFit.cover,
+          ),
+        )
+      );
+    }
+    return tiles;
+  }
+
+  Widget _detailPicture() => Column(
+    children: [
+      Padding(
+        padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                "사진",
+                style: SectionTextStyle.sectionTitle(),
+              ),
+            ),
+            Ink(
+              child: InkWell(
+                onTap: () {
+
+                },
+                child: Text(
+                  "더보기 (100)",
+                  style: SectionTextStyle.labelMedium(Colors.blue),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+      SizedBox(height: 14,),
+      Padding(
+        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+        child: GridView.custom(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          gridDelegate: SliverQuiltedGridDelegate(
+            mainAxisSpacing: 6,
+            repeatPattern: QuiltedGridRepeatPattern.inverted,
+            crossAxisSpacing: 6,
+            crossAxisCount: 4,
+            pattern: [
+              QuiltedGridTile(2, 2),
+              QuiltedGridTile(1, 1),
+              QuiltedGridTile(1, 1),
+              QuiltedGridTile(1, 2),
+            ]
+          ),
+          childrenDelegate: SliverChildListDelegate(__createImageTile()),
+        ),
+      )
+    ],
+  );
+
+
 }
 
 class _PlacePictureFlexibleSpace extends StatelessWidget {
