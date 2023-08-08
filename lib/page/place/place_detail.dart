@@ -549,7 +549,36 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     ],
   );
 
+  Widget _detailRelevantPlace() => Column(
+    children: [
+      Padding(
+        padding: EdgeInsets.fromLTRB(24, 28, 24, 0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                "관련 장소",
+                style: SectionTextStyle.sectionTitle(),
+              ),
+            ),
+            Ink(
+              child: InkWell(
+                onTap: () {
 
+                },
+                child: Text(
+                  "더보기 (100)",
+                  style: SectionTextStyle.labelMedium(Colors.blue),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+      SizedBox(height: 14,),
+
+    ],
+  );
 }
 
 class _PlacePictureFlexibleSpace extends StatelessWidget {
