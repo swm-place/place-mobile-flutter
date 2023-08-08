@@ -10,6 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/unit_converter.dart';
+import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/place/review/place_review.dart';
 
 import 'dart:math' as math;
@@ -66,6 +67,45 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
      "profileUrl": "https://plus.unsplash.com/premium_photo-1683134601449-752ec64f5a0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
      "likeCount": 356578,
      "likeComment": false,
+    },
+  ];
+
+  final List<Map<String, dynamic>> _relevantPlaceData = [
+    {
+      "imageUrl": "https://images.unsplash.com/photo-1619536095378-c96a5639ccc5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
+      "placeName": "소마카페",
+      "placeType": "카페",
+      "distance": 2930,
+      "open": "영업중",
+      "likeCount": 13924,
+      "tags": [
+        {"text": "조용한", "color": "#3232a8"},
+        {"text": "넓은", "color": "#326da8"},
+      ]
+    },
+    {
+      "imageUrl": "https://images.unsplash.com/photo-1508737804141-4c3b688e2546?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=986&q=80",
+      "placeName": "소마 디저트",
+      "placeType": "디저트",
+      "distance": 892,
+      "open": "영업중",
+      "likeCount": 55,
+      "tags": [
+        {"text": "조용한", "color": "#3232a8"},
+        {"text": "넓은", "color": "#326da8"},
+      ]
+    },
+    {
+      "imageUrl": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2274&q=80",
+      "placeName": "소마 전시",
+      "placeType": "전시회",
+      "distance": 34567,
+      "open": "영업종료",
+      "likeCount": 22935,
+      "tags": [
+        {"text": "조용한", "color": "#3232a8"},
+        {"text": "넓은", "color": "#326da8"},
+      ]
     },
   ];
 
@@ -549,36 +589,63 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     ],
   );
 
-  Widget _detailRelevantPlace() => Column(
-    children: [
-      Padding(
-        padding: EdgeInsets.fromLTRB(24, 28, 24, 0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                "관련 장소",
-                style: SectionTextStyle.sectionTitle(),
-              ),
-            ),
-            Ink(
-              child: InkWell(
-                onTap: () {
+  Widget _detailRelevantPlace() {
+    List<Widget> placeCards = [const SizedBox(width: 24,)];
+    for (int i = 0;i < _relevantPlaceData.length;i++) {
+      placeCards.add(
+          RoundedRectanglePlaceCard(
+            width: 250,
+            aspectRatio: 18/14,
+            tags: _relevantPlaceData[i]['tags'],
+            imageUrl: _relevantPlaceData[i]['imageUrl'],
+            placeName: _relevantPlaceData[i]['placeName'],
+            placeType: _relevantPlaceData[i]['placeType'],
+            distance: UnitConverter.formatDistance(_relevantPlaceData[i]['distance']),
+            open: _relevantPlaceData[i]['open'],
+            likeCount: UnitConverter.formatNumber(_relevantPlaceData[i]['likeCount']),
+            onPressed: () {
+              print("place");
+              Get.to(() => PlaceDetailPage(), preventDuplicates: false);
+            },
+          )
+      );
+    }
+    placeCards.add(const SizedBox(width: 24,));
 
-                },
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(24, 28, 24, 0),
+          child: Row(
+            children: [
+              Expanded(
                 child: Text(
-                  "더보기 (100)",
-                  style: SectionTextStyle.labelMedium(Colors.blue),
+                  "관련 장소",
+                  style: SectionTextStyle.sectionTitle(),
                 ),
               ),
-            )
-          ],
+              Ink(
+                child: InkWell(
+                  onTap: () {},
+                  child: Text(
+                    "더보기 (100)",
+                    style: SectionTextStyle.labelMedium(Colors.blue),
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-      SizedBox(height: 14,),
-
-    ],
-  );
+        SizedBox(height: 14,),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: placeCards,
+          ),
+        )
+      ],
+    );
+  }
 }
 
 class _PlacePictureFlexibleSpace extends StatelessWidget {
