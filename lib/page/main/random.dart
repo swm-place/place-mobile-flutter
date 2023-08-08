@@ -22,7 +22,7 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(12, 12, 24, 12),
+              padding: EdgeInsets.fromLTRB(12, 12, 12, 12),
               child: RoundedRectangleSearchBar(
                 elevation: 0,
                 borderRadius: 8,
