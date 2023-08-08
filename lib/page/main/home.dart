@@ -7,6 +7,7 @@ import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_button.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_search_bar.dart';
+import 'package:place_mobile_flutter/widget/story/story_card.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
@@ -162,62 +163,6 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     ),
   );
 
-  Widget _storyCarouselItem(String imageUrl, String location, String title, String message) => ClipRRect(
-    borderRadius: BorderRadius.circular(8),
-    child: GestureDetector(
-      onTap: () => {
-        print("$title, $message, $location")
-      },
-      child: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            child: Image.network(imageUrl, fit: BoxFit.cover,),
-          ),
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: const Color.fromARGB(102, 1, 1, 1),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      location,
-                      style: SectionTextStyle.labelMedium(Colors.white),
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          title,
-                          style: SectionTextStyle.sectionTitleSmall(Colors.white),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                            message,
-                            style: SectionTextStyle.sectionContentLarge(Colors.white)
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-
   Widget __storySection() => SizedBox(
     width: double.infinity,
     child: MainSection(
@@ -243,11 +188,11 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
               ),
               itemCount: _storyData.length,
               itemBuilder: (context, index, realIndex) {
-                return _storyCarouselItem(
-                    _storyData[index]['background'],
-                    _storyData[index]['location'],
-                    _storyData[index]['title'],
-                    _storyData[index]['message']
+                return RoundedRectangleStoryCard(
+                    imageUrl: _storyData[index]['background'],
+                    location: _storyData[index]['location'],
+                    title: _storyData[index]['title'],
+                    message: _storyData[index]['message']
                 );
               },
             ),
