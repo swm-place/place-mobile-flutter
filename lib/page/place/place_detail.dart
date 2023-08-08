@@ -8,6 +8,7 @@ import 'package:get/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/unit_converter.dart';
 import 'package:place_mobile_flutter/widget/place/review/place_review.dart';
 
 import 'dart:math' as math;
@@ -31,6 +32,41 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   bool bookmarkPlace = false;
 
   bool isTimeOpen = false;
+
+  final List<Map<String, dynamic>> _commentData = [
+    {
+     "name": "민준",
+     "date": "2023-08-05T14:29:20.725Z",
+     "comment": "사려니 숲길은 제주도 여행의 필수 코스! 자연의 아름다움을 느낄 수 있어요.",
+     "profileUrl": "https://plus.unsplash.com/premium_photo-1683134601449-752ec64f5a0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
+     "likeCount": 3254546,
+     "likeComment": false,
+    },
+    {
+     "name": "Ethan",
+     "date": "2023-08-04T14:29:20.725Z",
+     "comment": "여행 중 가장 기억에 남는 곳이었어요. 특히 아침 일찍 방문해서 조용한 분위기를 느끼는 것을 추천합니다.",
+     "profileUrl": "https://plus.unsplash.com/premium_photo-1683134601449-752ec64f5a0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
+     "likeCount": 42355,
+     "likeComment": true,
+    },
+    {
+     "name": "Emma",
+     "date": "2023-07-30T14:29:20.725Z",
+     "comment": "가족과 함께 방문했는데, 아이들도 너무 좋아했어요. 자연과 함께하는 시간이 너무 소중했습니다.",
+     "profileUrl": "https://plus.unsplash.com/premium_photo-1683134601449-752ec64f5a0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
+     "likeCount": 534,
+     "likeComment": false,
+    },
+    {
+     "name": "예은",
+     "date": "2023-07-26T14:29:20.725Z",
+     "comment": "비오는 날은 미끄러울 수 있으니 조심하세요. 그래도 뷰는 최고!",
+     "profileUrl": "https://plus.unsplash.com/premium_photo-1683134601449-752ec64f5a0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
+     "likeCount": 356578,
+     "likeComment": false,
+    },
+  ];
 
   @override
   void initState() {
@@ -424,12 +460,18 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             //   });
             // }
           ),
-          itemCount: 20,
+          itemCount: _commentData.length,
           itemBuilder: (context, index, realIndex) {
             return Padding(
               padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
               child: ShortPlaceReviewCard(
                 vsync: this,
+                name: _commentData[index]['name'],
+                comment: _commentData[index]['comment'],
+                profileUrl: _commentData[index]['profileUrl'],
+                date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
+                likeComment: _commentData[index]['likeComment'],
+                likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
               ),
             );
           },
