@@ -165,7 +165,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 _detailInform(),
                 _detailReview(),
                 _detailPicture(),
-                _detailRelevantPlace()
+                _detailRelevantPlace(),
+                _detailRelevantStory()
               ]),
             )
           ],
@@ -621,6 +622,64 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
               Expanded(
                 child: Text(
                   "관련 장소",
+                  style: SectionTextStyle.sectionTitle(),
+                ),
+              ),
+              Ink(
+                child: InkWell(
+                  onTap: () {},
+                  child: Text(
+                    "더보기 (100)",
+                    style: SectionTextStyle.labelMedium(Colors.blue),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        SizedBox(height: 14,),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: placeCards,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _detailRelevantStory() {
+    List<Widget> placeCards = [const SizedBox(width: 24,)];
+    for (int i = 0;i < _relevantPlaceData.length;i++) {
+      placeCards.add(
+          RoundedRectanglePlaceCard(
+            width: 250,
+            aspectRatio: 18/14,
+            tags: _relevantPlaceData[i]['tags'],
+            imageUrl: _relevantPlaceData[i]['imageUrl'],
+            placeName: _relevantPlaceData[i]['placeName'],
+            placeType: _relevantPlaceData[i]['placeType'],
+            distance: UnitConverter.formatDistance(_relevantPlaceData[i]['distance']),
+            open: _relevantPlaceData[i]['open'],
+            likeCount: UnitConverter.formatNumber(_relevantPlaceData[i]['likeCount']),
+            onPressed: () {
+              print("place");
+              Get.to(() => PlaceDetailPage(), preventDuplicates: false);
+            },
+          )
+      );
+    }
+    placeCards.add(const SizedBox(width: 24,));
+
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(24, 28, 24, 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "관련 스토리",
                   style: SectionTextStyle.sectionTitle(),
                 ),
               ),
