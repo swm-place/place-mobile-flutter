@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:place_mobile_flutter/page/login.dart';
+import 'package:place_mobile_flutter/page/account/login.dart';
 import 'package:place_mobile_flutter/page/main/bookmark.dart';
 import 'package:place_mobile_flutter/page/main/home.dart';
 import 'package:place_mobile_flutter/page/main/profile.dart';

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/unit_converter.dart';
-import 'package:place_mobile_flutter/widget/tag/tag_chip.dart';
+import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 
 class RoundedRectanglePlaceCard extends StatelessWidget {
+  final Function()? onPressed;
+
   RoundedRectanglePlaceCard({
     required this.tags,
     required this.imageUrl,
@@ -16,6 +18,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
 
     this.width=220,
     this.aspectRatio=18/15,
+    this.onPressed,
     Key? key,
   }) : super(key: key);
 
@@ -50,9 +53,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
     return Container(
       width: width,
       child: GestureDetector(
-        onTap: () {
-          print("card clicked");
-        },
+        onTap: onPressed,
         child: AspectRatio(
           aspectRatio: aspectRatio,
           child: Card(
@@ -85,11 +86,11 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                           children: [
                             Text(
                               placeName,
-                              style: placeCardTitle,
+                              style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
                             ),
                             Text(
                               placeType,
-                              style: placeCardCategory,
+                              style: SectionTextStyle.labelMedium(Colors.grey[600]!),
                             ),
                           ],
                         ),
@@ -115,7 +116,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                               Icon(MdiIcons.mapMarkerOutline, size: 18,),
                               Text(
                                 distance,
-                                style: placeCardDetail,
+                                style: SectionTextStyle.labelMedium(Colors.grey[700]!),
                               )
                             ],
                           ),
@@ -128,7 +129,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                               ),
                               Text(
                                 open,
-                                style: placeCardDetail,
+                                style: SectionTextStyle.labelMedium(Colors.grey[700]!),
                               )
                             ],
                           ),
@@ -141,7 +142,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                               ),
                               Text(
                                 likeCount,
-                                style: placeCardDetail,
+                                style: SectionTextStyle.labelMedium(Colors.grey[700]!),
                               )
                             ],
                           )
