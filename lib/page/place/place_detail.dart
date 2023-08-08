@@ -165,9 +165,6 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   ),
                 ),
               ),
-              // forceElevated: true,
-              // elevation: 20,
-              // floating: true,
               pinned: true,
               expandedHeight: 220.0,
               surfaceTintColor: Colors.white,
@@ -746,7 +743,7 @@ class _PlacePictureFlexibleSpace extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   child: Image.network(
-                    'https://images.pexels.com/photos/443356/pexels-photo-443356.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+                    'https://source.unsplash.com/random',
                     fit: BoxFit.cover,
                   ),
                 ),
