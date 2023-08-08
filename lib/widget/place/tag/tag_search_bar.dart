@@ -6,6 +6,7 @@ class TagSearchBar extends StatefulWidget {
   TagSearchBar({
     this.elevation=4,
     this.borderRadius=8.0,
+    this.fillColor=Colors.white,
     this.hintText,
     this.contentPadding,
     this.textEditingController,
@@ -21,6 +22,8 @@ class TagSearchBar extends StatefulWidget {
   EdgeInsets? contentPadding;
 
   TextEditingController? textEditingController;
+
+  Color fillColor;
 
   @override
   State<StatefulWidget> createState() {
@@ -46,7 +49,7 @@ class _TagSearchBarState extends State<TagSearchBar> {
             icon: const Icon(Icons.search),
           ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: widget.fillColor,
           contentPadding: widget.contentPadding,
         ),
         controller: widget.textEditingController,
