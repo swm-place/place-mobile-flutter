@@ -7,10 +7,22 @@ import 'package:place_mobile_flutter/theme/text_style.dart';
 class ShortPlaceReviewCard extends StatefulWidget {
   ShortPlaceReviewCard({
     required this.vsync,
+    required this.comment,
+    required this.profileUrl,
+    required this.name,
+    required this.date,
+    required this.likeComment,
+    required this.likeCount,
     Key? key,
   }) : super(key: key);
 
-  bool likeComment = false;
+  String name;
+  String date;
+  String comment;
+  String profileUrl;
+  String likeCount;
+
+  bool likeComment;
 
   TickerProvider vsync;
 
@@ -44,38 +56,38 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
           color: Colors.grey[300],
           width: double.infinity,
           height: double.infinity,
-          padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
+          padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
           child: Column(
             children: [
               Expanded(
                 child: Align(
                   alignment: Alignment.center,
                   child: AutoSizeText(
-                    "숙소도 깔끔해서 좋아요!친구들이랑 갔다왔는데 너무 친절하십니다! 숙소도 깔끔해서 좋아요!",
+                    widget.comment,
                     textAlign: TextAlign.center,
                     style: SectionTextStyle.sectionContentLine(Colors.black),
                   ),
                 ),
               ),
-              SizedBox(height: 8,),
+              const SizedBox(height: 8,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   CircleAvatar(
                     radius: 18,
-                    backgroundImage: NetworkImage("https://www.w3schools.com/howto/img_avatar.png"),
+                    backgroundImage: NetworkImage(widget.profileUrl),
                   ),
-                  SizedBox(width: 8,),
+                  const SizedBox(width: 8,),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Name",
+                          widget.name,
                           style: SectionTextStyle.labelMedium(Colors.black),
                         ),
                         Text(
-                          "2002.03.07",
+                          widget.date,
                           style: SectionTextStyle.labelSmall(Colors.grey[600]!),
                         )
                       ],
@@ -94,7 +106,7 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                       });
                     },
                     child: Padding(
-                      padding: EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(4),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -118,8 +130,8 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                                 }
                             ),
                           ),
-                          SizedBox(width: 4,),
-                          Text("1.2K")
+                          const SizedBox(width: 4,),
+                          Text(widget.likeCount)
                         ],
                       ),
                     ),
