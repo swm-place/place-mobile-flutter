@@ -128,12 +128,12 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     for (int i = 0;i < _myStoryData.length;i++) {
       placeCards.add(
           MyStoryCard(
-            // title: _relevanceStoryData[i]['title'],
+            title: _myStoryData[i]['title'],
             // message: _relevanceStoryData[i]['message'],
             // location: _relevanceStoryData[i]['location'],
             // imageUrl: _relevanceStoryData[i]['background'],
             width: 250,
-            height: 194,
+            height: 180,
             editors: _myStoryData[i]['editor'],
           )
       );

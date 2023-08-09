@@ -3,7 +3,7 @@ import 'package:place_mobile_flutter/theme/text_style.dart';
 
 class MyStoryCard extends StatelessWidget {
   MyStoryCard({
-    // required this.title,
+    required this.title,
     // required this.message,
     // required this.location,
     // required this.imageUrl,
@@ -13,7 +13,7 @@ class MyStoryCard extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  // String title;
+  String title;
   // String message;
   // String location;
   // String imageUrl;
@@ -110,10 +110,11 @@ class MyStoryCard extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child: Text(
-                            'title',
+                            this.title,
                             style: SectionTextStyle.sectionTitleSmall(Colors.white),
                           ),
                         ),
+                        SizedBox(height: 4,),
                         _editorSection()
                         // SizedBox(
                         //   width: double.infinity,
