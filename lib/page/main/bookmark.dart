@@ -20,43 +20,87 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       "places": [
         {
           "name": "name",
-          'imageUrl': "https://source.unsplash.com/random"
+          'imageUrl': "https://source.unsplash.com/random?sig=1"
         },
         {
           "name": "name",
-          'imageUrl': "https://source.unsplash.com/random"
+          'imageUrl': "https://source.unsplash.com/random?sig=2"
         },
       ]
     },
     {
-      "title": "title",
+      "title": "23",
       'share': true,
       'editor': [
         {
           'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random",
+          'profileUrl': "https://source.unsplash.com/random?sig=3",
         },
         {
           'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random",
+          'profileUrl': "https://source.unsplash.com/random?sig=4",
         },
         {
           'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random",
+          'profileUrl': "https://source.unsplash.com/random?sig=5",
         },
       ],
       "places": [
         {
           "name": "name",
-          'imageUrl': "https://source.unsplash.com/random"
+          'imageUrl': "https://source.unsplash.com/random?sig=5"
         },
         {
           "name": "name",
-          'imageUrl': "https://source.unsplash.com/random"
+          'imageUrl': "https://source.unsplash.com/random?sig=6"
         },
         {
           "name": "name",
-          'imageUrl': "https://source.unsplash.com/random"
+          'imageUrl': "https://source.unsplash.com/random?sig=7"
+        },
+      ]
+    },
+    {
+      "title": "23",
+      'share': true,
+      'editor': [
+        {
+          'name': 'name',
+          'profileUrl': "https://source.unsplash.com/random?sig=3",
+        },
+        {
+          'name': 'name',
+          'profileUrl': "https://source.unsplash.com/random?sig=4",
+        },
+        {
+          'name': 'name',
+          'profileUrl': "https://source.unsplash.com/random?sig=5",
+        },
+        {
+          'name': 'name',
+          'profileUrl': "https://source.unsplash.com/random?sig=5",
+        },
+        {
+          'name': 'name',
+          'profileUrl': "https://source.unsplash.com/random?sig=5",
+        },
+        {
+          'name': 'name',
+          'profileUrl': "https://source.unsplash.com/random?sig=5",
+        },
+      ],
+      "places": [
+        {
+          "name": "name",
+          'imageUrl': "https://source.unsplash.com/random?sig=5"
+        },
+        {
+          "name": "name",
+          'imageUrl': "https://source.unsplash.com/random?sig=6"
+        },
+        {
+          "name": "name",
+          'imageUrl': "https://source.unsplash.com/random?sig=7"
         },
       ]
     },
@@ -84,12 +128,13 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     for (int i = 0;i < _myStoryData.length;i++) {
       placeCards.add(
           MyStoryCard(
-            title: _relevanceStoryData[i]['title'],
-            message: _relevanceStoryData[i]['message'],
-            location: _relevanceStoryData[i]['location'],
-            imageUrl: _relevanceStoryData[i]['background'],
+            // title: _relevanceStoryData[i]['title'],
+            // message: _relevanceStoryData[i]['message'],
+            // location: _relevanceStoryData[i]['location'],
+            // imageUrl: _relevanceStoryData[i]['background'],
             width: 250,
             height: 194,
+            editors: _myStoryData[i]['editor'],
           )
       );
       placeCards.add(const SizedBox(width: 8,));
