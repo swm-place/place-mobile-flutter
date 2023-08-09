@@ -15,7 +15,7 @@ class BookmarkPage extends StatefulWidget {
 class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClientMixin<BookmarkPage> {
   final List<Map<String, dynamic>> _myStoryData =[
     {
-      "title": "23",
+      "title": "제목1",
       'share': true,
       'editor': [
         {
@@ -26,7 +26,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       "places": null
     },
     {
-      "title": "23",
+      "title": "제목2",
       'share': true,
       'editor': [
         {
@@ -42,7 +42,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       ]
     },
     {
-      "title": "title",
+      "title": "제목3",
       'share': false,
       "places": [
         {
@@ -56,7 +56,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       ]
     },
     {
-      "title": "23",
+      "title": "제목4",
       'share': true,
       'editor': [
         {
@@ -88,7 +88,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       ]
     },
     {
-      "title": "23",
+      "title": "제목5",
       'share': true,
       'editor': [
         {

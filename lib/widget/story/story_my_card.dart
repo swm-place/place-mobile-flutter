@@ -37,24 +37,20 @@ class MyStoryCard extends StatelessWidget {
       avatar.add(
         Positioned(
           left: leftOffset,
-          child: Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.7),
-                  blurRadius: 5.0,
-                  spreadRadius: 0.0,
-                  offset: const Offset(-2,0),
-                )
-              ]
+          child: Material(
+            elevation: 1,
+            shape: const CircleBorder(),
+            child: Container(
+              width: 24,
+              height: 24,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(editors![i]['profileUrl']),
+              ),
             ),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(editors![i]['profileUrl']),
-            ),
-          ),
+          )
         )
       );
       leftOffset += 12;
