@@ -15,6 +15,33 @@ class BookmarkPage extends StatefulWidget {
 class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClientMixin<BookmarkPage> {
   final List<Map<String, dynamic>> _myStoryData =[
     {
+      "title": "23",
+      'share': true,
+      'editor': [
+        {
+          'name': 'name',
+          'profileUrl': "https://source.unsplash.com/random?sig=9",
+        },
+      ],
+      "places": null
+    },
+    {
+      "title": "23",
+      'share': true,
+      'editor': [
+        {
+          'name': 'name',
+          'profileUrl': "https://source.unsplash.com/random?sig=9",
+        },
+      ],
+      "places": [
+        {
+          "name": "name",
+          'imageUrl': "https://source.unsplash.com/random?sig=15"
+        },
+      ]
+    },
+    {
       "title": "title",
       'share': false,
       "places": [
@@ -48,15 +75,15 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       "places": [
         {
           "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=5"
-        },
-        {
-          "name": "name",
           'imageUrl': "https://source.unsplash.com/random?sig=6"
         },
         {
           "name": "name",
           'imageUrl': "https://source.unsplash.com/random?sig=7"
+        },
+        {
+          "name": "name",
+          'imageUrl': "https://source.unsplash.com/random?sig=8"
         },
       ]
     },
@@ -66,41 +93,45 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       'editor': [
         {
           'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=3",
+          'profileUrl': "https://source.unsplash.com/random?sig=9",
         },
         {
           'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=4",
+          'profileUrl': "https://source.unsplash.com/random?sig=10",
         },
         {
           'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=5",
+          'profileUrl': "https://source.unsplash.com/random?sig=11",
         },
         {
           'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=5",
+          'profileUrl': "https://source.unsplash.com/random?sig=12",
         },
         {
           'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=5",
+          'profileUrl': "https://source.unsplash.com/random?sig=13",
         },
         {
           'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=5",
+          'profileUrl': "https://source.unsplash.com/random?sig=14",
         },
       ],
       "places": [
         {
           "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=5"
+          'imageUrl': "https://source.unsplash.com/random?sig=15"
         },
         {
           "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=6"
+          'imageUrl': "https://source.unsplash.com/random?sig=16"
         },
         {
           "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=7"
+          'imageUrl': "https://source.unsplash.com/random?sig=17"
+        },
+        {
+          "name": "name",
+          'imageUrl': "https://source.unsplash.com/random?sig=18"
         },
       ]
     },
@@ -135,6 +166,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
             width: 250,
             height: 180,
             editors: _myStoryData[i]['editor'],
+            places: _myStoryData[i]['places'],
           )
       );
       placeCards.add(const SizedBox(width: 8,));
