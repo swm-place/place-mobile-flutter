@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class TagSearchBar extends StatefulWidget {
+class RoundedRectangleSearchBar extends StatefulWidget {
   final Function()? onSuffixIconPressed;
 
-  TagSearchBar({
+  RoundedRectangleSearchBar({
     this.elevation=4,
     this.borderRadius=8.0,
     this.fillColor=Colors.white,
@@ -27,11 +27,11 @@ class TagSearchBar extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _TagSearchBarState();
+    return _RoundedRectangleSearchBarState();
   }
 }
 
-class _TagSearchBarState extends State<TagSearchBar> {
+class _RoundedRectangleSearchBarState extends State<RoundedRectangleSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Material(

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:place_mobile_flutter/widget/place/tag/tag_search_bar.dart';
+import 'package:place_mobile_flutter/widget/search_bar.dart';
 
 class RandomPage extends StatefulWidget {
   @override
@@ -22,8 +22,8 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(12, 12, 24, 12),
-              child: TagSearchBar(
+              padding: EdgeInsets.fromLTRB(12, 12, 12, 12),
+              child: RoundedRectangleSearchBar(
                 elevation: 0,
                 borderRadius: 8,
                 hintText: "검색어",

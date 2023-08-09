@@ -6,7 +6,7 @@ import 'package:place_mobile_flutter/util/unit_converter.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_button.dart';
-import 'package:place_mobile_flutter/widget/place/tag/tag_search_bar.dart';
+import 'package:place_mobile_flutter/widget/search_bar.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:get/get.dart';
@@ -139,7 +139,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
     child: Column(
       children: [
-        TagSearchBar(
+        RoundedRectangleSearchBar(
           elevation: 2,
           borderRadius: 8,
           hintText: "장소/코스 검색",
