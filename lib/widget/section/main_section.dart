@@ -43,10 +43,10 @@ class MainSection extends StatelessWidget {
     }
     if (action != null) {
       return Row(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Expanded(
-            child: Column(children: colList,),
-          ),
+          Expanded(child: Column(children: colList,)),
           action!
         ],
       );
