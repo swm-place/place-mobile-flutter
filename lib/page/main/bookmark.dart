@@ -160,9 +160,6 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       placeCards.add(
           MyStoryCard(
             title: _myStoryData[i]['title'],
-            // message: _relevanceStoryData[i]['message'],
-            // location: _relevanceStoryData[i]['location'],
-            // imageUrl: _relevanceStoryData[i]['background'],
             width: 250,
             height: 180,
             editors: _myStoryData[i]['editor'],
@@ -196,6 +193,82 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     );
   }
 
+  Widget _locationBookmarkSection() {
+    List<Widget> placeCards = [const SizedBox(width: 24,)];
+    for (int i = 0;i < _myStoryData.length;i++) {
+      placeCards.add(
+          MyStoryCard(
+            title: _myStoryData[i]['title'],
+            width: 180,
+            height: 180,
+            places: _myStoryData[i]['places'],
+          )
+      );
+      placeCards.add(const SizedBox(width: 8,));
+    }
+    placeCards.add(const SizedBox(width: 16,));
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      child: MainSection(
+        title: "장소 북마크",
+        action: Ink(
+          child: InkWell(
+            onTap: () {},
+            child: Text(
+              "전체보기",
+              style: SectionTextStyle.labelMedium(Colors.blue),
+            ),
+          ),
+        ),
+        content: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: placeCards,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _storyBookmarkSection() {
+    List<Widget> placeCards = [const SizedBox(width: 24,)];
+    for (int i = 0;i < _myStoryData.length;i++) {
+      placeCards.add(
+          MyStoryCard(
+            title: _myStoryData[i]['title'],
+            width: 180,
+            height: 180,
+            places: _myStoryData[i]['places'],
+          )
+      );
+      placeCards.add(const SizedBox(width: 8,));
+    }
+    placeCards.add(const SizedBox(width: 16,));
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      child: MainSection(
+        title: "스토리 북마크",
+        action: Ink(
+          child: InkWell(
+            onTap: () {},
+            child: Text(
+              "전체보기",
+              style: SectionTextStyle.labelMedium(Colors.blue),
+            ),
+          ),
+        ),
+        content: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: placeCards,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -205,7 +278,10 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
           child: Column(
             children: [
               _searchSection(),
-              _myStorySection()
+              _myStorySection(),
+              _locationBookmarkSection(),
+              _storyBookmarkSection(),
+              SizedBox(height: 24,)
             ],
           ),
         )

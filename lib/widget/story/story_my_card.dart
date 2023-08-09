@@ -70,7 +70,7 @@ class MyStoryCard extends StatelessWidget {
       return Row(
         children: [
           avatarSection,
-          Text('+${editors!.length - showProfile}', style: SectionTextStyle.labelSmall(Colors.white),)
+          Text('+${editors!.length - showProfile}', style: SectionTextStyle.labelMedium(Colors.white),)
         ],
       );
     }
@@ -227,17 +227,12 @@ class MyStoryCard extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child: Text(
-                            this.title,
+                            title,
                             style: SectionTextStyle.sectionTitleSmall(Colors.white),
                           ),
                         ),
-                        SizedBox(height: 4,),
+                        SizedBox(height: editors == null ? 0: 4,),
                         _editorSection()
-                        // SizedBox(
-                        //   width: double.infinity,
-                        //   child: _editorSection(),
-                        // )
-                        // Stack(alignment: Alignment.centerLeft, children: avatar)
                       ],
                     )
                   ],
