@@ -68,12 +68,15 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
-                  color: Colors.grey[200],
+                  color: Colors.grey[100],
                   child: Column(
                     children: [
                       PreferenceItem(),
+                      Divider(height: 1, color: Colors.grey[350],),
                       PreferenceItem(),
+                      Divider(height: 1, color: Colors.grey[350],),
                       PreferenceItem(),
+                      Divider(height: 1, color: Colors.grey[350],),
                       PreferenceItem(),
                     ],
                   ),
