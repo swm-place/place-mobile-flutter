@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:place_mobile_flutter/page/account/login.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/widget/section/main_section.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -53,6 +54,16 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     );
   }
 
+  Widget _createAccountPref() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      child: MainSection(
+          title: "계정",
+          content: Text("계정")
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +71,8 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _createProfileSection()
+              _createProfileSection(),
+              _createAccountPref()
             ],
           ),
         ),
