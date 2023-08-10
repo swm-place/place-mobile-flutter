@@ -23,7 +23,7 @@ class PreferenceListSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 10,),
+        // SizedBox(height: 10,),
         Padding(
           padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
           child: ClipRRect(
