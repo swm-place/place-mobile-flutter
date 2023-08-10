@@ -140,58 +140,60 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    //   statusBarColor: Colors.transparent
+    // ));
     return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              leading:IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Ink(
-                  width: 32,
-                  height: 32,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  ),
-                  child: Padding(
-                    padding: Platform.isAndroid ? EdgeInsets.zero : EdgeInsets.fromLTRB(6, 0, 0, 0),
-                    child: Icon(
-                      Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                      size: 18,
-                    ),
+      // extendBodyBehindAppBar: true,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            leading:IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Ink(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: Platform.isAndroid ? EdgeInsets.zero : EdgeInsets.fromLTRB(6, 0, 0, 0),
+                  child: Icon(
+                    Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                    size: 18,
                   ),
                 ),
               ),
-              pinned: true,
-              expandedHeight: 220.0,
-              surfaceTintColor: Colors.white,
-              backgroundColor: Colors.white,
-              flexibleSpace: _PlacePictureFlexibleSpace(),
             ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                _detailHead(),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-                  child: Text(
-                      "장소에 대한 소개글입니다 장소에대한 소개글입니다 장소에대한 소개글입니다",
-                    style: SectionTextStyle.sectionContentLargeLine(Colors.black),
-                  ),
+            pinned: true,
+            expandedHeight: 220.0,
+            surfaceTintColor: Colors.white,
+            backgroundColor: Colors.white,
+            flexibleSpace: _PlacePictureFlexibleSpace(),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              _detailHead(),
+              Padding(
+                padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                child: Text(
+                  "장소에 대한 소개글입니다 장소에대한 소개글입니다 장소에대한 소개글입니다",
+                  style: SectionTextStyle.sectionContentLargeLine(Colors.black),
                 ),
-                _detailInform(),
-                _detailReview(),
-                _detailPicture(),
-                _detailRelevantPlace(),
-                _detailRelevantStory(),
-                SizedBox(height: 24,)
-              ]),
-            )
-          ],
-        )
-      ),
+              ),
+              _detailInform(),
+              _detailReview(),
+              _detailPicture(),
+              _detailRelevantPlace(),
+              _detailRelevantStory(),
+              SizedBox(height: 24,)
+            ]),
+          )
+        ],
+      )
     );
   }
 
@@ -590,6 +592,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       Padding(
         padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
         child: GridView.custom(
+          padding: EdgeInsets.zero,
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           gridDelegate: SliverQuiltedGridDelegate(

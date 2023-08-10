@@ -22,6 +22,13 @@ class PageTextStyle {
     height: 32/24,
   );
 
+  static TextStyle headlineBold(Color color) => TextStyle(
+    fontSize: 26,
+    fontWeight: FontWeight.w600,
+    color: color,
+    height: 1,
+  );
+
   static TextStyle headlineExtraLarge(Color color) => const TextStyle(
     fontSize: 30,
     fontWeight: FontWeight.w700,
