@@ -32,11 +32,11 @@ class PreferenceItem extends StatelessWidget {
                 maxLines: 1,
               ),
             ),
-            showIcon ? SizedBox(
+            SizedBox(
               width: 24,
               height: 24,
-              child: Icon(Icons.keyboard_arrow_right),
-            ) : SizedBox()
+              child: showIcon ? Icon(Icons.keyboard_arrow_right) : null,
+            )
           ],
         ),
       ),
