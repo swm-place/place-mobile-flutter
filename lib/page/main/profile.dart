@@ -78,6 +78,27 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     );
   }
 
+  Widget _createStoryPref() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      child: MainSection(
+          title: "스토리",
+          titleStyle: SectionTextStyle.sectionTitleSmall(Colors.black),
+          content: PreferenceListSection(
+            children: [
+              PreferenceItem(
+                title: '최근 팀색한 스토리',
+                textColor: Colors.black,
+                onTap: () {
+                  print("최근 팀색한 스토리");
+                },
+              ),
+            ],
+          )
+      ),
+    );
+  }
+
   Widget _createAccountPref() {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
@@ -164,6 +185,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
               const SizedBox(height: 24,),
               _createProfileSection(),
               _createWatchPref(),
+              _createStoryPref(),
               _createRecommendPref(),
               _createAccountPref(),
               const SizedBox(height: 24,),
