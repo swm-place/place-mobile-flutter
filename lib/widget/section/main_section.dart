@@ -8,6 +8,7 @@ class MainSection extends StatelessWidget {
 
     this.message,
     this.action,
+    this.titleStyle,
     Key? key,
   }) : super(key: key);
 
@@ -17,14 +18,18 @@ class MainSection extends StatelessWidget {
   Widget content;
   Widget? action;
 
+  TextStyle? titleStyle;
+
   Widget __createHead() {
     List<Widget> colList = [];
+    titleStyle ??= SectionTextStyle.sectionTitle();
+
     colList.add(
       SizedBox(
         width: double.infinity,
         child: Text(
           title,
-          style: SectionTextStyle.sectionTitle(),
+          style: titleStyle,
         ),
       )
     );
