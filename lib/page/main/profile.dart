@@ -71,13 +71,11 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                   color: Colors.grey[100],
                   child: Column(
                     children: [
-                      PreferenceItem(),
-                      Divider(height: 1, color: Colors.grey[350],),
-                      PreferenceItem(),
-                      Divider(height: 1, color: Colors.grey[350],),
-                      PreferenceItem(),
-                      Divider(height: 1, color: Colors.grey[350],),
-                      PreferenceItem(),
+                      PreferenceItem(
+                        title: '로그아웃',
+                        textColor: Colors.red,
+                        showIcon: false,
+                      ),
                     ],
                   ),
                 ),
