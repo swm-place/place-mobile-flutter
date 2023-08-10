@@ -56,6 +56,26 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     );
   }
 
+  Widget _createRecommendPref() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      child: MainSection(
+          title: "콘텐츠 추천",
+          content: PreferenceListSection(
+            children: [
+              PreferenceItem(
+                title: '관심 키워드 설정',
+                textColor: Colors.black,
+                onTap: () {
+                  print("관심 키워드 설정");
+                },
+              ),
+            ],
+          )
+      ),
+    );
+  }
+
   Widget _createAccountPref() {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
@@ -83,26 +103,6 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
               showIcon: false,
               onTap: () {
                 print("로그아웃");
-              },
-            ),
-          ],
-        )
-      ),
-    );
-  }
-
-  Widget _createRecommendPref() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
-      child: MainSection(
-        title: "콘텐츠 추천",
-        content: PreferenceListSection(
-          children: [
-            PreferenceItem(
-              title: '관심 키워드 설정',
-              textColor: Colors.black,
-              onTap: () {
-                print("관심 키워드 설정");
               },
             ),
           ],
