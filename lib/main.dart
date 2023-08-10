@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:place_mobile_flutter/page/account/login.dart';
 import 'package:place_mobile_flutter/page/main/bookmark.dart';
@@ -34,7 +37,14 @@ Future<void> main() async {
     ],
     title: 'OURS',
     themeMode: ThemeMode.light,
-    theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme, fontFamily: 'Pretendard'),
+    theme: ThemeData(
+      useMaterial3: true,
+      colorScheme: lightColorScheme,
+      fontFamily: 'Pretendard',
+      // appBarTheme: AppBarTheme(
+      //   systemOverlayStyle: Platform.isAndroid ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark
+      // )
+    ),
     home: MyApp(),
   ));
 }
@@ -57,7 +67,14 @@ class MyApp extends StatelessWidget {
       ],
       title: 'OURS',
       themeMode: ThemeMode.light,
-      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme, fontFamily: 'Pretendard'),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: lightColorScheme,
+        fontFamily: 'Pretendard',
+        // appBarTheme: AppBarTheme(
+        //     systemOverlayStyle: Platform.isAndroid ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark
+        // )
+      ),
       home: const MainPage(),
     );
   }
@@ -96,6 +113,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (Platform.isIOS) SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return Scaffold(
       body: PageView(
         controller: _pageController,
