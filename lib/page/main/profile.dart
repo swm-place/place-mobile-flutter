@@ -66,12 +66,44 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
             PreferenceItem(
               title: '비밀번호 변경',
               textColor: Colors.black,
-              showIcon: true,
+              onTap: () {
+                print("비번 변경");
+              },
+            ),
+            PreferenceItem(
+              title: '프로필 변경',
+              textColor: Colors.black,
+              onTap: () {
+                print("프로필 변경");
+              },
             ),
             PreferenceItem(
               title: '로그아웃',
               textColor: Colors.red,
               showIcon: false,
+              onTap: () {
+                print("로그아웃");
+              },
+            ),
+          ],
+        )
+      ),
+    );
+  }
+
+  Widget _createRecommendPref() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      child: MainSection(
+        title: "콘텐츠 추천",
+        content: PreferenceListSection(
+          children: [
+            PreferenceItem(
+              title: '관심 키워드 설정',
+              textColor: Colors.black,
+              onTap: () {
+                print("관심 키워드 설정");
+              },
             ),
           ],
         )
@@ -87,6 +119,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
           child: Column(
             children: [
               _createProfileSection(),
+              _createRecommendPref(),
               _createAccountPref()
             ],
           ),

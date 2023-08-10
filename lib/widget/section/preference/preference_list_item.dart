@@ -3,8 +3,11 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:place_mobile_flutter/theme/text_style.dart';
 
 class PreferenceItem extends StatelessWidget {
+  final Function() onTap;
+
   PreferenceItem({
     required this.title,
+    required this.onTap,
     this.textColor=Colors.black,
     this.showIcon=true,
     Key? key,
@@ -17,12 +20,10 @@ class PreferenceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        print("object");
-      },
+      onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.fromLTRB(16, 12, 16, 12),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
         child: Row(
           children: [
             Expanded(
@@ -35,7 +36,7 @@ class PreferenceItem extends StatelessWidget {
             SizedBox(
               width: 24,
               height: 24,
-              child: showIcon ? Icon(Icons.keyboard_arrow_right) : null,
+              child: showIcon ? const Icon(Icons.keyboard_arrow_right) : null,
             )
           ],
         ),
