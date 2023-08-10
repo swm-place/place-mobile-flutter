@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/page/account/login.dart';
+import 'package:place_mobile_flutter/page/preference/preference.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
@@ -22,13 +23,13 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
   Widget _createProfileSection() {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+      padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 72,
-            height: 72,
+            width: 64,
+            height: 64,
             child: CircleAvatar(
               backgroundImage: NetworkImage('https://source.unsplash.com/random'),
             ),
@@ -61,6 +62,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
       child: MainSection(
           title: "콘텐츠 추천",
+          titleStyle: SectionTextStyle.sectionTitleSmall(Colors.black),
           content: PreferenceListSection(
             children: [
               PreferenceItem(
@@ -80,29 +82,58 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
       child: MainSection(
-        title: "계정",
+          title: "계정",
+          titleStyle: SectionTextStyle.sectionTitleSmall(Colors.black),
+          content: PreferenceListSection(
+            children: [
+              PreferenceItem(
+                title: '비밀번호 변경',
+                textColor: Colors.black,
+                onTap: () {
+                  print("비번 변경");
+                },
+              ),
+              PreferenceItem(
+                title: '프로필 변경',
+                textColor: Colors.black,
+                onTap: () {
+                  print("프로필 변경");
+                },
+              ),
+              PreferenceItem(
+                title: '로그아웃',
+                textColor: Colors.red,
+                showIcon: false,
+                onTap: () {
+                  print("로그아웃");
+                },
+              ),
+            ],
+          )
+      ),
+    );
+  }
+
+  Widget _createWatchPref() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      child: MainSection(
+        title: '장소',
+        titleStyle: SectionTextStyle.sectionTitleSmall(Colors.black),
         content: PreferenceListSection(
           children: [
             PreferenceItem(
-              title: '비밀번호 변경',
+              title: '최근 탐색한 장소',
               textColor: Colors.black,
               onTap: () {
-                print("비번 변경");
+                print('최근 탐색한 장소');
               },
             ),
             PreferenceItem(
-              title: '프로필 변경',
+              title: '최근 탐색한 장소',
               textColor: Colors.black,
               onTap: () {
-                print("프로필 변경");
-              },
-            ),
-            PreferenceItem(
-              title: '로그아웃',
-              textColor: Colors.red,
-              showIcon: false,
-              onTap: () {
-                print("로그아웃");
+                print('최근 탐색한 장소');
               },
             ),
           ],
@@ -114,13 +145,28 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(
+        // title: Text('프로필', style: PageTextStyle.headlineExtraLarge(Colors.black),),
+        // centerTitle: false,
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       Get.to(() => PreferencePage());
+        //     },
+        //     icon: const Icon(Icons.settings),
+        //   )
+        // ],
+      // ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
+              const SizedBox(height: 24,),
               _createProfileSection(),
+              _createWatchPref(),
               _createRecommendPref(),
-              _createAccountPref()
+              _createAccountPref(),
+              // _createWatchPlace()
             ],
           ),
         ),
