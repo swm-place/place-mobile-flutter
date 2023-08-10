@@ -5,6 +5,7 @@ import 'package:place_mobile_flutter/page/account/login.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
+import 'package:place_mobile_flutter/widget/section/preference/preference_list_item.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -25,8 +26,8 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 96,
-            height: 96,
+            width: 64,
+            height: 64,
             child: CircleAvatar(
               backgroundImage: NetworkImage('https://source.unsplash.com/random'),
             ),
@@ -58,8 +59,29 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
       child: MainSection(
-          title: "계정",
-          content: Text("계정")
+        title: "계정",
+        content: Column(
+          children: [
+            SizedBox(height: 10,),
+            Padding(
+              padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  color: Colors.grey[200],
+                  child: Column(
+                    children: [
+                      PreferenceItem(),
+                      PreferenceItem(),
+                      PreferenceItem(),
+                      PreferenceItem(),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
+        )
       ),
     );
   }
