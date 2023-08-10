@@ -130,10 +130,10 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
               },
             ),
             PreferenceItem(
-              title: '최근 탐색한 장소',
+              title: '장소 추가 요청',
               textColor: Colors.black,
               onTap: () {
-                print('최근 탐색한 장소');
+                print('장소 추가 요청');
               },
             ),
           ],
@@ -166,6 +166,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
               _createWatchPref(),
               _createRecommendPref(),
               _createAccountPref(),
+              const SizedBox(height: 24,),
               // _createWatchPlace()
             ],
           ),

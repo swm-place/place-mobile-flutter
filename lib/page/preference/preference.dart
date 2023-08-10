@@ -10,7 +10,6 @@ class PreferencePage extends StatefulWidget {
 
 class _PreferencePageState extends State<PreferencePage> {
 
-
   Widget _createRecommendPref() {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
