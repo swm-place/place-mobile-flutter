@@ -592,6 +592,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       Padding(
         padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
         child: GridView.custom(
+          padding: EdgeInsets.zero,
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           gridDelegate: SliverQuiltedGridDelegate(
