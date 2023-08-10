@@ -5,6 +5,7 @@ import 'package:place_mobile_flutter/page/account/login.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
+import 'package:place_mobile_flutter/widget/section/preference/preference_list.dart';
 import 'package:place_mobile_flutter/widget/section/preference/preference_list_item.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -60,27 +61,18 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
       child: MainSection(
         title: "계정",
-        content: Column(
+        content: PreferenceListSection(
           children: [
-            SizedBox(height: 10,),
-            Padding(
-              padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  color: Colors.grey[100],
-                  child: Column(
-                    children: [
-                      PreferenceItem(
-                        title: '로그아웃',
-                        textColor: Colors.red,
-                        showIcon: false,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
+            PreferenceItem(
+              title: '비밀번호 변경',
+              textColor: Colors.black,
+              showIcon: true,
+            ),
+            PreferenceItem(
+              title: '로그아웃',
+              textColor: Colors.red,
+              showIcon: false,
+            ),
           ],
         )
       ),
