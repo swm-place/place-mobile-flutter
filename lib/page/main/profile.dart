@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:place_mobile_flutter/page/account/login.dart';
 import 'package:place_mobile_flutter/page/preference/preference.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
+import 'package:place_mobile_flutter/state/user_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/section/preference/preference_list.dart';
@@ -24,36 +25,59 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     return Container(
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 64,
-            height: 64,
-            child: CircleAvatar(
-              backgroundImage: NetworkImage('https://source.unsplash.com/random'),
-            ),
-          ),
-          SizedBox(width: 24,),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: GetBuilder<AuthController>(
+        init: AuthController(),
+        builder: (controller) {
+          if (controller.user.value == null) {
+            return GestureDetector(
+              onTap: () {
+                Get.to(() => LoginPage());
+              },
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text('로그인 하기', style: PageTextStyle.headlineBold(Colors.black),),
+                  Icon(Icons.keyboard_arrow_right, size: 36,)
+                ],
+              ),
+            );
+          } else {
+            String? nickname = ProfileController.to.nickname.value;
+            nickname ??= 'null';
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // SizedBox(height: 12,),
-                Text("닉네임", style: PageTextStyle.headlineBold(Colors.black),),
-                // SizedBox(height: 6,),
-                Row(
-                  children: [
-                    Text("팔로워 20", style: SectionTextStyle.labelMedium(Colors.black),),
-                    SizedBox(width: 12,),
-                    Text("팔로잉 20", style: SectionTextStyle.labelMedium(Colors.black),),
-                  ],
+                SizedBox(
+                  width: 64,
+                  height: 64,
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage('https://source.unsplash.com/random'),
+                  ),
+                ),
+                SizedBox(width: 24,),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // SizedBox(height: 12,),
+                      Text(nickname!, style: PageTextStyle.headlineBold(Colors.black),),
+                      // SizedBox(height: 6,),
+                      // Row(
+                      //   children: [
+                      //     Text("팔로워 20", style: SectionTextStyle.labelMedium(Colors.black),),
+                      //     SizedBox(width: 12,),
+                      //     Text("팔로잉 20", style: SectionTextStyle.labelMedium(Colors.black),),
+                      //   ],
+                      // )
+                    ],
+                  )
                 )
               ],
-            ),
-          )
-        ],
-      ),
+            );
+          }
+        },
+      )
     );
   }
 
@@ -189,6 +213,20 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
               _createRecommendPref(),
               _createAccountPref(),
               const SizedBox(height: 24,),
+              // GetBuilder<AuthController>(
+              //   init: AuthController(),
+              //   builder: (controller) {
+              //     if (controller.user.value == null) {
+              //       return FilledButton(child: Text("로그인"), onPressed: () => {
+              //         Get.to(() => LoginPage())
+              //       });
+              //     } else {
+              //       return FilledButton(child: Text("로그아웃"), onPressed: () => {
+              //         controller.signOut()
+              //       });
+              //     }
+              //   },
+              // )
               // _createWatchPlace()
             ],
           ),
