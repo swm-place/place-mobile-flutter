@@ -129,31 +129,50 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
       child: MainSection(
           title: "계정",
           titleStyle: SectionTextStyle.sectionTitleSmall(Colors.black),
-          content: PreferenceListSection(
-            children: [
-              PreferenceItem(
-                title: '비밀번호 변경',
-                textColor: Colors.black,
-                onTap: () {
-                  print("비번 변경");
-                },
-              ),
-              PreferenceItem(
-                title: '프로필 변경',
-                textColor: Colors.black,
-                onTap: () {
-                  print("프로필 변경");
-                },
-              ),
-              PreferenceItem(
-                title: '로그아웃',
-                textColor: Colors.red,
-                showIcon: false,
-                onTap: () {
-                  print("로그아웃");
-                },
-              ),
-            ],
+          content: GetBuilder<AuthController>(
+            init: AuthController(),
+            builder: (controller) {
+              if (controller.user.value == null) {
+                return PreferenceListSection(
+                  children: [
+                    PreferenceItem(
+                      title: '로그인',
+                      textColor: Colors.black,
+                      onTap: () {
+                        Get.to(() => LoginPage());
+                      },
+                    ),
+                  ],
+                );
+              } else {
+                return PreferenceListSection(
+                  children: [
+                    PreferenceItem(
+                      title: '비밀번호 변경',
+                      textColor: Colors.black,
+                      onTap: () {
+                        print("비번 변경");
+                      },
+                    ),
+                    PreferenceItem(
+                      title: '프로필 변경',
+                      textColor: Colors.black,
+                      onTap: () {
+                        print("프로필 변경");
+                      },
+                    ),
+                    PreferenceItem(
+                      title: '로그아웃',
+                      textColor: Colors.red,
+                      showIcon: false,
+                      onTap: () {
+                        print("로그아웃");
+                      },
+                    ),
+                  ],
+                );
+              }
+            },
           )
       ),
     );
