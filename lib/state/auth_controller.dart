@@ -128,8 +128,8 @@ class AuthController extends GetxController {
               duration: const Duration(seconds: 2),
             )
         );
+        signOut();
       }
-      signOut();
     }
   }
 
