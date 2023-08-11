@@ -166,7 +166,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       textColor: Colors.red,
                       showIcon: false,
                       onTap: () {
-                        print("로그아웃");
+                        AuthController.to.signOut();
                       },
                     ),
                   ],
