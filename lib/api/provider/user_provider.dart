@@ -15,7 +15,7 @@ class UserProvider extends DefaultProvider {
     // User? user = AuthController.to.user.value;
     // print('getProfile: $user');
     if (user != null) {
-      Uri uri = Uri.parse("$baseUrl/v1/user/${user.uid}");
+      Uri uri = Uri.parse("$baseUrl/user/${user.uid}");
       final response = await http.get(uri, headers: setHeader(token));
       return response;
     }
@@ -25,7 +25,7 @@ class UserProvider extends DefaultProvider {
   Future<http.Response?> getTerm(String token) async {
     User? user = AuthController.to.user.value;
     if (user != null) {
-      Uri uri = Uri.parse("$baseUrl/v1/user/terms");
+      Uri uri = Uri.parse("$baseUrl/user/terms");
       final response = await http.get(uri, headers: setHeader(token));
       return response;
     }
@@ -35,7 +35,7 @@ class UserProvider extends DefaultProvider {
   Future<int?> checkNickname(String nickname, String token) async {
     User? user = AuthController.to.user.value;
     if (user != null) {
-      Uri uri = Uri.parse("$baseUrl/v1/user/nickname?nickname=$nickname");
+      Uri uri = Uri.parse("$baseUrl/user/nickname?nickname=$nickname");
       final response = await http.get(uri, headers: setHeader(token));
       return response.statusCode;
     }
@@ -45,7 +45,7 @@ class UserProvider extends DefaultProvider {
   Future<int?> createProfile(Map<String, dynamic> profileData, String token) async {
     User? user = AuthController.to.user.value;
     if (user != null) {
-      Uri uri = Uri.parse("$baseUrl/v1/user");
+      Uri uri = Uri.parse("$baseUrl/user");
       Map<String, String>? header = setHeader(token);
       header!["Content-Type"] = 'application/json';
       final response = await http.post(uri, headers: header, body: json.encode(profileData));
