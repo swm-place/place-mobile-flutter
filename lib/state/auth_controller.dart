@@ -100,9 +100,10 @@ class AuthController extends GetxController {
 
   void _loginSuccess(User user) async {
     int? status = await ProfileController.to.getUserProfile(user);
-    // print('login success $status ${Get.currentRoute}');
+    print('login success $status ${Get.currentRoute}');
     if (status != null) {
       if (status == 200) {
+        print("login success ${Get.currentRoute}");
         if (Get.currentRoute != "/MyApp" && Get.currentRoute != '/') {
           Get.offAll(() => const MyApp());
         }
@@ -111,7 +112,24 @@ class AuthController extends GetxController {
           Get.offAll(() => const MyApp());
           Get.to(() => SignUpPage());
         }
+      } else {
+        Get.showSnackbar(
+            GetSnackBar(
+              backgroundColor: Colors.red,
+              snackPosition: SnackPosition.BOTTOM,
+              titleText: const Text(
+                "로그인 실패",
+                style: TextStyle(color: Colors.white),
+              ),
+              messageText: Text(
+                '로그인 과정에서 오류가 발생했습니다. 다시 로그인 해주세요.',
+                style: const TextStyle(color: Colors.white),
+              ),
+              duration: const Duration(seconds: 2),
+            )
+        );
       }
+      signOut();
     }
   }
 
