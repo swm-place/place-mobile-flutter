@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/unit_converter.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
@@ -30,6 +31,8 @@ class PlaceDetailPage extends StatefulWidget {
 class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderStateMixin {
   late final AnimationController _likeButtonController;
   late final AnimationController _bookmarkButtonController;
+
+  late ScrollController _bookmarkScrollController;
 
   bool likePlace = false;
   bool bookmarkPlace = false;
@@ -131,11 +134,43 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     },
   ];
 
+  final List<Map<String, dynamic>> _bookmarkData = [
+    {"name": "북마크", "include": true},
+    {"name": "북마크", "include": false},
+    {"name": "북마크", "include": true},
+    {"name": "북마크", "include": false},
+    {"name": "북마크", "include": true},
+    {"name": "북마크", "include": false},
+    {"name": "북마크", "include": false},
+    {"name": "북마크", "include": false},
+    {"name": "북마크", "include": false},
+    {"name": "북마크", "include": true},
+    {"name": "북마크", "include": true},
+    {"name": "북마크", "include": false},
+    {"name": "북마크", "include": false},
+    {"name": "북마크", "include": false},
+    {"name": "북마크", "include": true},
+    {"name": "북마크", "include": true},
+    {"name": "북마크", "include": true},
+    {"name": "북마크", "include": false},
+    {"name": "북마크", "include": false},
+    {"name": "북마크", "include": false},
+  ];
+
   @override
   void initState() {
     _likeButtonController = AnimationController(vsync: this);
     _bookmarkButtonController = AnimationController(vsync: this);
+    _bookmarkScrollController = ScrollController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _likeButtonController.dispose();
+    _bookmarkButtonController.dispose();
+    _bookmarkScrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -243,6 +278,87 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           children: [
             GestureDetector(
               onTap: () {
+                //TODO: 북마크 페이지 추가
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  useSafeArea: true,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return StatefulBuilder(
+                      builder: (BuildContext context, StateSetter bottomState) {
+                        _bookmarkScrollController.addListener(() {
+                          if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset) {
+                            bottomState(() {
+                              setState(() {
+                                for (int i = 0;i < 20;i++) {
+                                  _bookmarkData.add({"name": "북마크", "include": math.Random().nextBool()});
+                                }
+                              });
+                            });
+                          }
+                        });
+                        return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(8),
+                              topLeft: Radius.circular(8),
+                            ),
+                          ),
+                          padding: EdgeInsets.fromLTRB(24, 24, 24, 18),
+                          child: Column(
+                            children: [
+                              Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),
+                              SizedBox(height: 18,),
+                              Expanded(
+                                child: ListView.builder(
+                                  controller: _bookmarkScrollController,
+                                  padding: EdgeInsets.zero,
+                                  itemCount: _bookmarkData.length + 1,
+                                  itemBuilder: (context, index) {
+                                    if (index < _bookmarkData.length) {
+                                      return ListTile(
+                                        title: Text("${_bookmarkData[index]['name']} $index"),
+                                        trailing: _bookmarkData[index]['include']
+                                            ? Icon(Icons.check_box, color: lightColorScheme.primary,)
+                                            : Icon(Icons.check_box_outline_blank),
+                                        onTap: () {
+                                          bottomState(() {
+                                            setState(() {
+                                              _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
+                                            });
+                                          });
+                                        },
+                                      );
+                                    } else {
+                                      return const Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 32),
+                                        child: Center(child: CircularProgressIndicator(),),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                              SizedBox(height: 18,),
+                              Container(
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                width: double.infinity,
+                                child: FilledButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('닫기')
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
+                ).whenComplete(() {
+                  _bookmarkScrollController.dispose();
+                  _bookmarkScrollController = ScrollController();
+                });
                 setState(() {
                   HapticFeedback.lightImpact();
                   bookmarkPlace = !bookmarkPlace;
