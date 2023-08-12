@@ -49,7 +49,7 @@ class MainSection extends StatelessWidget {
     if (action != null) {
       return Row(
         // mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(child: Column(children: colList,)),
           action!
