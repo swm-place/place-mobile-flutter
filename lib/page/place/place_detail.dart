@@ -349,7 +349,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                   },
                                 ),
                               ),
-                              SizedBox(height: 18,),
+                              // SizedBox(height: 18,),
                               Container(
                                 padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                 width: double.infinity,
@@ -695,7 +695,64 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         action: Ink(
           child: InkWell(
             onTap: () {
-
+              showModalBottomSheet(
+                  isScrollControlled: true,
+                  useSafeArea: true,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          topLeft: Radius.circular(8),
+                        ),
+                      ),
+                      padding: EdgeInsets.fromLTRB(24, 24, 24, 18),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: GridView.custom(
+                              gridDelegate: SliverQuiltedGridDelegate(
+                                  mainAxisSpacing: 6,
+                                  repeatPattern: QuiltedGridRepeatPattern.inverted,
+                                  crossAxisSpacing: 6,
+                                  crossAxisCount: 4,
+                                  pattern: [
+                                    QuiltedGridTile(2, 2),
+                                    QuiltedGridTile(1, 1),
+                                    QuiltedGridTile(1, 1),
+                                    QuiltedGridTile(1, 2),
+                                  ]
+                              ),
+                              childrenDelegate: SliverChildBuilderDelegate(
+                                      (BuildContext context, int index) {
+                                    return ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.network(
+                                        'https://source.unsplash.com/random?sig=$index',
+                                        fit: BoxFit.cover,
+                                      ),
+                                    );
+                                  }
+                              ),
+                            ),
+                          ),
+                          // SizedBox(height: 18,),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            width: double.infinity,
+                            child: FilledButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('닫기')
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }
+              );
             },
             child: Text(
               "더보기 (100)",
