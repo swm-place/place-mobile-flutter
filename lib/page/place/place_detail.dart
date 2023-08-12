@@ -316,13 +316,15 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                               Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),
                               SizedBox(height: 18,),
                               Expanded(
-                                child: ListView.builder(
+                                child: ListView.separated(
                                   controller: _bookmarkScrollController,
                                   padding: EdgeInsets.zero,
                                   itemCount: _bookmarkData.length + 1,
                                   itemBuilder: (context, index) {
                                     if (index < _bookmarkData.length) {
                                       return ListTile(
+                                        minVerticalPadding: 0,
+                                        contentPadding: EdgeInsets.zero,
                                         title: Text("${_bookmarkData[index]['name']} $index"),
                                         trailing: _bookmarkData[index]['include']
                                             ? Icon(Icons.check_box, color: lightColorScheme.primary,)
@@ -341,6 +343,9 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                         child: Center(child: CircularProgressIndicator(),),
                                       );
                                     }
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return Divider(height: 0, color: Colors.grey[250],);
                                   },
                                 ),
                               ),
