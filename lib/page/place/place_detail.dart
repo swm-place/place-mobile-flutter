@@ -32,6 +32,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   late final AnimationController _likeButtonController;
   late final AnimationController _bookmarkButtonController;
 
+  late ScrollController _bookmarkScrollController;
+
   bool likePlace = false;
   bool bookmarkPlace = false;
 
@@ -159,7 +161,16 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   void initState() {
     _likeButtonController = AnimationController(vsync: this);
     _bookmarkButtonController = AnimationController(vsync: this);
+    _bookmarkScrollController = ScrollController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _likeButtonController.dispose();
+    _bookmarkButtonController.dispose();
+    _bookmarkScrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -273,6 +284,17 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   builder: (BuildContext context) {
                     return StatefulBuilder(
                       builder: (BuildContext context, StateSetter bottomState) {
+                        _bookmarkScrollController.addListener(() {
+                          if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset) {
+                            bottomState(() {
+                              setState(() {
+                                for (int i = 0;i < 20;i++) {
+                                  _bookmarkData.add({"name": "북마크", "include": math.Random().nextBool()});
+                                }
+                              });
+                            });
+                          }
+                        });
                         return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
@@ -287,22 +309,30 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                               SizedBox(height: 18,),
                               Expanded(
                                 child: ListView.builder(
+                                  controller: _bookmarkScrollController,
                                   padding: EdgeInsets.zero,
-                                  itemCount: _bookmarkData.length,
+                                  itemCount: _bookmarkData.length + 1,
                                   itemBuilder: (context, index) {
-                                    return ListTile(
-                                      title: Text("${_bookmarkData[index]['name']} $index"),
-                                      trailing: _bookmarkData[index]['include']
-                                          ? Icon(Icons.check_box, color: lightColorScheme.primary,)
-                                          : Icon(Icons.check_box_outline_blank),
-                                      onTap: () {
-                                        bottomState(() {
-                                          setState(() {
-                                            _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
+                                    if (index < _bookmarkData.length) {
+                                      return ListTile(
+                                        title: Text("${_bookmarkData[index]['name']} $index"),
+                                        trailing: _bookmarkData[index]['include']
+                                            ? Icon(Icons.check_box, color: lightColorScheme.primary,)
+                                            : Icon(Icons.check_box_outline_blank),
+                                        onTap: () {
+                                          bottomState(() {
+                                            setState(() {
+                                              _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
+                                            });
                                           });
-                                        });
-                                      },
-                                    );
+                                        },
+                                      );
+                                    } else {
+                                      return const Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 32),
+                                        child: Center(child: CircularProgressIndicator(),),
+                                      );
+                                    }
                                   },
                                 ),
                               )
@@ -312,7 +342,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                       },
                     );
                   }
-                );
+                ).whenComplete(() {
+                  _bookmarkScrollController.dispose();
+                  _bookmarkScrollController = ScrollController();
+                });
                 setState(() {
                   HapticFeedback.lightImpact();
                   bookmarkPlace = !bookmarkPlace;
