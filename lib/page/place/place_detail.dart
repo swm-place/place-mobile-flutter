@@ -611,67 +611,116 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     ),
   );
 
-  Widget _detailReview() => Column(
-    children: [
-      Padding(
-        padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                "한줄평",
-                style: SectionTextStyle.sectionTitle(),
-              ),
-            ),
-            Ink(
-              child: InkWell(
-                onTap: () {
+  Widget _detailReview() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      child: MainSection(
+        title: "한줄평",
+        action: Ink(
+          child: InkWell(
+            onTap: () {
 
-                },
-                child: Text(
-                  "더보기 (100)",
-                  style: SectionTextStyle.labelMedium(Colors.blue),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-      SizedBox(height: 14,),
-      SizedBox(
-        width: double.infinity,
-        child: CarouselSlider.builder(
-          options: CarouselOptions(
-            initialPage: 0,
-            // enlargeCenterPage: true,
-            autoPlay: false,
-            enableInfiniteScroll: false,
-            aspectRatio: 18/6,
-            // onPageChanged: (index, reason) {
-            //   setState(() {
-            //     activeIndex = index;
-            //   });
-            // }
+            },
+            child: Text(
+              "더보기 (100)",
+              style: SectionTextStyle.labelMedium(Colors.blue),
+            ),
           ),
-          itemCount: _commentData.length,
-          itemBuilder: (context, index, realIndex) {
-            return Padding(
-              padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
-              child: ShortPlaceReviewCard(
-                vsync: this,
-                name: _commentData[index]['name'],
-                comment: _commentData[index]['comment'],
-                profileUrl: _commentData[index]['profileUrl'],
-                date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
-                likeComment: _commentData[index]['likeComment'],
-                likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
+        ),
+        content: Padding(
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: SizedBox(
+            width: double.infinity,
+            child: CarouselSlider.builder(
+              options: CarouselOptions(
+                initialPage: 0,
+                autoPlay: false,
+                enableInfiniteScroll: false,
+                aspectRatio: 18/6,
               ),
-            );
-          },
+              itemCount: _commentData.length,
+              itemBuilder: (context, index, realIndex) {
+                return Padding(
+                  padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
+                  child: ShortPlaceReviewCard(
+                    vsync: this,
+                    name: _commentData[index]['name'],
+                    comment: _commentData[index]['comment'],
+                    profileUrl: _commentData[index]['profileUrl'],
+                    date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
+                    likeComment: _commentData[index]['likeComment'],
+                    likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
+                  ),
+                );
+              },
+            ),
+          ),
         ),
       ),
-    ],
-  );
+    );
+  }
+
+  // Widget _detailReview() => Column(
+  //   children: [
+  //     Padding(
+  //       padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+  //       child: Row(
+  //         children: [
+  //           Expanded(
+  //             child: Text(
+  //               "한줄평",
+  //               style: SectionTextStyle.sectionTitle(),
+  //             ),
+  //           ),
+  //           Ink(
+  //             child: InkWell(
+  //               onTap: () {
+  //
+  //               },
+  //               child: Text(
+  //                 "더보기 (100)",
+  //                 style: SectionTextStyle.labelMedium(Colors.blue),
+  //               ),
+  //             ),
+  //           )
+  //         ],
+  //       ),
+  //     ),
+  //     SizedBox(height: 14,),
+  //     SizedBox(
+  //       width: double.infinity,
+  //       child: CarouselSlider.builder(
+  //         options: CarouselOptions(
+  //           initialPage: 0,
+  //           // enlargeCenterPage: true,
+  //           autoPlay: false,
+  //           enableInfiniteScroll: false,
+  //           aspectRatio: 18/6,
+  //           // onPageChanged: (index, reason) {
+  //           //   setState(() {
+  //           //     activeIndex = index;
+  //           //   });
+  //           // }
+  //         ),
+  //         itemCount: _commentData.length,
+  //         itemBuilder: (context, index, realIndex) {
+  //           return Padding(
+  //             padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
+  //             child: ShortPlaceReviewCard(
+  //               vsync: this,
+  //               name: _commentData[index]['name'],
+  //               comment: _commentData[index]['comment'],
+  //               profileUrl: _commentData[index]['profileUrl'],
+  //               date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
+  //               likeComment: _commentData[index]['likeComment'],
+  //               likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   ],
+  // );
 
   List<Widget> __createImageTile() {
     List<Widget> tiles = [];
