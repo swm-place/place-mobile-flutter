@@ -11,6 +11,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/unit_converter.dart';
+import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/place/review/place_review.dart';
 
@@ -33,12 +34,16 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   late final AnimationController _likeButtonController;
   late final AnimationController _bookmarkButtonController;
 
+  late final TextEditingController _bookmarkNameController;
+
   late ScrollController _bookmarkScrollController;
 
   bool likePlace = false;
   bool bookmarkPlace = false;
 
   bool isTimeOpen = false;
+
+  String? _bookmarkNameError;
 
   final List<Map<String, dynamic>> _commentData = [
     {
@@ -163,6 +168,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     _likeButtonController = AnimationController(vsync: this);
     _bookmarkButtonController = AnimationController(vsync: this);
     _bookmarkScrollController = ScrollController();
+    _bookmarkNameController = TextEditingController();
     super.initState();
   }
 
@@ -171,6 +177,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     _likeButtonController.dispose();
     _bookmarkButtonController.dispose();
     _bookmarkScrollController.dispose();
+    _bookmarkNameController.dispose();
     super.dispose();
   }
 
@@ -313,7 +320,30 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           padding: EdgeInsets.fromLTRB(24, 24, 24, 18),
                           child: Column(
                             children: [
-                              Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),
+                              SizedBox(
+                                width: double.infinity,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(child: Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),),
+                                    Ink(
+                                      child: InkWell(
+                                        onTap: () {
+                                          print('add bookmark');
+                                          __showCreateBookmarkDialog();
+                                        },
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.playlist_add),
+                                            Text("북마크 추가")
+                                          ],
+                                        )
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                               SizedBox(height: 18,),
                               Expanded(
                                 child: ListView.separated(
@@ -913,6 +943,51 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 child: Text('제보하기', style: TextStyle(color: Colors.blue),),
               )
             ],
+          );
+        }
+    );
+  }
+
+  void __showCreateBookmarkDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter dialogState) {
+              return AlertDialog(
+                title: Text("북마크 추가"),
+                content: TextField(
+                  maxLength: 50,
+                  controller: _bookmarkNameController,
+                  onChanged: (text) {
+                    dialogState(() {
+                      setState(() {
+                        _bookmarkNameError = bookmarkTextFieldValidator(text);
+                      });
+                    });
+                  },
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "북마크 이름",
+                      errorText: _bookmarkNameError
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    },
+                    child: Text('취소', style: TextStyle(color: Colors.red),),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    },
+                    child: Text('만들기', style: TextStyle(color: Colors.blue),),
+                  )
+                ],
+              );
+            },
           );
         }
     );
