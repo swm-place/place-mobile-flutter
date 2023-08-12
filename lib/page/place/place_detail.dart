@@ -335,6 +335,17 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                     }
                                   },
                                 ),
+                              ),
+                              SizedBox(height: 18,),
+                              Container(
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 24),
+                                width: double.infinity,
+                                child: FilledButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('닫기')
+                                ),
                               )
                             ],
                           ),
