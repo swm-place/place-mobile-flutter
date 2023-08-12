@@ -454,7 +454,12 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       title: '정보',
       action: TextButton.icon(
         onPressed: () {
-
+          final Uri emailLaunchUri = Uri(
+            scheme: 'mailto',
+            path: 'our.email@gmail.com',
+            query: 'subject=[오류제보] {장소이름} 정보 오류 제보&body=오류 내용: '
+          );
+          launchUrl(emailLaunchUri);
         },
         label: Text("오류 신고"),
         icon: Icon(MdiIcons.alertOctagon, size: 20,),
