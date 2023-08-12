@@ -754,7 +754,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           ),
         ),
         content: Padding(
-          padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
+          padding: EdgeInsets.fromLTRB(0, 2, 0, 0),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
