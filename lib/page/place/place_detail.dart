@@ -862,7 +862,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },
-                child: Text('취소'),
+                child: Text('취소', style: TextStyle(color: Colors.red),),
               ),
               TextButton(
                 onPressed: () {
