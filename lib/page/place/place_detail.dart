@@ -878,7 +878,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                       )
                   );
                 },
-                child: Text('제보하기'),
+                child: Text('제보하기', style: TextStyle(color: Colors.blue),),
               )
             ],
           );
