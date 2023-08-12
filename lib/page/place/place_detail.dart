@@ -17,6 +17,7 @@ import 'package:place_mobile_flutter/widget/place/review/place_review.dart';
 import 'dart:math' as math;
 
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
+import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -278,7 +279,6 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           children: [
             GestureDetector(
               onTap: () {
-                //TODO: 북마크 페이지 추가
                 showModalBottomSheet(
                   isScrollControlled: true,
                   useSafeArea: true,
@@ -449,156 +449,310 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   );
 
   Widget _detailInform() => Padding(
-    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-    child: Column(
-      children: [
-        SizedBox(
-          width: double.infinity,
-          child: Text(
-            "정보",
-            style: SectionTextStyle.sectionTitle(),
-          ),
+    padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+    child: MainSection(
+      title: '정보',
+      action: TextButton.icon(
+        onPressed: () {
+
+        },
+        label: Text("오류 신고"),
+        icon: Icon(MdiIcons.alertOctagon, size: 20,),
+        style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: Size(30, 30),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            alignment: Alignment.centerLeft,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8)
+            ),
+            iconColor: Colors.red,
+            surfaceTintColor: Colors.red,
+            foregroundColor: Colors.red
         ),
-        SizedBox(height: 14,),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      ),
+      content: Padding(
+        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+        child: Column(
           children: [
-            Icon(MdiIcons.mapMarkerOutline, color: Colors.grey[700], size: 24,),
-            SizedBox(width: 10,),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 4,),
-                  Text(
-                    "제주 제주시 봉개동 산 64-5",
-                    style: SectionTextStyle.sectionContent(Colors.black),
-                  ),
-                  Row(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(MdiIcons.mapMarkerOutline, color: Colors.grey[700], size: 24,),
+                SizedBox(width: 10,),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("지번"),
-                      SizedBox(width: 4,),
-                      Text("제주 제주시 봉개동 산 64-5")
-                    ],
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-        SizedBox(height: 8,),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(MdiIcons.clockOutline, color: Colors.grey[700], size: 24,),
-            SizedBox(width: 10,),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 4,),
-                  Ink(
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          isTimeOpen = !isTimeOpen;
-                        });
-                      },
-                      child: Row(
+                      SizedBox(height: 4,),
+                      Text(
+                        "제주 제주시 봉개동 산 64-5",
+                        style: SectionTextStyle.sectionContent(Colors.black),
+                      ),
+                      Row(
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          Text("지번"),
+                          SizedBox(width: 4,),
+                          Text("제주 제주시 봉개동 산 64-5")
+                        ],
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 8,),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(MdiIcons.clockOutline, color: Colors.grey[700], size: 24,),
+                SizedBox(width: 10,),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 4,),
+                      Ink(
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                isTimeOpen = !isTimeOpen;
+                              });
+                            },
+                            child: Row(
                               children: [
-                                Text(
-                                  "현재 운영중",
-                                  style: SectionTextStyle.sectionContent(Colors.green),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "현재 운영중",
+                                        style: SectionTextStyle.sectionContent(Colors.green),
+                                      ),
+                                      Text("최근 1시간 동안 5명이 운영중이 아니라고 제보"),
+                                    ],
+                                  ),
                                 ),
-                                Text("최근 1시간 동안 5명이 운영중이 아니라고 제보"),
+                                AnimatedCrossFade(
+                                  duration: Duration(milliseconds: 250),
+                                  crossFadeState: isTimeOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                  firstChild: Icon(Icons.keyboard_arrow_down),
+                                  secondChild: Icon(Icons.keyboard_arrow_up),
+                                )
                               ],
                             ),
-                          ),
-                          AnimatedCrossFade(
-                            duration: Duration(milliseconds: 250),
-                            crossFadeState: isTimeOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                            firstChild: Icon(Icons.keyboard_arrow_down),
-                            secondChild: Icon(Icons.keyboard_arrow_up),
                           )
-                        ],
                       ),
-                    )
+                      AnimatedSize(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.fastOutSlowIn,
+                          child: Container(
+                            height: isTimeOpen ? null : 0,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("월 10:00~22:00"),
+                                Text("화 10:00~22:00"),
+                                Text("수 10:00~22:00"),
+                                Text("목 10:00~22:00"),
+                                Text("금 10:00~22:00"),
+                                Text("토 휴무"),
+                                Text("일 휴무"),
+                              ],
+                            ),
+                          )
+                      ),
+                    ],
                   ),
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.fastOutSlowIn,
-                    child: Container(
-                      height: isTimeOpen ? null : 0,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("월 10:00~22:00"),
-                          Text("화 10:00~22:00"),
-                          Text("수 10:00~22:00"),
-                          Text("목 10:00~22:00"),
-                          Text("금 10:00~22:00"),
-                          Text("토 휴무"),
-                          Text("일 휴무"),
-                        ],
-                      ),
-                    )
-                  ),
-                  TextButton.icon(
-                    onPressed: () {},
-                    label: Text("오류 신고"),
-                    icon: Icon(MdiIcons.alertOctagon, size: 20,),
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: Size(50, 30),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      alignment: Alignment.centerLeft,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)
-                      ),
-                      iconColor: Colors.red,
-                      surfaceTintColor: Colors.red,
-                      foregroundColor: Colors.red
+                )
+              ],
+            ),
+            SizedBox(height: 8,),
+            GestureDetector(
+              onTap: () {
+                print("call");
+                launchUrlString("tel:010-0000-0000");
+              },
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(MdiIcons.phone, color: Colors.grey[700], size: 24,),
+                  SizedBox(width: 10,),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 4,),
+                        Text(
+                          "010-0000-0000",
+                          style: SectionTextStyle.sectionContent(Colors.black),
+                        ),
+                      ],
                     ),
                   )
                 ],
               ),
-            )
+            ),
           ],
         ),
-        SizedBox(height: 8,),
-        GestureDetector(
-          onTap: () {
-            print("call");
-            launchUrlString("tel:010-0000-0000");
-          },
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(MdiIcons.phone, color: Colors.grey[700], size: 24,),
-              SizedBox(width: 10,),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 4,),
-                    Text(
-                      "010-0000-0000",
-                      style: SectionTextStyle.sectionContent(Colors.black),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ],
+      )
     ),
   );
+
+  // Widget _detailInform() => Padding(
+  //   padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+  //   child: Column(
+  //     children: [
+  //       SizedBox(
+  //         width: double.infinity,
+  //         child: Text(
+  //           "정보",
+  //           style: SectionTextStyle.sectionTitle(),
+  //         ),
+  //       ),
+  //       SizedBox(height: 14,),
+  //       Row(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Icon(MdiIcons.mapMarkerOutline, color: Colors.grey[700], size: 24,),
+  //           SizedBox(width: 10,),
+  //           Expanded(
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 SizedBox(height: 4,),
+  //                 Text(
+  //                   "제주 제주시 봉개동 산 64-5",
+  //                   style: SectionTextStyle.sectionContent(Colors.black),
+  //                 ),
+  //                 Row(
+  //                   children: [
+  //                     Text("지번"),
+  //                     SizedBox(width: 4,),
+  //                     Text("제주 제주시 봉개동 산 64-5")
+  //                   ],
+  //                 )
+  //               ],
+  //             ),
+  //           )
+  //         ],
+  //       ),
+  //       SizedBox(height: 8,),
+  //       Row(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Icon(MdiIcons.clockOutline, color: Colors.grey[700], size: 24,),
+  //           SizedBox(width: 10,),
+  //           Expanded(
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 SizedBox(height: 4,),
+  //                 Ink(
+  //                   child: InkWell(
+  //                     onTap: () {
+  //                       setState(() {
+  //                         isTimeOpen = !isTimeOpen;
+  //                       });
+  //                     },
+  //                     child: Row(
+  //                       children: [
+  //                         Expanded(
+  //                           child: Column(
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               Text(
+  //                                 "현재 운영중",
+  //                                 style: SectionTextStyle.sectionContent(Colors.green),
+  //                               ),
+  //                               Text("최근 1시간 동안 5명이 운영중이 아니라고 제보"),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                         AnimatedCrossFade(
+  //                           duration: Duration(milliseconds: 250),
+  //                           crossFadeState: isTimeOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+  //                           firstChild: Icon(Icons.keyboard_arrow_down),
+  //                           secondChild: Icon(Icons.keyboard_arrow_up),
+  //                         )
+  //                       ],
+  //                     ),
+  //                   )
+  //                 ),
+  //                 AnimatedSize(
+  //                   duration: const Duration(milliseconds: 500),
+  //                   curve: Curves.fastOutSlowIn,
+  //                   child: Container(
+  //                     height: isTimeOpen ? null : 0,
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Text("월 10:00~22:00"),
+  //                         Text("화 10:00~22:00"),
+  //                         Text("수 10:00~22:00"),
+  //                         Text("목 10:00~22:00"),
+  //                         Text("금 10:00~22:00"),
+  //                         Text("토 휴무"),
+  //                         Text("일 휴무"),
+  //                       ],
+  //                     ),
+  //                   )
+  //                 ),
+  //                 TextButton.icon(
+  //                   onPressed: () {
+  //
+  //                   },
+  //                   label: Text("오류 신고"),
+  //                   icon: Icon(MdiIcons.alertOctagon, size: 20,),
+  //                   style: TextButton.styleFrom(
+  //                     padding: EdgeInsets.zero,
+  //                     minimumSize: Size(50, 30),
+  //                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  //                     alignment: Alignment.centerLeft,
+  //                     shape: RoundedRectangleBorder(
+  //                       borderRadius: BorderRadius.circular(8)
+  //                     ),
+  //                     iconColor: Colors.red,
+  //                     surfaceTintColor: Colors.red,
+  //                     foregroundColor: Colors.red
+  //                   ),
+  //                 )
+  //               ],
+  //             ),
+  //           )
+  //         ],
+  //       ),
+  //       SizedBox(height: 8,),
+  //       GestureDetector(
+  //         onTap: () {
+  //           print("call");
+  //           launchUrlString("tel:010-0000-0000");
+  //         },
+  //         child: Row(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             Icon(MdiIcons.phone, color: Colors.grey[700], size: 24,),
+  //             SizedBox(width: 10,),
+  //             Expanded(
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   SizedBox(height: 4,),
+  //                   Text(
+  //                     "010-0000-0000",
+  //                     style: SectionTextStyle.sectionContent(Colors.black),
+  //                   ),
+  //                 ],
+  //               ),
+  //             )
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   ),
+  // );
 
   Widget _detailReview() => Column(
     children: [
