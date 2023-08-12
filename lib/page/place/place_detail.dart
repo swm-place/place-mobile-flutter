@@ -660,7 +660,64 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     );
   }
 
-  // Widget _detailReview() => Column(
+  List<Widget> __createImageTile() {
+    List<Widget> tiles = [];
+    for (int i = 0;i < 8;i++) {
+      tiles.add(
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.network(
+            'https://source.unsplash.com/random?sig=$i',
+            fit: BoxFit.cover,
+          ),
+        )
+      );
+    }
+    return tiles;
+  }
+
+  Widget _detailPicture() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 28, 0, 0),
+      child: MainSection(
+        title: '사진',
+        action: Ink(
+          child: InkWell(
+            onTap: () {
+
+            },
+            child: Text(
+              "더보기 (100)",
+              style: SectionTextStyle.labelMedium(Colors.blue),
+            ),
+          ),
+        ),
+        content: Padding(
+          padding: EdgeInsets.fromLTRB(24, 8, 24, 0),
+          child: GridView.custom(
+            padding: EdgeInsets.zero,
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: SliverQuiltedGridDelegate(
+                mainAxisSpacing: 6,
+                repeatPattern: QuiltedGridRepeatPattern.inverted,
+                crossAxisSpacing: 6,
+                crossAxisCount: 4,
+                pattern: [
+                  QuiltedGridTile(2, 2),
+                  QuiltedGridTile(1, 1),
+                  QuiltedGridTile(1, 1),
+                  QuiltedGridTile(1, 2),
+                ]
+            ),
+            childrenDelegate: SliverChildListDelegate(__createImageTile()),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Widget _detailPicture() => Column(
   //   children: [
   //     Padding(
   //       padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
@@ -668,7 +725,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   //         children: [
   //           Expanded(
   //             child: Text(
-  //               "한줄평",
+  //               "사진",
   //               style: SectionTextStyle.sectionTitle(),
   //             ),
   //           ),
@@ -687,107 +744,29 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   //       ),
   //     ),
   //     SizedBox(height: 14,),
-  //     SizedBox(
-  //       width: double.infinity,
-  //       child: CarouselSlider.builder(
-  //         options: CarouselOptions(
-  //           initialPage: 0,
-  //           // enlargeCenterPage: true,
-  //           autoPlay: false,
-  //           enableInfiniteScroll: false,
-  //           aspectRatio: 18/6,
-  //           // onPageChanged: (index, reason) {
-  //           //   setState(() {
-  //           //     activeIndex = index;
-  //           //   });
-  //           // }
+  //     Padding(
+  //       padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+  //       child: GridView.custom(
+  //         padding: EdgeInsets.zero,
+  //         physics: NeverScrollableScrollPhysics(),
+  //         shrinkWrap: true,
+  //         gridDelegate: SliverQuiltedGridDelegate(
+  //           mainAxisSpacing: 6,
+  //           repeatPattern: QuiltedGridRepeatPattern.inverted,
+  //           crossAxisSpacing: 6,
+  //           crossAxisCount: 4,
+  //           pattern: [
+  //             QuiltedGridTile(2, 2),
+  //             QuiltedGridTile(1, 1),
+  //             QuiltedGridTile(1, 1),
+  //             QuiltedGridTile(1, 2),
+  //           ]
   //         ),
-  //         itemCount: _commentData.length,
-  //         itemBuilder: (context, index, realIndex) {
-  //           return Padding(
-  //             padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
-  //             child: ShortPlaceReviewCard(
-  //               vsync: this,
-  //               name: _commentData[index]['name'],
-  //               comment: _commentData[index]['comment'],
-  //               profileUrl: _commentData[index]['profileUrl'],
-  //               date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
-  //               likeComment: _commentData[index]['likeComment'],
-  //               likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
-  //             ),
-  //           );
-  //         },
+  //         childrenDelegate: SliverChildListDelegate(__createImageTile()),
   //       ),
-  //     ),
+  //     )
   //   ],
   // );
-
-  List<Widget> __createImageTile() {
-    List<Widget> tiles = [];
-    for (int i = 0;i < 8;i++) {
-      tiles.add(
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            'https://source.unsplash.com/random?sig=$i',
-            fit: BoxFit.cover,
-          ),
-        )
-      );
-    }
-    return tiles;
-  }
-
-  Widget _detailPicture() => Column(
-    children: [
-      Padding(
-        padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                "사진",
-                style: SectionTextStyle.sectionTitle(),
-              ),
-            ),
-            Ink(
-              child: InkWell(
-                onTap: () {
-
-                },
-                child: Text(
-                  "더보기 (100)",
-                  style: SectionTextStyle.labelMedium(Colors.blue),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-      SizedBox(height: 14,),
-      Padding(
-        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-        child: GridView.custom(
-          padding: EdgeInsets.zero,
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          gridDelegate: SliverQuiltedGridDelegate(
-            mainAxisSpacing: 6,
-            repeatPattern: QuiltedGridRepeatPattern.inverted,
-            crossAxisSpacing: 6,
-            crossAxisCount: 4,
-            pattern: [
-              QuiltedGridTile(2, 2),
-              QuiltedGridTile(1, 1),
-              QuiltedGridTile(1, 1),
-              QuiltedGridTile(1, 2),
-            ]
-          ),
-          childrenDelegate: SliverChildListDelegate(__createImageTile()),
-        ),
-      )
-    ],
-  );
 
   Widget _detailRelevantPlace() {
     List<Widget> placeCards = [const SizedBox(width: 24,)];
