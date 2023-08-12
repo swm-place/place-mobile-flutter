@@ -717,57 +717,6 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     );
   }
 
-  // Widget _detailPicture() => Column(
-  //   children: [
-  //     Padding(
-  //       padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-  //       child: Row(
-  //         children: [
-  //           Expanded(
-  //             child: Text(
-  //               "사진",
-  //               style: SectionTextStyle.sectionTitle(),
-  //             ),
-  //           ),
-  //           Ink(
-  //             child: InkWell(
-  //               onTap: () {
-  //
-  //               },
-  //               child: Text(
-  //                 "더보기 (100)",
-  //                 style: SectionTextStyle.labelMedium(Colors.blue),
-  //               ),
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //     SizedBox(height: 14,),
-  //     Padding(
-  //       padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-  //       child: GridView.custom(
-  //         padding: EdgeInsets.zero,
-  //         physics: NeverScrollableScrollPhysics(),
-  //         shrinkWrap: true,
-  //         gridDelegate: SliverQuiltedGridDelegate(
-  //           mainAxisSpacing: 6,
-  //           repeatPattern: QuiltedGridRepeatPattern.inverted,
-  //           crossAxisSpacing: 6,
-  //           crossAxisCount: 4,
-  //           pattern: [
-  //             QuiltedGridTile(2, 2),
-  //             QuiltedGridTile(1, 1),
-  //             QuiltedGridTile(1, 1),
-  //             QuiltedGridTile(1, 2),
-  //           ]
-  //         ),
-  //         childrenDelegate: SliverChildListDelegate(__createImageTile()),
-  //       ),
-  //     )
-  //   ],
-  // );
-
   Widget _detailRelevantPlace() {
     List<Widget> placeCards = [const SizedBox(width: 24,)];
     for (int i = 0;i < _relevantPlaceData.length;i++) {
@@ -791,38 +740,29 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     }
     placeCards.add(const SizedBox(width: 24,));
 
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(24, 28, 24, 0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "관련 장소",
-                  style: SectionTextStyle.sectionTitle(),
-                ),
-              ),
-              Ink(
-                child: InkWell(
-                  onTap: () {},
-                  child: Text(
-                    "더보기 (100)",
-                    style: SectionTextStyle.labelMedium(Colors.blue),
-                  ),
-                ),
-              )
-            ],
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 28, 0, 0),
+      child: MainSection(
+        title: "관련 장소",
+        action: Ink(
+          child: InkWell(
+            onTap: () {},
+            child: Text(
+              "더보기 (100)",
+              style: SectionTextStyle.labelMedium(Colors.blue),
+            ),
           ),
         ),
-        SizedBox(height: 14,),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: placeCards,
+        content: Padding(
+          padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: placeCards,
+            ),
           ),
-        )
-      ],
+        ),
+      ),
     );
   }
 
