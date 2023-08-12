@@ -783,38 +783,29 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     }
     placeCards.add(const SizedBox(width: 16,));
 
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(24, 28, 24, 0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "관련 스토리",
-                  style: SectionTextStyle.sectionTitle(),
-                ),
-              ),
-              Ink(
-                child: InkWell(
-                  onTap: () {},
-                  child: Text(
-                    "더보기 (100)",
-                    style: SectionTextStyle.labelMedium(Colors.blue),
-                  ),
-                ),
-              )
-            ],
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 28, 0, 0),
+      child: MainSection(
+        title: "관련 스토리",
+        action: Ink(
+          child: InkWell(
+            onTap: () {},
+            child: Text(
+              "더보기 (100)",
+              style: SectionTextStyle.labelMedium(Colors.blue),
+            ),
           ),
         ),
-        SizedBox(height: 14,),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: placeCards,
-          ),
-        )
-      ],
+        content: Padding(
+          padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: placeCards,
+            ),
+          )
+        ),
+      ),
     );
   }
 
