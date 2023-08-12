@@ -60,14 +60,17 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
           child: Column(
             children: [
               Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: AutoSizeText(
-                    widget.comment,
-                    textAlign: TextAlign.center,
-                    style: SectionTextStyle.sectionContentLine(Colors.black),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: AutoSizeText(
+                      widget.comment,
+                      textAlign: TextAlign.center,
+                      style: SectionTextStyle.sectionContentLine(Colors.black),
+                    ),
                   ),
-                ),
+                )
               ),
               const SizedBox(height: 8,),
               Row(

@@ -181,54 +181,60 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     // ));
     return Scaffold(
       // extendBodyBehindAppBar: true,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            leading:IconButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: Ink(
-                width: 32,
-                height: 32,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
-                child: Padding(
-                  padding: Platform.isAndroid ? EdgeInsets.zero : EdgeInsets.fromLTRB(6, 0, 0, 0),
-                  child: Icon(
-                    Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                    size: 18,
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          print(constraints.maxWidth);
+          double commentHeight = 58640 / (constraints.maxWidth - 96);
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                leading:IconButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  icon: Ink(
+                    width: 32,
+                    height: 32,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: Padding(
+                      padding: Platform.isAndroid ? EdgeInsets.zero : EdgeInsets.fromLTRB(6, 0, 0, 0),
+                      child: Icon(
+                        Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                        size: 18,
+                      ),
+                    ),
                   ),
                 ),
+                pinned: true,
+                expandedHeight: 220.0,
+                surfaceTintColor: Colors.white,
+                backgroundColor: Colors.white,
+                flexibleSpace: _PlacePictureFlexibleSpace(),
               ),
-            ),
-            pinned: true,
-            expandedHeight: 220.0,
-            surfaceTintColor: Colors.white,
-            backgroundColor: Colors.white,
-            flexibleSpace: _PlacePictureFlexibleSpace(),
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              _detailHead(),
-              Padding(
-                padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-                child: Text(
-                  "장소에 대한 소개글입니다 장소에대한 소개글입니다 장소에대한 소개글입니다",
-                  style: SectionTextStyle.sectionContentLargeLine(Colors.black),
-                ),
-              ),
-              _detailInform(),
-              _detailReview(),
-              _detailPicture(),
-              _detailRelevantPlace(),
-              _detailRelevantStory(),
-              SizedBox(height: 24,)
-            ]),
-          )
-        ],
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  _detailHead(),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                    child: Text(
+                      "장소에 대한 소개글입니다 장소에대한 소개글입니다 장소에대한 소개글입니다",
+                      style: SectionTextStyle.sectionContentLargeLine(Colors.black),
+                    ),
+                  ),
+                  _detailInform(),
+                  _detailReview(commentHeight),
+                  _detailPicture(),
+                  _detailRelevantPlace(),
+                  _detailRelevantStory(),
+                  SizedBox(height: 24,)
+                ]),
+              )
+            ],
+          );
+        },
       )
     );
   }
@@ -611,7 +617,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     ),
   );
 
-  Widget _detailReview() {
+  Widget _detailReview(double commentHeight) {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
       child: MainSection(
@@ -636,7 +642,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 initialPage: 0,
                 autoPlay: false,
                 enableInfiniteScroll: false,
-                aspectRatio: 18/6,
+                height: commentHeight,
               ),
               itemCount: _commentData.length,
               itemBuilder: (context, index, realIndex) {
