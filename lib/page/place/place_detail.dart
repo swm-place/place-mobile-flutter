@@ -280,6 +280,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
               onTap: () {
                 //TODO: 북마크 페이지 추가
                 showModalBottomSheet(
+                  isScrollControlled: true,
+                  useSafeArea: true,
                   context: context,
                   builder: (BuildContext context) {
                     return StatefulBuilder(
@@ -302,7 +304,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                               topLeft: Radius.circular(8),
                             ),
                           ),
-                          padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+                          padding: EdgeInsets.fromLTRB(24, 24, 24, 18),
                           child: Column(
                             children: [
                               Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),
@@ -338,7 +340,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                               ),
                               SizedBox(height: 18,),
                               Container(
-                                padding: EdgeInsets.fromLTRB(0, 0, 0, 24),
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                 width: double.infinity,
                                 child: FilledButton(
                                   onPressed: () {
