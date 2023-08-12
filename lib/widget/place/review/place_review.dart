@@ -123,9 +123,9 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                                 onLoaded: (composition) {
                                   _likeButtonController.duration = composition.duration;
                                   if (widget.likeComment) {
-                                    _likeButtonController.animateTo(0.6);
+                                    _likeButtonController.value = 0.6;
                                   } else {
-                                    _likeButtonController.animateBack(0.1);
+                                    _likeButtonController.value = 0.1;
                                   }
                                 }
                             ),
