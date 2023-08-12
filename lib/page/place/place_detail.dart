@@ -190,7 +190,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       // extendBodyBehindAppBar: true,
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          print(constraints.maxWidth);
+          // print(constraints.maxWidth);
           double commentHeight = 58640 / (constraints.maxWidth - 96);
           return CustomScrollView(
             slivers: [
@@ -292,114 +292,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           children: [
             GestureDetector(
               onTap: () {
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  useSafeArea: true,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return StatefulBuilder(
-                      builder: (BuildContext context, StateSetter bottomState) {
-                        _bookmarkScrollController.addListener(() {
-                          if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset) {
-                            bottomState(() {
-                              setState(() {
-                                for (int i = 0;i < 20;i++) {
-                                  _bookmarkData.add({"name": "북마크", "include": math.Random().nextBool()});
-                                }
-                              });
-                            });
-                          }
-                        });
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(8),
-                              topLeft: Radius.circular(8),
-                            ),
-                          ),
-                          padding: EdgeInsets.fromLTRB(24, 24, 24, 18),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                width: double.infinity,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(child: Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),),
-                                    Ink(
-                                      child: InkWell(
-                                        onTap: () {
-                                          print('add bookmark');
-                                          __showCreateBookmarkDialog();
-                                        },
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Icon(Icons.playlist_add),
-                                            Text("북마크 추가")
-                                          ],
-                                        )
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 18,),
-                              Expanded(
-                                child: ListView.separated(
-                                  controller: _bookmarkScrollController,
-                                  padding: EdgeInsets.zero,
-                                  itemCount: _bookmarkData.length + 1,
-                                  itemBuilder: (context, index) {
-                                    if (index < _bookmarkData.length) {
-                                      return ListTile(
-                                        minVerticalPadding: 0,
-                                        contentPadding: EdgeInsets.zero,
-                                        title: Text("${_bookmarkData[index]['name']} $index"),
-                                        trailing: _bookmarkData[index]['include']
-                                            ? Icon(Icons.check_box, color: lightColorScheme.primary,)
-                                            : Icon(Icons.check_box_outline_blank),
-                                        onTap: () {
-                                          bottomState(() {
-                                            setState(() {
-                                              _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
-                                            });
-                                          });
-                                        },
-                                      );
-                                    } else {
-                                      return const Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 32),
-                                        child: Center(child: CircularProgressIndicator(),),
-                                      );
-                                    }
-                                  },
-                                  separatorBuilder: (context, index) {
-                                    return Divider(height: 0, color: Colors.grey[250],);
-                                  },
-                                ),
-                              ),
-                              // SizedBox(height: 18,),
-                              Container(
-                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                width: double.infinity,
-                                child: FilledButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('닫기')
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  }
-                ).whenComplete(() {
-                  _bookmarkScrollController.dispose();
-                  _bookmarkScrollController = ScrollController();
-                });
+                __showBookmarkSelectionSheet();
                 setState(() {
                   HapticFeedback.lightImpact();
                   bookmarkPlace = !bookmarkPlace;
@@ -725,64 +618,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         action: Ink(
           child: InkWell(
             onTap: () {
-              showModalBottomSheet(
-                  isScrollControlled: true,
-                  useSafeArea: true,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          topLeft: Radius.circular(8),
-                        ),
-                      ),
-                      padding: EdgeInsets.fromLTRB(24, 24, 24, 18),
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: GridView.custom(
-                              gridDelegate: SliverQuiltedGridDelegate(
-                                  mainAxisSpacing: 6,
-                                  repeatPattern: QuiltedGridRepeatPattern.inverted,
-                                  crossAxisSpacing: 6,
-                                  crossAxisCount: 4,
-                                  pattern: [
-                                    QuiltedGridTile(2, 2),
-                                    QuiltedGridTile(1, 1),
-                                    QuiltedGridTile(1, 1),
-                                    QuiltedGridTile(1, 2),
-                                  ]
-                              ),
-                              childrenDelegate: SliverChildBuilderDelegate(
-                                      (BuildContext context, int index) {
-                                    return ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        'https://source.unsplash.com/random?sig=$index',
-                                        fit: BoxFit.cover,
-                                      ),
-                                    );
-                                  }
-                              ),
-                            ),
-                          ),
-                          // SizedBox(height: 18,),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            width: double.infinity,
-                            child: FilledButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('닫기')
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  }
-              );
+              __showPhotoSheet();
             },
             child: Text(
               "더보기 (100)",
@@ -904,6 +740,178 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           )
         ),
       ),
+    );
+  }
+
+  void __showBookmarkSelectionSheet() {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        useSafeArea: true,
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter bottomState) {
+              _bookmarkScrollController.addListener(() {
+                if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset) {
+                  bottomState(() {
+                    setState(() {
+                      for (int i = 0;i < 20;i++) {
+                        _bookmarkData.add({"name": "북마크", "include": math.Random().nextBool()});
+                      }
+                    });
+                  });
+                }
+              });
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    topLeft: Radius.circular(8),
+                  ),
+                ),
+                padding: EdgeInsets.fromLTRB(24, 24, 24, 18),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(child: Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),),
+                          Ink(
+                            child: InkWell(
+                                onTap: () {
+                                  print('add bookmark');
+                                  __showCreateBookmarkDialog();
+                                },
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.playlist_add),
+                                    Text("북마크 추가")
+                                  ],
+                                )
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 18,),
+                    Expanded(
+                      child: ListView.separated(
+                        controller: _bookmarkScrollController,
+                        padding: EdgeInsets.zero,
+                        itemCount: _bookmarkData.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index < _bookmarkData.length) {
+                            return ListTile(
+                              minVerticalPadding: 0,
+                              contentPadding: EdgeInsets.zero,
+                              title: Text("${_bookmarkData[index]['name']} $index"),
+                              trailing: _bookmarkData[index]['include']
+                                  ? Icon(Icons.check_box, color: lightColorScheme.primary,)
+                                  : Icon(Icons.check_box_outline_blank),
+                              onTap: () {
+                                bottomState(() {
+                                  setState(() {
+                                    _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
+                                  });
+                                });
+                              },
+                            );
+                          } else {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 32),
+                              child: Center(child: CircularProgressIndicator(),),
+                            );
+                          }
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider(height: 0, color: Colors.grey[250],);
+                        },
+                      ),
+                    ),
+                    // SizedBox(height: 18,),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      width: double.infinity,
+                      child: FilledButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('닫기')
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        }
+    ).whenComplete(() {
+      _bookmarkScrollController.dispose();
+      _bookmarkScrollController = ScrollController();
+    });
+  }
+
+  void __showPhotoSheet() {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        useSafeArea: true,
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(8),
+                topLeft: Radius.circular(8),
+              ),
+            ),
+            padding: EdgeInsets.fromLTRB(24, 24, 24, 18),
+            child: Column(
+              children: [
+                Expanded(
+                  child: GridView.custom(
+                    gridDelegate: SliverQuiltedGridDelegate(
+                        mainAxisSpacing: 6,
+                        repeatPattern: QuiltedGridRepeatPattern.inverted,
+                        crossAxisSpacing: 6,
+                        crossAxisCount: 4,
+                        pattern: [
+                          QuiltedGridTile(2, 2),
+                          QuiltedGridTile(1, 1),
+                          QuiltedGridTile(1, 1),
+                          QuiltedGridTile(1, 2),
+                        ]
+                    ),
+                    childrenDelegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              'https://source.unsplash.com/random?sig=$index',
+                              fit: BoxFit.cover,
+                            ),
+                          );
+                        }
+                    ),
+                  ),
+                ),
+                // SizedBox(height: 18,),
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  width: double.infinity,
+                  child: FilledButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('닫기')
+                  ),
+                )
+              ],
+            ),
+          );
+        }
     );
   }
 
