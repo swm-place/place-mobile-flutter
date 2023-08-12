@@ -527,9 +527,15 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                     children: [
                                       Text(
                                         "현재 운영중",
-                                        style: SectionTextStyle.sectionContent(Colors.green),
+                                        style: SectionTextStyle.sectionContentLarge(Colors.green),
                                       ),
                                       Text("최근 1시간 동안 5명이 운영중이 아니라고 제보"),
+                                      GestureDetector(
+                                        child: Text("잘못된 운영중 제보하기"),
+                                        onTap: () {
+                                          print("object");
+                                        },
+                                      )
                                     ],
                                   ),
                                 ),
