@@ -37,6 +37,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   late final TextEditingController _bookmarkNameController;
 
   late ScrollController _bookmarkScrollController;
+  late ScrollController _commentScrollController;
 
   bool likePlace = false;
   bool bookmarkPlace = false;
@@ -52,7 +53,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
      "name": "민준",
      "date": "2023-08-05T14:29:20.725Z",
      "comment": "사려니 숲길은 제주도 여행의 필수 코스! 자연의 아름다움을 느낄 수 있어요.",
-     "profileUrl": "https://plus.unsplash.com/premium_photo-1683134601449-752ec64f5a0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
+     "profileUrl": "https://source.unsplash.com/random",
      "likeCount": 3254546,
      "likeComment": false,
     },
@@ -60,7 +61,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
      "name": "Ethan",
      "date": "2023-08-04T14:29:20.725Z",
      "comment": "여행 중 가장 기억에 남는 곳이었어요. 특히 아침 일찍 방문해서 조용한 분위기를 느끼는 것을 추천합니다.",
-     "profileUrl": "https://plus.unsplash.com/premium_photo-1683134601449-752ec64f5a0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
+     "profileUrl": "https://source.unsplash.com/random",
      "likeCount": 42355,
      "likeComment": true,
     },
@@ -68,7 +69,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
      "name": "Emma",
      "date": "2023-07-30T14:29:20.725Z",
      "comment": "가족과 함께 방문했는데, 아이들도 너무 좋아했어요. 자연과 함께하는 시간이 너무 소중했습니다.",
-     "profileUrl": "https://plus.unsplash.com/premium_photo-1683134601449-752ec64f5a0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
+     "profileUrl": "https://source.unsplash.com/random",
      "likeCount": 534,
      "likeComment": false,
     },
@@ -76,7 +77,39 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
      "name": "예은",
      "date": "2023-07-26T14:29:20.725Z",
      "comment": "비오는 날은 미끄러울 수 있으니 조심하세요. 그래도 뷰는 최고!",
-     "profileUrl": "https://plus.unsplash.com/premium_photo-1683134601449-752ec64f5a0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
+     "profileUrl": "https://source.unsplash.com/random",
+     "likeCount": 356578,
+     "likeComment": false,
+    },
+    {
+     "name": "sdsfsfdsdcvb",
+     "date": "2023-08-05T14:29:20.725Z",
+     "comment": "사afddasfgsgsg! 자연의 아sgsfsdafds어요.",
+     "profileUrl": "https://source.unsplash.com/random",
+     "likeCount": 3254546,
+     "likeComment": false,
+    },
+    {
+     "name": "fsdgfvsgrw",
+     "date": "2023-08-04T14:29:20.725Z",
+     "comment": "여행adfadf남는 곳이었어요. 특히 sffeqfaf것을 추천합니다.",
+     "profileUrl": "https://source.unsplash.com/random",
+     "likeCount": 42355,
+     "likeComment": true,
+    },
+    {
+     "name": "rwgw4rgdsg",
+     "date": "2023-07-30T14:29:20.725Z",
+     "comment": "가dasdfsgsrgh너무 소중했습니다.",
+     "profileUrl": "https://source.unsplash.com/random",
+     "likeCount": 534,
+     "likeComment": false,
+    },
+    {
+     "name": "adsasra",
+     "date": "2023-07-26T14:29:20.725Z",
+     "comment": "asdefcfsfs",
+     "profileUrl": "https://source.unsplash.com/random",
      "likeCount": 356578,
      "likeComment": false,
     },
@@ -170,6 +203,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     _likeButtonController = AnimationController(vsync: this);
     _bookmarkButtonController = AnimationController(vsync: this);
     _bookmarkScrollController = ScrollController();
+    _commentScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
     super.initState();
   }
@@ -179,6 +213,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     _likeButtonController.dispose();
     _bookmarkButtonController.dispose();
     _bookmarkScrollController.dispose();
+    _commentScrollController.dispose();
     _bookmarkNameController.dispose();
     super.dispose();
   }
@@ -555,7 +590,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         action: Ink(
           child: InkWell(
             onTap: () {
-              __showCommentSheet();
+              __showCommentSheet(commentHeight);
             },
             child: Text(
               "더보기 (100)",
@@ -942,7 +977,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     );
   }
 
-  void __showCommentSheet() {
+  void __showCommentSheet(double commentHeight) {
+    bool stateFirst = true;
     showModalBottomSheet(
       isScrollControlled: true,
       useSafeArea: true,
@@ -950,6 +986,83 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter bottomState) {
+            if (stateFirst) {
+              _commentScrollController.addListener(() {
+                if (_commentScrollController.position.maxScrollExtent == _commentScrollController.offset) {
+                  stateFirst = false;
+                  bottomState(() {
+                    setState(() {
+                      _commentData.addAll([
+                        {
+                          "name": "민준",
+                          "date": "2023-08-05T14:29:20.725Z",
+                          "comment": "사려니 숲길은 제주도 여행의 필수 코스! 자연의 아름다움을 느낄 수 있어요.",
+                          "profileUrl": "https://source.unsplash.com/random",
+                          "likeCount": 3254546,
+                          "likeComment": false,
+                        },
+                        {
+                          "name": "Ethan",
+                          "date": "2023-08-04T14:29:20.725Z",
+                          "comment": "여행 중 가장 기억에 남는 곳이었어요. 특히 아침 일찍 방문해서 조용한 분위기를 느끼는 것을 추천합니다.",
+                          "profileUrl": "https://source.unsplash.com/random",
+                          "likeCount": 42355,
+                          "likeComment": true,
+                        },
+                        {
+                          "name": "Emma",
+                          "date": "2023-07-30T14:29:20.725Z",
+                          "comment": "가족과 함께 방문했는데, 아이들도 너무 좋아했어요. 자연과 함께하는 시간이 너무 소중했습니다.",
+                          "profileUrl": "https://source.unsplash.com/random",
+                          "likeCount": 534,
+                          "likeComment": false,
+                        },
+                        {
+                          "name": "예은",
+                          "date": "2023-07-26T14:29:20.725Z",
+                          "comment": "비오는 날은 미끄러울 수 있으니 조심하세요. 그래도 뷰는 최고!",
+                          "profileUrl": "https://source.unsplash.com/random",
+                          "likeCount": 356578,
+                          "likeComment": false,
+                        },
+                        {
+                          "name": "sdsfsfdsdcvb",
+                          "date": "2023-08-05T14:29:20.725Z",
+                          "comment": "사afddasfgsgsg! 자연의 아sgsfsdafds어요.",
+                          "profileUrl": "https://source.unsplash.com/random",
+                          "likeCount": 3254546,
+                          "likeComment": false,
+                        },
+                        {
+                          "name": "fsdgfvsgrw",
+                          "date": "2023-08-04T14:29:20.725Z",
+                          "comment": "여행adfadf남는 곳이었어요. 특히 sffeqfaf것을 추천합니다.",
+                          "profileUrl": "https://source.unsplash.com/random",
+                          "likeCount": 42355,
+                          "likeComment": true,
+                        },
+                        {
+                          "name": "rwgw4rgdsg",
+                          "date": "2023-07-30T14:29:20.725Z",
+                          "comment": "가dasdfsgsrgh너무 소중했습니다.",
+                          "profileUrl": "https://source.unsplash.com/random",
+                          "likeCount": 534,
+                          "likeComment": false,
+                        },
+                        {
+                          "name": "adsasra",
+                          "date": "2023-07-26T14:29:20.725Z",
+                          "comment": "asdefcfsfs",
+                          "profileUrl": "https://source.unsplash.com/random",
+                          "likeCount": 356578,
+                          "likeComment": false,
+                        },
+                      ]);
+                    });
+                  });
+                }
+              });
+            }
             return Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
@@ -991,25 +1104,23 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   SizedBox(height: 18,),
                   Expanded(
                     child: ListView.separated(
-                      controller: _bookmarkScrollController,
+                      controller: _commentScrollController,
                       padding: EdgeInsets.zero,
-                      itemCount: _bookmarkData.length + 1,
+                      itemCount: _commentData.length + 1,
                       itemBuilder: (context, index) {
-                        if (index < _bookmarkData.length) {
-                          return ListTile(
-                            minVerticalPadding: 0,
-                            contentPadding: EdgeInsets.zero,
-                            title: Text("${_bookmarkData[index]['name']} $index"),
-                            trailing: _bookmarkData[index]['include']
-                                ? Icon(Icons.check_box, color: lightColorScheme.primary,)
-                                : Icon(Icons.check_box_outline_blank),
-                            onTap: () {
-                              bottomState(() {
-                                setState(() {
-                                  _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
-                                });
-                              });
-                            },
+                        if (index < _commentData.length) {
+                          return Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            child: ShortPlaceReviewCard(
+                              vsync: this,
+                              height: commentHeight,
+                              name: _commentData[index]['name'],
+                              comment: _commentData[index]['comment'],
+                              profileUrl: _commentData[index]['profileUrl'],
+                              date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
+                              likeComment: _commentData[index]['likeComment'],
+                              likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
+                            ),
                           );
                         } else {
                           return const Padding(
@@ -1019,7 +1130,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                         }
                       },
                       separatorBuilder: (context, index) {
-                        return Divider(height: 0, color: Colors.grey[250],);
+                        return SizedBox(height: 12,);
                       },
                     ),
                   ),
@@ -1040,7 +1151,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           },
         );
       }
-    );
+    ).whenComplete(() {
+      _commentScrollController.dispose();
+      _commentScrollController = ScrollController();
+    });
   }
 
   void __showPhotoSheet() {
