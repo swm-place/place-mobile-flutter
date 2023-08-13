@@ -13,6 +13,7 @@ class ShortPlaceReviewCard extends StatefulWidget {
     required this.date,
     required this.likeComment,
     required this.likeCount,
+    this.height=double.infinity,
     Key? key,
   }) : super(key: key);
 
@@ -25,6 +26,8 @@ class ShortPlaceReviewCard extends StatefulWidget {
   bool likeComment;
 
   TickerProvider vsync;
+
+  double height;
 
   @override
   State<StatefulWidget> createState() {
@@ -55,7 +58,7 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
         child: Container(
           color: Colors.grey[300],
           width: double.infinity,
-          height: double.infinity,
+          height: widget.height,
           padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
           child: Column(
             children: [
