@@ -521,7 +521,7 @@ class AuthController extends GetxController {
                 style: TextStyle(color: Colors.white),
               ),
               messageText: Text(
-                "'${googleUser!.email} 계정과 연결했습니다. 이제 해당 구글 계정으로 로그인이 가능합니다.",
+                "${googleUser!.email} 계정과 연결했습니다. 이제 해당 구글 계정으로 로그인이 가능합니다.",
                 style: const TextStyle(color: Colors.white),
               ),
               duration: const Duration(seconds: 4),
@@ -566,16 +566,24 @@ class AuthController extends GetxController {
 
   void linkApple() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+      final rawNonce = AppleFirebaseCrypto.generateNonce();
+      final nonce = AppleFirebaseCrypto.sha256ofString(rawNonce);
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: nonce,
+      );
+
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        rawNonce: rawNonce,
       );
 
       if (user.value != null) {
-        await user.value!.linkWithCredential(credential);
+        await user.value!.linkWithCredential(oauthCredential);
         Get.showSnackbar(
             GetSnackBar(
               backgroundColor: Colors.blue,
@@ -585,7 +593,7 @@ class AuthController extends GetxController {
                 style: TextStyle(color: Colors.white),
               ),
               messageText: Text(
-                "'${googleUser!.email} 계정과 연결했습니다. 이제 해당 구글 계정으로 로그인이 가능합니다.",
+                "애플 계정과 연결했습니다. 이제 해당 구글 계정으로 로그인이 가능합니다.",
                 style: const TextStyle(color: Colors.white),
               ),
               duration: const Duration(seconds: 4),
@@ -601,7 +609,7 @@ class AuthController extends GetxController {
                 style: TextStyle(color: Colors.white),
               ),
               messageText: Text(
-                '구글 계정과 연결에 실패했습니다. 다시 시도해주세요.',
+                '애플 계정과 연결에 실패했습니다. 다시 시도해주세요.',
                 style: const TextStyle(color: Colors.white),
               ),
               duration: const Duration(seconds: 2),
@@ -664,6 +672,65 @@ class AuthController extends GetxController {
             ),
             messageText: Text(
               "연결된 구글 계정이 없습니다.",
+              style: const TextStyle(color: Colors.white),
+            ),
+            duration: const Duration(seconds: 2),
+          )
+      );
+    } catch(e) {
+      Get.showSnackbar(
+        GetSnackBar(
+          backgroundColor: Colors.red,
+          snackPosition: SnackPosition.BOTTOM,
+          titleText: const Text(
+            "연결 해제 실페",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text(
+            e.toString(),
+            style: const TextStyle(color: Colors.white),
+          ),
+          duration: const Duration(seconds: 2),
+        )
+      );
+      return;
+    }
+  }
+
+  void unLinkApple() async {
+    try {
+      List<UserInfo> userInfoList = user.value!.providerData;
+      for (var i in userInfoList) {
+        if (i.providerId == 'apple.com') {
+          await user.value!.unlink(i.providerId);
+          Get.showSnackbar(
+              GetSnackBar(
+                backgroundColor: Colors.blue,
+                snackPosition: SnackPosition.BOTTOM,
+                titleText: const Text(
+                  "연결 해제 성공",
+                  style: TextStyle(color: Colors.white),
+                ),
+                messageText: Text(
+                  "애플 계정과 연결을 해제했습니다.",
+                  style: const TextStyle(color: Colors.white),
+                ),
+                duration: const Duration(seconds: 2),
+              )
+          );
+          return;
+        }
+      }
+      Get.showSnackbar(
+          GetSnackBar(
+            backgroundColor: Colors.blue,
+            snackPosition: SnackPosition.BOTTOM,
+            titleText: const Text(
+              "연결 해제 실패",
+              style: TextStyle(color: Colors.white),
+            ),
+            messageText: Text(
+              "연결된 애플 계정이 없습니다.",
               style: const TextStyle(color: Colors.white),
             ),
             duration: const Duration(seconds: 2),

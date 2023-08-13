@@ -176,6 +176,20 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       },
                     ),
                     PreferenceItem(
+                      title: '애플 연동',
+                      textColor: Colors.black,
+                      onTap: () {
+                        AuthController.to.linkApple();
+                      },
+                    ),
+                    PreferenceItem(
+                      title: '애플 연동 해제',
+                      textColor: Colors.black,
+                      onTap: () {
+                        AuthController.to.unLinkApple();
+                      },
+                    ),
+                    PreferenceItem(
                       title: '로그아웃',
                       textColor: Colors.red,
                       showIcon: false,
