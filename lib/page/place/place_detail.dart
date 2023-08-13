@@ -715,15 +715,15 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       padding: EdgeInsets.fromLTRB(0, 28, 0, 0),
       child: MainSection(
         title: "관련 장소",
-        action: Ink(
-          child: InkWell(
-            onTap: () {},
-            child: Text(
-              "더보기 (100)",
-              style: SectionTextStyle.labelMedium(Colors.blue),
-            ),
-          ),
-        ),
+        // action: Ink(
+        //   child: InkWell(
+        //     onTap: () {},
+        //     child: Text(
+        //       "더보기 (100)",
+        //       style: SectionTextStyle.labelMedium(Colors.blue),
+        //     ),
+        //   ),
+        // ),
         content: Padding(
           padding: EdgeInsets.fromLTRB(0, 2, 0, 0),
           child: SingleChildScrollView(
@@ -758,15 +758,15 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       padding: EdgeInsets.fromLTRB(0, 28, 0, 0),
       child: MainSection(
         title: "관련 스토리",
-        action: Ink(
-          child: InkWell(
-            onTap: () {},
-            child: Text(
-              "더보기 (100)",
-              style: SectionTextStyle.labelMedium(Colors.blue),
-            ),
-          ),
-        ),
+        // action: Ink(
+        //   child: InkWell(
+        //     onTap: () {},
+        //     child: Text(
+        //       "더보기 (100)",
+        //       style: SectionTextStyle.labelMedium(Colors.blue),
+        //     ),
+        //   ),
+        // ),
         content: Padding(
           padding: EdgeInsets.fromLTRB(0, 6, 0, 0),
           child: SingleChildScrollView(
