@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>935689841961-m7t813lpb96bs9bfa442l9edirnbtjid.apps.googleusercontent.com</string>
+	<string>935689841961-mhlvcubu0ub0vvocm85ot3acmv54qgbt.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.935689841961-m7t813lpb96bs9bfa442l9edirnbtjid</string>
+	<string>com.googleusercontent.apps.935689841961-mhlvcubu0ub0vvocm85ot3acmv54qgbt</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCHexbbGEBzdRX4PXRaf5bxN5E380cWIFg</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.placeMobileFlutter</string>
+	<string>com.ours.place</string>
 	<key>PROJECT_ID</key>
 	<string>yeoksi-ours-dev</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:935689841961:ios:a64592e18cb56a13851b38</string>
+	<string>1:935689841961:ios:a09aefb1d0840759851b38</string>
 </dict>
 </plist>
