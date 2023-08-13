@@ -45,6 +45,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   String? _bookmarkNameError;
 
+  int? commentSortKey = 0;
+
   final List<Map<String, dynamic>> _commentData = [
     {
      "name": "민준",
@@ -553,7 +555,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         action: Ink(
           child: InkWell(
             onTap: () {
-
+              __showCommentSheet();
             },
             child: Text(
               "더보기 (100)",
@@ -854,6 +856,193 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     });
   }
 
+  void __showCreateBookmarkDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter dialogState) {
+              return AlertDialog(
+                title: Text("북마크 추가"),
+                content: TextField(
+                  maxLength: 50,
+                  controller: _bookmarkNameController,
+                  onChanged: (text) {
+                    dialogState(() {
+                      setState(() {
+                        _bookmarkNameError = bookmarkTextFieldValidator(text);
+                      });
+                    });
+                  },
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "북마크 이름",
+                      errorText: _bookmarkNameError
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    },
+                    child: Text('취소', style: TextStyle(color: Colors.red),),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    },
+                    child: Text('만들기', style: TextStyle(color: Colors.blue),),
+                  )
+                ],
+              );
+            },
+          );
+        }
+    );
+  }
+
+  void __showTimeReportDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("운영중 오류 제보"),
+            content: Text("현재 운영 중으로 표시되어 있으나 실제로 운영 중이 아닌 경우, 제보하기 버튼을 눌러 제보해주시기 바랍니다."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                child: Text('취소', style: TextStyle(color: Colors.red),),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                  Get.showSnackbar(
+                      const GetSnackBar(
+                        backgroundColor: Colors.blue,
+                        snackPosition: SnackPosition.BOTTOM,
+                        titleText: Text(
+                          "제보 완료",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        messageText: Text(
+                          "제보 감사합니다.",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        duration: Duration(seconds: 2),
+                      )
+                  );
+                },
+                child: Text('제보하기', style: TextStyle(color: Colors.blue),),
+              )
+            ],
+          );
+        }
+    );
+  }
+
+  void __showCommentSheet() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      useSafeArea: true,
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter bottomState) {
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(8),
+                  topLeft: Radius.circular(8),
+                ),
+              ),
+              padding: EdgeInsets.fromLTRB(24, 24, 24, 18),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(child: Text("한줄평", style: SectionTextStyle.sectionTitle(),),),
+                        SizedBox(
+                          height: 30,
+                          child: DropdownButton<int>(
+                            padding: EdgeInsets.zero,
+                            value: commentSortKey,
+                            underline: SizedBox(),
+                            items: [
+                              DropdownMenuItem(child: Text('최신순'), value: 0,),
+                              DropdownMenuItem(child: Text('좋아요순'), value: 1,),
+                            ],
+                            onChanged: (int? value) {
+                              bottomState(() {
+                                setState(() {
+                                  commentSortKey = value!;
+                                });
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 18,),
+                  Expanded(
+                    child: ListView.separated(
+                      controller: _bookmarkScrollController,
+                      padding: EdgeInsets.zero,
+                      itemCount: _bookmarkData.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index < _bookmarkData.length) {
+                          return ListTile(
+                            minVerticalPadding: 0,
+                            contentPadding: EdgeInsets.zero,
+                            title: Text("${_bookmarkData[index]['name']} $index"),
+                            trailing: _bookmarkData[index]['include']
+                                ? Icon(Icons.check_box, color: lightColorScheme.primary,)
+                                : Icon(Icons.check_box_outline_blank),
+                            onTap: () {
+                              bottomState(() {
+                                setState(() {
+                                  _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
+                                });
+                              });
+                            },
+                          );
+                        } else {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 32),
+                            child: Center(child: CircularProgressIndicator(),),
+                          );
+                        }
+                      },
+                      separatorBuilder: (context, index) {
+                        return Divider(height: 0, color: Colors.grey[250],);
+                      },
+                    ),
+                  ),
+                  // SizedBox(height: 18,),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    width: double.infinity,
+                    child: FilledButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('닫기')
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      }
+    );
+  }
+
   void __showPhotoSheet() {
     showModalBottomSheet(
         isScrollControlled: true,
@@ -910,92 +1099,6 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 )
               ],
             ),
-          );
-        }
-    );
-  }
-
-  void __showTimeReportDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("운영중 오류 제보"),
-            content: Text("현재 운영 중으로 표시되어 있으나 실제로 운영 중이 아닌 경우, 제보하기 버튼을 눌러 제보해주시기 바랍니다."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
-                child: Text('취소', style: TextStyle(color: Colors.red),),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                  Get.showSnackbar(
-                      const GetSnackBar(
-                        backgroundColor: Colors.blue,
-                        snackPosition: SnackPosition.BOTTOM,
-                        titleText: Text(
-                          "제보 완료",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        messageText: Text(
-                          "제보 감사합니다.",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        duration: Duration(seconds: 2),
-                      )
-                  );
-                },
-                child: Text('제보하기', style: TextStyle(color: Colors.blue),),
-              )
-            ],
-          );
-        }
-    );
-  }
-
-  void __showCreateBookmarkDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return StatefulBuilder(
-            builder: (BuildContext context, StateSetter dialogState) {
-              return AlertDialog(
-                title: Text("북마크 추가"),
-                content: TextField(
-                  maxLength: 50,
-                  controller: _bookmarkNameController,
-                  onChanged: (text) {
-                    dialogState(() {
-                      setState(() {
-                        _bookmarkNameError = bookmarkTextFieldValidator(text);
-                      });
-                    });
-                  },
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "북마크 이름",
-                      errorText: _bookmarkNameError
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop();
-                    },
-                    child: Text('취소', style: TextStyle(color: Colors.red),),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop();
-                    },
-                    child: Text('만들기', style: TextStyle(color: Colors.blue),),
-                  )
-                ],
-              );
-            },
           );
         }
     );
