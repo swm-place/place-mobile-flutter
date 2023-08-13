@@ -781,6 +781,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   }
 
   void __showBookmarkSelectionSheet() {
+    bool stateFirst = true;
     showModalBottomSheet(
         isScrollControlled: true,
         useSafeArea: true,
@@ -788,17 +789,20 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         builder: (BuildContext context) {
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter bottomState) {
-              _bookmarkScrollController.addListener(() {
-                if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset) {
-                  bottomState(() {
-                    setState(() {
-                      for (int i = 0;i < 20;i++) {
-                        _bookmarkData.add({"name": "북마크", "include": math.Random().nextBool()});
-                      }
+              if (stateFirst) {
+                _bookmarkScrollController.addListener(() {
+                  if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset) {
+                    stateFirst = false;
+                    bottomState(() {
+                      setState(() {
+                        for (int i = 0;i < 20;i++) {
+                          _bookmarkData.add({"name": "북마크", "include": math.Random().nextBool()});
+                        }
+                      });
                     });
-                  });
-                }
-              });
+                  }
+                });
+              }
               return Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
