@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/main.dart';
 import 'package:place_mobile_flutter/page/account/signup.dart';
@@ -285,6 +286,213 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
           titleText: const Text(
             "로그인 실패",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text(
+            e.toString(),
+            style: const TextStyle(color: Colors.white),
+          ),
+          duration: const Duration(seconds: 2),
+        )
+      );
+      return;
+    }
+  }
+
+  void signInGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        return;
+      }
+
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      bool isLinked = false;
+      try {
+        final List<String> signInMethods = await authInstance.fetchSignInMethodsForEmail(googleUser!.email);
+        for (var s in signInMethods) {
+          if (s == 'password') {
+            isLinked = true;
+            await authInstance.signInWithCredential(credential);
+            break;
+          }
+        }
+      } catch(e) {
+        isLinked = false;
+      }
+
+      if (isLinked) {
+        Get.showSnackbar(
+            GetSnackBar(
+              backgroundColor: Colors.blue,
+              snackPosition: SnackPosition.BOTTOM,
+              titleText: const Text(
+                "로그인 성공",
+                style: TextStyle(color: Colors.white),
+              ),
+              messageText: Text(
+                "'${authInstance.currentUser!.email}'님, 환영합니다.",
+                style: const TextStyle(color: Colors.white),
+              ),
+              duration: const Duration(seconds: 2),
+            )
+        );
+      } else {
+        Get.showSnackbar(
+            GetSnackBar(
+              backgroundColor: Colors.red,
+              snackPosition: SnackPosition.BOTTOM,
+              titleText: const Text(
+                "로그인 실패",
+                style: TextStyle(color: Colors.white),
+              ),
+              messageText: Text(
+                '해당 구글 계정과 연결된 계정이 없습니다. 다른 계정으로 시도하거나 회원가입을 먼저 진행해주세요.',
+                style: const TextStyle(color: Colors.white),
+              ),
+              duration: const Duration(seconds: 4),
+            )
+        );
+      }
+      // _loginSuccess();
+    } catch(e) {
+      Get.showSnackbar(
+        GetSnackBar(
+          backgroundColor: Colors.red,
+          snackPosition: SnackPosition.BOTTOM,
+          titleText: const Text(
+            "로그인 실패",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text(
+            e.toString(),
+            style: const TextStyle(color: Colors.white),
+          ),
+          duration: const Duration(seconds: 2),
+        )
+      );
+      return;
+    }
+  }
+
+  void linkGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      if (user.value != null) {
+        await user.value!.linkWithCredential(credential);
+        Get.showSnackbar(
+            GetSnackBar(
+              backgroundColor: Colors.blue,
+              snackPosition: SnackPosition.BOTTOM,
+              titleText: const Text(
+                "연동 성공",
+                style: TextStyle(color: Colors.white),
+              ),
+              messageText: Text(
+                "'${googleUser!.email} 계정과 연결했습니다. 이제 해당 구글 계정으로 로그인이 가능합니다.",
+                style: const TextStyle(color: Colors.white),
+              ),
+              duration: const Duration(seconds: 4),
+            )
+        );
+      } else {
+        Get.showSnackbar(
+            GetSnackBar(
+              backgroundColor: Colors.red,
+              snackPosition: SnackPosition.BOTTOM,
+              titleText: const Text(
+                "연결 실패",
+                style: TextStyle(color: Colors.white),
+              ),
+              messageText: Text(
+                '구글 계정과 연결에 실패했습니다. 다시 시도해주세요.',
+                style: const TextStyle(color: Colors.white),
+              ),
+              duration: const Duration(seconds: 2),
+            )
+        );
+      }
+    } catch(e) {
+      Get.showSnackbar(
+        GetSnackBar(
+          backgroundColor: Colors.red,
+          snackPosition: SnackPosition.BOTTOM,
+          titleText: const Text(
+            "연결 실패",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text(
+            e.toString(),
+            style: const TextStyle(color: Colors.white),
+          ),
+          duration: const Duration(seconds: 2),
+        )
+      );
+      return;
+    }
+  }
+
+  void unLinkGoogle() async {
+    try {
+      List<UserInfo> userInfoList = user.value!.providerData;
+      for (var i in userInfoList) {
+        if (i.providerId == 'google.com') {
+          String? email = i.email;
+          email ??= '구글 계정';
+          await user.value!.unlink(i.providerId);
+          Get.showSnackbar(
+              GetSnackBar(
+                backgroundColor: Colors.blue,
+                snackPosition: SnackPosition.BOTTOM,
+                titleText: const Text(
+                  "연결 해제 성공",
+                  style: TextStyle(color: Colors.white),
+                ),
+                messageText: Text(
+                  "${email}과 연결을 해제했습니다.",
+                  style: const TextStyle(color: Colors.white),
+                ),
+                duration: const Duration(seconds: 2),
+              )
+          );
+          return;
+        }
+      }
+      Get.showSnackbar(
+          GetSnackBar(
+            backgroundColor: Colors.blue,
+            snackPosition: SnackPosition.BOTTOM,
+            titleText: const Text(
+              "연결 해제 실패",
+              style: TextStyle(color: Colors.white),
+            ),
+            messageText: Text(
+              "연결된 구글 계정이 없습니다.",
+              style: const TextStyle(color: Colors.white),
+            ),
+            duration: const Duration(seconds: 2),
+          )
+      );
+    } catch(e) {
+      Get.showSnackbar(
+        GetSnackBar(
+          backgroundColor: Colors.red,
+          snackPosition: SnackPosition.BOTTOM,
+          titleText: const Text(
+            "연결 해제 실페",
             style: TextStyle(color: Colors.white),
           ),
           messageText: Text(
