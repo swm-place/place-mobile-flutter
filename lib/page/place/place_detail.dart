@@ -810,11 +810,11 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                     topLeft: Radius.circular(8),
                   ),
                 ),
-                padding: EdgeInsets.fromLTRB(24, 24, 24, 18),
                 child: Column(
                   children: [
-                    SizedBox(
+                    Container(
                       width: double.infinity,
+                      padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -839,42 +839,45 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                     ),
                     SizedBox(height: 18,),
                     Expanded(
-                      child: ListView.separated(
+                      child: Scrollbar(
                         controller: _bookmarkScrollController,
-                        padding: EdgeInsets.zero,
-                        itemCount: _bookmarkData.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index < _bookmarkData.length) {
-                            return ListTile(
-                              minVerticalPadding: 0,
-                              contentPadding: EdgeInsets.zero,
-                              title: Text("${_bookmarkData[index]['name']} $index"),
-                              trailing: _bookmarkData[index]['include']
-                                  ? Icon(Icons.check_box, color: lightColorScheme.primary,)
-                                  : Icon(Icons.check_box_outline_blank),
-                              onTap: () {
-                                bottomState(() {
-                                  setState(() {
-                                    _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
+                        child: ListView.separated(
+                          controller: _bookmarkScrollController,
+                          padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                          itemCount: _bookmarkData.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index < _bookmarkData.length) {
+                              return ListTile(
+                                minVerticalPadding: 0,
+                                contentPadding: EdgeInsets.zero,
+                                title: Text("${_bookmarkData[index]['name']} $index"),
+                                trailing: _bookmarkData[index]['include']
+                                    ? Icon(Icons.check_box, color: lightColorScheme.primary,)
+                                    : Icon(Icons.check_box_outline_blank),
+                                onTap: () {
+                                  bottomState(() {
+                                    setState(() {
+                                      _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
+                                    });
                                   });
-                                });
-                              },
-                            );
-                          } else {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 32),
-                              child: Center(child: CircularProgressIndicator(),),
-                            );
-                          }
-                        },
-                        separatorBuilder: (context, index) {
-                          return Divider(height: 0, color: Colors.grey[250],);
-                        },
-                      ),
+                                },
+                              );
+                            } else {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 32),
+                                child: Center(child: CircularProgressIndicator(),),
+                              );
+                            }
+                          },
+                          separatorBuilder: (context, index) {
+                            return Divider(height: 0, color: Colors.grey[250],);
+                          },
+                        ),
+                      )
                     ),
                     // SizedBox(height: 18,),
                     Container(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      padding: EdgeInsets.fromLTRB(24, 0, 24, 18),
                       width: double.infinity,
                       child: FilledButton(
                           onPressed: () {
