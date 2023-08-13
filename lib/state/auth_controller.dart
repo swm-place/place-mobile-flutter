@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/main.dart';
 import 'package:place_mobile_flutter/page/account/signup.dart';
 import 'dart:convert';
 
 import 'package:place_mobile_flutter/state/user_controller.dart';
+import 'package:place_mobile_flutter/util/apple_crypto.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
@@ -52,6 +55,20 @@ class AuthController extends GetxController {
     return payloadMap['exp'];
   }
 
+  String _parseJwtEmail(String token) {
+    final parts = token.split('.');
+    if (parts.length != 3) {
+      throw Exception('invalid token');
+    }
+
+    final payload = _decodeBase64(parts[1]);
+    final payloadMap = json.decode(payload);
+    if (payloadMap is! Map<String, dynamic>) {
+      throw Exception('invalid payload');
+    }
+    return payloadMap['email'];
+  }
+
   Future<bool> checkTokenValid() async {
     if (idToken == null || expireDate == null) {
       await getIdTokenStream(AuthController.to.user.value);
@@ -79,16 +96,14 @@ class AuthController extends GetxController {
     }
   }
 
-  Stream<User?> getUser() async* {
-    await for (final User? user in authInstance.userChanges()) {
-      print("user: $user");
-      await getIdTokenStream(user);
-      if (user != null) {
-        _loginSuccess(user);
-      } else {
-        Get.offAll(() => const MyApp());
-      }
-      yield user;
+  Future<void> getUser(User? user) async {
+    print("user: $user");
+    this.user.value = user;
+    await getIdTokenStream(user);
+    if (user != null) {
+      _loginSuccess(user);
+    } else {
+      Get.offAll(() => const MyApp());
     }
   }
 
@@ -96,7 +111,6 @@ class AuthController extends GetxController {
   void onReady() {
     super.onReady();
     Get.put(ProfileController());
-    user.bindStream(getUser());
   }
 
   void _loginSuccess(User user) async {
@@ -154,7 +168,8 @@ class AuthController extends GetxController {
     );
 
     try {
-      await authInstance.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await authInstance.createUserWithEmailAndPassword(email: email, password: password);
+      await getUser(userCredential.user);
     } catch(e) {
       Navigator.of(context, rootNavigator: true).pop();
       Get.showSnackbar(
@@ -215,7 +230,8 @@ class AuthController extends GetxController {
     );
 
     try {
-      await authInstance.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await authInstance.signInWithEmailAndPassword(email: email, password: password);
+      await getUser(userCredential.user);
     } catch(e) {
       Navigator.of(context, rootNavigator: true).pop();
       Get.showSnackbar(
@@ -360,7 +376,105 @@ class AuthController extends GetxController {
             )
         );
       }
-      // _loginSuccess();
+    } catch(e) {
+      Get.showSnackbar(
+        GetSnackBar(
+          backgroundColor: Colors.red,
+          snackPosition: SnackPosition.BOTTOM,
+          titleText: const Text(
+            "로그인 실패",
+            style: TextStyle(color: Colors.white),
+          ),
+          messageText: Text(
+            e.toString(),
+            style: const TextStyle(color: Colors.white),
+          ),
+          duration: const Duration(seconds: 2),
+        )
+      );
+      return;
+    }
+  }
+
+  void signInApple() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    try {
+      // final rawNonce = AppleFirebaseCrypto.generateNonce();
+      // final nonce = AppleFirebaseCrypto.sha256ofString(rawNonce);
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName
+        ],
+      );
+
+      String? email = await sp.getString(appleCredential.userIdentifier!);
+      if (email == null) {
+        await sp.setString(appleCredential.userIdentifier!, appleCredential.email!);
+        email = appleCredential.email!;
+      }
+
+      print(email);
+
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode
+        // rawNonce: rawNonce,
+      );
+
+      return;
+
+      // print(appleCredential);
+      // String email = appleCredential.email!;
+      //
+      bool isLinked = true;
+      try {
+      //   final List<String> signInMethods = await authInstance.fetchSignInMethodsForEmail(email);
+      //   for (var s in signInMethods) {
+      //     if (s == 'password') {
+      //       isLinked = true;
+            await authInstance.signInWithCredential(oauthCredential);
+      //       break;
+      //     }
+      //   }
+      } catch(e) {
+        print('appleError: ' + e.toString());
+        isLinked = false;
+      }
+
+      if (isLinked) {
+        Get.showSnackbar(
+            GetSnackBar(
+              backgroundColor: Colors.blue,
+              snackPosition: SnackPosition.BOTTOM,
+              titleText: const Text(
+                "로그인 성공",
+                style: TextStyle(color: Colors.white),
+              ),
+              messageText: Text(
+                "'${authInstance.currentUser!.email}'님, 환영합니다.",
+                style: const TextStyle(color: Colors.white),
+              ),
+              duration: const Duration(seconds: 2),
+            )
+        );
+      } else {
+        Get.showSnackbar(
+            GetSnackBar(
+              backgroundColor: Colors.red,
+              snackPosition: SnackPosition.BOTTOM,
+              titleText: const Text(
+                "로그인 실패",
+                style: TextStyle(color: Colors.white),
+              ),
+              messageText: Text(
+                '해당 애플 계정과 연결된 계정이 없습니다. 다른 계정으로 시도하거나 회원가입을 먼저 진행해주세요.',
+                style: const TextStyle(color: Colors.white),
+              ),
+              duration: const Duration(seconds: 4),
+            )
+        );
+      }
     } catch(e) {
       Get.showSnackbar(
         GetSnackBar(
@@ -509,6 +623,7 @@ class AuthController extends GetxController {
   void signOut() async {
     try {
       await authInstance.signOut();
+      await getUser(null);
       Get.showSnackbar(
         const GetSnackBar(
           backgroundColor: Colors.blue,

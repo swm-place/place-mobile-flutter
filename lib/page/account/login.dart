@@ -110,7 +110,9 @@ class LoginPage extends StatelessWidget {
                           maxWidth: 48
                       ),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          AuthController.to.signInApple();
+                        },
                         icon: Image.asset(
                           'assets/logos/apple_logo.png',
                           width: 24,
