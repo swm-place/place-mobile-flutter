@@ -108,9 +108,10 @@ class AuthController extends GetxController {
   }
 
   @override
-  void onReady() {
+  void onReady() async {
     super.onReady();
     Get.put(ProfileController());
+    // await authInstance.currentUser!;
   }
 
   void _loginSuccess(User user) async {
@@ -329,36 +330,45 @@ class AuthController extends GetxController {
         idToken: googleAuth?.idToken,
       );
 
-      bool isLinked = false;
-      try {
-        final List<String> signInMethods = await authInstance.fetchSignInMethodsForEmail(googleUser!.email);
-        for (var s in signInMethods) {
-          if (s == 'password') {
-            isLinked = true;
-            await authInstance.signInWithCredential(credential);
-            break;
-          }
+      UserCredential userCredential = await authInstance.signInWithCredential(credential);
+      User? user = userCredential.user;
+      if (user != null) {
+        print(user.providerData);
+        if (user.providerData.length == 1) {
+          await user.delete();
+          Get.showSnackbar(
+              GetSnackBar(
+                backgroundColor: Colors.red,
+                snackPosition: SnackPosition.BOTTOM,
+                titleText: const Text(
+                  "로그인 실패",
+                  style: TextStyle(color: Colors.white),
+                ),
+                messageText: Text(
+                  '해당 SNS 계정과 연결된 OURS 계정이 없습니다. 로그인 이나 회원가입 후 계정을 연결해주세요.',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                duration: const Duration(seconds: 4),
+              )
+          );
+        } else {
+          await getUser(user);
+          Get.showSnackbar(
+              GetSnackBar(
+                backgroundColor: Colors.blue,
+                snackPosition: SnackPosition.BOTTOM,
+                titleText: const Text(
+                  "로그인 성공",
+                  style: TextStyle(color: Colors.white),
+                ),
+                messageText: Text(
+                  "'${user.email}'님, 환영합니다.",
+                  style: const TextStyle(color: Colors.white),
+                ),
+                duration: const Duration(seconds: 2),
+              )
+          );
         }
-      } catch(e) {
-        isLinked = false;
-      }
-
-      if (isLinked) {
-        Get.showSnackbar(
-            GetSnackBar(
-              backgroundColor: Colors.blue,
-              snackPosition: SnackPosition.BOTTOM,
-              titleText: const Text(
-                "로그인 성공",
-                style: TextStyle(color: Colors.white),
-              ),
-              messageText: Text(
-                "'${authInstance.currentUser!.email}'님, 환영합니다.",
-                style: const TextStyle(color: Colors.white),
-              ),
-              duration: const Duration(seconds: 2),
-            )
-        );
       } else {
         Get.showSnackbar(
             GetSnackBar(
@@ -369,7 +379,7 @@ class AuthController extends GetxController {
                 style: TextStyle(color: Colors.white),
               ),
               messageText: Text(
-                '해당 구글 계정과 연결된 계정이 없습니다. 다른 계정으로 시도하거나 회원가입을 먼저 진행해주세요.',
+                '로그인 과정에서 오류가 발생했습니다. 다시 시도해주세요.',
                 style: const TextStyle(color: Colors.white),
               ),
               duration: const Duration(seconds: 4),
