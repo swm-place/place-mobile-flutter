@@ -13,6 +13,7 @@ class ShortPlaceReviewCard extends StatefulWidget {
     required this.date,
     required this.likeComment,
     required this.likeCount,
+    this.height=double.infinity,
     Key? key,
   }) : super(key: key);
 
@@ -25,6 +26,8 @@ class ShortPlaceReviewCard extends StatefulWidget {
   bool likeComment;
 
   TickerProvider vsync;
+
+  double height;
 
   @override
   State<StatefulWidget> createState() {
@@ -55,19 +58,22 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
         child: Container(
           color: Colors.grey[300],
           width: double.infinity,
-          height: double.infinity,
+          height: widget.height,
           padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
           child: Column(
             children: [
               Expanded(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: AutoSizeText(
-                    widget.comment,
-                    textAlign: TextAlign.center,
-                    style: SectionTextStyle.sectionContentLine(Colors.black),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: AutoSizeText(
+                      widget.comment,
+                      textAlign: TextAlign.center,
+                      style: SectionTextStyle.sectionContentLine(Colors.black),
+                    ),
                   ),
-                ),
+                )
               ),
               const SizedBox(height: 8,),
               Row(
@@ -123,9 +129,9 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                                 onLoaded: (composition) {
                                   _likeButtonController.duration = composition.duration;
                                   if (widget.likeComment) {
-                                    _likeButtonController.animateTo(0.6);
+                                    _likeButtonController.value = 0.6;
                                   } else {
-                                    _likeButtonController.animateBack(0.1);
+                                    _likeButtonController.value = 0.1;
                                   }
                                 }
                             ),
