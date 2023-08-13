@@ -81,7 +81,9 @@ class LoginPage extends StatelessWidget {
                         maxWidth: 48
                       ),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          AuthController.to.signInGoogle();
+                        },
                         icon: Image.asset(
                           'assets/logos/google_logo.png',
                           width: 24,
