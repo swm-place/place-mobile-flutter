@@ -1077,10 +1077,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   topLeft: Radius.circular(8),
                 ),
               ),
-              padding: EdgeInsets.fromLTRB(24, 24, 24, 18),
               child: Column(
                 children: [
-                  SizedBox(
+                  Container(
+                    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
                     width: double.infinity,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1110,40 +1110,43 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   ),
                   SizedBox(height: 18,),
                   Expanded(
-                    child: ListView.separated(
+                    child: Scrollbar(
                       controller: _commentScrollController,
-                      padding: EdgeInsets.zero,
-                      itemCount: _commentData.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index < _commentData.length) {
-                          return Padding(
-                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            child: ShortPlaceReviewCard(
-                              vsync: this,
-                              height: commentHeight,
-                              name: _commentData[index]['name'],
-                              comment: _commentData[index]['comment'],
-                              profileUrl: _commentData[index]['profileUrl'],
-                              date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
-                              likeComment: _commentData[index]['likeComment'],
-                              likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
-                            ),
-                          );
-                        } else {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 32),
-                            child: Center(child: CircularProgressIndicator(),),
-                          );
-                        }
-                      },
-                      separatorBuilder: (context, index) {
-                        return SizedBox(height: 12,);
-                      },
-                    ),
+                      child: ListView.separated(
+                        controller: _commentScrollController,
+                        padding: EdgeInsets.zero,
+                        itemCount: _commentData.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index < _commentData.length) {
+                            return Padding(
+                              padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                              child: ShortPlaceReviewCard(
+                                vsync: this,
+                                height: commentHeight,
+                                name: _commentData[index]['name'],
+                                comment: _commentData[index]['comment'],
+                                profileUrl: _commentData[index]['profileUrl'],
+                                date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
+                                likeComment: _commentData[index]['likeComment'],
+                                likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
+                              ),
+                            );
+                          } else {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 32),
+                              child: Center(child: CircularProgressIndicator(),),
+                            );
+                          }
+                        },
+                        separatorBuilder: (context, index) {
+                          return SizedBox(height: 12,);
+                        },
+                      ),
+                    )
                   ),
                   // SizedBox(height: 18,),
                   Container(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    padding: EdgeInsets.fromLTRB(24, 0, 24, 18),
                     width: double.infinity,
                     child: FilledButton(
                         onPressed: () {
