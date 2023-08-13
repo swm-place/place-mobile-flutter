@@ -162,6 +162,20 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       },
                     ),
                     PreferenceItem(
+                      title: '구글 연동',
+                      textColor: Colors.black,
+                      onTap: () {
+                        AuthController.to.linkGoogle();
+                      },
+                    ),
+                    PreferenceItem(
+                      title: '구글 연동 해제',
+                      textColor: Colors.black,
+                      onTap: () {
+                        AuthController.to.unLinkGoogle();
+                      },
+                    ),
+                    PreferenceItem(
                       title: '로그아웃',
                       textColor: Colors.red,
                       showIcon: false,
