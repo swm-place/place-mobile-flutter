@@ -126,35 +126,35 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10,),
-                    Container(
-                      width: getDynamicPixel(context, 20),
-                      height: getDynamicPixel(context, 20),
-                      constraints: const BoxConstraints(
-                          minHeight: 32,
-                          minWidth: 32,
-                          maxHeight: 48,
-                          maxWidth: 48
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          AuthController.to.signInFacebook();
-                        },
-                        icon: Image.asset(
-                          'assets/logos/facebook_logo.png',
-                          width: 24,
-                          height: 24,
-                        ),
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Color.fromARGB(255, 66, 102, 180);
-                            }
-                            return Color.fromARGB(255, 59, 88, 153);
-                          }),
-                        ),
-                      ),
-                    )
+                    // const SizedBox(width: 10,),
+                    // Container(
+                    //   width: getDynamicPixel(context, 20),
+                    //   height: getDynamicPixel(context, 20),
+                    //   constraints: const BoxConstraints(
+                    //       minHeight: 32,
+                    //       minWidth: 32,
+                    //       maxHeight: 48,
+                    //       maxWidth: 48
+                    //   ),
+                    //   child: IconButton(
+                    //     onPressed: () {
+                    //       AuthController.to.signInFacebook();
+                    //     },
+                    //     icon: Image.asset(
+                    //       'assets/logos/facebook_logo.png',
+                    //       width: 24,
+                    //       height: 24,
+                    //     ),
+                    //     style: ButtonStyle(
+                    //       backgroundColor: MaterialStateProperty.resolveWith((states) {
+                    //         if (states.contains(MaterialState.pressed)) {
+                    //           return Color.fromARGB(255, 66, 102, 180);
+                    //         }
+                    //         return Color.fromARGB(255, 59, 88, 153);
+                    //       }),
+                    //     ),
+                    //   ),
+                    // )
                   ],
                 ),
                 const SizedBox(height: 10,),
