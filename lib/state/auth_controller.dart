@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:place_mobile_flutter/util/auth/auth_apple.dart';
 import 'package:place_mobile_flutter/util/auth/auth_google.dart';
+import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
@@ -139,18 +140,9 @@ class AuthController extends GetxController {
         }
       } else {
         Get.showSnackbar(
-            GetSnackBar(
-              backgroundColor: Colors.red,
-              snackPosition: SnackPosition.BOTTOM,
-              titleText: const Text(
-                "로그인 실패",
-                style: TextStyle(color: Colors.white),
-              ),
-              messageText: Text(
-                '로그인 과정에서 오류가 발생했습니다. 다시 로그인 해주세요.',
-                style: const TextStyle(color: Colors.white),
-              ),
-              duration: const Duration(seconds: 2),
+            ErrorGetSnackBar(
+              title: "로그인 실패",
+              message: "로그인 과정에서 오류가 발생했습니다. 다시 로그인 해주세요.",
             )
         );
         signOut();
@@ -177,47 +169,28 @@ class AuthController extends GetxController {
         }
     );
 
+    UserCredential userCredential;
     try {
-      UserCredential userCredential = await authInstance.createUserWithEmailAndPassword(email: email, password: password);
+      userCredential = await authInstance.createUserWithEmailAndPassword(email: email, password: password);
       await getUser(userCredential.user);
     } catch(e) {
       Navigator.of(context, rootNavigator: true).pop();
       Get.showSnackbar(
-        GetSnackBar(
-          backgroundColor: Colors.red,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: const Text(
-            "회원가입 실패",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 2),
-        )
+          ErrorGetSnackBar(
+            title: "회원가입 실패",
+            message: "회원가입 과정에서 오류가 발생했습니다. 회원가입을 다시 시도해주세요.",
+          )
       );
       return;
     }
 
     Navigator.of(context, rootNavigator: true).pop();
     Get.showSnackbar(
-      GetSnackBar(
-        backgroundColor: Colors.blue,
-        snackPosition: SnackPosition.BOTTOM,
-        titleText: const Text(
-          "회원가입 성공",
-          style: TextStyle(color: Colors.white),
-        ),
-        messageText: Text(
-          "'${authInstance.currentUser!.email}'님, 환영합니다.",
-          style: const TextStyle(color: Colors.white),
-        ),
-        duration: const Duration(seconds: 2),
-      )
+        SuccessGetSnackBar(
+          title: "회원가입 성공",
+          message: "'${userCredential.user!.email}'님, 환영합니다.",
+        )
     );
-
-    // _loginSuccess();
   }
 
   void signInEmail(BuildContext context, String email, password) async {
@@ -239,90 +212,29 @@ class AuthController extends GetxController {
         }
     );
 
+    UserCredential userCredential;
     try {
-      UserCredential userCredential = await authInstance.signInWithEmailAndPassword(email: email, password: password);
+      userCredential = await authInstance.signInWithEmailAndPassword(email: email, password: password);
       await getUser(userCredential.user);
     } catch(e) {
       Navigator.of(context, rootNavigator: true).pop();
       Get.showSnackbar(
-        GetSnackBar(
-          backgroundColor: Colors.red,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: const Text(
-            "로그인 실패",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 2),
-        )
+          ErrorGetSnackBar(
+            title: "로그인 실패",
+            message: "로그인 과정에서 오류가 발생했습니다. 다시 시도해주세요.",
+          )
       );
       return;
     }
 
     Navigator.of(context, rootNavigator: true).pop();
     Get.showSnackbar(
-      GetSnackBar(
-        backgroundColor: Colors.blue,
-        snackPosition: SnackPosition.BOTTOM,
-        titleText: const Text(
-          "로그인 성공",
-          style: TextStyle(color: Colors.white),
-        ),
-        messageText: Text(
-          "'${authInstance.currentUser!.email}'님, 환영합니다.",
-          style: const TextStyle(color: Colors.white),
-        ),
-        duration: const Duration(seconds: 2),
-      )
+        SuccessGetSnackBar(
+          title: "로그인 성공",
+          message: "'${userCredential.user!.email}'님, 환영합니다.",
+        )
     );
-
     // _loginSuccess();
-  }
-
-  void signInFacebook() async {
-    try {
-      final LoginResult loginResult = await FacebookAuth.instance.login();
-      final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
-      await authInstance.signInWithCredential(facebookAuthCredential);
-
-      Get.showSnackbar(
-        GetSnackBar(
-          backgroundColor: Colors.blue,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: const Text(
-            "로그인 성공",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            "'${authInstance.currentUser!.email}'님, 환영합니다.",
-            style: const TextStyle(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 2),
-        )
-      );
-
-      // _loginSuccess();
-    } catch(e) {
-      Get.showSnackbar(
-        GetSnackBar(
-          backgroundColor: Colors.red,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: const Text(
-            "로그인 실패",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 2),
-        )
-      );
-      return;
-    }
   }
 
   void signInGoogle() async {
@@ -356,36 +268,18 @@ class AuthController extends GetxController {
       await authInstance.signOut();
       await getUser(null);
       Get.showSnackbar(
-        const GetSnackBar(
-          backgroundColor: Colors.blue,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: Text(
-            "로그아웃 완료",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            "로그아웃을 완료하였습니다",
-            style: TextStyle(color: Colors.white),
-          ),
-          duration: Duration(seconds: 2),
+        SuccessGetSnackBar(
+          title: "로그아웃 완료",
+          message: "로그아웃을 완료하였습니다.",
         )
       );
       Get.offAll(() => const MyApp());
     } catch(e) {
       Get.showSnackbar(
-        GetSnackBar(
-          backgroundColor: Colors.red,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: const Text(
-            "로그아웃 실패",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 2),
-        )
+          ErrorGetSnackBar(
+            title: "로그아웃 실패",
+            message: "로그아웃에 실패했습니다. 다시 시도해주세요.",
+          )
       );
     }
   }
