@@ -195,7 +195,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       textColor: Colors.red,
                       showIcon: false,
                       onTap: () {
-                        performAsyncOperationWithDialog(AuthController.to.signOut, '로그아웃 중...');
+                        performAsyncNoArgumentOperationWithDialog(AuthController.to.signOut, '로그아웃 중...');
                       },
                     ),
                   ],

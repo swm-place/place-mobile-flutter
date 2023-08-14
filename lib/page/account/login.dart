@@ -7,15 +7,25 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/utils.dart';
 import 'package:place_mobile_flutter/page/account/find_password.dart';
 import 'package:place_mobile_flutter/page/account/signup.dart';
+import 'package:place_mobile_flutter/util/async_dialog.dart';
 import 'package:place_mobile_flutter/util/size.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
 import '../../theme/text_style.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _LoginPageState();
+  }
+}
+
+class _LoginPageState extends State<LoginPage> with AsyncOperationMixin {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +52,74 @@ class LoginPage extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                const _LoginFrom(),
+                Form(
+                  key: _formKey,
+                  child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "email",
+                                prefixIcon: Icon(
+                                    Icons.mail_rounded
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0,
+                                    horizontal: 14
+                                )
+                            ),
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.emailAddress,
+                            controller: emailController,
+                            validator: emailTextFieldValidator
+                        ),
+                        const SizedBox(height: 10,),
+                        TextFormField(
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: "password",
+                              prefixIcon: Icon(
+                                  Icons.lock_rounded
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 0,
+                                  horizontal: 14
+                              )
+                          ),
+                          textInputAction: TextInputAction.done,
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          controller: passwordController,
+                          validator: passwordTextFieldValidator,
+                        ),
+                        const SizedBox(height: 10,),
+                        Container(
+                          width: double.infinity,
+                          height: getDynamicPixel(context, 18),
+                          constraints: const BoxConstraints(
+                              minHeight: 34,
+                              maxHeight: 48
+                          ),
+                          child: FilledButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  Map<String, dynamic> arguments = {
+                                    'email': emailController.text.tr,
+                                    'password': passwordController.text.tr
+                                  };
+                                  performAsyncOperationWithDialog(AuthController.to.signInEmail, arguments, '로그인 중...');
+                                }
+                              },
+                              child: const Text("로그인")
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ),
                 const SizedBox(height: 10,),
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -195,94 +272,6 @@ class LoginPage extends StatelessWidget {
           ),
         )
       )
-    );
-  }
-}
-
-class _LoginFrom extends StatefulWidget {
-  const _LoginFrom({super.key});
-
-  @override
-  State<StatefulWidget> createState() {
-    return _LoginFormState();
-  }
-}
-
-class _LoginFormState extends State<_LoginFrom> {
-  final _formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Form(
-        key: _formKey,
-        child: Container(
-          width: double.infinity,
-          child: Column(
-            children: [
-              TextFormField(
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "email",
-                      prefixIcon: Icon(
-                          Icons.mail_rounded
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: 0,
-                        horizontal: 14
-                      )
-                  ),
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.emailAddress,
-                  controller: emailController,
-                  validator: emailTextFieldValidator
-              ),
-              const SizedBox(height: 10,),
-              TextFormField(
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "password",
-                    prefixIcon: Icon(
-                        Icons.lock_rounded
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 0,
-                      horizontal: 14
-                    )
-                ),
-                textInputAction: TextInputAction.done,
-                obscureText: true,
-                enableSuggestions: false,
-                autocorrect: false,
-                controller: passwordController,
-                validator: passwordTextFieldValidator,
-              ),
-              const SizedBox(height: 10,),
-              Container(
-                width: double.infinity,
-                height: getDynamicPixel(context, 18),
-                constraints: const BoxConstraints(
-                    minHeight: 34,
-                    maxHeight: 48
-                ),
-                child: FilledButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        AuthController.to.signInEmail(
-                          context,
-                          emailController.text.tr,
-                          passwordController.text.tr
-                        );
-                      }
-                    },
-                    child: const Text("로그인")
-                ),
-              ),
-            ],
-          ),
-        )
     );
   }
 }

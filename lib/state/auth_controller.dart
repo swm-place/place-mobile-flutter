@@ -150,31 +150,14 @@ class AuthController extends GetxController {
     );
   }
 
-  void signInEmail(BuildContext context, String email, password) async {
-    showDialog(
-      barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return const AlertDialog(
-            title: Text("로그인 처리중"),
-            content: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(width: 18,),
-                Text("곧 완료됩니다.")
-              ],
-            ),
-          );
-        }
-    );
-
+  Future<void> signInEmail(Map<String, dynamic> arguments) async {
+    String email = arguments['email'] as String;
+    String password = arguments['password'] as String;
     UserCredential userCredential;
     try {
       userCredential = await authInstance.signInWithEmailAndPassword(email: email, password: password);
       await getUser(userCredential.user);
     } catch(e) {
-      Navigator.of(context, rootNavigator: true).pop();
       Get.showSnackbar(
           ErrorGetSnackBar(
             title: "로그인 실패",
@@ -183,15 +166,12 @@ class AuthController extends GetxController {
       );
       return;
     }
-
-    Navigator.of(context, rootNavigator: true).pop();
     Get.showSnackbar(
         SuccessGetSnackBar(
           title: "로그인 성공",
           message: "'${userCredential.user!.email}'님, 환영합니다.",
         )
     );
-    // _loginSuccess();
   }
 
   void signInGoogle() async {
