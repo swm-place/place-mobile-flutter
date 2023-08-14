@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
-import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 
 class FirebaseAuthGoogle {
