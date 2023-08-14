@@ -18,6 +18,8 @@ class SuccessGetSnackBar extends GetSnackBar {
     titleText: Text(title, style: TextStyle(color: Colors.white),),
     messageText: Text(message, style: TextStyle(color: Colors.white),),
     duration: Duration(seconds: showDuration),
+    isDismissible: true,
+    snackStyle: SnackStyle.GROUNDED,
     key: key
   );
 
@@ -37,6 +39,8 @@ class ErrorGetSnackBar extends GetSnackBar {
     titleText: Text(title, style: TextStyle(color: Colors.white),),
     messageText: Text(message, style: TextStyle(color: Colors.white),),
     duration: Duration(seconds: showDuration),
+    isDismissible: true,
+    snackStyle: SnackStyle.GROUNDED,
     key: key
   );
 
@@ -56,6 +60,8 @@ class WarnGetSnackBar extends GetSnackBar {
     titleText: Text(title, style: TextStyle(color: Colors.white),),
     messageText: Text(message, style: TextStyle(color: Colors.white),),
     duration: Duration(seconds: showDuration),
+    isDismissible: true,
+    snackStyle: SnackStyle.GROUNDED,
     key: key
   );
 
