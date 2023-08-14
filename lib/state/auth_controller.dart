@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -411,17 +413,37 @@ class AuthController extends GetxController {
       final rawNonce = AppleFirebaseCrypto.generateNonce();
       final nonce = AppleFirebaseCrypto.sha256ofString(rawNonce);
 
-      final appleCredential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-        nonce: nonce,
-      );
+      AuthorizationCredentialAppleID appleCredential;
+      if (Platform.isIOS) {
+        appleCredential = await SignInWithApple.getAppleIDCredential(
+          scopes: [
+            AppleIDAuthorizationScopes.email,
+            AppleIDAuthorizationScopes.fullName,
+          ],
+          // nonce: nonce,
+        );
+      } else {
+        print('crediential apple start');
+        String redirectUri = 'https://alike-cuboid-marten.glitch.me/callbacks/sign_in_with_apple';
+        String clientId = 'place.ours.com';
+        appleCredential = await SignInWithApple.getAppleIDCredential(
+          scopes: [
+            AppleIDAuthorizationScopes.email,
+            AppleIDAuthorizationScopes.fullName,
+          ],
+          webAuthenticationOptions: WebAuthenticationOptions(
+            clientId: clientId,
+            redirectUri: Uri.parse(redirectUri)
+          ),
+          // nonce: nonce,
+        );
+        print('crediential apple: ${appleCredential}');
+      }
 
       final oauthCredential = OAuthProvider("apple.com").credential(
         idToken: appleCredential.identityToken,
-        rawNonce: rawNonce,
+        accessToken: appleCredential.authorizationCode
+        // rawNonce: rawNonce,
       );
 
       UserCredential userCredential = await authInstance.signInWithCredential(oauthCredential);
