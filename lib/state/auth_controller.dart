@@ -331,11 +331,11 @@ class AuthController extends GetxController {
   }
 
   void linkGoogle() async {
-    _authGoogle.linkGoogle(user.value);
+    await _authGoogle.linkGoogle(user.value);
   }
 
   void unLinkGoogle() async {
-    _authGoogle.unLinkGoogle(user.value);
+    await _authGoogle.unLinkGoogle(user.value);
   }
 
   void signInApple() async {
@@ -344,11 +344,11 @@ class AuthController extends GetxController {
   }
 
   void linkApple() async {
-    _authApple.linkApple(user.value);
+    await _authApple.linkApple(user.value);
   }
 
   void unLinkApple() async {
-    _authApple.unLinkApple(user.value);
+    await _authApple.unLinkApple(user.value);
   }
 
   void signOut() async {
