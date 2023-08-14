@@ -29,7 +29,6 @@ class PreferenceListSection extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Container(
-              color: Colors.grey[200],
               child: Column(
                 children: _createItems()
               ),
