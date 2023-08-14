@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:place_mobile_flutter/util/auth/auth_apple.dart';
 import 'package:place_mobile_flutter/util/auth/auth_google.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -24,6 +25,7 @@ class AuthController extends GetxController {
   late Rx<User?> user = Rx<User?>(authInstance.currentUser);
 
   late FirebaseAuthGoogle _authGoogle;
+  late FirebaseAuthApple _authApple;
 
   String? idToken;
   DateTime? expireDate;
@@ -118,6 +120,7 @@ class AuthController extends GetxController {
     Get.put(ProfileController());
     // await authInstance.currentUser!;
     _authGoogle = FirebaseAuthGoogle(authInstance: authInstance);
+    _authApple = FirebaseAuthApple(authInstance: authInstance);
   }
 
   void _loginSuccess(User user) async {
@@ -336,248 +339,16 @@ class AuthController extends GetxController {
   }
 
   void signInApple() async {
-    try {
-      final rawNonce = AppleFirebaseCrypto.generateNonce();
-      final nonce = AppleFirebaseCrypto.sha256ofString(rawNonce);
-
-      AuthorizationCredentialAppleID appleCredential;
-      if (Platform.isIOS) {
-        appleCredential = await SignInWithApple.getAppleIDCredential(
-          scopes: [
-            AppleIDAuthorizationScopes.email,
-            AppleIDAuthorizationScopes.fullName,
-          ],
-          // nonce: nonce,
-        );
-      } else {
-        print('crediential apple start');
-        String redirectUri = 'https://alike-cuboid-marten.glitch.me/callbacks/sign_in_with_apple';
-        String clientId = 'place.ours.com';
-        appleCredential = await SignInWithApple.getAppleIDCredential(
-          scopes: [
-            AppleIDAuthorizationScopes.email,
-            AppleIDAuthorizationScopes.fullName,
-          ],
-          webAuthenticationOptions: WebAuthenticationOptions(
-            clientId: clientId,
-            redirectUri: Uri.parse(redirectUri)
-          ),
-          // nonce: nonce,
-        );
-        print('crediential apple: ${appleCredential}');
-      }
-
-      final oauthCredential = OAuthProvider("apple.com").credential(
-        idToken: appleCredential.identityToken,
-        accessToken: appleCredential.authorizationCode
-        // rawNonce: rawNonce,
-      );
-
-      UserCredential userCredential = await authInstance.signInWithCredential(oauthCredential);
-      User? user = userCredential.user;
-      if (user != null) {
-        print(user.providerData);
-        if (user.providerData.length == 1) {
-          await user.delete();
-          Get.showSnackbar(
-              GetSnackBar(
-                backgroundColor: Colors.red,
-                snackPosition: SnackPosition.BOTTOM,
-                titleText: const Text(
-                  "로그인 실패",
-                  style: TextStyle(color: Colors.white),
-                ),
-                messageText: Text(
-                  '해당 SNS 계정과 연결된 OURS 계정이 없습니다. 로그인 이나 회원가입 후 계정을 연결해주세요.',
-                  style: const TextStyle(color: Colors.white),
-                ),
-                duration: const Duration(seconds: 4),
-              )
-          );
-        } else {
-          await getUser(user);
-          Get.showSnackbar(
-              GetSnackBar(
-                backgroundColor: Colors.blue,
-                snackPosition: SnackPosition.BOTTOM,
-                titleText: const Text(
-                  "로그인 성공",
-                  style: TextStyle(color: Colors.white),
-                ),
-                messageText: Text(
-                  "'${user.email}'님, 환영합니다.",
-                  style: const TextStyle(color: Colors.white),
-                ),
-                duration: const Duration(seconds: 2),
-              )
-          );
-        }
-      } else {
-        Get.showSnackbar(
-            GetSnackBar(
-              backgroundColor: Colors.red,
-              snackPosition: SnackPosition.BOTTOM,
-              titleText: const Text(
-                "로그인 실패",
-                style: TextStyle(color: Colors.white),
-              ),
-              messageText: Text(
-                '로그인 과정에서 오류가 발생했습니다. 다시 시도해주세요.',
-                style: const TextStyle(color: Colors.white),
-              ),
-              duration: const Duration(seconds: 4),
-            )
-        );
-      }
-    } catch(e) {
-      Get.showSnackbar(
-        GetSnackBar(
-          backgroundColor: Colors.red,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: const Text(
-            "로그인 실패",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 2),
-        )
-      );
-      return;
-    }
+    User? user = await _authApple.signInApple();
+    getUser(user);
   }
 
   void linkApple() async {
-    try {
-      final rawNonce = AppleFirebaseCrypto.generateNonce();
-      final nonce = AppleFirebaseCrypto.sha256ofString(rawNonce);
-
-      final appleCredential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-        nonce: nonce,
-      );
-
-      final oauthCredential = OAuthProvider("apple.com").credential(
-        idToken: appleCredential.identityToken,
-        rawNonce: rawNonce,
-      );
-
-      if (user.value != null) {
-        await user.value!.linkWithCredential(oauthCredential);
-        Get.showSnackbar(
-            GetSnackBar(
-              backgroundColor: Colors.blue,
-              snackPosition: SnackPosition.BOTTOM,
-              titleText: const Text(
-                "연동 성공",
-                style: TextStyle(color: Colors.white),
-              ),
-              messageText: Text(
-                "애플 계정과 연결했습니다. 이제 해당 구글 계정으로 로그인이 가능합니다.",
-                style: const TextStyle(color: Colors.white),
-              ),
-              duration: const Duration(seconds: 4),
-            )
-        );
-      } else {
-        Get.showSnackbar(
-            GetSnackBar(
-              backgroundColor: Colors.red,
-              snackPosition: SnackPosition.BOTTOM,
-              titleText: const Text(
-                "연결 실패",
-                style: TextStyle(color: Colors.white),
-              ),
-              messageText: Text(
-                '애플 계정과 연결에 실패했습니다. 다시 시도해주세요.',
-                style: const TextStyle(color: Colors.white),
-              ),
-              duration: const Duration(seconds: 2),
-            )
-        );
-      }
-    } catch(e) {
-      Get.showSnackbar(
-        GetSnackBar(
-          backgroundColor: Colors.red,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: const Text(
-            "연결 실패",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 2),
-        )
-      );
-      return;
-    }
+    _authApple.linkApple(user.value);
   }
 
   void unLinkApple() async {
-    try {
-      List<UserInfo> userInfoList = user.value!.providerData;
-      for (var i in userInfoList) {
-        if (i.providerId == 'apple.com') {
-          await user.value!.unlink(i.providerId);
-          Get.showSnackbar(
-              GetSnackBar(
-                backgroundColor: Colors.blue,
-                snackPosition: SnackPosition.BOTTOM,
-                titleText: const Text(
-                  "연결 해제 성공",
-                  style: TextStyle(color: Colors.white),
-                ),
-                messageText: Text(
-                  "애플 계정과 연결을 해제했습니다.",
-                  style: const TextStyle(color: Colors.white),
-                ),
-                duration: const Duration(seconds: 2),
-              )
-          );
-          return;
-        }
-      }
-      Get.showSnackbar(
-          GetSnackBar(
-            backgroundColor: Colors.blue,
-            snackPosition: SnackPosition.BOTTOM,
-            titleText: const Text(
-              "연결 해제 실패",
-              style: TextStyle(color: Colors.white),
-            ),
-            messageText: Text(
-              "연결된 애플 계정이 없습니다.",
-              style: const TextStyle(color: Colors.white),
-            ),
-            duration: const Duration(seconds: 2),
-          )
-      );
-    } catch(e) {
-      Get.showSnackbar(
-        GetSnackBar(
-          backgroundColor: Colors.red,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: const Text(
-            "연결 해제 실페",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 2),
-        )
-      );
-      return;
-    }
+    _authApple.unLinkApple(user.value);
   }
 
   void signOut() async {
