@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:place_mobile_flutter/util/auth/auth_apple.dart';
 import 'package:place_mobile_flutter/util/auth/auth_google.dart';
+import 'package:place_mobile_flutter/util/auth/token_decoder.dart';
 import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -28,54 +29,10 @@ class AuthController extends GetxController {
   late FirebaseAuthGoogle _authGoogle;
   late FirebaseAuthApple _authApple;
 
+  final TokenDecoder _tokenDecoder = TokenDecoder();
+
   String? idToken;
   DateTime? expireDate;
-
-  String _decodeBase64(String str) {
-    String output = str.replaceAll('-', '+').replaceAll('_', '/');
-
-    switch (output.length % 4) {
-      case 0:
-        break;
-      case 2:
-        output += '==';
-        break;
-      case 3:
-        output += '=';
-        break;
-      default:
-        throw Exception('Illegal base64url string!"');
-    }
-    return utf8.decode(base64Url.decode(output));
-  }
-
-  int _parseJwtExpiredDate(String token) {
-    final parts = token.split('.');
-    if (parts.length != 3) {
-      throw Exception('invalid token');
-    }
-
-    final payload = _decodeBase64(parts[1]);
-    final payloadMap = json.decode(payload);
-    if (payloadMap is! Map<String, dynamic>) {
-      throw Exception('invalid payload');
-    }
-    return payloadMap['exp'];
-  }
-
-  String _parseJwtEmail(String token) {
-    final parts = token.split('.');
-    if (parts.length != 3) {
-      throw Exception('invalid token');
-    }
-
-    final payload = _decodeBase64(parts[1]);
-    final payloadMap = json.decode(payload);
-    if (payloadMap is! Map<String, dynamic>) {
-      throw Exception('invalid payload');
-    }
-    return payloadMap['email'];
-  }
 
   Future<bool> checkTokenValid() async {
     if (idToken == null || expireDate == null) {
@@ -97,7 +54,7 @@ class AuthController extends GetxController {
       if (idToken == null) {
         expireDate = null;
       } else {
-        expireDate = DateTime.fromMillisecondsSinceEpoch(_parseJwtExpiredDate(idToken!) * 1000).subtract(const Duration(minutes: 10));
+        expireDate = DateTime.fromMillisecondsSinceEpoch(_tokenDecoder.parseJwtExpiredDate(idToken!) * 1000).subtract(const Duration(minutes: 10));
       }
       print("idToken: $idToken");
       print("expireDate: $expireDate");
