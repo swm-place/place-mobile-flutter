@@ -6,6 +6,7 @@ import 'package:place_mobile_flutter/page/preference/preference.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/state/user_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/async_dialog.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/section/preference/preference_list.dart';
 import 'package:place_mobile_flutter/widget/section/preference/preference_list_item.dart';
@@ -17,7 +18,7 @@ class ProfilePage extends StatefulWidget {
   }
 }
 
-class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin<ProfilePage> {
+class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin<ProfilePage>, AsyncOperationMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -194,7 +195,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       textColor: Colors.red,
                       showIcon: false,
                       onTap: () {
-                        AuthController.to.signOut();
+                        performAsyncOperationWithDialog(AuthController.to.signOut, '로그아웃 중...');
                       },
                     ),
                   ],

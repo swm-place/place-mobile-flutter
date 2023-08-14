@@ -61,26 +61,6 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> getUser(User? user) async {
-    print("user: $user");
-    this.user.value = user;
-    await getIdTokenStream(user);
-    if (user != null) {
-      _loginSuccess(user);
-    } else {
-      Get.offAll(() => const MyApp());
-    }
-  }
-
-  @override
-  void onReady() async {
-    super.onReady();
-    Get.put(ProfileController());
-    // await authInstance.currentUser!;
-    _authGoogle = FirebaseAuthGoogle(authInstance: authInstance);
-    _authApple = FirebaseAuthApple(authInstance: authInstance);
-  }
-
   void _loginSuccess(User user) async {
     int? status = await ProfileController.to.getUserProfile(user);
     print('login success $status ${Get.currentRoute}');
@@ -105,6 +85,26 @@ class AuthController extends GetxController {
         signOut();
       }
     }
+  }
+
+  Future<void> getUser(User? user) async {
+    print("user: $user");
+    this.user.value = user;
+    await getIdTokenStream(user);
+    if (user != null) {
+      _loginSuccess(user);
+    } else {
+      Get.offAll(() => const MyApp());
+    }
+  }
+
+  @override
+  void onReady() async {
+    super.onReady();
+    Get.put(ProfileController());
+    // await authInstance.currentUser!;
+    _authGoogle = FirebaseAuthGoogle(authInstance: authInstance);
+    _authApple = FirebaseAuthApple(authInstance: authInstance);
   }
 
   void registerEmail(BuildContext context, String email, password) async {
@@ -220,7 +220,7 @@ class AuthController extends GetxController {
     await _authApple.unLinkApple(user.value);
   }
 
-  void signOut() async {
+  Future<void> signOut() async {
     try {
       await authInstance.signOut();
       await getUser(null);
