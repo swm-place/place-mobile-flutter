@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:place_mobile_flutter/util/auth/auth_google.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
@@ -21,6 +22,8 @@ class AuthController extends GetxController {
   FirebaseAuth authInstance = FirebaseAuth.instance;
 
   late Rx<User?> user = Rx<User?>(authInstance.currentUser);
+
+  late FirebaseAuthGoogle _authGoogle;
 
   String? idToken;
   DateTime? expireDate;
@@ -114,6 +117,7 @@ class AuthController extends GetxController {
     super.onReady();
     Get.put(ProfileController());
     // await authInstance.currentUser!;
+    _authGoogle = FirebaseAuthGoogle(authInstance: authInstance);
   }
 
   void _loginSuccess(User user) async {
@@ -319,93 +323,16 @@ class AuthController extends GetxController {
   }
 
   void signInGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        return;
-      }
+    User? user = await _authGoogle.signInGoogle();
+    getUser(user);
+  }
 
-      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+  void linkGoogle() async {
+    _authGoogle.linkGoogle(user.value);
+  }
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-
-      UserCredential userCredential = await authInstance.signInWithCredential(credential);
-      User? user = userCredential.user;
-      if (user != null) {
-        print(user.providerData);
-        if (user.providerData.length == 1) {
-          await user.delete();
-          Get.showSnackbar(
-              GetSnackBar(
-                backgroundColor: Colors.red,
-                snackPosition: SnackPosition.BOTTOM,
-                titleText: const Text(
-                  "로그인 실패",
-                  style: TextStyle(color: Colors.white),
-                ),
-                messageText: Text(
-                  '해당 SNS 계정과 연결된 OURS 계정이 없습니다. 로그인 이나 회원가입 후 계정을 연결해주세요.',
-                  style: const TextStyle(color: Colors.white),
-                ),
-                duration: const Duration(seconds: 4),
-              )
-          );
-        } else {
-          await getUser(user);
-          Get.showSnackbar(
-              GetSnackBar(
-                backgroundColor: Colors.blue,
-                snackPosition: SnackPosition.BOTTOM,
-                titleText: const Text(
-                  "로그인 성공",
-                  style: TextStyle(color: Colors.white),
-                ),
-                messageText: Text(
-                  "'${user.email}'님, 환영합니다.",
-                  style: const TextStyle(color: Colors.white),
-                ),
-                duration: const Duration(seconds: 2),
-              )
-          );
-        }
-      } else {
-        Get.showSnackbar(
-            GetSnackBar(
-              backgroundColor: Colors.red,
-              snackPosition: SnackPosition.BOTTOM,
-              titleText: const Text(
-                "로그인 실패",
-                style: TextStyle(color: Colors.white),
-              ),
-              messageText: Text(
-                '로그인 과정에서 오류가 발생했습니다. 다시 시도해주세요.',
-                style: const TextStyle(color: Colors.white),
-              ),
-              duration: const Duration(seconds: 4),
-            )
-        );
-      }
-    } catch(e) {
-      Get.showSnackbar(
-        GetSnackBar(
-          backgroundColor: Colors.red,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: const Text(
-            "로그인 실패",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 2),
-        )
-      );
-      return;
-    }
+  void unLinkGoogle() async {
+    _authGoogle.unLinkGoogle(user.value);
   }
 
   void signInApple() async {
@@ -522,70 +449,6 @@ class AuthController extends GetxController {
     }
   }
 
-  void linkGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-
-      if (user.value != null) {
-        await user.value!.linkWithCredential(credential);
-        Get.showSnackbar(
-            GetSnackBar(
-              backgroundColor: Colors.blue,
-              snackPosition: SnackPosition.BOTTOM,
-              titleText: const Text(
-                "연동 성공",
-                style: TextStyle(color: Colors.white),
-              ),
-              messageText: Text(
-                "${googleUser!.email} 계정과 연결했습니다. 이제 해당 구글 계정으로 로그인이 가능합니다.",
-                style: const TextStyle(color: Colors.white),
-              ),
-              duration: const Duration(seconds: 4),
-            )
-        );
-      } else {
-        Get.showSnackbar(
-            GetSnackBar(
-              backgroundColor: Colors.red,
-              snackPosition: SnackPosition.BOTTOM,
-              titleText: const Text(
-                "연결 실패",
-                style: TextStyle(color: Colors.white),
-              ),
-              messageText: Text(
-                '구글 계정과 연결에 실패했습니다. 다시 시도해주세요.',
-                style: const TextStyle(color: Colors.white),
-              ),
-              duration: const Duration(seconds: 2),
-            )
-        );
-      }
-    } catch(e) {
-      Get.showSnackbar(
-        GetSnackBar(
-          backgroundColor: Colors.red,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: const Text(
-            "연결 실패",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 2),
-        )
-      );
-      return;
-    }
-  }
-
   void linkApple() async {
     try {
       final rawNonce = AppleFirebaseCrypto.generateNonce();
@@ -645,67 +508,6 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
           titleText: const Text(
             "연결 실패",
-            style: TextStyle(color: Colors.white),
-          ),
-          messageText: Text(
-            e.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
-          duration: const Duration(seconds: 2),
-        )
-      );
-      return;
-    }
-  }
-
-  void unLinkGoogle() async {
-    try {
-      List<UserInfo> userInfoList = user.value!.providerData;
-      for (var i in userInfoList) {
-        if (i.providerId == 'google.com') {
-          String? email = i.email;
-          email ??= '구글 계정';
-          await user.value!.unlink(i.providerId);
-          Get.showSnackbar(
-              GetSnackBar(
-                backgroundColor: Colors.blue,
-                snackPosition: SnackPosition.BOTTOM,
-                titleText: const Text(
-                  "연결 해제 성공",
-                  style: TextStyle(color: Colors.white),
-                ),
-                messageText: Text(
-                  "${email}과 연결을 해제했습니다.",
-                  style: const TextStyle(color: Colors.white),
-                ),
-                duration: const Duration(seconds: 2),
-              )
-          );
-          return;
-        }
-      }
-      Get.showSnackbar(
-          GetSnackBar(
-            backgroundColor: Colors.blue,
-            snackPosition: SnackPosition.BOTTOM,
-            titleText: const Text(
-              "연결 해제 실패",
-              style: TextStyle(color: Colors.white),
-            ),
-            messageText: Text(
-              "연결된 구글 계정이 없습니다.",
-              style: const TextStyle(color: Colors.white),
-            ),
-            duration: const Duration(seconds: 2),
-          )
-      );
-    } catch(e) {
-      Get.showSnackbar(
-        GetSnackBar(
-          backgroundColor: Colors.red,
-          snackPosition: SnackPosition.BOTTOM,
-          titleText: const Text(
-            "연결 해제 실페",
             style: TextStyle(color: Colors.white),
           ),
           messageText: Text(
