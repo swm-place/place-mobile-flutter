@@ -35,7 +35,8 @@ mixin AsyncOperationMixin<T extends StatefulWidget> on State<T> {
     _asyncTaskCompleter!.complete();
 
     if (mounted) {
-      Navigator.pop(context);
+      print('pop dialog');
+      if (ModalRoute.of(context)?.isCurrent != true) Navigator.pop(context);
       _asyncTaskCompleter = null;
     }
   }
@@ -67,7 +68,8 @@ mixin AsyncOperationMixin<T extends StatefulWidget> on State<T> {
     _asyncTaskCompleter!.complete();
 
     if (mounted) {
-      Navigator.pop(context);
+      print('pop dialog no argument');
+      if (ModalRoute.of(context)?.isCurrent != true) Navigator.pop(context);
       _asyncTaskCompleter = null;
     }
   }
@@ -76,7 +78,7 @@ mixin AsyncOperationMixin<T extends StatefulWidget> on State<T> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_asyncTaskCompleter != null && _asyncTaskCompleter!.isCompleted) {
-      Navigator.pop(context);
+      if (ModalRoute.of(context)?.isCurrent != true) Navigator.pop(context);
       _asyncTaskCompleter = null;
     }
   }
