@@ -22,7 +22,7 @@ class LoginPage extends StatefulWidget {
   }
 }
 
-class _LoginPageState extends State<LoginPage> with AsyncOperationMixin {
+class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -106,11 +106,10 @@ class _LoginPageState extends State<LoginPage> with AsyncOperationMixin {
                           child: FilledButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  Map<String, dynamic> arguments = {
-                                    'email': emailController.text.tr,
-                                    'password': passwordController.text.tr
-                                  };
-                                  performAsyncOperationWithDialog(AuthController.to.signInEmail, arguments, '로그인 중...');
+                                  AuthController.to.signInEmail(
+                                    emailController.text.tr,
+                                    passwordController.text.tr
+                                  );
                                 }
                               },
                               child: const Text("로그인")

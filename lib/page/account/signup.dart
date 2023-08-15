@@ -26,7 +26,7 @@ class SignUpPage extends StatefulWidget {
 
 enum Sex {male, female}
 
-class SignUpPageState extends State<SignUpPage> with AsyncOperationMixin {
+class SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
 
   final FocusNode passwordCheckFocusNode = FocusNode();
@@ -555,7 +555,7 @@ class SignUpPageState extends State<SignUpPage> with AsyncOperationMixin {
                   TextButton(
                     onPressed: () {
                       Navigator.of(context, rootNavigator: true).pop();
-                      performAsyncNoArgumentOperationWithDialog(AuthController.to.signOut, '로그아웃 중...');
+                      AuthController.to.signOut();
                     },
                     child: Text("확인")
                   )
@@ -745,7 +745,7 @@ class SignUpPageState extends State<SignUpPage> with AsyncOperationMixin {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context, rootNavigator: true).pop();
-                    performAsyncNoArgumentOperationWithDialog(AuthController.to.signOut, '로그아웃 중...');
+                    AuthController.to.signOut();
                   },
                   child: Text("로그아웃")
                 ),

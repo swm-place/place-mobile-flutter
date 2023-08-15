@@ -18,7 +18,7 @@ class ProfilePage extends StatefulWidget {
   }
 }
 
-class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin<ProfilePage>, AsyncOperationMixin {
+class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin<ProfilePage> {
   @override
   bool get wantKeepAlive => true;
 
@@ -195,7 +195,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       textColor: Colors.red,
                       showIcon: false,
                       onTap: () {
-                        performAsyncNoArgumentOperationWithDialog(AuthController.to.signOut, '로그아웃 중...');
+                        AuthController.to.signOut();
                       },
                     ),
                   ],

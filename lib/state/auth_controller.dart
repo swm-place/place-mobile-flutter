@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:place_mobile_flutter/util/async_dialog.dart';
 import 'package:place_mobile_flutter/util/auth/auth_apple.dart';
 import 'package:place_mobile_flutter/util/auth/auth_google.dart';
 import 'package:place_mobile_flutter/util/auth/token_decoder.dart';
@@ -33,6 +34,8 @@ class AuthController extends GetxController {
 
   String? idToken;
   DateTime? expireDate;
+  
+  final ProgressDialogHelper _progressDialogHelper = ProgressDialogHelper();
 
   Future<bool> checkTokenValid() async {
     if (idToken == null || expireDate == null) {
@@ -50,7 +53,9 @@ class AuthController extends GetxController {
     if (user == null) {
       idToken = null;
     } else {
+      _progressDialogHelper.showProgressDialog('인증 정보 가져오는중..');
       idToken = await user.getIdToken();
+      _progressDialogHelper.hideProgressDialog();
       if (idToken == null) {
         expireDate = null;
       } else {
@@ -62,7 +67,9 @@ class AuthController extends GetxController {
   }
 
   Future<void> _loginSuccess(User user) async {
+    _progressDialogHelper.showProgressDialog('유저 정보 가져오는중..');
     int? status = await ProfileController.to.getUserProfile(user);
+    _progressDialogHelper.hideProgressDialog();
     print('login success $status ${Get.currentRoute}');
     if (status != null) {
       if (status == 200) {
@@ -79,12 +86,19 @@ class AuthController extends GetxController {
       } else {
         Get.showSnackbar(
             ErrorGetSnackBar(
-              title: "로그인 실패",
-              message: "로그인 과정에서 오류가 발생했습니다. 다시 로그인 해주세요.",
+              title: "서버 오류",
+              message: "통신 과정에서 오류가 발생했습니다. 다시 시도해주세요.",
             )
         );
         signOut();
       }
+    } else {
+      Get.showSnackbar(
+          ErrorGetSnackBar(
+            title: "서버 오류",
+            message: "통신 과정에서 오류가 발생했습니다. 다시 시도해주세요.",
+          )
+      );
     }
   }
 
@@ -154,14 +168,16 @@ class AuthController extends GetxController {
     );
   }
 
-  Future<void> signInEmail(Map<String, dynamic> arguments) async {
-    String email = arguments['email'] as String;
-    String password = arguments['password'] as String;
+  Future<void> signInEmail(String email, String password) async {
+    _progressDialogHelper.showProgressDialog('로그인 중..');
+    
     UserCredential userCredential;
     try {
       userCredential = await authInstance.signInWithEmailAndPassword(email: email, password: password);
+      _progressDialogHelper.hideProgressDialog();
       await getUser(userCredential.user);
     } on FirebaseAuthException catch(e) {
+      _progressDialogHelper.hideProgressDialog();
       String message = '';
       switch (e.code) {
         case 'invalid-email':
@@ -188,6 +204,7 @@ class AuthController extends GetxController {
       );
       return;
     } catch(e) {
+      _progressDialogHelper.hideProgressDialog();
       Get.showSnackbar(
           ErrorGetSnackBar(
             title: "로그인 실패",
@@ -231,24 +248,27 @@ class AuthController extends GetxController {
   }
 
   Future<void> signOut() async {
+    _progressDialogHelper.showProgressDialog('로그아웃중...');
     try {
       await authInstance.signOut();
+      _progressDialogHelper.hideProgressDialog();
       await getUser(null);
-      Get.showSnackbar(
-        SuccessGetSnackBar(
-          title: "로그아웃 완료",
-          message: "로그아웃을 완료하였습니다.",
-        )
-      );
-      // Get.offAll(() => const MyApp());
     } catch(e) {
+      _progressDialogHelper.hideProgressDialog();
       Get.showSnackbar(
           ErrorGetSnackBar(
             title: "로그아웃 실패",
             message: "로그아웃에 실패했습니다. 다시 시도해주세요.",
           )
       );
+      return;
     }
+    Get.showSnackbar(
+        SuccessGetSnackBar(
+          title: "로그아웃 완료",
+          message: "로그아웃을 완료하였습니다.",
+        )
+    );
   }
 
   void resetPassword(BuildContext context, String email) async {
