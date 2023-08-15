@@ -101,6 +101,9 @@ class AuthController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
+    if (user.value != null) {
+      await getUser(user.value!);
+    }
     Get.put(ProfileController());
     // await authInstance.currentUser!;
     _authGoogle = FirebaseAuthGoogle(authInstance: authInstance);
@@ -157,6 +160,32 @@ class AuthController extends GetxController {
     try {
       userCredential = await authInstance.signInWithEmailAndPassword(email: email, password: password);
       await getUser(userCredential.user);
+    } on FirebaseAuthException catch(e) {
+      String message = '';
+      switch (e.code) {
+        case 'invalid-email':
+          message = '유효하지 않은 이메일입니다.';
+          break;
+        case 'user-disabled':
+          message = '비활성화된 사용자입니다.';
+          break;
+        case 'user-not-found':
+          message = '사용자를 찾을 수 없습니다.';
+          break;
+        case 'wrong-password':
+          message = '비밀번호가 틀렸습니다.';
+          break;
+        default:
+          message = '로그인 과정에서 오류가 발생했습니다. 다시 시도해주세요.';
+          break;
+      }
+      Get.showSnackbar(
+          ErrorGetSnackBar(
+            title: "로그인 실패",
+            message: message,
+          )
+      );
+      return;
     } catch(e) {
       Get.showSnackbar(
           ErrorGetSnackBar(
@@ -176,7 +205,7 @@ class AuthController extends GetxController {
 
   void signInGoogle() async {
     User? user = await _authGoogle.signInGoogle();
-    getUser(user);
+    await getUser(user);
   }
 
   void linkGoogle() async {
@@ -189,7 +218,7 @@ class AuthController extends GetxController {
 
   void signInApple() async {
     User? user = await _authApple.signInApple();
-    getUser(user);
+    await getUser(user);
   }
 
   void linkApple() async {
