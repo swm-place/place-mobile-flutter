@@ -56,7 +56,7 @@ class WarnGetSnackBar extends GetSnackBar {
     this.showDuration=CustomGetSnackBar.GET_SNACKBAR_DURATION_MEDIUM,
     Key? key
   }) : super(
-    backgroundColor: Colors.yellow,
+    backgroundColor: Colors.amber,
     titleText: Text(title, style: TextStyle(color: Colors.white),),
     messageText: Text(message, style: TextStyle(color: Colors.white),),
     duration: Duration(seconds: showDuration),
