@@ -9,6 +9,7 @@ import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/state/user_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/async_dialog.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/tos.dart';
 
@@ -25,7 +26,7 @@ class SignUpPage extends StatefulWidget {
 
 enum Sex {male, female}
 
-class SignUpPageState extends State<SignUpPage> {
+class SignUpPageState extends State<SignUpPage> with AsyncOperationMixin {
   final _formKey = GlobalKey<FormState>();
 
   final FocusNode passwordCheckFocusNode = FocusNode();
@@ -553,8 +554,9 @@ class SignUpPageState extends State<SignUpPage> {
                 actions: [
                   TextButton(
                     onPressed: () {
-                      AuthController.to.signOut();
-                      },
+                      Navigator.of(context, rootNavigator: true).pop();
+                      performAsyncNoArgumentOperationWithDialog(AuthController.to.signOut, '로그아웃 중...');
+                    },
                     child: Text("확인")
                   )
                 ],
@@ -742,7 +744,8 @@ class SignUpPageState extends State<SignUpPage> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    AuthController.to.signOut();
+                    Navigator.of(context, rootNavigator: true).pop();
+                    performAsyncNoArgumentOperationWithDialog(AuthController.to.signOut, '로그아웃 중...');
                   },
                   child: Text("로그아웃")
                 ),
