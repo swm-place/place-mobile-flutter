@@ -53,7 +53,7 @@ class AuthController extends GetxController {
     if (user == null) {
       idToken = null;
     } else {
-      _progressDialogHelper.showProgressDialog('인증 정보 가져오는중..');
+      _progressDialogHelper.showProgressDialog('인증 정보 가져오는중');
       idToken = await user.getIdToken();
       _progressDialogHelper.hideProgressDialog();
       if (idToken == null) {
@@ -67,7 +67,7 @@ class AuthController extends GetxController {
   }
 
   Future<void> _loginSuccess(User user) async {
-    _progressDialogHelper.showProgressDialog('유저 정보 가져오는중..');
+    _progressDialogHelper.showProgressDialog('유저 정보 가져오는중');
     int? status = await ProfileController.to.getUserProfile(user);
     _progressDialogHelper.hideProgressDialog();
     print('login success $status ${Get.currentRoute}');
@@ -126,7 +126,7 @@ class AuthController extends GetxController {
   }
 
   void registerEmail(String email, password) async {
-    _progressDialogHelper.showProgressDialog('회원가입 처리중...');
+    _progressDialogHelper.showProgressDialog('회원가입 처리중');
 
     UserCredential userCredential;
     try {
@@ -152,7 +152,7 @@ class AuthController extends GetxController {
   }
 
   Future<void> signInEmail(String email, String password) async {
-    _progressDialogHelper.showProgressDialog('로그인 중..');
+    _progressDialogHelper.showProgressDialog('로그인 중');
     
     UserCredential userCredential;
     try {
@@ -206,7 +206,15 @@ class AuthController extends GetxController {
 
   void signInGoogle() async {
     User? user = await _authGoogle.signInGoogle();
-    await getUser(user);
+    if (user != null) {
+      await getUser(user);
+      Get.showSnackbar(
+          SuccessGetSnackBar(
+              title: "로그인 성공",
+              message: "'${user.email}'님, 환영합니다."
+          )
+      );
+    }
   }
 
   void linkGoogle() async {
@@ -219,7 +227,15 @@ class AuthController extends GetxController {
 
   void signInApple() async {
     User? user = await _authApple.signInApple();
-    await getUser(user);
+    if (user != null) {
+      await getUser(user);
+      Get.showSnackbar(
+          SuccessGetSnackBar(
+              title: "로그인 성공",
+              message: "'${user.email}'님, 환영합니다."
+          )
+      );
+    }
   }
 
   void linkApple() async {
@@ -231,7 +247,7 @@ class AuthController extends GetxController {
   }
 
   Future<void> signOut() async {
-    _progressDialogHelper.showProgressDialog('로그아웃중...');
+    _progressDialogHelper.showProgressDialog('로그아웃중');
     try {
       await authInstance.signOut();
       _progressDialogHelper.hideProgressDialog();

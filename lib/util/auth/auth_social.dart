@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:place_mobile_flutter/util/async_dialog.dart';
 import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:get/get.dart';
@@ -10,48 +11,58 @@ class FirebaseAuthSocial {
     required this.authInstance,
   });
 
+  final ProgressDialogHelper _progressDialogHelper = ProgressDialogHelper();
+
   FirebaseAuth authInstance;
 
   Future<User?> login(OAuthCredential credential) async {
+    _progressDialogHelper.showProgressDialog('로그인중');
+
+    UserCredential userCredential;
     try {
-      UserCredential userCredential = await authInstance.signInWithCredential(credential);
-      User? user = userCredential.user;
-      if (user != null) {
-        print(user.providerData);
-        if (user.providerData.length == 1) {
-          await user.delete();
-          Get.showSnackbar(
-              WarnGetSnackBar(
-                title: "로그인 실패",
-                message: "해당 SNS 계정과 연결된 OURS 계정이 없습니다. 로그인 이나 회원가입 후 계정을 연결해주세요.",
-                showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_LONG,
-              )
-          );
-          return null;
-        } else {
-          Get.showSnackbar(
-              SuccessGetSnackBar(
-                  title: "로그인 성공",
-                  message: "'${user.email}'님, 환영합니다."
-              )
-          );
-          return user;
-        }
-      } else {
-        Get.showSnackbar(
-            ErrorGetSnackBar(
-              title: "로그인 실패",
-              message: '로그인 과정에서 오류가 발생했습니다. 다시 시도해주세요.',
-              showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_LONG,
-            )
-        );
-        return null;
-      }
+      userCredential = await authInstance.signInWithCredential(credential);
     } catch(e) {
+      _progressDialogHelper.hideProgressDialog();
       Get.showSnackbar(
           ErrorGetSnackBar(
               title: "로그인 실패",
               message: e.toString()
+          )
+      );
+      return null;
+    }
+
+    User? user = userCredential.user;
+    if (user != null) {
+      print(user.providerData);
+      if (user.providerData.length == 1) {
+        await user.delete();
+        _progressDialogHelper.hideProgressDialog();
+        Get.showSnackbar(
+            WarnGetSnackBar(
+              title: "로그인 실패",
+              message: "해당 SNS 계정과 연결된 OURS 계정이 없습니다. 로그인 이나 회원가입 후 계정을 연결해주세요.",
+              showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_LONG,
+            )
+        );
+        return null;
+      } else {
+        _progressDialogHelper.hideProgressDialog();
+        // Get.showSnackbar(
+        //     SuccessGetSnackBar(
+        //         title: "로그인 성공",
+        //         message: "'${user.email}'님, 환영합니다."
+        //     )
+        // );
+        return user;
+      }
+    } else {
+      _progressDialogHelper.hideProgressDialog();
+      Get.showSnackbar(
+          ErrorGetSnackBar(
+            title: "로그인 실패",
+            message: '로그인 과정에서 오류가 발생했습니다. 다시 시도해주세요.',
+            showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_LONG,
           )
       );
       return null;
@@ -62,8 +73,11 @@ class FirebaseAuthSocial {
     try {
       if (user != null) {
         try {
+          _progressDialogHelper.showProgressDialog('SNS 계정 등록중');
           await user!.linkWithCredential(credential);
+          _progressDialogHelper.hideProgressDialog();
         } on FirebaseAuthException catch(e) {
+          _progressDialogHelper.hideProgressDialog();
           String message;
           switch (e.code) {
             case "provider-already-linked":
@@ -86,6 +100,7 @@ class FirebaseAuthSocial {
                 showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_LONG,
               )
           );
+          return;
         }
 
         Get.showSnackbar(
@@ -119,14 +134,11 @@ class FirebaseAuthSocial {
     try {
       if (user != null) {
         try {
+          _progressDialogHelper.showProgressDialog('SNS 계정 연결 해제중');
           await user.unlink(providerId);
-          Get.showSnackbar(
-              SuccessGetSnackBar(
-                title: "연결 해제 성공",
-                message: "SNS 계정과 연결을 해제했습니다.",
-              )
-          );
+          _progressDialogHelper.hideProgressDialog();
         } on FirebaseAuthException catch(e) {
+          _progressDialogHelper.hideProgressDialog();
           String message;
           switch (e.code) {
             case 'no-such-provider':
@@ -142,7 +154,14 @@ class FirebaseAuthSocial {
                 message: message,
               )
           );
+          return;
         }
+        Get.showSnackbar(
+            SuccessGetSnackBar(
+              title: "연결 해제 성공",
+              message: "SNS 계정과 연결을 해제했습니다.",
+            )
+        );
       } else {
         Get.showSnackbar(
             WarnGetSnackBar(
