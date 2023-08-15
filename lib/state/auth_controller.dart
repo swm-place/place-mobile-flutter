@@ -61,13 +61,14 @@ class AuthController extends GetxController {
     }
   }
 
-  void _loginSuccess(User user) async {
+  Future<void> _loginSuccess(User user) async {
     int? status = await ProfileController.to.getUserProfile(user);
     print('login success $status ${Get.currentRoute}');
     if (status != null) {
       if (status == 200) {
         print("login success ${Get.currentRoute}");
         if (Get.currentRoute != "/MyApp" && Get.currentRoute != '/') {
+          print("move my page");
           Get.offAll(() => const MyApp());
         }
       } else if (status == 400) {
@@ -92,7 +93,7 @@ class AuthController extends GetxController {
     this.user.value = user;
     await getIdTokenStream(user);
     if (user != null) {
-      _loginSuccess(user);
+      await _loginSuccess(user);
     } else {
       Get.offAll(() => const MyApp());
     }
@@ -101,10 +102,10 @@ class AuthController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
+    Get.put(ProfileController());
     if (user.value != null) {
       await getUser(user.value!);
     }
-    Get.put(ProfileController());
     // await authInstance.currentUser!;
     _authGoogle = FirebaseAuthGoogle(authInstance: authInstance);
     _authApple = FirebaseAuthApple(authInstance: authInstance);
@@ -239,7 +240,7 @@ class AuthController extends GetxController {
           message: "로그아웃을 완료하였습니다.",
         )
       );
-      Get.offAll(() => const MyApp());
+      // Get.offAll(() => const MyApp());
     } catch(e) {
       Get.showSnackbar(
           ErrorGetSnackBar(
