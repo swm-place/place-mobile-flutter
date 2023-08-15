@@ -125,31 +125,16 @@ class AuthController extends GetxController {
     _authApple = FirebaseAuthApple(authInstance: authInstance);
   }
 
-  void registerEmail(BuildContext context, String email, password) async {
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return const AlertDialog(
-            title: Text("회원가입 처리중"),
-            content: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(width: 18,),
-                Text("곧 완료됩니다.")
-              ],
-            ),
-          );
-        }
-    );
+  void registerEmail(String email, password) async {
+    _progressDialogHelper.showProgressDialog('회원가입 처리중...');
 
     UserCredential userCredential;
     try {
       userCredential = await authInstance.createUserWithEmailAndPassword(email: email, password: password);
+      _progressDialogHelper.hideProgressDialog();
       await getUser(userCredential.user);
     } catch(e) {
-      Navigator.of(context, rootNavigator: true).pop();
+      _progressDialogHelper.hideProgressDialog();
       Get.showSnackbar(
           ErrorGetSnackBar(
             title: "회원가입 실패",
@@ -158,8 +143,6 @@ class AuthController extends GetxController {
       );
       return;
     }
-
-    Navigator.of(context, rootNavigator: true).pop();
     Get.showSnackbar(
         SuccessGetSnackBar(
           title: "회원가입 성공",
@@ -271,54 +254,52 @@ class AuthController extends GetxController {
     );
   }
 
-  void resetPassword(BuildContext context, String email) async {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return const AlertDialog(
-          title: Text("이메일 전송중"),
-          content: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(width: 18,),
-              Text("곧 완료됩니다.")
-            ],
-          ),
-        );
-      }
-    );
+  void resetPassword(String email) async {
+    _progressDialogHelper.showProgressDialog('이메일 전송중');
 
     String dialogTitle = "";
     String dialogMessage = "";
     try {
       await authInstance.sendPasswordResetEmail(email: email);
-      Navigator.of(context, rootNavigator: true).pop();
+      _progressDialogHelper.hideProgressDialog();
       dialogTitle = "이메일 전송 완료";
       dialogMessage = "전송된 비밀번호 재설정 링크로 비밀번호 재설정을 완료해주세요.";
+    } on FirebaseAuthException catch(e) {
+      _progressDialogHelper.hideProgressDialog();
+      switch(e.code) {
+        case 'invalid-email':
+          dialogTitle = "이메일 전송 실패";
+          dialogMessage = "유효하지 않은 이메일입니다.";
+          break;
+        case 'user-not-found':
+          dialogTitle = "이메일 전송 실패";
+          dialogMessage = "유저를 찾을 수 없습니다.";
+          break;
+        default:
+          print(e.code);
+          dialogTitle = "이메일 전송 실패";
+          dialogMessage = "다시 요청해 주세요.";
+          break;
+      }
     } catch(e) {
-      Navigator.of(context, rootNavigator: true).pop();
+      _progressDialogHelper.hideProgressDialog();
       dialogTitle = "이메일 전송 실패";
       dialogMessage = "다시 요청해 주세요.";
     }
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(dialogTitle),
-          content: Text(dialogMessage),
-          actions: [
-            TextButton(
+    Get.dialog(
+      AlertDialog(
+        title: Text(dialogTitle),
+        content: Text(dialogMessage),
+        actions: [
+          TextButton(
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop();
+                Get.back();
               },
               child: Text("확인")
-            )
-          ],
-        );
-      }
+          )
+        ],
+      )
     );
   }
 }

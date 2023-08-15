@@ -71,7 +71,7 @@ class FindPasswordPageState extends State<FindPasswordPage> {
                       String? email = emailController.text.tr;
                       emailError = emailTextFieldValidator(email);
                       if (emailError == null) {
-                        AuthController.to.resetPassword(context, email);
+                        AuthController.to.resetPassword(email);
                       }
                     });
                   },

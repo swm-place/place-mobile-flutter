@@ -713,7 +713,6 @@ class SignUpPageState extends State<SignUpPage> {
         FocusScope.of(context).unfocus();
         if (AuthController.to.user.value == null) {
           AuthController.to.registerEmail(
-              context,
               emailController.text.tr,
               passwordController.text.tr
           );
