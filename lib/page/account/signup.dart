@@ -524,19 +524,9 @@ class SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  @override
-  void dispose() {
-    passwordController.dispose();
-    passwordCheckController.dispose();
-    emailController.dispose();
-    nicknameController.dispose();
-    phoneNumberController.dispose();
-    birthController.dispose();
+  late Future _loadTos;
 
-    super.dispose();
-  }
-
-  Future<Map<String, dynamic>?> _loadTos() async {
+  Future<Map<String, dynamic>?> _loadTosAsync() async {
     Map<String, dynamic>? data = await userProvider.getTerm();
     print('data: $data');
     if (data != null) {
@@ -551,9 +541,27 @@ class SignUpPageState extends State<SignUpPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _loadTos = _loadTosAsync();
+  }
+
+  @override
+  void dispose() {
+    passwordController.dispose();
+    passwordCheckController.dispose();
+    emailController.dispose();
+    nicknameController.dispose();
+    phoneNumberController.dispose();
+    birthController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _loadTos(),
+      future: _loadTos,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           return WillPopScope(
