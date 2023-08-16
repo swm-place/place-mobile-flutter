@@ -29,14 +29,14 @@ class UserProvider extends DefaultProvider {
     Uri uri = Uri.parse("$baseUrl/user/terms");
     http.Response response;
 
-    _progressDialogHelper.showProgressDialog('약관 정보 가져오는중');
+    // _progressDialogHelper.showProgressDialog('약관 정보 가져오는중');
     print('open');
     try {
       response = await http.get(uri, headers: setHeader(null));
-      _progressDialogHelper.hideProgressDialog();
+      // _progressDialogHelper.hideProgressDialog();
       print('close1');
     } catch(e) {
-      _progressDialogHelper.hideProgressDialog();
+      // _progressDialogHelper.hideProgressDialog();
       print('close2');
       return null;
     }
