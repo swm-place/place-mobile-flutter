@@ -39,22 +39,22 @@ class AuthController extends GetxController {
 
   Future<bool> checkTokenValid() async {
     if (idToken == null || expireDate == null) {
-      await getIdTokenStream(AuthController.to.user.value);
+      await getIdTokenStream();
       return false;
     }
     if (expireDate!.isAfter(DateTime.now())) {
-      await getIdTokenStream(AuthController.to.user.value);
+      await getIdTokenStream();
       return false;
     }
     return true;
   }
 
-  Future<void> getIdTokenStream(User? user) async {
-    if (user == null) {
+  Future<void> getIdTokenStream() async {
+    if (user.value == null) {
       idToken = null;
     } else {
       _progressDialogHelper.showProgressDialog('인증 정보 가져오는중');
-      idToken = await user.getIdToken();
+      idToken = await user.value!.getIdToken();
       _progressDialogHelper.hideProgressDialog();
       if (idToken == null) {
         expireDate = null;
@@ -66,9 +66,9 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> _loginSuccess(User user) async {
+  Future<void> _loginSuccess() async {
     _progressDialogHelper.showProgressDialog('유저 정보 가져오는중');
-    int? status = await ProfileController.to.getUserProfile(user);
+    int? status = await ProfileController.to.getUserProfile(user.value!.uid);
     _progressDialogHelper.hideProgressDialog();
     print('login success $status ${Get.currentRoute}');
     if (status != null) {
@@ -81,6 +81,7 @@ class AuthController extends GetxController {
       } else if (status == 400) {
         if (Get.currentRoute != "/SignUpPage") {
           Get.offAll(() => const MyApp());
+          print('sign up');
           Get.to(() => SignUpPage());
         }
       } else {
@@ -105,9 +106,9 @@ class AuthController extends GetxController {
   Future<void> getUser(User? user) async {
     print("user: $user");
     this.user.value = user;
-    await getIdTokenStream(user);
+    await getIdTokenStream();
     if (user != null) {
-      await _loginSuccess(user);
+      await _loginSuccess();
     } else {
       Get.offAll(() => const MyApp());
     }
