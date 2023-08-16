@@ -545,55 +545,97 @@ class SignUpPageState extends State<SignUpPage> {
       future: _loadTos(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          return Scaffold(
-            appBar: AppBar(
-              leading: Platform.isAndroid ? IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: _pressedBack,
-              ) : IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: _pressedBack,
+          return WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                leading: Platform.isAndroid ? IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: _pressedBack,
+                ) : IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: _pressedBack,
+                ),
               ),
-            ),
-            body: SafeArea(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: PageView(
-                        controller: pageController,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          if (AuthController.to.user.value == null)
-                            SingleChildScrollView(child: _emailPage(),),
-                          if (AuthController.to.user.value == null)
-                            SingleChildScrollView(child: _passwordPage()),
-                          SingleChildScrollView(
-                            child: _userInformPage(),
-                          )
-                        ],
+              body: SafeArea(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: PageView(
+                          controller: pageController,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: [
+                            if (AuthController.to.user.value == null)
+                              SingleChildScrollView(child: _emailPage(),),
+                            if (AuthController.to.user.value == null)
+                              SingleChildScrollView(child: _passwordPage()),
+                            SingleChildScrollView(
+                              child: _userInformPage(),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                        width: double.infinity,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
-                          child: FilledButton(
-                            child: Text("다음"),
-                            onPressed: () async {
-                              switch (pageController.page!.toInt()) {
-                                case 0: {
-                                  if (AuthController.to.user.value == null) {
+                      SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
+                            child: FilledButton(
+                              child: Text("다음"),
+                              onPressed: () async {
+                                switch (pageController.page!.toInt()) {
+                                  case 0: {
+                                    if (AuthController.to.user.value == null) {
+                                      setState(() {
+                                        final email = emailController.text.tr;
+                                        emailError = emailTextFieldValidator(email);
+                                        if (emailError == null) {
+                                          FocusScope.of(context).unfocus();
+                                          pageController.nextPage(
+                                              duration: const Duration(milliseconds: 250),
+                                              curve: Curves.easeInOut);
+                                        }
+                                      });
+                                    } else {
+                                      if (tosList != null && tosList!.isNotEmpty) {
+                                        showModalBottomSheet(
+                                            constraints: BoxConstraints(
+                                                maxWidth: 600
+                                            ),
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return _tosAgreePage();
+                                            },
+                                            enableDrag: false
+                                        );
+                                      } else {
+                                        _registerUser();
+                                      }
+                                    }
+                                    break;
+                                  }
+                                  case 1: {
                                     setState(() {
-                                      final email = emailController.text.tr;
-                                      emailError = emailTextFieldValidator(email);
-                                      if (emailError == null) {
-                                        FocusScope.of(context).unfocus();
-                                        pageController.nextPage(
-                                            duration: const Duration(milliseconds: 250),
-                                            curve: Curves.easeInOut);
+                                      final password = passwordController.text.tr;
+                                      passwordError = passwordTextFieldValidator(password);
+                                      if (passwordError == null) {
+                                        final passwordCheck = passwordCheckController.text.tr;
+                                        if (password != passwordCheck) {
+                                          passwordCheckError = "비밀번호가 일치하지 않습니다!";
+                                        } else {
+                                          passwordCheckError = null;
+
+                                          FocusScope.of(context).unfocus();
+                                          pageController.nextPage(
+                                              duration: const Duration(milliseconds: 250),
+                                              curve: Curves.easeInOut);
+                                        }
                                       }
                                     });
-                                  } else {
+                                    break;
+                                  }
+                                  case 2: {
                                     if (tosList != null && tosList!.isNotEmpty) {
                                       showModalBottomSheet(
                                           constraints: BoxConstraints(
@@ -608,91 +650,64 @@ class SignUpPageState extends State<SignUpPage> {
                                     } else {
                                       _registerUser();
                                     }
+                                    break;
                                   }
-                                  break;
                                 }
-                                case 1: {
-                                  setState(() {
-                                    final password = passwordController.text.tr;
-                                    passwordError = passwordTextFieldValidator(password);
-                                    if (passwordError == null) {
-                                      final passwordCheck = passwordCheckController.text.tr;
-                                      if (password != passwordCheck) {
-                                        passwordCheckError = "비밀번호가 일치하지 않습니다!";
-                                      } else {
-                                        passwordCheckError = null;
-
-                                        FocusScope.of(context).unfocus();
-                                        pageController.nextPage(
-                                            duration: const Duration(milliseconds: 250),
-                                            curve: Curves.easeInOut);
-                                      }
-                                    }
-                                  });
-                                  break;
-                                }
-                                case 2: {
-                                  if (tosList != null && tosList!.isNotEmpty) {
-                                    showModalBottomSheet(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 600
-                                        ),
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return _tosAgreePage();
-                                        },
-                                        enableDrag: false
-                                    );
-                                  } else {
-                                    _registerUser();
-                                  }
-                                  break;
-                                }
-                              }
-                            },
-                          ),
-                        )
-                    )
-                  ],
-                )
+                              },
+                            ),
+                          )
+                      )
+                    ],
+                  )
+              ),
             ),
           );
         } else if (snapshot.hasError) {
-          return Scaffold(
-            body: SafeArea(
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('데이터 로딩중 오류가 발생했습니다. 로그아웃 후 다시 시도해주세요.'),
-                    const SizedBox(height: 24,),
-                    FilledButton(
-                        onPressed: () {
-                          AuthController.to.signOut();
-                        },
-                        child: Text('로그아웃')
-                    )
-                  ],
+          return WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: Scaffold(
+              body: SafeArea(
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('데이터 로딩중 오류가 발생했습니다. 로그아웃 후 다시 시도해주세요.'),
+                      const SizedBox(height: 24,),
+                      FilledButton(
+                          onPressed: () {
+                            AuthController.to.signOut();
+                          },
+                          child: Text('로그아웃')
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
           );
         } else {
-          return const Scaffold(
-            body: SafeArea(
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 24,),
-                    Text('회원가입 데이터 로딩중')
-                  ],
+          return WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: const Scaffold(
+              body: SafeArea(
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 24,),
+                      Text('회원가입 데이터 로딩중')
+                    ],
+                  ),
                 ),
               ),
-            ),
+            )
           );
         }
       },
