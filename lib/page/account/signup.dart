@@ -219,6 +219,9 @@ class SignUpPageState extends State<SignUpPage> {
   Widget __tosWidgetList() {
     List<Widget> tosWidget = [];
     for (var element in tosList!) {
+      print(element);
+      print(element['required']);
+      // print(element['required']);
       tosWidget.add(SizedBox(
           width: double.infinity,
           child: CheckTos(
@@ -245,7 +248,6 @@ class SignUpPageState extends State<SignUpPage> {
               padding: EdgeInsets.all(24),
               child: SizedBox(
                 width: double.infinity,
-                height: 190,
                 child: Column(
                   children: [
                     SizedBox(
@@ -258,7 +260,7 @@ class SignUpPageState extends State<SignUpPage> {
                     SizedBox(
                       height: 10,
                     ),
-                    __tosWidgetList(),
+                    Expanded(child: __tosWidgetList()),
                     SizedBox(
                       height: 10,
                     ),
@@ -283,22 +285,31 @@ class SignUpPageState extends State<SignUpPage> {
                               }
 
                               if (checkTos) {
+                                print("dsfsdjufvisjhvo");
                                 bottomState(() {
-                                  setState(() {
-                                    tosButtonText = "다음";
-                                    tosButtonNextColor = lightColorScheme.primary;
-                                  });
+                                  tosButtonText = "완료";
+                                  tosButtonNextColor = lightColorScheme.primary;
                                 });
 
                                 FocusScope.of(context).unfocus();
                                 Navigator.pop(context);
-                                _registerUser();
+
+                                final nickname = nicknameController.text.tr;
+                                final phoneNumber = phoneNumberController.text.tr;
+                                final sex = selectedSex;
+                                final birth = birthController.text.tr;
+
+                                List<int> agreeTermIdx = [];
+                                if (tosList != null) {
+                                  for (var t in tosList!) {
+                                    if (t['agree']) agreeTermIdx.add(t['id']);
+                                  }
+                                }
+                                ProfileController.to.makeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index, agreeTermIdx);
                               } else{
                                 bottomState(() {
-                                  setState(() {
-                                    tosButtonText = "필수 약관을 동의해주세요";
-                                    tosButtonNextColor = Colors.red;
-                                  });
+                                  tosButtonText = "필수 약관을 동의해주세요";
+                                  tosButtonNextColor = Colors.red;
                                 });
                               }
                             },
@@ -527,12 +538,12 @@ class SignUpPageState extends State<SignUpPage> {
 
   Future<Map<String, dynamic>?> _loadTos() async {
     Map<String, dynamic>? data = await userProvider.getTerm();
-    print(data);
+    print('data: $data');
     if (data != null) {
       tosList = data['result'];
       for (int idx = 0;idx < tosList!.length;idx++) {
         tosList![idx]['agree'] = false;
-        tosList![idx]['required'] = tosList![idx]['required'] == 1;
+        // tosList![idx]['required'] = tosList![idx]['required'] == 1;
       }
       return data;
     }
@@ -599,18 +610,9 @@ class SignUpPageState extends State<SignUpPage> {
                                       });
                                     } else {
                                       if (tosList != null && tosList!.isNotEmpty) {
-                                        showModalBottomSheet(
-                                            constraints: BoxConstraints(
-                                                maxWidth: 600
-                                            ),
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return _tosAgreePage();
-                                            },
-                                            enableDrag: false
-                                        );
+                                        _validateInput(false);
                                       } else {
-                                        _registerUser();
+                                        _validateInput(true);
                                       }
                                     }
                                     break;
@@ -637,18 +639,9 @@ class SignUpPageState extends State<SignUpPage> {
                                   }
                                   case 2: {
                                     if (tosList != null && tosList!.isNotEmpty) {
-                                      showModalBottomSheet(
-                                          constraints: BoxConstraints(
-                                              maxWidth: 600
-                                          ),
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return _tosAgreePage();
-                                          },
-                                          enableDrag: false
-                                      );
+                                      _validateInput(false);
                                     } else {
-                                      _registerUser();
+                                      _validateInput(true);
                                     }
                                     break;
                                   }
@@ -714,7 +707,7 @@ class SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  void _registerUser() async {
+  void _validateInput(bool noTos) async {
     final email = emailController.text.tr;
     final password = passwordController.text.tr;
     final nickname = nicknameController.text.tr;
@@ -723,23 +716,32 @@ class SignUpPageState extends State<SignUpPage> {
     final birth = birthController.text.tr;
 
     if (_formKey.currentState!.validate() && await checkNickname(nickname)) {
-      setState(() {
-        FocusScope.of(context).unfocus();
-        if (AuthController.to.user.value == null) {
-          AuthController.to.registerEmail(
-              emailController.text.tr,
-              passwordController.text.tr
-          );
-        } else {
-          List<int> agreeTermIdx = [];
-          if (tosList != null) {
-            for (var t in tosList!) {
-              if (t['agree']) agreeTermIdx.add(t['id']);
+      if (noTos) {
+        setState(() {
+          FocusScope.of(context).unfocus();
+          if (AuthController.to.user.value == null) {
+            AuthController.to.registerEmail(email, password);
+          } else {
+            List<int> agreeTermIdx = [];
+            if (tosList != null) {
+              for (var t in tosList!) {
+                if (t['agree']) agreeTermIdx.add(t['id']);
+              }
             }
+            ProfileController.to.makeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index, agreeTermIdx);
           }
-          ProfileController.to.makeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index, agreeTermIdx);
-        }
-      });
+        });
+      } else {
+        showModalBottomSheet(
+          useSafeArea: true,
+          isScrollControlled: true,
+          context: context,
+          builder: (BuildContext context) {
+            return _tosAgreePage();
+          },
+          enableDrag: false
+        );
+      }
     }
   }
 
