@@ -553,6 +553,7 @@ class SignUpPageState extends State<SignUpPage> {
     return FutureBuilder(
       future: _loadTos,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
+        // print(AuthController.to.user.value == null);
         if (snapshot.hasData) {
           return WillPopScope(
             onWillPop: () async {
@@ -661,20 +662,25 @@ class SignUpPageState extends State<SignUpPage> {
             },
             child: Scaffold(
               body: SafeArea(
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('데이터 로딩중 오류가 발생했습니다. 로그아웃 후 다시 시도해주세요.'),
-                      const SizedBox(height: 24,),
-                      FilledButton(
-                          onPressed: () {
-                            AuthController.to.signOut();
-                          },
-                          child: Text('로그아웃')
-                      )
-                    ],
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('데이터 로딩중 오류가 발생했습니다. 로그아웃 후 다시 시도해주세요.'),
+                        const SizedBox(height: 24,),
+                        FilledButton(
+                            onPressed: () {
+                              AuthController.to.signOut();
+                            },
+                            child: Text('로그아웃')
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -685,17 +691,22 @@ class SignUpPageState extends State<SignUpPage> {
             onWillPop: () async {
               return false;
             },
-            child: const Scaffold(
+            child: Scaffold(
               body: SafeArea(
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 24,),
-                      Text('회원가입 데이터 로딩중')
-                    ],
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  child: const Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 24,),
+                        Text('회원가입 데이터 로딩중')
+                      ],
+                    ),
                   ),
                 ),
               ),
