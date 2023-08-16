@@ -57,8 +57,25 @@ class ProfileController extends GetxController {
       int? result = await _userProvider.createProfile(profileData, idToken);
       _progressDialogHelper.hideProgressDialog();
       if (result == 200) {
-        await getUserProfile(user!.uid);
-        Get.offAll(() => const MyApp());
+        int? status = await getUserProfile(user!.uid);
+        if (status == 200) {
+          Get.offAll(() => const MyApp());
+        } else {
+          Get.dialog(
+              AlertDialog(
+                title: Text("회원가입 오류"),
+                content: Text("회원가입 처리 중 오류가 발생했습니다. 회원가입을 다시 진행해주세요."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        AuthController.to.signOut();
+                      },
+                      child: Text("확인")
+                  ),
+                ],
+              )
+          );
+        }
       } else {
         Get.dialog(
           AlertDialog(
@@ -83,7 +100,7 @@ class ProfileController extends GetxController {
           actions: [
             TextButton(
                 onPressed: () {
-                  Get.offAll(() => const MyApp());
+                  AuthController.to.signOut();
                 },
                 child: Text("확인")
             ),

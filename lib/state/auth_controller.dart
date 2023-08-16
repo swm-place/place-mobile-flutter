@@ -126,7 +126,7 @@ class AuthController extends GetxController {
     _authApple = FirebaseAuthApple(authInstance: authInstance);
   }
 
-  void registerEmail(String email, password) async {
+  Future<bool> registerEmail(String email, password) async {
     _progressDialogHelper.showProgressDialog('회원가입 처리중');
 
     UserCredential userCredential;
@@ -134,22 +134,48 @@ class AuthController extends GetxController {
       userCredential = await authInstance.createUserWithEmailAndPassword(email: email, password: password);
       _progressDialogHelper.hideProgressDialog();
       await getUser(userCredential.user);
+    } on FirebaseAuthException catch(e) {
+      _progressDialogHelper.hideProgressDialog();
+      String message;
+      switch(e.code) {
+        case 'email-already-in-use':
+          message = '이미 사용중인 이메일입니다. 다른 이메일을 입력해주세요.';
+          break;
+        case 'invalid-email':
+          message = '유효하지 않은 이메일입니다.';
+          break;
+        case 'weak-password':
+          message = '비밀번호가 너무 약합니다. 더 복잡한 비밀번호를 입력해주세요.';
+          break;
+        default:
+          message = '계정 생성 과정에서 오류가 발생했습니다. 계정 생성을 다시 시도해주세요.';
+          break;
+      }
+      Get.showSnackbar(
+          ErrorGetSnackBar(
+            title: "계정 생성 실패",
+            message: message,
+            showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_LONG,
+          )
+      );
+      return false;
     } catch(e) {
       _progressDialogHelper.hideProgressDialog();
       Get.showSnackbar(
           ErrorGetSnackBar(
-            title: "회원가입 실패",
-            message: "회원가입 과정에서 오류가 발생했습니다. 회원가입을 다시 시도해주세요.",
+            title: "계정 생성 실패",
+            message: "계정 생성 과정에서 오류가 발생했습니다. 계정 생성을 다시 시도해주세요.",
           )
       );
-      return;
+      return false;
     }
-    Get.showSnackbar(
-        SuccessGetSnackBar(
-          title: "회원가입 성공",
-          message: "'${userCredential.user!.email}'님, 환영합니다.",
-        )
-    );
+    // Get.showSnackbar(
+    //     SuccessGetSnackBar(
+    //       title: "계정 생성 성공",
+    //       message: "'${userCredential.user!.email}'님, 환영합니다.",
+    //     )
+    // );
+    return true;
   }
 
   Future<void> signInEmail(String email, String password) async {

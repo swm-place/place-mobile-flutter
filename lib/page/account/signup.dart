@@ -294,18 +294,7 @@ class SignUpPageState extends State<SignUpPage> {
                                 FocusScope.of(context).unfocus();
                                 Navigator.pop(context);
 
-                                final nickname = nicknameController.text.tr;
-                                final phoneNumber = phoneNumberController.text.tr;
-                                final sex = selectedSex;
-                                final birth = birthController.text.tr;
-
-                                List<int> agreeTermIdx = [];
-                                if (tosList != null) {
-                                  for (var t in tosList!) {
-                                    if (t['agree']) agreeTermIdx.add(t['id']);
-                                  }
-                                }
-                                ProfileController.to.makeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index, agreeTermIdx);
+                                _createUser();
                               } else{
                                 bottomState(() {
                                   tosButtonText = "필수 약관을 동의해주세요";
@@ -345,6 +334,7 @@ class SignUpPageState extends State<SignUpPage> {
         });
         return false;
       } else {
+        print(result);
         setState(() {
           nicknameError = "다시 시도해주세요.";
         });
@@ -635,11 +625,12 @@ class SignUpPageState extends State<SignUpPage> {
                                           passwordCheckError = "비밀번호가 일치하지 않습니다!";
                                         } else {
                                           passwordCheckError = null;
-
                                           FocusScope.of(context).unfocus();
+
                                           pageController.nextPage(
                                               duration: const Duration(milliseconds: 250),
-                                              curve: Curves.easeInOut);
+                                              curve: Curves.easeInOut
+                                          );
                                         }
                                       }
                                     });
@@ -715,7 +706,7 @@ class SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  void _validateInput(bool noTos) async {
+  void _createUser() async {
     final email = emailController.text.tr;
     final password = passwordController.text.tr;
     final nickname = nicknameController.text.tr;
@@ -723,22 +714,27 @@ class SignUpPageState extends State<SignUpPage> {
     final sex = selectedSex;
     final birth = birthController.text.tr;
 
+    if (AuthController.to.user.value == null) {
+      bool success = await AuthController.to.registerEmail(email, password);
+      if (!success) return;
+    }
+
+    List<int> agreeTermIdx = [];
+    if (tosList != null) {
+      for (var t in tosList!) {
+        if (t['agree']) agreeTermIdx.add(t['id']);
+      }
+    }
+    ProfileController.to.makeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index, agreeTermIdx);
+  }
+
+  void _validateInput(bool noTos) async {
+    final nickname = nicknameController.text.tr;
+
     if (_formKey.currentState!.validate() && await checkNickname(nickname)) {
       if (noTos) {
-        setState(() {
-          FocusScope.of(context).unfocus();
-          if (AuthController.to.user.value == null) {
-            AuthController.to.registerEmail(email, password);
-          } else {
-            List<int> agreeTermIdx = [];
-            if (tosList != null) {
-              for (var t in tosList!) {
-                if (t['agree']) agreeTermIdx.add(t['id']);
-              }
-            }
-            ProfileController.to.makeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index, agreeTermIdx);
-          }
-        });
+        FocusScope.of(context).unfocus();
+        _createUser();
       } else {
         showModalBottomSheet(
           useSafeArea: true,
