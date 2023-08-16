@@ -7,79 +7,77 @@ import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:http/http.dart' as http;
 import 'package:place_mobile_flutter/api/provider/default_provider.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
+import 'package:place_mobile_flutter/util/async_dialog.dart';
 
 class UserProvider extends DefaultProvider {
   String baseUrl = baseUrlDev;
 
-  Future<http.Response?> getProfile(String token, User? user) async {
-    // User? user = AuthController.to.user.value;
-    // print('getProfile: $user');
-    if (user != null) {
-      Uri uri = Uri.parse("$baseUrl/v1/user/${user.uid}");
-      final response = await http.get(uri, headers: setHeader(token));
-      return response;
+  ProgressDialogHelper _progressDialogHelper = ProgressDialogHelper();
+
+  Future<http.Response?> getProfile(String uid) async {
+    Uri uri = Uri.parse("$baseUrl/user/${uid}");
+    http.Response response;
+    try {
+      response = await http.get(uri, headers: setHeader(null));
+    } catch(e) {
+      return null;
     }
-    return null;
+    return response;
   }
 
-  Future<http.Response?> getTerm(String token) async {
-    User? user = AuthController.to.user.value;
-    if (user != null) {
-      Uri uri = Uri.parse("$baseUrl/v1/user/terms");
-      final response = await http.get(uri, headers: setHeader(token));
-      return response;
+  Future<Map<String, dynamic>?> getTerm() async {
+    Uri uri = Uri.parse("$baseUrl/user/terms");
+    http.Response response;
+
+    // _progressDialogHelper.showProgressDialog('약관 정보 가져오는중');
+    print('open');
+    try {
+      response = await http.get(uri, headers: setHeader(null));
+      // _progressDialogHelper.hideProgressDialog();
+      print('close1');
+    } catch(e) {
+      // _progressDialogHelper.hideProgressDialog();
+      print('close2');
+      return null;
     }
-    return null;
+    print(response.statusCode);
+    switch(response.statusCode) {
+      case 200:
+        return jsonDecode(utf8.decode(response.bodyBytes));
+      default:
+        return null;
+    }
   }
 
-  Future<int?> checkNickname(String nickname, String token) async {
-    User? user = AuthController.to.user.value;
-    if (user != null) {
-      Uri uri = Uri.parse("$baseUrl/v1/user/nickname?nickname=$nickname");
-      final response = await http.get(uri, headers: setHeader(token));
-      return response.statusCode;
+  Future<int?> checkNickname(String nickname) async {
+    Uri uri = Uri.parse("$baseUrl/user/nickname?nickname=$nickname");
+    http.Response response;
+
+    _progressDialogHelper.showProgressDialog('닉네임 중복 검사중');
+    try {
+      response = await http.get(uri, headers: setHeader(null));
+      _progressDialogHelper.hideProgressDialog();
+    } catch(e) {
+      return null;
     }
-    return null;
+    return response.statusCode;
   }
 
   Future<int?> createProfile(Map<String, dynamic> profileData, String token) async {
     User? user = AuthController.to.user.value;
     if (user != null) {
-      Uri uri = Uri.parse("$baseUrl/v1/user");
+      Uri uri = Uri.parse("$baseUrl/user");
       Map<String, String>? header = setHeader(token);
       header!["Content-Type"] = 'application/json';
-      final response = await http.post(uri, headers: header, body: json.encode(profileData));
+
+      http.Response response;
+      try {
+        response = await http.post(uri, headers: header, body: json.encode(profileData));
+      } catch(e) {
+        return null;
+      }
       return response.statusCode;
     }
     return null;
-  }
-
-  Future<Map<String, dynamic>?> getTermDialog(String token, BuildContext context) async {
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return const AlertDialog(
-            title: Text("회원가입 정보 가져오는중..."),
-            content: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(width: 18,),
-                Text("곧 완료됩니다.")
-              ],
-            ),
-          );
-        }
-    );
-
-    http.Response? result = await getTerm(token);
-    Navigator.of(context, rootNavigator: true).pop();
-
-    if (result == null) {
-      return null;
-    } else {
-      return jsonDecode(utf8.decode(result.bodyBytes));
-    }
   }
 }

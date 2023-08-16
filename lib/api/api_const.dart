@@ -1,1 +1,1 @@
-final baseUrlDev = 'https://gateway.k1a2.xyz/api';
+final baseUrlDev = 'https://been-dev.yeoksi.com/api';
