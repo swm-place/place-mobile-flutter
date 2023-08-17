@@ -75,6 +75,7 @@
 		<string>This app needs access to location when in the background.</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
-		<key>ITSAppUsesNonExemptEncryption</key> <No>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 	</dict>
 </plist>
