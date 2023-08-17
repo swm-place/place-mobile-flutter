@@ -18,7 +18,7 @@ import 'package:place_mobile_flutter/page/account/signup.dart';
 import 'dart:convert';
 
 import 'package:place_mobile_flutter/state/user_controller.dart';
-import 'package:place_mobile_flutter/util/apple_crypto.dart';
+import 'package:place_mobile_flutter/util/auth/apple_crypto.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
