@@ -282,7 +282,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             for (int i = 0;i < _recommendData!['collections'].length;i++) {
               items.add(__recommendSection(_recommendData!['collections'][i]));
               items.add(const SizedBox(height: 24,));
-            }return Column(
+            }
+            return Column(
               children: items,
             );
           } else {
@@ -317,7 +318,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 24, 0, 24),
+            padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
             child: Column(
               children: _createSection(),
             ),
