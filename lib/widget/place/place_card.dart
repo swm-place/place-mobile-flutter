@@ -27,7 +27,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
   String imageUrl;
   String placeName;
   String placeType;
-  String distance;
+  String? distance;
   String open;
   String likeCount;
 
@@ -47,6 +47,56 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
       );
     }
     return chips;
+  }
+
+
+  List<Widget> __createInfo() {
+    List<Widget> inform = [];
+    if(distance != null) {
+      inform.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(MdiIcons.mapMarkerOutline, size: 18,),
+            Text(
+              distance!,
+              style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+            )
+          ],
+        )
+      );
+    }
+    inform.add(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(MdiIcons.clockCheckOutline, size: 18),
+          const SizedBox(
+            width: 2,
+          ),
+          Text(
+            open,
+            style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+          )
+        ],
+      )
+    );
+    inform.add(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(MdiIcons.heart, size: 18),
+          const SizedBox(
+            width: 2,
+          ),
+          Text(
+            likeCount,
+            style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+          )
+        ],
+      )
+    );
+    return inform;
   }
 
   @override
@@ -113,44 +163,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(MdiIcons.mapMarkerOutline, size: 18,),
-                              Text(
-                                distance,
-                                style: SectionTextStyle.labelMedium(Colors.grey[700]!),
-                              )
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(MdiIcons.clockCheckOutline, size: 18),
-                              SizedBox(
-                                width: 2,
-                              ),
-                              Text(
-                                open,
-                                style: SectionTextStyle.labelMedium(Colors.grey[700]!),
-                              )
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(MdiIcons.heart, size: 18),
-                              SizedBox(
-                                width: 2,
-                              ),
-                              Text(
-                                likeCount,
-                                style: SectionTextStyle.labelMedium(Colors.grey[700]!),
-                              )
-                            ],
-                          )
-                        ],
+                        children: __createInfo(),
                       )
                     ],
                   ),
