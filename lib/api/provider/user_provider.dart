@@ -10,8 +10,6 @@ import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/util/async_dialog.dart';
 
 class UserProvider extends DefaultProvider {
-  String baseUrl = baseUrlDev;
-
   ProgressDialogHelper _progressDialogHelper = ProgressDialogHelper();
 
   Future<http.Response?> getProfile(String uid) async {
