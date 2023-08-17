@@ -218,6 +218,15 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   );
 
   Widget __recommendSection(Map<String, dynamic> data) {
+    for (int index = 0;index < data["places"].length;index++) {
+      for (int i = 0;i < data["places"][index]['hashtags'].length;i++) {
+        String name = data["places"][index]['hashtags'][i];
+        data["places"][index]['hashtags'][i] = {
+          "text": name,
+          "color": RandomGenerator.generateRandomDarkHexColor()
+        };
+      }
+    }
     return SizedBox(
       width: double.infinity,
       child: MainSection(
@@ -230,17 +239,10 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
               scrollDirection: Axis.horizontal,
               itemCount: data['places'].length + 2,
               itemBuilder: (BuildContext context, int index) {
-                if (index == 0 || index == data['places'].length + 1){
-                  return const SizedBox(width: 24,);
+                if (index == 0 || index == data['places'].length + 1) {
+                  return SizedBox(width: 24,);
                 } else {
-                  for (int i = 0;i < data["places"][index]['hashtags'].length;i++) {
-                    String name = data["places"][index]['hashtags'][i];
-                    data["places"][index]['hashtags'][i] = {
-                      "text": name,
-                      "color": RandomGenerator.generateRandomDarkHexColor()
-                    };
-                  }
-                  // print(data["places"][index]['hashtags']);
+                  index -= 1;
                   return RoundedRectanglePlaceCard(
                     width: 250,
                     aspectRatio: 18/14,
