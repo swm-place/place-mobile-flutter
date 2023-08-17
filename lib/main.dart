@@ -4,20 +4,28 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:place_mobile_flutter/page/account/login.dart';
 import 'package:place_mobile_flutter/page/main/bookmark.dart';
 import 'package:place_mobile_flutter/page/main/home.dart';
 import 'package:place_mobile_flutter/page/main/profile.dart';
 import 'package:place_mobile_flutter/page/main/random.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
+import 'package:place_mobile_flutter/state/user_controller.dart';
+import 'package:place_mobile_flutter/util/gps.dart';
 import 'theme/color_schemes.g.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp()
-    .then((value) => Get.put(AuthController()));
+  final GpsHelper _gpsHelper = GpsHelper();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await Firebase.initializeApp();
+  Get.put(AuthController());
+  Get.put(ProfileController());
+
+  await _gpsHelper.checkPermission();
 
   runApp(GetMaterialApp(
     // builder: (context, child) {
@@ -51,6 +59,12 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
     DeviceOrientation.portraitUp,
   ]);
+
+  // if (AuthController.to.user.value != null) {
+  //   await AuthController.to.getUser(AuthController.to.user.value!, true);
+  // }
+
+  FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatelessWidget {
