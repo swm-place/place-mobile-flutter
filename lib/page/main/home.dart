@@ -240,18 +240,25 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
       child: MainSection(
           title: data['title'],
           message: data["summary"],
-          content: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
+          content: SizedBox(
+            height: 195,
+            child: ListView(
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.horizontal,
               children: placeCards,
             ),
-          )
+          ),
       ),
     );
   }
 
   List<Widget> _createSection() {
-    List<Widget> section = [__searchSection(), const SizedBox(height: 24,), __storySection(), const SizedBox(height: 24,)];
+    List<Widget> section = [
+      __searchSection(),
+      const SizedBox(height: 24,),
+      // __storySection(),
+      // const SizedBox(height: 24,)
+    ];
     for (int i = 0;i < _recommendData.length;i++) {
       section.add(__recommendSection(_recommendData[i]));
       // section.add(const SizedBox(height: 24,));
