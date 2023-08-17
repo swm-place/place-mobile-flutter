@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:label="place_mobile_flutter"
+        android:label="OURS PLACE"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
