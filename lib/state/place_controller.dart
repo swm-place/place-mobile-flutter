@@ -6,17 +6,12 @@ class PlaceController extends GetxController {
 
   Rxn<Position> position = Rxn(null);
 
-  bool gpuPermissionAllow = false;
-
-  @override
-  void onReady() async {
-    super.onReady();
-  }
+  bool gpsPermissionAllow = false;
 
   Future<Position?> getPosition() async {
     Position? position;
 
-    if (gpuPermissionAllow) {
+    if (gpsPermissionAllow) {
       try {
         position = await Geolocator.getCurrentPosition(timeLimit: const Duration(seconds: 5));
         this.position(position);
@@ -39,7 +34,7 @@ class PlaceController extends GetxController {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       // return Future.error('Location services are disabled.');
-      gpuPermissionAllow = false;
+      gpsPermissionAllow = false;
       return false;
     }
 
@@ -48,18 +43,18 @@ class PlaceController extends GetxController {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         // return Future.error('Location permissions are denied');
-        gpuPermissionAllow = false;
+        gpsPermissionAllow = false;
         return false;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // return Future.error('Location permissions are permanently denied, we cannot request permissions.');
-      gpuPermissionAllow = false;
+      gpsPermissionAllow = false;
       return false;
     }
 
-    gpuPermissionAllow = true;
+    gpsPermissionAllow = true;
     return true;
   }
 }
