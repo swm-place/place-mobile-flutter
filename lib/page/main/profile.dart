@@ -44,37 +44,42 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
               ),
             );
           } else {
-            String? nickname = ProfileController.to.nickname.value;
-            nickname ??= 'null';
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 64,
-                  height: 64,
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage('https://source.unsplash.com/random'),
-                  ),
-                ),
-                SizedBox(width: 24,),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // SizedBox(height: 12,),
-                      Text(nickname!, style: PageTextStyle.headlineBold(Colors.black),),
-                      // SizedBox(height: 6,),
-                      // Row(
-                      //   children: [
-                      //     Text("팔로워 20", style: SectionTextStyle.labelMedium(Colors.black),),
-                      //     SizedBox(width: 12,),
-                      //     Text("팔로잉 20", style: SectionTextStyle.labelMedium(Colors.black),),
-                      //   ],
-                      // )
-                    ],
-                  )
-                )
-              ],
+            return Obx(() {
+              String? nickname = ProfileController.to.nickname.value;
+              nickname ??= 'null';
+              return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 64,
+                      height: 64,
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            'https://source.unsplash.com/random'),
+                      ),
+                    ),
+                    SizedBox(width: 24,),
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // SizedBox(height: 12,),
+                            Text(nickname, style: PageTextStyle.headlineBold(
+                                Colors.black),),
+                            // SizedBox(height: 6,),
+                            // Row(
+                            //   children: [
+                            //     Text("팔로워 20", style: SectionTextStyle.labelMedium(Colors.black),),
+                            //     SizedBox(width: 12,),
+                            //     Text("팔로잉 20", style: SectionTextStyle.labelMedium(Colors.black),),
+                            //   ],
+                            // )
+                          ],
+                        )
+                    )
+                  ],
+                );
+              }
             );
           }
         },
