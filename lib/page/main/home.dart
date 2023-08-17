@@ -218,15 +218,6 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   );
 
   Widget __recommendSection(Map<String, dynamic> data) {
-    for (int index = 0;index < data["places"].length;index++) {
-      for (int i = 0;i < data["places"][index]['hashtags'].length;i++) {
-        String name = data["places"][index]['hashtags'][i];
-        data["places"][index]['hashtags'][i] = {
-          "text": name,
-          "color": RandomGenerator.generateRandomDarkHexColor()
-        };
-      }
-    }
     return SizedBox(
       width: double.infinity,
       child: MainSection(
@@ -271,9 +262,27 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     );
   }
 
+  Future<Map<String, dynamic>?> _getPlaceRecommendationSection() async {
+    Map<String, dynamic>? data = await _placeProvider.getPlaceRecommendSection();
+    if (data == null) return null;
+
+    for (int c = 0;c < data['collections'].length;c++) {
+      for (int index = 0;index < data['collections'][c]["places"].length;index++) {
+        for (int i = 0;i < data['collections'][c]["places"][index]['hashtags'].length;i++) {
+          String name = data['collections'][c]["places"][index]['hashtags'][i];
+          data['collections'][c]["places"][index]['hashtags'][i] = {
+            "text": name,
+            "color": RandomGenerator.generateRandomDarkHexColor()
+          };
+        }
+      }
+    }
+    return data;
+  }
+
   Widget _loadPlaceRecommendSection() {
     return FutureBuilder<Map<String, dynamic>?>(
-      future: _placeProvider.getPlaceRecommendSection(),
+      future: _getPlaceRecommendationSection(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           List<Widget> items = [];
