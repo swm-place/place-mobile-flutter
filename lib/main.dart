@@ -11,21 +11,22 @@ import 'package:place_mobile_flutter/page/main/home.dart';
 import 'package:place_mobile_flutter/page/main/profile.dart';
 import 'package:place_mobile_flutter/page/main/random.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
+import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/state/user_controller.dart';
-import 'package:place_mobile_flutter/util/gps.dart';
 import 'theme/color_schemes.g.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
-  final GpsHelper _gpsHelper = GpsHelper();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp();
+  Get.put(PlaceController());
   Get.put(AuthController());
   Get.put(ProfileController());
 
-  await _gpsHelper.checkPermission();
+  await PlaceController.to.checkPermission();
+  await PlaceController.to.getPosition();
 
   runApp(GetMaterialApp(
     // builder: (context, child) {
