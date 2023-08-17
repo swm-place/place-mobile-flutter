@@ -14,7 +14,7 @@ class PlaceController extends GetxController {
     return degrees * pi / 180;
   }
 
-  double haversineDistance(double lat2, double lon2) {
+  int haversineDistance(double lat2, double lon2) {
     const R = 6371000.0;
 
     double lat1 = userPosition.value!.latitude;
@@ -30,7 +30,7 @@ class PlaceController extends GetxController {
         sin(dLon / 2) * sin(dLon / 2) * cos(lat1) * cos(lat2);
     var c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
-    return R * c;
+    return (R * c).round();
   }
 
   Future<Position?> getPosition() async {
