@@ -36,7 +36,8 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
 
   List<Widget> __createTags() {
     List<Widget> chips = [];
-    for (int i = 0;i < tags.length;i++) {
+    int tagCount = tags.length < 2 ? tags.length : 2;
+    for (int i = 0;i < tagCount;i++) {
       if (i != 0) chips.add(SizedBox(width: 4,));
       chips.add(
         TagChip(
@@ -84,9 +85,12 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           // mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                              placeName,
-                              style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
+                            Expanded(
+                              child: Text(
+                                placeName,
+                                overflow: TextOverflow.ellipsis,
+                                style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
+                              ),
                             ),
                             Text(
                               placeType,
