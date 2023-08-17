@@ -44,11 +44,11 @@ class PlaceController extends GetxController {
         position = await Geolocator.getLastKnownPosition();
         userPosition(position);
       }
+      print('now position - lat: ${position!.latitude} long: ${position!.longitude}');
     } else {
-      position = await Geolocator.getLastKnownPosition();
+      position = null;
       userPosition(position);
     }
-    print('now position - lat: ${position!.latitude} long: ${position!.longitude}');
     return position;
   }
 

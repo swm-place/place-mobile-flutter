@@ -243,7 +243,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                     imageUrl: 'https://source.unsplash.com/random?seq=$index',
                     placeName: data["places"][index]['name'],
                     placeType: data["places"][index]['category'],
-                    distance: UnitConverter.formatDistance(data["places"][index]['distance']),
+                    distance: data["places"][index]['distance'] == null ?
+                      null : UnitConverter.formatDistance(data["places"][index]['distance']),
                     // distance: UnitConverter.formatDistance(Random().nextInt(10000)),
                     // open: data["places"][index]['open'],
                     open: Random().nextBool() ? '영업중' : '영업종료',
