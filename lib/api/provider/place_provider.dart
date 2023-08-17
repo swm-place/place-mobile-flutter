@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:place_mobile_flutter/api/provider/default_provider.dart';
 
 class UserProvider extends DefaultProvider {
-  Future<Map<String, dynamic>?> getPlacRecommandSection() async {
+  Future<Map<String, dynamic>?> getPlaceRecommendSection() async {
     Uri uri = Uri.parse("$baseUrl/api-recommender/recommendation/collection/preset");
     Response response;
     try {
