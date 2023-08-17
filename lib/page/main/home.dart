@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
-import 'package:place_mobile_flutter/util/unit_converter.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_button.dart';
@@ -23,6 +26,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   final GlobalKey _tagSection = GlobalKey();
 
   final List<Widget> _recommendTags = [];
+
+  final PlaceProvider _placeProvider = PlaceProvider();
 
   final List<Map<String, dynamic>> _recommendTagsData = [
     {'icon': Icons.add, 'title': 'test1', 'background': Colors.blue},
@@ -55,50 +60,51 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     },
   ];
 
-  final List<Map<String, dynamic>> _recommendData = [
-    {
-      "title": "연인과 함께",
-      "summary": "데이트 장소 추천",
-      "places": [
-        {
-          "imageUrl": "https://images.unsplash.com/photo-1619536095378-c96a5639ccc5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
-          "placeName": "소마카페",
-          "placeType": "카페",
-          "distance": 2930,
-          "open": "영업중",
-          "likeCount": 13924,
-          "tags": [
-            {"text": "조용한", "color": "#3232a8"},
-            {"text": "넓은", "color": "#326da8"},
-          ]
-        },
-        {
-          "imageUrl": "https://images.unsplash.com/photo-1508737804141-4c3b688e2546?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=986&q=80",
-          "placeName": "소마 디저트",
-          "placeType": "디저트",
-          "distance": 892,
-          "open": "영업중",
-          "likeCount": 55,
-          "tags": [
-            {"text": "조용한", "color": "#3232a8"},
-            {"text": "넓은", "color": "#326da8"},
-          ]
-        },
-        {
-          "imageUrl": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2274&q=80",
-          "placeName": "소마 전시",
-          "placeType": "전시회",
-          "distance": 34567,
-          "open": "영업종료",
-          "likeCount": 22935,
-          "tags": [
-            {"text": "조용한", "color": "#3232a8"},
-            {"text": "넓은", "color": "#326da8"},
-          ]
-        },
-      ]
-    }
-  ];
+  Map<String, dynamic>? _recommendData;
+  // List<Map<String, dynamic>>? _recommendData = [
+    // {
+    //   "title": "연인과 함께",
+    //   "summary": "데이트 장소 추천",
+    //   "places": [
+    //     {
+    //       "imageUrl": "https://images.unsplash.com/photo-1619536095378-c96a5639ccc5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
+    //       "placeName": "소마카페",
+    //       "placeType": "카페",
+    //       "distance": 2930,
+    //       "open": "영업중",
+    //       "likeCount": 13924,
+    //       "tags": [
+    //         {"text": "조용한", "color": "#3232a8"},
+    //         {"text": "넓은", "color": "#326da8"},
+    //       ]
+    //     },
+    //     {
+    //       "imageUrl": "https://images.unsplash.com/photo-1508737804141-4c3b688e2546?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=986&q=80",
+    //       "placeName": "소마 디저트",
+    //       "placeType": "디저트",
+    //       "distance": 892,
+    //       "open": "영업중",
+    //       "likeCount": 55,
+    //       "tags": [
+    //         {"text": "조용한", "color": "#3232a8"},
+    //         {"text": "넓은", "color": "#326da8"},
+    //       ]
+    //     },
+    //     {
+    //       "imageUrl": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2274&q=80",
+    //       "placeName": "소마 전시",
+    //       "placeType": "전시회",
+    //       "distance": 34567,
+    //       "open": "영업종료",
+    //       "likeCount": 22935,
+    //       "tags": [
+    //         {"text": "조용한", "color": "#3232a8"},
+    //         {"text": "넓은", "color": "#326da8"},
+    //       ]
+    //     },
+    //   ]
+    // }
+  // ];
 
   int activeIndex = 0;
 
@@ -212,29 +218,6 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   );
 
   Widget __recommendSection(Map<String, dynamic> data) {
-    List<Widget> placeCards = [const SizedBox(width: 24,)];
-    for (int i = 0;i < data["places"].length;i++) {
-      placeCards.add(
-        RoundedRectanglePlaceCard(
-          width: 250,
-          aspectRatio: 18/14,
-          tags: data["places"][i]['tags'],
-          imageUrl: data["places"][i]['imageUrl'],
-          placeName: data["places"][i]['placeName'],
-          placeType: data["places"][i]['placeType'],
-          distance: UnitConverter.formatDistance(data["places"][i]['distance']),
-          open: data["places"][i]['open'],
-          likeCount: UnitConverter.formatNumber(data["places"][i]['likeCount']),
-          onPressed: () {
-            Get.to(() => PlaceDetailPage(
-
-            ));
-          },
-        )
-      );
-    }
-    placeCards.add(const SizedBox(width: 24,));
-
     return SizedBox(
       width: double.infinity,
       child: MainSection(
@@ -242,13 +225,71 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           message: data["summary"],
           content: SizedBox(
             height: 195,
-            child: ListView(
+            child: ListView.builder(
               padding: EdgeInsets.zero,
               scrollDirection: Axis.horizontal,
-              children: placeCards,
+              itemCount: data['places'].length + 2,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == 0 || index == data['places'].length + 1){
+                  return const SizedBox(width: 24,);
+                } else {
+                  for (int i = 0;i < data["places"][index]['hashtags'].length;i++) {
+                    String name = data["places"][index]['hashtags'][i];
+                    data["places"][index]['hashtags'][i] = {
+                      "text": name,
+                      "color": RandomGenerator.generateRandomDarkHexColor()
+                    };
+                  }
+                  // print(data["places"][index]['hashtags']);
+                  return RoundedRectanglePlaceCard(
+                    width: 250,
+                    aspectRatio: 18/14,
+                    tags: List<Map<String, dynamic>>.from(data["places"][index]['hashtags']),
+                    // imageUrl: data["places"][index]['imageUrl'],
+                    imageUrl: 'https://source.unsplash.com/random',
+                    placeName: data["places"][index]['name'],
+                    placeType: data["places"][index]['category'],
+                    // distance: UnitConverter.formatDistance(data["places"][index]['distance']),
+                    distance: UnitConverter.formatDistance(Random().nextInt(10000)),
+                    // open: data["places"][index]['open'],
+                    open: Random().nextBool() ? '영업중' : '영업종료',
+                    // likeCount: UnitConverter.formatNumber(data["places"][index]['likeCount']),
+                    likeCount: UnitConverter.formatNumber(Random().nextInt(1000000)),
+                    onPressed: () {
+                      Get.to(() => PlaceDetailPage(
+
+                      ));
+                    },
+                  );
+                }
+              },
             ),
           ),
       ),
+    );
+  }
+
+  Widget _loadPlaceRecommendSection() {
+    return FutureBuilder<Map<String, dynamic>?>(
+      future: _placeProvider.getPlaceRecommendSection(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          List<Widget> items = [];
+          _recommendData = snapshot.data;
+          if (_recommendData != null) {
+            for (int i = 0;i < _recommendData!['collections'].length;i++) {
+              items.add(__recommendSection(_recommendData!['collections'][i]));
+              items.add(const SizedBox(height: 24,));
+            }return Column(
+              children: items,
+            );
+          } else {
+            return Container();
+          }
+        } else {
+          return Container();
+        }
+      },
     );
   }
 
@@ -259,10 +300,11 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
       // __storySection(),
       // const SizedBox(height: 24,)
     ];
-    for (int i = 0;i < _recommendData.length;i++) {
-      section.add(__recommendSection(_recommendData[i]));
-      // section.add(const SizedBox(height: 24,));
-    }
+    section.add(_loadPlaceRecommendSection());
+    // for (int i = 0;i < _recommendData.length;i++) {
+    //   section.add(__recommendSection(_recommendData[i]));
+    //   // section.add(const SizedBox(height: 24,));
+    // }
     return section;
   }
 
