@@ -240,7 +240,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
               itemCount: data['places'].length + 2,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0 || index == data['places'].length + 1) {
-                  return SizedBox(width: 24,);
+                  return const SizedBox(width: 24,);
                 } else {
                   index -= 1;
                   return RoundedRectanglePlaceCard(
@@ -248,7 +248,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                     aspectRatio: 18/14,
                     tags: List<Map<String, dynamic>>.from(data["places"][index]['hashtags']),
                     // imageUrl: data["places"][index]['imageUrl'],
-                    imageUrl: 'https://source.unsplash.com/random',
+                    imageUrl: 'https://source.unsplash.com/random?seq=$index',
                     placeName: data["places"][index]['name'],
                     placeType: data["places"][index]['category'],
                     // distance: UnitConverter.formatDistance(data["places"][index]['distance']),
