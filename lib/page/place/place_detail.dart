@@ -10,7 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
-import 'package:place_mobile_flutter/util/unit_converter.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/place/review/place_review.dart';

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 class UnitConverter {
@@ -30,5 +31,15 @@ class UnitConverter {
     if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
+  }
+}
+
+class RandomGenerator {
+  static String generateRandomDarkHexColor() {
+    final Random random = Random();
+    final int r = random.nextInt(128); // 0-127
+    final int g = random.nextInt(128); // 0-127
+    final int b = random.nextInt(128); // 0-127
+    return '#${r.toRadixString(16).padLeft(2, '0')}${g.toRadixString(16).padLeft(2, '0')}${b.toRadixString(16).padLeft(2, '0')}';
   }
 }

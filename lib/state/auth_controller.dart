@@ -18,7 +18,7 @@ import 'package:place_mobile_flutter/page/account/signup.dart';
 import 'dart:convert';
 
 import 'package:place_mobile_flutter/state/user_controller.dart';
-import 'package:place_mobile_flutter/util/apple_crypto.dart';
+import 'package:place_mobile_flutter/util/auth/apple_crypto.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
@@ -39,23 +39,23 @@ class AuthController extends GetxController {
 
   Future<bool> checkTokenValid() async {
     if (idToken == null || expireDate == null) {
-      await getIdTokenStream();
+      await getIdTokenStream(false);
       return false;
     }
     if (expireDate!.isAfter(DateTime.now())) {
-      await getIdTokenStream();
+      await getIdTokenStream(false);
       return false;
     }
     return true;
   }
 
-  Future<void> getIdTokenStream() async {
+  Future<void> getIdTokenStream(bool initApp) async {
     if (user.value == null) {
       idToken = null;
     } else {
-      _progressDialogHelper.showProgressDialog('인증 정보 가져오는중');
+      if (!initApp) _progressDialogHelper.showProgressDialog('인증 정보 가져오는중');
       idToken = await user.value!.getIdToken();
-      _progressDialogHelper.hideProgressDialog();
+      if (!initApp) _progressDialogHelper.hideProgressDialog();
       if (idToken == null) {
         expireDate = null;
       } else {
@@ -66,10 +66,10 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> _loginSuccess() async {
-    _progressDialogHelper.showProgressDialog('유저 정보 가져오는중');
+  Future<void> _loginSuccess(bool initApp) async {
+    if (!initApp) _progressDialogHelper.showProgressDialog('유저 정보 가져오는중');
     int? status = await ProfileController.to.getUserProfile(user.value!.uid);
-    _progressDialogHelper.hideProgressDialog();
+    if (!initApp) _progressDialogHelper.hideProgressDialog();
     print('login success $status ${Get.currentRoute}');
     if (status != null) {
       if (status == 200) {
@@ -103,12 +103,12 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> getUser(User? user) async {
+  Future<void> getUser(User? user, bool initApp) async {
     print("user: $user");
     this.user.value = user;
-    await getIdTokenStream();
+    await getIdTokenStream(initApp);
     if (user != null) {
-      await _loginSuccess();
+      await _loginSuccess(initApp);
     } else {
       Get.offAll(() => const MyApp());
     }
@@ -119,7 +119,7 @@ class AuthController extends GetxController {
     super.onReady();
     Get.put(ProfileController());
     if (user.value != null) {
-      await getUser(user.value!);
+      await getUser(user.value!, false);
     }
     // await authInstance.currentUser!;
     _authGoogle = FirebaseAuthGoogle(authInstance: authInstance);
@@ -133,7 +133,7 @@ class AuthController extends GetxController {
     try {
       userCredential = await authInstance.createUserWithEmailAndPassword(email: email, password: password);
       _progressDialogHelper.hideProgressDialog();
-      await getUser(userCredential.user);
+      await getUser(userCredential.user, false);
     } on FirebaseAuthException catch(e) {
       _progressDialogHelper.hideProgressDialog();
       String message;
@@ -185,7 +185,7 @@ class AuthController extends GetxController {
     try {
       userCredential = await authInstance.signInWithEmailAndPassword(email: email, password: password);
       _progressDialogHelper.hideProgressDialog();
-      await getUser(userCredential.user);
+      await getUser(userCredential.user, false);
     } on FirebaseAuthException catch(e) {
       _progressDialogHelper.hideProgressDialog();
       String message = '';
@@ -234,7 +234,7 @@ class AuthController extends GetxController {
   void signInGoogle() async {
     User? user = await _authGoogle.signInGoogle();
     if (user != null) {
-      await getUser(user);
+      await getUser(user, false);
       Get.showSnackbar(
           SuccessGetSnackBar(
               title: "로그인 성공",
@@ -255,7 +255,7 @@ class AuthController extends GetxController {
   void signInApple() async {
     User? user = await _authApple.signInApple();
     if (user != null) {
-      await getUser(user);
+      await getUser(user, false);
       Get.showSnackbar(
           SuccessGetSnackBar(
               title: "로그인 성공",
@@ -278,7 +278,7 @@ class AuthController extends GetxController {
     try {
       await authInstance.signOut();
       _progressDialogHelper.hideProgressDialog();
-      await getUser(null);
+      await getUser(null, false);
     } catch(e) {
       _progressDialogHelper.hideProgressDialog();
       Get.showSnackbar(
