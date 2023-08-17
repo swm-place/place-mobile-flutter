@@ -47,6 +47,10 @@ Future<void> main() async {
     ),
     home: MyApp(),
   ));
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.portraitUp,
+  ]);
 }
 
 class MyApp extends StatelessWidget {
