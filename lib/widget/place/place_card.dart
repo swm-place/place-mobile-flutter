@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
-import 'package:place_mobile_flutter/util/unit_converter.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 
 class RoundedRectanglePlaceCard extends StatelessWidget {
