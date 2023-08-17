@@ -157,7 +157,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       title: '비밀번호 변경',
                       textColor: Colors.black,
                       onTap: () {
-                        print("비번 변경");
+                        AuthController.to.resetPassword(AuthController.to.user.value!.email!);
                       },
                     ),
                     PreferenceItem(
@@ -262,54 +262,14 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
               const SizedBox(height: 24,),
               _createProfileSection(),
               _createWatchPref(),
-              _createStoryPref(),
+              // _createStoryPref(),
               _createRecommendPref(),
               _createAccountPref(),
               const SizedBox(height: 24,),
-              // GetBuilder<AuthController>(
-              //   init: AuthController(),
-              //   builder: (controller) {
-              //     if (controller.user.value == null) {
-              //       return FilledButton(child: Text("로그인"), onPressed: () => {
-              //         Get.to(() => LoginPage())
-              //       });
-              //     } else {
-              //       return FilledButton(child: Text("로그아웃"), onPressed: () => {
-              //         controller.signOut()
-              //       });
-              //     }
-              //   },
-              // )
-              // _createWatchPlace()
             ],
           ),
         ),
       ),
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   super.build(context);
-  //   return Scaffold(
-  //     body: SafeArea(
-  //       child: Center(
-  //         child: GetBuilder<AuthController>(
-  //           init: AuthController(),
-  //           builder: (controller) {
-  //             if (controller.user.value == null) {
-  //               return FilledButton(child: Text("로그인"), onPressed: () => {
-  //                 Get.to(() => LoginPage())
-  //               });
-  //             } else {
-  //               return FilledButton(child: Text("로그아웃"), onPressed: () => {
-  //                 controller.signOut()
-  //               });
-  //             }
-  //           },
-  //         )
-  //       ),
-  //     ),
-  //   );
-  // }
 }
