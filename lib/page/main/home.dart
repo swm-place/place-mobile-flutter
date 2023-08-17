@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/page/place/place_detail.dart';
+import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
@@ -242,8 +243,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                     imageUrl: 'https://source.unsplash.com/random?seq=$index',
                     placeName: data["places"][index]['name'],
                     placeType: data["places"][index]['category'],
-                    // distance: UnitConverter.formatDistance(data["places"][index]['distance']),
-                    distance: UnitConverter.formatDistance(Random().nextInt(10000)),
+                    distance: UnitConverter.formatDistance(data["places"][index]['distance']),
+                    // distance: UnitConverter.formatDistance(Random().nextInt(10000)),
                     // open: data["places"][index]['open'],
                     open: Random().nextBool() ? '영업중' : '영업종료',
                     // likeCount: UnitConverter.formatNumber(data["places"][index]['likeCount']),
@@ -274,6 +275,13 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             "text": name,
             "color": RandomGenerator.generateRandomDarkHexColor()
           };
+        }
+        if (PlaceController.to.userPosition.value == null) {
+          data['collections'][c]["places"][index]['distance'] = null;
+        } else {
+          double lat2 = data['collections'][c]["places"][index]['location']['lat'];
+          double lon2 = data['collections'][c]["places"][index]['location']['lon'];
+          data['collections'][c]["places"][index]['distance'] = PlaceController.to.haversineDistance(lat2, lon2);
         }
       }
     }

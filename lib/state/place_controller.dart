@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 class PlaceController extends GetxController {
   static PlaceController get to => Get.find();
 
-  Rxn<Position> position = Rxn(null);
+  Rxn<Position> userPosition = Rxn(null);
 
   bool gpsPermissionAllow = false;
 
@@ -14,8 +14,11 @@ class PlaceController extends GetxController {
     return degrees * pi / 180;
   }
 
-  double haversineDistance(double lat1, double lon1, double lat2, double lon2) {
+  double haversineDistance(double lat2, double lon2) {
     const R = 6371000.0;
+
+    double lat1 = userPosition.value!.latitude;
+    double lon1 = userPosition.value!.longitude;
 
     var dLat = _degreesToRadians(lat2 - lat1);
     var dLon = _degreesToRadians(lon2 - lon1);
@@ -36,14 +39,14 @@ class PlaceController extends GetxController {
     if (gpsPermissionAllow) {
       try {
         position = await Geolocator.getCurrentPosition(timeLimit: const Duration(seconds: 5));
-        this.position(position);
+        userPosition(position);
       } catch(e) {
         position = await Geolocator.getLastKnownPosition();
-        this.position(position);
+        userPosition(position);
       }
     } else {
       position = await Geolocator.getLastKnownPosition();
-      this.position(position);
+      userPosition(position);
     }
     print('now position - lat: ${position!.latitude} long: ${position!.longitude}');
     return position;
