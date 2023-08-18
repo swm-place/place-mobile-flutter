@@ -135,8 +135,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
       child: MainSection(
           title: "계정",
           titleStyle: SectionTextStyle.sectionTitleSmall(Colors.black),
-          content: GetBuilder<AuthController>(
-            init: AuthController(),
+          content: GetX<AuthController>(
             builder: (controller) {
               if (controller.user.value == null) {
                 return PreferenceListSection(
@@ -157,7 +156,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       title: '비밀번호 변경',
                       textColor: Colors.black,
                       onTap: () {
-                        AuthController.to.resetPassword(AuthController.to.user.value!.email!);
+                        controller.resetPassword(controller.user.value!.email!);
                       },
                     ),
                     PreferenceItem(
@@ -167,57 +166,53 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                         print("프로필 변경");
                       },
                     ),
+                    // PreferenceItem(
+                    //   title: 'SNS 계정 연동',
+                    //   textColor: Colors.black,
+                    //   onTap: () {
+                    //     showModalBottomSheet(
+                    //         context: context,
+                    //         builder: (BuildContext context) {
+                    //           return StatefulBuilder(
+                    //             builder: (BuildContext context, StateSetter bottomState) {
+                    //               return Container(
+                    //                 width: double.infinity,
+                    //                 height: 500,
+                    //                 decoration: const BoxDecoration(
+                    //                   borderRadius: BorderRadius.only(
+                    //                     topRight: Radius.circular(8),
+                    //                     topLeft: Radius.circular(8),
+                    //                   ),
+                    //                 ),
+                    //                 padding: const EdgeInsets.all(24),
+                    //                 child: Column(),
+                    //               );
+                    //             },
+                    //           );
+                    //         }
+                    //     );
+                    //   },
+                    // ),
                     PreferenceItem(
-                      title: '구글 연동',
+                      title: controller.providerId.contains('google.com') ? '구글 연결 해제' : '구글 연결',
                       textColor: Colors.black,
                       onTap: () {
-                        AuthController.to.linkGoogle();
+                        if (controller.providerId.contains('google.com')) {
+                          controller.unLinkGoogle();
+                        } else {
+                          controller.linkGoogle();
+                        }
                       },
                     ),
                     PreferenceItem(
-                      title: 'SNS 계정 연동',
+                      title: controller.providerId.contains('apple.com') ? '애플 연결 해제' : '애플 연결',
                       textColor: Colors.black,
                       onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return StatefulBuilder(
-                              builder: (BuildContext context, StateSetter bottomState) {
-                                return Container(
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(8),
-                                      topLeft: Radius.circular(8),
-                                    ),
-                                  ),
-                                  padding: const EdgeInsets.all(24),
-                                  child: Column(),
-                                );
-                              },
-                            );
-                          }
-                        );
-                      },
-                    ),
-                    PreferenceItem(
-                      title: '구글 연동 해제',
-                      textColor: Colors.black,
-                      onTap: () {
-                        AuthController.to.unLinkGoogle();
-                      },
-                    ),
-                    PreferenceItem(
-                      title: '애플 연동',
-                      textColor: Colors.black,
-                      onTap: () {
-                        AuthController.to.linkApple();
-                      },
-                    ),
-                    PreferenceItem(
-                      title: '애플 연동 해제',
-                      textColor: Colors.black,
-                      onTap: () {
-                        AuthController.to.unLinkApple();
+                        if (controller.providerId.contains('apple.com')) {
+                          controller.unLinkApple();
+                        } else {
+                          controller.linkApple();
+                        }
                       },
                     ),
                     PreferenceItem(
@@ -225,7 +220,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       textColor: Colors.red,
                       showIcon: false,
                       onTap: () {
-                        AuthController.to.signOut();
+                        controller.signOut();
                       },
                     ),
                   ],

@@ -26,6 +26,7 @@ class AuthController extends GetxController {
   FirebaseAuth authInstance = FirebaseAuth.instance;
 
   late Rx<User?> user = Rx<User?>(authInstance.currentUser);
+  RxList<String> providerId = RxList<String>([]);
 
   late FirebaseAuthGoogle _authGoogle;
   late FirebaseAuthApple _authApple;
@@ -103,9 +104,31 @@ class AuthController extends GetxController {
     }
   }
 
+  void addProviderId(String providerId) {
+    this.providerId.add(providerId);
+    this.providerId.refresh();
+  }
+
+  void removeProviderId(String providerId) {
+    this.providerId.remove(providerId);
+    this.providerId.refresh();
+  }
+
+  void _initProviderId(User? user) {
+    providerId.clear();
+    if (user != null) {
+      List<UserInfo> providerData = user.providerData;
+      for (int i = 0;i < providerData.length;i++) {
+        providerId.add(providerData[i].providerId);
+      }
+    }
+    providerId.refresh();
+  }
+
   Future<void> getUser(User? user, bool initApp) async {
     print("user: $user");
     this.user.value = user;
+    _initProviderId(user);
     await getIdTokenStream(initApp);
     if (user != null) {
       await _loginSuccess(initApp);
@@ -117,7 +140,6 @@ class AuthController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
-    Get.put(ProfileController());
     if (user.value != null) {
       await getUser(user.value!, false);
     }
