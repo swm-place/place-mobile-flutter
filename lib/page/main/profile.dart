@@ -10,6 +10,7 @@ import 'package:place_mobile_flutter/state/user_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/async_dialog.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
+import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/section/preference/preference_list.dart';
 import 'package:place_mobile_flutter/widget/section/preference/preference_list_item.dart';
@@ -595,12 +596,15 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     for (int i = 0;i < data.length;i++) {
       int rating = Random().nextInt(3);
       chips.add(
-        Chip(
+        // Chip(
+        //   label: Text(data[i]['tag'], style: TextStyle(color: Colors.black),),
+        //   backgroundColor: Colors.black.withOpacity(rating * 0.2),
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(20)
+        //   ),
+        // )
+        TagPreferenceChip(
           label: Text(data[i]['tag'], style: TextStyle(color: Colors.black),),
-          backgroundColor: Colors.black.withOpacity(rating * 0.2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20)
-          ),
         )
       );
     }

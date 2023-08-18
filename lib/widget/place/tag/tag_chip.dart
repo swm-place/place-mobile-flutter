@@ -33,3 +33,41 @@ class TagChip extends StatelessWidget {
     );
   }
 }
+
+class TagPreferenceChip extends StatefulWidget {
+  TagPreferenceChip({
+    required this.label,
+    super.key
+  });
+
+  Text label;
+
+  @override
+  State<StatefulWidget> createState() => _TagPreferenceChipState();
+}
+
+class _TagPreferenceChipState extends State<TagPreferenceChip> {
+  @override
+  Widget build(BuildContext context) {
+    return Ink(
+      child: InkWell(
+        onTap: () {
+          print('chip clicked');
+        },
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(80),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(80)),
+            border: Border.all(
+              color: Colors.black
+            )
+          ),
+          padding: const EdgeInsets.fromLTRB(18, 8, 18, 8),
+          child: widget.label,
+        ),
+      ),
+    );
+  }
+}
