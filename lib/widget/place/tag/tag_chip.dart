@@ -37,10 +37,13 @@ class TagChip extends StatelessWidget {
 class TagPreferenceChip extends StatefulWidget {
   TagPreferenceChip({
     required this.label,
+    required this.priority,
     super.key
   });
 
   Text label;
+
+  int priority;
 
   @override
   State<StatefulWidget> createState() => _TagPreferenceChipState();
@@ -62,7 +65,8 @@ class _TagPreferenceChipState extends State<TagPreferenceChip> {
             borderRadius: const BorderRadius.all(Radius.circular(80)),
             border: Border.all(
               color: Colors.black
-            )
+            ),
+            color: Colors.black.withOpacity(widget.priority * 0.15)
           ),
           padding: const EdgeInsets.fromLTRB(18, 8, 18, 8),
           child: widget.label,

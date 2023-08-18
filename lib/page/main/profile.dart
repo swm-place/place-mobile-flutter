@@ -596,15 +596,9 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     for (int i = 0;i < data.length;i++) {
       int rating = Random().nextInt(3);
       chips.add(
-        // Chip(
-        //   label: Text(data[i]['tag'], style: TextStyle(color: Colors.black),),
-        //   backgroundColor: Colors.black.withOpacity(rating * 0.2),
-        //   shape: RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.circular(20)
-        //   ),
-        // )
         TagPreferenceChip(
-          label: Text(data[i]['tag'], style: TextStyle(color: Colors.black),),
+          label: Text(data[i]['tag'], style: const TextStyle(color: Colors.black),),
+          priority: rating,
         )
       );
     }
