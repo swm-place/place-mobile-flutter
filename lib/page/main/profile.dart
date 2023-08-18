@@ -615,16 +615,16 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
         children: [
           SizedBox(
             width: double.infinity,
-            child: Text(categoryName, style: SectionTextStyle.sectionTitle(),),
+            child: Text(categoryName, style: SectionTextStyle.sectionContentExtraLarge(Colors.black),),
           ),
-          const SizedBox(height: 18,),
+          const SizedBox(height: 16,),
           SizedBox(
             width: double.infinity,
             child: Wrap(
               direction: Axis.horizontal,
               alignment: WrapAlignment.start,
-              spacing: 5,
-              runSpacing: 5,
+              spacing: 8,
+              runSpacing: 8,
               children: chips,
             ),
           )
@@ -656,7 +656,18 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
   List<Widget> _createTagPreferenceSection(StateSetter bottomState) {
     Map<String, dynamic> data = _preprocessTagPref();
     // print(data);
-    List<Widget> section = [];
+    List<Widget> section = [
+      SizedBox(
+        width: double.infinity,
+        child: Text('선호 태그 설정', style: SectionTextStyle.sectionTitle(),),
+      ),
+      const SizedBox(height: 8,),
+      SizedBox(
+        width: double.infinity,
+        child: Text('태그를 클릭하면 선호도가 3단계로 변경됩니다. 가장 높은 선호도는 최대 5개의 태그만 지정할 수 있습니다.', style: SectionTextStyle.sectionContent(Colors.grey[500]!),),
+      ),
+      const SizedBox(height: 24,)
+    ];
     int i = 0;
     for (var k in data.keys) {
       if (i != 0) section.add(const SizedBox(height: 24,));
