@@ -10,6 +10,7 @@ import 'package:place_mobile_flutter/state/user_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/async_dialog.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
+import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/section/preference/preference_list.dart';
@@ -523,6 +524,8 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     }
   ];
 
+  int _countTagBestRating = 0;
+
   @override
   bool get wantKeepAlive => true;
 
@@ -600,6 +603,18 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
           label: Text(data[i]['tag'], style: const TextStyle(color: Colors.black),),
           priority: data[i]['rating'],
           onTap: () {
+            if (data[i]['rating'] == 1 && _countTagBestRating == 5) {
+              Get.showSnackbar(
+                WarnGetSnackBar(
+                  title: '선호도 설정 불가',
+                  message: '최고 선호도 태그는 최대 5개만 설정할 수 있습니다.',
+                  showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_LONG,
+                )
+              );
+              return;
+            }
+            if (data[i]['rating'] == 1) _countTagBestRating++;
+            if (data[i]['rating'] == 2) _countTagBestRating--;
             bottomState(() {
               data[i]['rating']++;
               if (data[i]['rating'] > 2) data[i]['rating'] = 0;
@@ -635,6 +650,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
 
   Map<String, dynamic> _preprocessTagPref() {
     Map<String, dynamic> data = {};
+    _countTagBestRating = 0;
     for (int i = 0;i < _categoryCandidates.length;i++) {
       // print(_categoryCandidates[i]);
       String? group_large = _categoryCandidates[i]['group_large'];
@@ -644,6 +660,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
           continue;
         }
       }
+      if (_categoryCandidates[i]['rating'] == 2) _countTagBestRating++;
       if (data.containsKey(group_large!)) {
         data[group_large!].add(_categoryCandidates[i]);
       } else {
@@ -721,7 +738,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text('닫기')
+                                      child: const Text('닫기')
                                   ),
                                 )
                               ],
