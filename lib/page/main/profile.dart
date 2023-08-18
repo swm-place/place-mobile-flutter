@@ -668,11 +668,9 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
       ),
       const SizedBox(height: 24,)
     ];
-    int i = 0;
     for (var k in data.keys) {
-      if (i != 0) section.add(const SizedBox(height: 24,));
       section.add(_createChipSection(bottomState, List<Map<String, dynamic>>.from(data[k]), k));
-      i++;
+      section.add(const SizedBox(height: 24,));
     }
     return section;
   }
@@ -705,15 +703,28 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                                 topLeft: Radius.circular(8),
                               ),
                             ),
-                            padding: const EdgeInsets.all(24),
-                            child: SizedBox(
-                              width: double.infinity,
-                              height: double.infinity,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: _createTagPreferenceSection(bottomState),
+                            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: _createTagPreferenceSection(bottomState),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                // SizedBox(height: 24,),
+                                Container(
+                                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+                                  width: double.infinity,
+                                  child: FilledButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('닫기')
+                                  ),
+                                )
+                              ],
                             ),
                           );
                         },
