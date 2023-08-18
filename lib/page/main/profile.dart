@@ -175,6 +175,31 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       },
                     ),
                     PreferenceItem(
+                      title: 'SNS 계정 연동',
+                      textColor: Colors.black,
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return StatefulBuilder(
+                              builder: (BuildContext context, StateSetter bottomState) {
+                                return Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(8),
+                                      topLeft: Radius.circular(8),
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.all(24),
+                                  child: Column(),
+                                );
+                              },
+                            );
+                          }
+                        );
+                      },
+                    ),
+                    PreferenceItem(
                       title: '구글 연동 해제',
                       textColor: Colors.black,
                       onTap: () {
