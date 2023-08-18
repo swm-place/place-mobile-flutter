@@ -596,8 +596,8 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
       int rating = Random().nextInt(3);
       chips.add(
         Chip(
-          label: Text(data[i]['tag'], style: TextStyle(color: Colors.white),),
-          backgroundColor: Color(int.parse(RandomGenerator.generateRandomDarkHexColor().replaceFirst('#', '0xFF'))).withOpacity(rating * 0.3 + 0.2),
+          label: Text(data[i]['tag'], style: TextStyle(color: Colors.black),),
+          backgroundColor: Colors.black.withOpacity(rating * 0.2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20)
           ),
