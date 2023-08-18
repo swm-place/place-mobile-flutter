@@ -35,8 +35,11 @@ class TagChip extends StatelessWidget {
 }
 
 class TagPreferenceChip extends StatefulWidget {
+  final Function()? onTap;
+
   TagPreferenceChip({
     required this.label,
+    required this.onTap,
     required this.priority,
     super.key
   });
@@ -54,9 +57,7 @@ class _TagPreferenceChipState extends State<TagPreferenceChip> {
   Widget build(BuildContext context) {
     return Ink(
       child: InkWell(
-        onTap: () {
-          print('chip clicked');
-        },
+        onTap: widget.onTap,
         customBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(80),
         ),

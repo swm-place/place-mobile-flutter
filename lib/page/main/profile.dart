@@ -591,14 +591,20 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     );
   }
 
-  Widget _createChipSection(List<Map<String, dynamic>> data, String categoryName) {
+  Widget _createChipSection(StateSetter bottomState, List<Map<String, dynamic>> data, String categoryName) {
     List<Widget> chips = [];
     for (int i = 0;i < data.length;i++) {
-      int rating = Random().nextInt(3);
+      // int rating = data[i]['rating'];
       chips.add(
         TagPreferenceChip(
           label: Text(data[i]['tag'], style: const TextStyle(color: Colors.black),),
-          priority: rating,
+          priority: data[i]['rating'],
+          onTap: () {
+            bottomState(() {
+              data[i]['rating']++;
+              if (data[i]['rating'] > 2) data[i]['rating'] = 0;
+            });
+          },
         )
       );
     }
@@ -647,14 +653,14 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     return data;
   }
 
-  List<Widget> _createTagPreferenceSection() {
+  List<Widget> _createTagPreferenceSection(StateSetter bottomState) {
     Map<String, dynamic> data = _preprocessTagPref();
     // print(data);
     List<Widget> section = [];
     int i = 0;
     for (var k in data.keys) {
       if (i != 0) section.add(const SizedBox(height: 24,));
-      section.add(_createChipSection(List<Map<String, dynamic>>.from(data[k]), k));
+      section.add(_createChipSection(bottomState, List<Map<String, dynamic>>.from(data[k]), k));
       i++;
     }
     return section;
@@ -694,7 +700,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                               height: double.infinity,
                               child: SingleChildScrollView(
                                 child: Column(
-                                  children: _createTagPreferenceSection(),
+                                  children: _createTagPreferenceSection(bottomState),
                                 ),
                               ),
                             ),
