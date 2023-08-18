@@ -51,7 +51,7 @@ class FirebaseAuthGoogle extends FirebaseAuthSocial {
         idToken: googleAuth?.idToken,
       );
 
-      await link(user, credential);
+      await link(user, credential, 'google.com');
     } catch(e) {
       Get.showSnackbar(
           ErrorGetSnackBar(

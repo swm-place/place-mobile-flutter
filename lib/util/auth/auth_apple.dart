@@ -85,7 +85,7 @@ class FirebaseAuthApple extends FirebaseAuthSocial {
           accessToken: appleCredential.authorizationCode
       );
 
-      await link(user, credential);
+      await link(user, credential, 'apple.com');
     } catch(e) {
       Get.showSnackbar(
           ErrorGetSnackBar(
