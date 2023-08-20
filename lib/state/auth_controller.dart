@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -62,8 +64,8 @@ class AuthController extends GetxController {
       } else {
         expireDate = DateTime.fromMillisecondsSinceEpoch(_tokenDecoder.parseJwtExpiredDate(idToken!) * 1000).subtract(const Duration(minutes: 10));
       }
-      print("idToken: $idToken");
-      print("expireDate: $expireDate");
+      log("idToken: $idToken");
+      log("expireDate: $expireDate");
     }
   }
 
