@@ -66,7 +66,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
         )
       );
     }
-    inform.add(
+    inform.addAll([
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -79,9 +79,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
             style: SectionTextStyle.labelSmall(Colors.grey[700]!),
           )
         ],
-      )
-    );
-    inform.add(
+      ),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -95,7 +93,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
           )
         ],
       )
-    );
+    ]);
     return inform;
   }
 
