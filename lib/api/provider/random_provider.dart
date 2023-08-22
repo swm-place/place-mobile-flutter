@@ -52,7 +52,7 @@ class YoutubeProvider extends DefaultProvider {
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
-      print('${response.statusCode} ${response.body}');
+      print('get youtube data fail: ${response.statusCode}');
       return null;
     }
   }

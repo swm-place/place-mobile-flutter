@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/state/random_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
+import 'package:get/get.dart';
 
 class RandomPage extends StatefulWidget {
   @override
@@ -639,7 +641,7 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
           ),
           const SizedBox(width: 5,),
           TagSelectionChip(
-            label: Text('태그설정', style: TextStyle(color: lightColorScheme.primary),),
+            label: null,
             prefixIcon: Icon(MdiIcons.tune, color: lightColorScheme.primary, size: 18,),
             borderColor: lightColorScheme.primary,
             onTap: () {
@@ -695,6 +697,12 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
   }
 
   @override
+  void initState() {
+    Get.put(RandomController());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
@@ -724,12 +732,15 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                         const QuiltedGridTile(1, 2),
                       ]
                   ),
-                  childrenDelegate: SliverChildBuilderDelegate(((context, index) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.network("https://source.unsplash.com/random?sig=$index", fit: BoxFit.cover,),
-                    );
-                  })),
+                  childrenDelegate: SliverChildBuilderDelegate(
+                    ((context, index) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network("https://source.unsplash.com/random?sig=$index", fit: BoxFit.cover,),
+                      );
+                    }),
+                    childCount: 9
+                  ),
                 ),
               )
             )

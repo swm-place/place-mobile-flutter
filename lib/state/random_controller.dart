@@ -15,23 +15,46 @@ class RandomController extends GetxController {
 
   final YoutubeProvider _youtubeProvider = YoutubeProvider();
 
-  void _getYoutubeData(String? pageToken) async {
+  Future<List<Map<String, dynamic>>?> _getYoutubeData(String? pageToken) async {
     Map<String, dynamic>? result = await _youtubeProvider.getSearchData(query.join('%7C'), pageToken);
-    log(result.toString());
-    randomData.refresh();
+    if (result == null) return null;
+
+    try {
+      _prevPageToken = result['prevPageToken'];
+    } catch(e) {
+      _prevPageToken = null;
+    }
+
+    try {
+      _nextPageToken = result['nextPageToken'];
+    } catch(e) {
+      _nextPageToken = null;
+    }
+    return result['items'];
   }
 
   void initYoutubeData() async {
-    _getYoutubeData(null);
+    List<Map<String, dynamic>>? data = await _getYoutubeData(null);
+    if (data == null) {
+      randomData.clear();
+      randomData.refresh();
+    } else {
+      randomData.addAll(data);
+      randomData.refresh();
+    }
   }
 
   void nextYoutubeData() async {
-    _getYoutubeData(_nextPageToken);
+    List<Map<String, dynamic>>? data = await _getYoutubeData(_nextPageToken);
+    if (data != null) {
+      randomData.addAll(data);
+      randomData.refresh();
+    }
   }
 
-  void prevYoutubeData() async {
-    _getYoutubeData(_prevPageToken);
-  }
+  // void prevYoutubeData() async {
+  //   _getYoutubeData(_prevPageToken);
+  // }
 
   @override
   void onReady() {
