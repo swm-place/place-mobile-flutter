@@ -713,34 +713,38 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                child: GridView.custom(
-                  // physics: NeverScrollableScrollPhysics(),
-                  // shrinkWrap: true,
-                  gridDelegate: SliverQuiltedGridDelegate(
-                      mainAxisSpacing: 6,
-                      repeatPattern: QuiltedGridRepeatPattern.inverted,
-                      crossAxisSpacing: 6,
-                      crossAxisCount: 5,
-                      pattern: [
-                        const QuiltedGridTile(2, 2),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 2),
-                        const QuiltedGridTile(1, 3),
-                        const QuiltedGridTile(2, 1),
-                        const QuiltedGridTile(1, 2),
-                        const QuiltedGridTile(2, 2),
-                        const QuiltedGridTile(1, 2),
-                      ]
-                  ),
-                  childrenDelegate: SliverChildBuilderDelegate(
-                    ((context, index) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network("https://source.unsplash.com/random?sig=$index", fit: BoxFit.cover,),
-                      );
-                    }),
-                    childCount: 9
-                  ),
+                child: GetX<RandomController>(
+                  builder: (controller) {
+                    return GridView.custom(
+                      // physics: NeverScrollableScrollPhysics(),
+                      // shrinkWrap: true,
+                      gridDelegate: SliverQuiltedGridDelegate(
+                          mainAxisSpacing: 6,
+                          repeatPattern: QuiltedGridRepeatPattern.inverted,
+                          crossAxisSpacing: 6,
+                          crossAxisCount: 5,
+                          pattern: [
+                            const QuiltedGridTile(2, 2),
+                            const QuiltedGridTile(1, 1),
+                            const QuiltedGridTile(1, 2),
+                            const QuiltedGridTile(1, 3),
+                            const QuiltedGridTile(2, 1),
+                            const QuiltedGridTile(1, 2),
+                            const QuiltedGridTile(2, 2),
+                            const QuiltedGridTile(1, 2),
+                          ]
+                      ),
+                      childrenDelegate: SliverChildBuilderDelegate(
+                          ((context, index) {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(controller.randomData[index]['snippet']['thumbnails']['medium']['url'], fit: BoxFit.cover,),
+                            );
+                          }),
+                          childCount: controller.randomData.length
+                      ),
+                    );
+                  },
                 ),
               )
             )

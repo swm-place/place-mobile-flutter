@@ -30,7 +30,7 @@ class RandomController extends GetxController {
     } catch(e) {
       _nextPageToken = null;
     }
-    return result['items'];
+    return List<Map<String, dynamic>>.from(result['items']);
   }
 
   void initYoutubeData() async {
