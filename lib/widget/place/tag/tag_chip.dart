@@ -85,12 +85,15 @@ class TagSelectionChip extends StatefulWidget {
     required this.label,
     required this.onTap,
     required this.selection,
+    this.borderColor=Colors.black,
     super.key
   });
 
   Text label;
 
   bool selection;
+
+  Color borderColor;
 
   @override
   State<StatefulWidget> createState() => _TagSelectionChipState();
@@ -109,7 +112,7 @@ class _TagSelectionChipState extends State<TagSelectionChip> {
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(80)),
             border: Border.all(
-              color: Colors.black
+              color: widget.borderColor
             ),
             color: widget.selection ? Colors.black.withOpacity(0.45) : Colors.transparent
           ),
