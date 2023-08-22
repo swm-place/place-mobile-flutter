@@ -8,7 +8,8 @@ class RandomController extends GetxController {
 
   RxList<Map<String, dynamic>> randomData = RxList();
 
-  List<String> query = ['대한민국', '한국'];
+  List<String> query = ['국내여행', '코스추천', '국내 여행지', '장소추천', '당일치기'];
+  List<String> queryNegative = ['-음악', '-스포츠', '-뉴스'];
 
   String? _nextPageToken;
   String? _prevPageToken;
@@ -16,7 +17,7 @@ class RandomController extends GetxController {
   final YoutubeProvider _youtubeProvider = YoutubeProvider();
 
   Future<List<Map<String, dynamic>>?> _getYoutubeData(String? pageToken) async {
-    Map<String, dynamic>? result = await _youtubeProvider.getSearchData(query.join('%7C'), pageToken);
+    Map<String, dynamic>? result = await _youtubeProvider.getSearchData('${query.join('%7C')} ${queryNegative.join(' ')}', pageToken);
     if (result == null) return null;
 
     try {

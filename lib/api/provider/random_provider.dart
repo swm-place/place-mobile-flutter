@@ -39,7 +39,7 @@ class YoutubeProvider extends DefaultProvider {
     print("apiKey: $apiKey");
     if (apiKey == null) return null;
 
-    String uriString = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=$query&regionCode=KR&type=video&videoCategoryId=22&key=$apiKey";
+    String uriString = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=$query&regionCode=KR&relevanceLanguage=ko&type=video&videoCategoryId=22&key=$apiKey";
     if (pageToken != null) uriString += "&pageToken=$pageToken";
     Uri uri = Uri.parse(uriString);
     Response response;
