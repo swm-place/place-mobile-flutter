@@ -16,14 +16,16 @@ class YoutubeProvider extends DefaultProvider {
     }
   }
 
-  Future<Map<String, dynamic>?> getPlaceRecommendSection(String query) async {
+  Future<Map<String, dynamic>?> getSearchData(String query, String? pageToken) async {
     String? apiKey = _getKey();
     if (apiKey == null) return null;
 
-    Uri uri = Uri.parse("https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=$query&regionCode=KR&type=video&videoCategoryId=22&key=$apiKey");
+    String uriString = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=$query&regionCode=KR&type=video&videoCategoryId=22&key=$apiKey";
+    if (pageToken != null) uriString += "&pageToken=$pageToken";
+    Uri uri = Uri.parse(uriString);
     Response response;
     try {
-      response = await get(uri, headers: setHeader(null));
+      response = await get(uri);
     } catch(e) {
       return null;
     }
