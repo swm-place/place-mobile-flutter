@@ -17,501 +17,516 @@ class RandomPage extends StatefulWidget {
 class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMixin<RandomPage> {
   final List<Map<String, dynamic>> _categoryCandidates = [
     {
-      "id": null,
-      "tag": "컨텐츠",
-      "parent": null,
-      "group_large": null,
-      "rating": 0
-    },
-    {
-      "id": null,
+      "id": 0,
       "tag": "영화",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 1,
       "tag": "공연",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 2,
       "tag": "콘서트",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 3,
       "tag": "연극",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 4,
       "tag": "뮤지컬",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 5,
       "tag": "오페라",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 6,
       "tag": "클래식",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 7,
       "tag": "전시",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 8,
       "tag": "콘서트",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 9,
       "tag": "미술관",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 10,
       "tag": "박물관",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 11,
       "tag": "팝업스토어",
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
-      "tag": "액티비티",
-      "parent": null,
-      "group_large": null,
-      "rating": 0
-    },
-    {
-      "id": null,
+      "id": 12,
       "tag": "볼링",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 13,
       "tag": "보드게임",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 14,
       "tag": "만화카페",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 15,
       "tag": "공방",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 16,
       "tag": "레저",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 17,
       "tag": "테마파크",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 18,
       "tag": "놀이공원",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 19,
       "tag": "방탈출",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 20,
       "tag": "워터파크",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 21,
       "tag": "스키",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 22,
       "tag": "스파",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 23,
       "tag": "동물원",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 24,
       "tag": "아쿠아리움",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 25,
       "tag": "클라이밍",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 26,
       "tag": "탁구",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 27,
       "tag": "당구",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 28,
       "tag": "수상레저",
       "parent": "액티비티",
       "group_large": "액티비티",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
-      "tag": "휴식/산책",
-      "parent": null,
-      "group_large": null,
-      "rating": 0
-    },
-    {
-      "id": null,
+      "id": 29,
       "tag": "찜질방",
       "parent": "휴식/산책",
       "group_large": "휴식/산책",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 30,
       "tag": "공원",
       "parent": "휴식/산책",
       "group_large": "휴식/산책",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 31,
       "tag": "한강",
       "parent": "휴식/산책",
       "group_large": "휴식/산책",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 32,
       "tag": "산책로",
       "parent": "휴식/산책",
       "group_large": "휴식/산책",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 33,
       "tag": "피크닉",
       "parent": "휴식/산책",
       "group_large": "휴식/산책",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 34,
       "tag": "야경",
       "parent": "휴식/산책",
       "group_large": "휴식/산책",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 35,
       "tag": "캠핑",
       "parent": "휴식/산책",
       "group_large": "휴식/산책",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 36,
       "tag": "호캉스",
       "parent": "휴식/산책",
       "group_large": "휴식/산책",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
-      "tag": "쇼핑/복합문화공간",
-      "parent": null,
-      "group_large": null,
-      "rating": 0
-    },
-    {
-      "id": null,
+      "id": 37,
       "tag": "대형마트",
       "parent": "쇼핑/복합문화공간",
       "group_large": "쇼핑/복합문화공간",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 38,
       "tag": "쇼핑몰",
       "parent": "쇼핑/복합문화공간",
       "group_large": "쇼핑/복합문화공간",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 39,
       "tag": "문구",
       "parent": "쇼핑/복합문화공간",
       "group_large": "쇼핑/복합문화공간",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 40,
       "tag": "패션",
       "parent": "쇼핑/복합문화공간",
       "group_large": "쇼핑/복합문화공간",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 41,
       "tag": "오브제",
       "parent": "쇼핑/복합문화공간",
       "group_large": "쇼핑/복합문화공간",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 42,
       "tag": "소품샵",
       "parent": "쇼핑/복합문화공간",
       "group_large": "쇼핑/복합문화공간",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 43,
       "tag": "뷰티",
       "parent": "쇼핑/복합문화공간",
       "group_large": "쇼핑/복합문화공간",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
-      "tag": "카페",
-      "parent": null,
-      "group_large": null,
-      "rating": 0
-    },
-    {
-      "id": null,
+      "id": 44,
       "tag": "뷰가 좋은",
       "parent": "카페",
       "group_large": "카페",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 45,
       "tag": "조용한",
       "parent": "카페",
       "group_large": "카페",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 46,
       "tag": "작업하기 좋은",
       "parent": "카페",
       "group_large": "카페",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 47,
       "tag": "독서하기 좋은",
       "parent": "카페",
       "group_large": "카페",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 48,
       "tag": "펫과 함께",
       "parent": "카페",
       "group_large": "카페",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 49,
       "tag": "넓은",
       "parent": "카페",
       "group_large": "카페",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 50,
       "tag": "작은",
       "parent": "카페",
       "group_large": "카페",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 51,
       "tag": "아늑한",
       "parent": "카페",
       "group_large": "카페",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 52,
       "tag": "커피가 맛있는",
       "parent": "카페",
       "group_large": "카페",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 53,
       "tag": "디저트가 맛있는",
       "parent": "카페",
       "group_large": "카페",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 54,
       "tag": "대형",
       "parent": "카페",
       "group_large": "카페",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
-      "tag": "음식점",
-      "parent": null,
-      "group_large": null,
-      "rating": 0
-    },
-    {
-      "id": null,
+      "id": 55,
       "tag": "한식",
       "parent": "음식점",
       "group_large": "음식점",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 56,
       "tag": "중식",
       "parent": "음식점",
       "group_large": "음식점",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 57,
       "tag": "양식",
       "parent": "음식점",
       "group_large": "음식점",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 58,
       "tag": "일식",
       "parent": "음식점",
       "group_large": "음식점",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 59,
       "tag": "술집",
       "parent": "음식점",
       "group_large": "음식점",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 60,
       "tag": "바",
       "parent": "음식점",
       "group_large": "음식점",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 61,
       "tag": "이자카야",
       "parent": "음식점",
       "group_large": "음식점",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
-      "tag": "기타",
-      "parent": null,
-      "group_large": null,
-      "rating": 0
-    },
-    {
-      "id": null,
+      "id": 62,
       "tag": "데이트",
       "parent": "기타",
       "group_large": "기타",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     },
     {
-      "id": null,
+      "id": 63,
       "tag": "공부/작업",
       "parent": "기타",
       "group_large": "기타",
-      "rating": 0
+      "rating": 0,
+      "selection": false
     }
   ];
 
@@ -523,13 +538,14 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
     for (int i = 0;i < data.length;i++) {
       // int rating = data[i]['rating'];
       chips.add(
-          TagPreferenceChip(
+          TagSelectionChip(
             label: Text(data[i]['tag'], style: const TextStyle(color: Colors.black),),
-            priority: data[i]['rating'],
+            selection: data[i]['selection'],
             onTap: () {
-              bottomState(() {
-                data[i]['rating']++;
-                if (data[i]['rating'] > 2) data[i]['rating'] = 0;
+              setState(() {
+                bottomState(() {
+                  data[i]['selection'] = !data[i]['selection'];
+                });
               });
             },
           )
@@ -564,17 +580,11 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
     Map<String, dynamic> data = {};
     for (int i = 0;i < _categoryCandidates.length;i++) {
       // print(_categoryCandidates[i]);
-      String? group_large = _categoryCandidates[i]['group_large'];
-      if (group_large == null) {
-        if (!data.containsKey(group_large)) {
-          data[_categoryCandidates[i]['tag']] = [];
-          continue;
-        }
-      }
-      if (data.containsKey(group_large!)) {
-        data[group_large!].add(_categoryCandidates[i]);
+      String groupLarge = _categoryCandidates[i]['group_large'];
+      if (data.containsKey(groupLarge)) {
+        data[groupLarge].add(_categoryCandidates[i]);
       } else {
-        data[group_large!] = [_categoryCandidates[i]];
+        data[groupLarge] = [_categoryCandidates[i]];
       }
     }
     return data;
@@ -582,24 +592,33 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
 
   List<Widget> _createTagPreferenceSection(StateSetter bottomState) {
     Map<String, dynamic> data = _preprocessTagPref();
-    // print(data);
-    List<Widget> section = [
-      SizedBox(
-        width: double.infinity,
-        child: Text('선호 태그 설정', style: SectionTextStyle.sectionTitle(),),
-      ),
-      const SizedBox(height: 8,),
-      SizedBox(
-        width: double.infinity,
-        child: Text('태그를 클릭하면 선호도가 3단계로 변경됩니다. 가장 높은 선호도는 최대 5개의 태그만 지정할 수 있습니다.', style: SectionTextStyle.sectionContent(Colors.grey[500]!),),
-      ),
-      const SizedBox(height: 24,)
-    ];
+    List<Widget> section = [];
     for (var k in data.keys) {
       section.add(_createChipSelectionSection(bottomState, List<Map<String, dynamic>>.from(data[k]), k));
       section.add(const SizedBox(height: 24,));
     }
     return section;
+  }
+
+  List<Widget> _createSelectionChips() {
+    List<Widget> selection = [];
+    for (int index = 0;index < _categoryCandidates.length;index++) {
+      if (_categoryCandidates[index]['selection']) {
+        if (selection.isNotEmpty) selection.add(const SizedBox(width: 5,));
+        selection.add(
+            TagSelectionChip(
+                label: Text(_categoryCandidates[index]['tag']),
+                selection: _categoryCandidates[index]['selection'],
+                onTap: () {
+                  setState(() {
+                    _categoryCandidates[index]['selection'] = !_categoryCandidates[index]['selection'];
+                  });
+                }
+            )
+        );
+      }
+    }
+    return selection;
   }
 
   Widget _createChipSection() {
@@ -609,13 +628,16 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Expanded(
-          //   child: ListView.builder(
-          //     itemBuilder: (BuildContext context, int index) {
-          //
-          //     },
-          //   ),
-          // ),
+          Expanded(
+            child: SizedBox(
+              height: 35,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: _createSelectionChips(),
+              ),
+            ),
+          ),
+          const SizedBox(width: 5,),
           TagSelectionChip(
             label: Text('태그설정', style: TextStyle(color: lightColorScheme.primary),),
             prefixIcon: Icon(MdiIcons.tune, color: lightColorScheme.primary, size: 18,),
