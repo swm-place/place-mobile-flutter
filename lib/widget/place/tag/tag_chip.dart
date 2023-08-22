@@ -84,12 +84,14 @@ class TagSelectionChip extends StatefulWidget {
   TagSelectionChip({
     required this.label,
     required this.onTap,
-    required this.selection,
+    this.prefixIcon,
+    this.selection=false,
     this.borderColor=Colors.black,
     super.key
   });
 
   Text label;
+  Icon? prefixIcon;
 
   bool selection;
 
@@ -100,6 +102,21 @@ class TagSelectionChip extends StatefulWidget {
 }
 
 class _TagSelectionChipState extends State<TagSelectionChip> {
+
+  List<Widget> _createItems() {
+    List<Widget> items = [];
+
+    if (widget.prefixIcon != null) {
+      items.addAll([
+        widget.prefixIcon!,
+        const SizedBox(width: 8,)
+      ]);
+    }
+
+    items.add(widget.label);
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Ink(
@@ -117,7 +134,10 @@ class _TagSelectionChipState extends State<TagSelectionChip> {
             color: widget.selection ? Colors.black.withOpacity(0.45) : Colors.transparent
           ),
           padding: const EdgeInsets.fromLTRB(18, 8, 18, 8),
-          child: widget.label,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: _createItems(),
+          ),
         ),
       ),
     );
