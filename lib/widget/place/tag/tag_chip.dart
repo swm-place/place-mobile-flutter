@@ -91,7 +91,7 @@ class TagSelectionChip extends StatefulWidget {
     super.key
   });
 
-  Text label;
+  Widget? label;
   Icon? prefixIcon;
 
   bool selection;
@@ -106,17 +106,21 @@ class _TagSelectionChipState extends State<TagSelectionChip> {
 
   Widget _createItems() {
     if (widget.prefixIcon != null) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          widget.prefixIcon!,
-          const SizedBox(width: 4,),
-          widget.label
-        ],
-      );
+      if (widget.label != null) {
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            widget.prefixIcon!,
+            const SizedBox(width: 4,),
+            widget.label!
+          ],
+        );
+      } else {
+        return widget.prefixIcon!;
+      }
     }
-    return widget.label;
+    return widget.label!;
   }
 
   @override
