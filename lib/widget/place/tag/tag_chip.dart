@@ -103,18 +103,18 @@ class TagSelectionChip extends StatefulWidget {
 
 class _TagSelectionChipState extends State<TagSelectionChip> {
 
-  List<Widget> _createItems() {
-    List<Widget> items = [];
-
+  Widget _createItems() {
     if (widget.prefixIcon != null) {
-      items.addAll([
-        widget.prefixIcon!,
-        const SizedBox(width: 4,)
-      ]);
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          widget.prefixIcon!,
+          const SizedBox(width: 4,),
+          widget.label
+        ],
+      );
     }
-
-    items.add(widget.label);
-    return items;
+    return widget.label;
   }
 
   @override
@@ -134,10 +134,7 @@ class _TagSelectionChipState extends State<TagSelectionChip> {
             color: widget.selection ? Colors.black.withOpacity(0.45) : Colors.transparent
           ),
           padding: const EdgeInsets.fromLTRB(18, 8, 18, 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: _createItems(),
-          ),
+          child:_createItems(),
         ),
       ),
     );
