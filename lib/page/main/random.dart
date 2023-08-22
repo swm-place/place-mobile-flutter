@@ -532,6 +532,8 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
     }
   ];
 
+  late ScrollController _scrollController;
+
   @override
   bool get wantKeepAlive => true;
 
@@ -699,6 +701,13 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
   @override
   void initState() {
     Get.put(RandomController());
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.offset >= _scrollController.position.maxScrollExtent && !_scrollController.position.outOfRange) {
+        print('next');
+        RandomController.to.nextYoutubeData();
+      }
+    });
     super.initState();
   }
 
@@ -718,6 +727,7 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                     return GridView.custom(
                       // physics: NeverScrollableScrollPhysics(),
                       // shrinkWrap: true,
+                      controller: _scrollController,
                       gridDelegate: SliverQuiltedGridDelegate(
                           mainAxisSpacing: 6,
                           repeatPattern: QuiltedGridRepeatPattern.inverted,
