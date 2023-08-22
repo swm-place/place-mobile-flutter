@@ -109,7 +109,7 @@ class _TagSelectionChipState extends State<TagSelectionChip> {
     if (widget.prefixIcon != null) {
       items.addAll([
         widget.prefixIcon!,
-        const SizedBox(width: 8,)
+        const SizedBox(width: 4,)
       ]);
     }
 
