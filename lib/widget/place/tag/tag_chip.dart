@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 
@@ -107,6 +108,7 @@ class _TagSelectionChipState extends State<TagSelectionChip> {
     if (widget.prefixIcon != null) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           widget.prefixIcon!,
           const SizedBox(width: 4,),
@@ -131,10 +133,20 @@ class _TagSelectionChipState extends State<TagSelectionChip> {
             border: Border.all(
               color: widget.borderColor
             ),
-            color: widget.selection ? Colors.black.withOpacity(0.45) : Colors.transparent
+            color: widget.selection ? Colors.black.withOpacity(0.4) : Colors.transparent
           ),
           padding: const EdgeInsets.fromLTRB(18, 8, 18, 8),
-          child:_createItems(),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _createItems(),
+              widget.selection ? Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                child: Icon(MdiIcons.close, size: 18,),
+              ) : const SizedBox(width: 0,)
+            ],
+          ),
         ),
       ),
     );
