@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 
 class TagChip extends StatelessWidget {
@@ -68,6 +69,49 @@ class _TagPreferenceChipState extends State<TagPreferenceChip> {
               color: Colors.black
             ),
             color: Colors.black.withOpacity(widget.priority * 0.15)
+          ),
+          padding: const EdgeInsets.fromLTRB(18, 8, 18, 8),
+          child: widget.label,
+        ),
+      ),
+    );
+  }
+}
+
+class TagSelectionChip extends StatefulWidget {
+  final Function()? onTap;
+
+  TagSelectionChip({
+    required this.label,
+    required this.onTap,
+    required this.selection,
+    super.key
+  });
+
+  Text label;
+
+  bool selection;
+
+  @override
+  State<StatefulWidget> createState() => _TagSelectionChipState();
+}
+
+class _TagSelectionChipState extends State<TagSelectionChip> {
+  @override
+  Widget build(BuildContext context) {
+    return Ink(
+      child: InkWell(
+        onTap: widget.onTap,
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(80),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(80)),
+            border: Border.all(
+              color: Colors.black
+            ),
+            color: widget.selection ? Colors.black.withOpacity(0.45) : Colors.transparent
           ),
           padding: const EdgeInsets.fromLTRB(18, 8, 18, 8),
           child: widget.label,
