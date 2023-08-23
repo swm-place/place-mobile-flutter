@@ -39,7 +39,31 @@ class YoutubeProvider extends DefaultProvider {
     print("apiKey: $apiKey");
     if (apiKey == null) return null;
 
-    String uriString = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=$query&regionCode=KR&relevanceLanguage=ko&type=video&videoCategoryId=22&key=$apiKey";
+    String uriString = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=$query&regionCode=KR&relevanceLanguage=ko&type=video&videoCategoryId=19&key=$apiKey";
+    if (pageToken != null) uriString += "&pageToken=$pageToken";
+    Uri uri = Uri.parse(uriString);
+    Response response;
+    try {
+      response = await get(uri, headers: _getHeader());
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      print('get youtube data fail: ${response.statusCode}');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getPopularData(String? pageToken) async {
+    String? apiKey = _getKey();
+    print("pageToken: $pageToken");
+    print("apiKey: $apiKey");
+    if (apiKey == null) return null;
+
+    String uriString = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=KR&videoCategoryId=19&key=$apiKey";
     if (pageToken != null) uriString += "&pageToken=$pageToken";
     Uri uri = Uri.parse(uriString);
     Response response;

@@ -17,7 +17,8 @@ class RandomController extends GetxController {
   final YoutubeProvider _youtubeProvider = YoutubeProvider();
 
   Future<List<Map<String, dynamic>>?> _getYoutubeData(String? pageToken) async {
-    Map<String, dynamic>? result = await _youtubeProvider.getSearchData('${query.join('%7C')} ${queryNegative.join(' ')}', pageToken);
+    // Map<String, dynamic>? result = await _youtubeProvider.getSearchData('${query.join('%7C')} ${queryNegative.join(' ')}', pageToken);
+    Map<String, dynamic>? result = await _youtubeProvider.getPopularData(pageToken);
     if (result == null) return null;
 
     try {
@@ -36,8 +37,9 @@ class RandomController extends GetxController {
 
   void initYoutubeData() async {
     List<Map<String, dynamic>>? data = await _getYoutubeData(null);
+    print(data.toString());
+    randomData.clear();
     if (data == null) {
-      randomData.clear();
       randomData.refresh();
     } else {
       randomData.addAll(data);
@@ -51,6 +53,16 @@ class RandomController extends GetxController {
       randomData.addAll(data);
       randomData.refresh();
     }
+  }
+
+  void addTag(String tag) async {
+    query.add(tag);
+    initYoutubeData();
+  }
+
+  void removeTag(String tag) async {
+    query.remove(tag);
+    initYoutubeData();
   }
 
   // void prevYoutubeData() async {
