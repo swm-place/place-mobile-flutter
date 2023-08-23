@@ -111,3 +111,32 @@ class NaverBlogProvider extends DefaultProvider {
     }
   }
 }
+
+class KakaoBlogProvider extends DefaultProvider {
+  Map<String, String>? _getHeader() {
+    return {
+      'Authorization': 'KakaoAK $API_KAKAO_API_KEY',
+    };
+  }
+
+  Future<Map<String, dynamic>?> getSearchData(String query, int page) async {
+    print("query: $query");
+    print("page: $page");
+
+    String uriString = "https://dapi.kakao.com/v2/search/blog?query=$query&sort=accuracy&size=50&page=$page";
+    Uri uri = Uri.parse(uriString);
+    Response response;
+    try {
+      response = await get(uri, headers: _getHeader());
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      print('get naver blog data fail: ${response.statusCode}');
+      return null;
+    }
+  }
+}
