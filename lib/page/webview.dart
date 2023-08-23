@@ -137,21 +137,24 @@ class _WebViewPageState extends State<WebViewPage> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        print("explore");
                         launchUrlString(widget.url, mode: LaunchMode.externalApplication);
                       },
                       icon: Icon(Icons.explore),
                     ),
                     const Expanded(child: SizedBox()),
                     IconButton(
-                      onPressed: () {
-                        print("backward");
+                      onPressed: () async {
+                        if (await _webViewController.canGoBack()) {
+                          _webViewController.goBack();
+                        }
                       },
                       icon: Icon(Icons.arrow_back_ios_rounded),
                     ),
                     IconButton(
-                      onPressed: () {
-                        print("forward");
+                      onPressed: () async {
+                        if (await _webViewController.canGoForward()) {
+                          _webViewController.goForward();
+                        }
                       },
                       icon: Icon(Icons.arrow_forward_ios_rounded),
                     ),
