@@ -30,7 +30,7 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
       "parent": "컨텐츠",
       "group_large": "컨텐츠",
       "rating": 0,
-      "selection": false
+      "selection": true
     },
     {
       "id": 1,
