@@ -776,7 +776,7 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                                   child: controller.randomData[index]['thumbnail'] != '' ?
                                     Image.network(controller.randomData[index]['thumbnail'], fit: BoxFit.cover,) :
                                     Container(
-                                      color: RandomGenerator.getRandomLightMaterialColor(),
+                                      color: controller.randomData[index]['color'],
                                       width: double.infinity,
                                       height: double.infinity,
                                       padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),

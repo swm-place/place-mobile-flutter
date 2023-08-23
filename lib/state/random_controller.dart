@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/provider/random_provider.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 
 class RandomController extends GetxController {
   static RandomController get to => Get.find();
@@ -118,7 +119,12 @@ class RandomController extends GetxController {
     Map<String, dynamic>? result = await _kakaoBlogProvider.getSearchData(query.join('%7C'), _startPage);
     if (result == null) return null;
     _finish = result['meta']['is_end'];
-    return List<Map<String, dynamic>>.from(result['documents']);
+
+    List<Map<String, dynamic>> data = List<Map<String, dynamic>>.from(result['documents']);
+    for (int i = 0;i < data.length;i++) {
+      data[i]['color'] = RandomGenerator.getRandomLightMaterialColor();
+    }
+    return data;
   }
 
   void initKakaoBlogData() async {
