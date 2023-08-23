@@ -43,3 +43,10 @@ class RandomGenerator {
     return '#${r.toRadixString(16).padLeft(2, '0')}${g.toRadixString(16).padLeft(2, '0')}${b.toRadixString(16).padLeft(2, '0')}';
   }
 }
+
+class HtmlParser {
+  static String removeHtmlTags(String htmlText) {
+    final RegExp regExp = RegExp(r'<[^>]*>', multiLine: true);
+    return htmlText.replaceAll(regExp, '');
+  }
+}
