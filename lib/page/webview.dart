@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -65,14 +67,14 @@ class _WebViewPageState extends State<WebViewPage> {
               isForMainFrame: ${error.isForMainFrame}
             ''');
           },
-          onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
-              debugPrint('blocking navigation to ${request.url}');
-              return NavigationDecision.prevent;
-            }
-            debugPrint('allowing navigation to ${request.url}');
-            return NavigationDecision.navigate;
-          },
+          // onNavigationRequest: (NavigationRequest request) {
+          //   if (request.url.startsWith('https://www.youtube.com/')) {
+          //     debugPrint('blocking navigation to ${request.url}');
+          //     return NavigationDecision.prevent;
+          //   }
+          //   debugPrint('allowing navigation to ${request.url}');
+          //   return NavigationDecision.navigate;
+          // },
           onUrlChange: (UrlChange change) {
             debugPrint('url change to ${change.url}');
           },
@@ -128,12 +130,31 @@ class _WebViewPageState extends State<WebViewPage> {
               ),
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.fromLTRB(24, 8, 24, 8),
+                padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-
+                    IconButton(
+                      onPressed: () {
+                        print("explore");
+                        launchUrlString(widget.url, mode: LaunchMode.externalApplication);
+                      },
+                      icon: Icon(Icons.explore),
+                    ),
+                    const Expanded(child: SizedBox()),
+                    IconButton(
+                      onPressed: () {
+                        print("backward");
+                      },
+                      icon: Icon(Icons.arrow_back_ios_rounded),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        print("forward");
+                      },
+                      icon: Icon(Icons.arrow_forward_ios_rounded),
+                    ),
                   ],
                 ),
               )
