@@ -546,6 +546,7 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
             label: Text(data[i]['tag'], style: const TextStyle(color: Colors.black),),
             selection: data[i]['selection'],
             onTap: () {
+              _scrollController.jumpTo(0);
               setState(() {
                 bottomState(() {
                   data[i]['selection'] = !data[i]['selection'];
@@ -619,6 +620,7 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                 label: Text(_categoryCandidates[index]['tag']),
                 selection: _categoryCandidates[index]['selection'],
                 onTap: () {
+                  _scrollController.jumpTo(0);
                   setState(() {
                     _categoryCandidates[index]['selection'] = !_categoryCandidates[index]['selection'];
                     if (!_categoryCandidates[index]['selection']) {
