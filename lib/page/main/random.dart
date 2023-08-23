@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/page/webview.dart';
 import 'package:place_mobile_flutter/state/random_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -770,6 +771,11 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                                 ),
                                 onTap: () {
                                   print(controller.randomData[index]['url']);
+                                  Get.to(() => WebViewPage(
+                                      title: HtmlUnescape().convert(HtmlParser.removeHtmlTags(controller.randomData[index]['title'])),
+                                      url: controller.randomData[index]['url']
+                                    )
+                                  );
                                 },
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
