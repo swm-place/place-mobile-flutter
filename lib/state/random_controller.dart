@@ -125,7 +125,7 @@ class RandomController extends GetxController {
     _startPage = 1;
     _finish = false;
     List<Map<String, dynamic>>? data = await _getKakaoBlogData();
-    print(data.toString());
+    // print(data.toString());
     randomData.clear();
     if (data != null) randomData.addAll(data);
     randomData.refresh();

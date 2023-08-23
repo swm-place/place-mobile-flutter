@@ -1,13 +1,18 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/state/random_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
 import 'package:get/get.dart';
+
+import 'dart:convert';
 
 class RandomPage extends StatefulWidget {
   @override
@@ -749,13 +754,11 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                           crossAxisCount: 5,
                           pattern: [
                             const QuiltedGridTile(2, 2),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 2),
                             const QuiltedGridTile(1, 3),
-                            const QuiltedGridTile(2, 1),
-                            const QuiltedGridTile(1, 2),
+                            const QuiltedGridTile(1, 3),
+                            const QuiltedGridTile(1, 3),
                             const QuiltedGridTile(2, 2),
-                            const QuiltedGridTile(1, 2),
+                            const QuiltedGridTile(1, 3),
                           ]
                       ),
                       childrenDelegate: SliverChildBuilderDelegate(
@@ -773,11 +776,16 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                                   child: controller.randomData[index]['thumbnail'] != '' ?
                                     Image.network(controller.randomData[index]['thumbnail'], fit: BoxFit.cover,) :
                                     Container(
+                                      color: RandomGenerator.getRandomLightMaterialColor(),
                                       width: double.infinity,
                                       height: double.infinity,
-                                      padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
+                                      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
                                       child: Center(
-                                        child: Text(controller.randomData[index]['title']),
+                                        child: AutoSizeText(
+                                          HtmlUnescape().convert(HtmlParser.removeHtmlTags(controller.randomData[index]['title'])),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 4,
+                                        ),
                                       ),
                                     )
                                   // child: Image.network(controller.randomData[index]['snippet']['thumbnails']['medium']['url'], fit: BoxFit.cover,),
