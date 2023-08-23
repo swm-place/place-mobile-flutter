@@ -17,8 +17,11 @@ class RandomController extends GetxController {
   int _startPage = 0;
   int _maxPage = 0;
 
+  bool _finish = false;
+
   final YoutubeProvider _youtubeProvider = YoutubeProvider();
   final NaverBlogProvider _naverBlogProvider = NaverBlogProvider();
+  final KakaoBlogProvider _kakaoBlogProvider = KakaoBlogProvider();
 
   Future<List<Map<String, dynamic>>?> _getYoutubeData(String? pageToken) async {
     // Map<String, dynamic>? result = await _youtubeProvider.getSearchData('${query.join('%7C')} ${queryNegative.join(' ')}', pageToken);
@@ -111,10 +114,49 @@ class RandomController extends GetxController {
     initNaverBlogData();
   }
 
+  Future<List<Map<String, dynamic>>?> _getKakaoBlogData() async {
+    Map<String, dynamic>? result = await _kakaoBlogProvider.getSearchData(query.join('%7C'), _startPage);
+    if (result == null) return null;
+    _finish = result['meta']['is_end'];
+    return List<Map<String, dynamic>>.from(result['documents']);
+  }
+
+  void initKakaoBlogData() async {
+    _startPage = 1;
+    _finish = false;
+    List<Map<String, dynamic>>? data = await _getKakaoBlogData();
+    print(data.toString());
+    randomData.clear();
+    if (data != null) randomData.addAll(data);
+    randomData.refresh();
+  }
+
+  void nextKakaoData() async {
+    if (_finish || _startPage > 10) return;
+
+    _startPage++;
+    List<Map<String, dynamic>>? data = await _getKakaoBlogData();
+    if (data != null) {
+      randomData.addAll(data);
+      randomData.refresh();
+    }
+  }
+
+  void addKakaoTag(String tag) async {
+    query.add(tag);
+    initKakaoBlogData();
+  }
+
+  void removeKakaoTag(String tag) async {
+    query.remove(tag);
+    initKakaoBlogData();
+  }
+
   @override
   void onReady() {
     // initYoutubeData();
-    initNaverBlogData();
+    // initNaverBlogData();
+    initKakaoBlogData();
     super.onReady();
   }
 }
