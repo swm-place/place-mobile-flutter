@@ -759,6 +759,21 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                       ),
                       childrenDelegate: SliverChildBuilderDelegate(
                           ((context, index) {
+                            return Ink(
+                              child: InkWell(
+                                customBorder: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                onTap: () {
+                                  print(controller.randomData[index]['link']);
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(controller.randomData[index]['thumbnail'], fit: BoxFit.cover,),
+                                  // child: Image.network(controller.randomData[index]['snippet']['thumbnails']['medium']['url'], fit: BoxFit.cover,),
+                                ),
+                              ),
+                            );
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(controller.randomData[index]['thumbnail'], fit: BoxFit.cover,),
