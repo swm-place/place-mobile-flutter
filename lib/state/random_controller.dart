@@ -15,6 +15,7 @@ class RandomController extends GetxController {
   String? _prevPageToken;
 
   final YoutubeProvider _youtubeProvider = YoutubeProvider();
+  final NaverBlogProvider _naverBlogProvider = NaverBlogProvider();
 
   Future<List<Map<String, dynamic>>?> _getYoutubeData(String? pageToken) async {
     // Map<String, dynamic>? result = await _youtubeProvider.getSearchData('${query.join('%7C')} ${queryNegative.join(' ')}', pageToken);
@@ -55,12 +56,12 @@ class RandomController extends GetxController {
     }
   }
 
-  void addTag(String tag) async {
+  void addYoutubeTag(String tag) async {
     query.add(tag);
     initYoutubeData();
   }
 
-  void removeTag(String tag) async {
+  void removeYoutubeTag(String tag) async {
     query.remove(tag);
     initYoutubeData();
   }

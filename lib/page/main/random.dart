@@ -550,9 +550,9 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                 bottomState(() {
                   data[i]['selection'] = !data[i]['selection'];
                   if (!data[i]['selection']) {
-                    RandomController.to.removeTag(data[i]['tag']);
+                    RandomController.to.removeYoutubeTag(data[i]['tag']);
                   } else {
-                    RandomController.to.addTag(data[i]['tag']);
+                    RandomController.to.addYoutubeTag(data[i]['tag']);
                   }
                 });
               });
@@ -622,9 +622,9 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                   setState(() {
                     _categoryCandidates[index]['selection'] = !_categoryCandidates[index]['selection'];
                     if (!_categoryCandidates[index]['selection']) {
-                      RandomController.to.removeTag(_categoryCandidates[index]['tag']);
+                      RandomController.to.removeYoutubeTag(_categoryCandidates[index]['tag']);
                     } else {
-                      RandomController.to.addTag(_categoryCandidates[index]['tag']);
+                      RandomController.to.addYoutubeTag(_categoryCandidates[index]['tag']);
                     }
                   });
                 }
