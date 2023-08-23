@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
+
 class UnitConverter {
   static String formatDistance(int distanceInMeters) {
     if (distanceInMeters < 1000) {
@@ -41,6 +43,14 @@ class RandomGenerator {
     final int g = random.nextInt(128); // 0-127
     final int b = random.nextInt(128); // 0-127
     return '#${r.toRadixString(16).padLeft(2, '0')}${g.toRadixString(16).padLeft(2, '0')}${b.toRadixString(16).padLeft(2, '0')}';
+  }
+
+  static Color getRandomPastelColor() {
+    Random random = Random();
+    double hue = random.nextDouble() * 360;
+    double saturation = random.nextDouble() * 0.3 + 0.2;
+    double brightness = random.nextDouble() * 0.2 + 0.8;
+    return HSVColor.fromAHSV(1.0, hue, saturation, brightness).toColor();
   }
 }
 
