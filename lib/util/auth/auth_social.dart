@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/util/async_dialog.dart';
 import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -69,7 +70,7 @@ class FirebaseAuthSocial {
     }
   }
 
-  Future<void> link(User? user, OAuthCredential credential) async {
+  Future<void> link(User? user, OAuthCredential credential, String providerId) async {
     try {
       if (user != null) {
         try {
@@ -128,6 +129,7 @@ class FirebaseAuthSocial {
           )
       );
     }
+    AuthController.to.addProviderId(providerId);
   }
 
   Future<void> unLink(User? user, String providerId) async {
@@ -179,5 +181,6 @@ class FirebaseAuthSocial {
           )
       );
     }
+    AuthController.to.removeProviderId(providerId);
   }
 }

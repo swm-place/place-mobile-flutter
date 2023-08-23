@@ -142,6 +142,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                                 style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
                               ),
                             ),
+                            const SizedBox(width: 8,),
                             Text(
                               placeType,
                               style: SectionTextStyle.labelMedium(Colors.grey[600]!),

@@ -22,8 +22,8 @@ Future<void> main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp();
   Get.put(PlaceController());
-  Get.put(AuthController());
   Get.put(ProfileController());
+  Get.put(AuthController());
 
   await PlaceController.to.checkPermission();
   await PlaceController.to.getPosition();

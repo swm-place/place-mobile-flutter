@@ -64,7 +64,7 @@ class SectionTextStyle {
     fontSize: 24,
     fontWeight: FontWeight.w700,
     color: Color(0xff000000),
-    height: 20/24,
+    height: 1,
   );
 
   static TextStyle sectionTitleSmall(Color color) => TextStyle(
