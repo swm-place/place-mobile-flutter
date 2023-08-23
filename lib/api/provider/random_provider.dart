@@ -135,7 +135,7 @@ class KakaoBlogProvider extends DefaultProvider {
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
-      print('get naver blog data fail: ${response.statusCode}');
+      print('get daum blog data fail: ${response.statusCode}');
       return null;
     }
   }
