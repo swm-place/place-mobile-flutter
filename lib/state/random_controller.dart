@@ -158,11 +158,17 @@ class RandomController extends GetxController {
     initKakaoBlogData();
   }
 
+  void initKakaoTag(List<String> tags) async {
+    query = ['국내 추천'];
+    query.addAll(tags);
+    initKakaoBlogData();
+  }
+
   @override
   void onReady() {
     // initYoutubeData();
     // initNaverBlogData();
-    initKakaoBlogData();
+    // initKakaoBlogData();
     super.onReady();
   }
 }

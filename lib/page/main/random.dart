@@ -728,6 +728,13 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
         RandomController.to.nextKakaoData();
       }
     });
+
+    List<String> initTags = [];
+    for (var i in _categoryCandidates) {
+      if (i['selection']) initTags.add(i['tag']);
+    }
+    RandomController.to.initKakaoTag(initTags);
+    RandomController.to.initKakaoBlogData();
     super.initState();
   }
 
