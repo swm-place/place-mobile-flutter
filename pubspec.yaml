@@ -58,6 +58,7 @@ dependencies:
   geolocator: ^10.0.0
   flutter_native_splash: ^2.3.2
   html_unescape: ^2.0.0
+  webview_flutter: ^4.2.3
 
 dev_dependencies:
   flutter_test:
