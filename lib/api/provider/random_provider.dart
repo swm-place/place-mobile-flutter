@@ -81,3 +81,33 @@ class YoutubeProvider extends DefaultProvider {
     }
   }
 }
+
+class NaverBlogProvider extends DefaultProvider {
+  Map<String, String>? _getHeader() {
+    return {
+      'X-Naver-Client-Id': API_NAVER_CLIENT_ID,
+      'X-Naver-Client-Secret': API_NAVER_CLIENT_SECRET
+    };
+  }
+
+  Future<Map<String, dynamic>?> getSearchData(String query, int startIndex) async {
+    print("query: $query");
+    print("startIndex: $startIndex");
+
+    String uriString = "https://openapi.naver.com/v1/search/blog.json?start=$startIndex&display=100&query=$query&sort=sim";
+    Uri uri = Uri.parse(uriString);
+    Response response;
+    try {
+      response = await get(uri, headers: _getHeader());
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      print('get naver blog data fail: ${response.statusCode}');
+      return null;
+    }
+  }
+}
