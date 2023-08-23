@@ -551,9 +551,9 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                 bottomState(() {
                   data[i]['selection'] = !data[i]['selection'];
                   if (!data[i]['selection']) {
-                    RandomController.to.removeNaverTag(data[i]['tag']);
+                    RandomController.to.removeKakaoTag(data[i]['tag']);
                   } else {
-                    RandomController.to.addNaverTag(data[i]['tag']);
+                    RandomController.to.addKakaoTag(data[i]['tag']);
                   }
                 });
               });
@@ -624,9 +624,9 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                   setState(() {
                     _categoryCandidates[index]['selection'] = !_categoryCandidates[index]['selection'];
                     if (!_categoryCandidates[index]['selection']) {
-                      RandomController.to.removeNaverTag(_categoryCandidates[index]['tag']);
+                      RandomController.to.removeKakaoTag(_categoryCandidates[index]['tag']);
                     } else {
-                      RandomController.to.addNaverTag(_categoryCandidates[index]['tag']);
+                      RandomController.to.addKakaoTag(_categoryCandidates[index]['tag']);
                     }
                   });
                 }
@@ -718,7 +718,8 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
       if (_scrollController.offset >= _scrollController.position.maxScrollExtent && !_scrollController.position.outOfRange) {
         print('next');
         // RandomController.to.nextYoutubeData();
-        RandomController.to.nextNaverData();
+        // RandomController.to.nextNaverData();
+        RandomController.to.nextKakaoData();
       }
     });
     super.initState();
@@ -765,11 +766,20 @@ class RandomPageState extends State<RandomPage> with AutomaticKeepAliveClientMix
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 onTap: () {
-                                  print(controller.randomData[index]['link']);
+                                  print(controller.randomData[index]['url']);
                                 },
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(controller.randomData[index]['thumbnail'], fit: BoxFit.cover,),
+                                  child: controller.randomData[index]['thumbnail'] != '' ?
+                                    Image.network(controller.randomData[index]['thumbnail'], fit: BoxFit.cover,) :
+                                    Container(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      padding: EdgeInsets.fromLTRB(18, 18, 18, 18),
+                                      child: Center(
+                                        child: Text(controller.randomData[index]['title']),
+                                      ),
+                                    )
                                   // child: Image.network(controller.randomData[index]['snippet']['thumbnails']['medium']['url'], fit: BoxFit.cover,),
                                 ),
                               ),
