@@ -94,7 +94,7 @@ class NaverBlogProvider extends DefaultProvider {
     print("query: $query");
     print("startIndex: $startIndex");
 
-    String uriString = "https://openapi.naver.com/v1/search/blog.json?start=$startIndex&display=100&query=$query&sort=sim";
+    String uriString = "https://openapi.naver.com/v1/search/image?start=$startIndex&display=100&query=$query&sort=sim&filter=small";
     Uri uri = Uri.parse(uriString);
     Response response;
     try {

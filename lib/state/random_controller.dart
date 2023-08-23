@@ -14,6 +14,9 @@ class RandomController extends GetxController {
   String? _nextPageToken;
   String? _prevPageToken;
 
+  int _startPage = 0;
+  int _maxPage = 0;
+
   final YoutubeProvider _youtubeProvider = YoutubeProvider();
   final NaverBlogProvider _naverBlogProvider = NaverBlogProvider();
 
@@ -70,9 +73,48 @@ class RandomController extends GetxController {
   //   _getYoutubeData(_prevPageToken);
   // }
 
+  Future<List<Map<String, dynamic>>?> _getNaverBlogData() async {
+    Map<String, dynamic>? result = await _naverBlogProvider.getSearchData(query.join('%7C'), _startPage);
+    if (result == null) return null;
+    _maxPage = result['total'];
+    return List<Map<String, dynamic>>.from(result['items']);
+  }
+
+  void initNaverBlogData() async {
+    _startPage = 1;
+    _maxPage = 0;
+    List<Map<String, dynamic>>? data = await _getNaverBlogData();
+    // print(data.toString());
+    randomData.clear();
+    if (data != null) randomData.addAll(data);
+    randomData.refresh();
+  }
+
+  void nextNaverData() async {
+    if (_startPage > _maxPage || _startPage > 1000) return;
+
+    _startPage += 100;
+    List<Map<String, dynamic>>? data = await _getNaverBlogData();
+    if (data != null) {
+      randomData.addAll(data);
+      randomData.refresh();
+    }
+  }
+
+  void addNaverTag(String tag) async {
+    query.add(tag);
+    initNaverBlogData();
+  }
+
+  void removeNaverTag(String tag) async {
+    query.remove(tag);
+    initNaverBlogData();
+  }
+
   @override
   void onReady() {
-    initYoutubeData();
+    // initYoutubeData();
+    initNaverBlogData();
     super.onReady();
   }
 }
