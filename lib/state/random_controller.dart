@@ -8,7 +8,7 @@ class RandomController extends GetxController {
 
   RxList<Map<String, dynamic>> randomData = RxList();
 
-  List<String> query = ['국내여행', '코스추천', '국내 여행지', '장소추천', '당일치기'];
+  List<String> query = ['국내여행', '추천'];
   List<String> queryNegative = ['-음악', '-스포츠', '-뉴스'];
 
   String? _nextPageToken;
