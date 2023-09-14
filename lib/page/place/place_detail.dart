@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
@@ -748,6 +749,9 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             imageUrl: _relevanceStoryData[i]['background'],
             width: 250,
             height: 194,
+            onTap: () {
+              Get.to(() => Magazine());
+            },
           )
       );
       placeCards.add(const SizedBox(width: 8,));

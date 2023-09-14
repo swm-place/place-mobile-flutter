@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
+import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -196,10 +197,13 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
               itemCount: _storyData.length,
               itemBuilder: (context, index, realIndex) {
                 return RoundedRectangleStoryCard(
-                    imageUrl: _storyData[index]['background'],
-                    location: _storyData[index]['location'],
-                    title: _storyData[index]['title'],
-                    message: _storyData[index]['message']
+                  imageUrl: _storyData[index]['background'],
+                  location: _storyData[index]['location'],
+                  title: _storyData[index]['title'],
+                  message: _storyData[index]['message'],
+                  onTap: () {
+                    Get.to(() => Magazine());
+                  },
                 );
               },
             ),
