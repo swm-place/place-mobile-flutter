@@ -318,8 +318,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     List<Widget> section = [
       __searchSection(),
       const SizedBox(height: 24,),
-      // __storySection(),
-      // const SizedBox(height: 24,)
+      __storySection(),
+      const SizedBox(height: 24,)
     ];
     section.add(_loadPlaceRecommendSection());
     // for (int i = 0;i < _recommendData.length;i++) {
