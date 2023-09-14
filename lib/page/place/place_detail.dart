@@ -20,6 +20,7 @@ import 'dart:math' as math;
 
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
+import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -257,7 +258,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 expandedHeight: 220.0,
                 surfaceTintColor: Colors.white,
                 backgroundColor: Colors.white,
-                flexibleSpace: _PlacePictureFlexibleSpace(),
+                flexibleSpace: const PictureFlexibleSpace(),
               ),
               SliverList(
                 delegate: SliverChildListDelegate([
@@ -1229,41 +1230,6 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             ),
           );
         }
-    );
-  }
-}
-
-class _PlacePictureFlexibleSpace extends StatelessWidget {
-  const _PlacePictureFlexibleSpace({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, c) {
-        final settings = context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
-        final deltaExtent = settings!.maxExtent - settings.minExtent;
-        final t = (1.0 - (settings.currentExtent - settings.minExtent) / deltaExtent).clamp(0.0, 1.0);
-        final fadeStart = math.max(0.0, 1.0 - kToolbarHeight / deltaExtent);
-        const fadeEnd = 1.0;
-        final opacity = 1.0 - Interval(fadeStart, fadeEnd).transform(t);
-
-        return Opacity(
-          opacity: opacity,
-          child: Column(
-            children: [
-              Flexible(
-                child: Container(
-                  width: double.infinity,
-                  child: Image.network(
-                    'https://source.unsplash.com/random',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
