@@ -21,6 +21,7 @@ import 'dart:math' as math;
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
+import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -234,25 +235,15 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           return CustomScrollView(
             slivers: [
               SliverAppBar(
-                leading:IconButton(
+                leading: FlexibleTopBarActionButton(
                   onPressed: () {
                     Get.back();
                   },
-                  icon: Ink(
-                    width: 32,
-                    height: 32,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: Padding(
-                      padding: Platform.isAndroid ? EdgeInsets.zero : EdgeInsets.fromLTRB(6, 0, 0, 0),
-                      child: Icon(
-                        Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                        size: 18,
-                      ),
-                    ),
+                  icon: Icon(
+                    Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                    size: 18,
                   ),
+                  iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
                 ),
                 pinned: true,
                 expandedHeight: 220.0,

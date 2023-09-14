@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
+import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 
 class Magazine extends StatefulWidget {
   @override
@@ -21,25 +22,18 @@ class _MagazineState extends State<Magazine> {
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  leading:IconButton(
+                  actions: [
+
+                  ],
+                  leading: FlexibleTopBarActionButton(
                     onPressed: () {
                       Get.back();
                     },
-                    icon: Ink(
-                      width: 32,
-                      height: 32,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      child: Padding(
-                        padding: Platform.isAndroid ? EdgeInsets.zero : EdgeInsets.fromLTRB(6, 0, 0, 0),
-                        child: Icon(
-                          Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                          size: 18,
-                        ),
-                      ),
+                    icon: Icon(
+                      Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                      size: 18,
                     ),
+                    iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
                   ),
                   pinned: true,
                   expandedHeight: 220.0,
