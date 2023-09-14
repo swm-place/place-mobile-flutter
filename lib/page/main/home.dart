@@ -9,6 +9,7 @@ import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
+import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_button.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
@@ -118,18 +119,30 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     final double tagCount = tagRow.size.width / 75;
     for (int i = 0;i < tagCount;i++) {
       _recommendTags.add(
-        RoundedRectangleTagButton(
-          width: 60,
-          height: 60,
+        TagChip(
           text: _recommendTagsData[i]['title'],
-          icon: _recommendTagsData[i]['icon'],
-          itemColor: Colors.white,
+          // itemColor: Colors.white,
           backgroundColor: _recommendTagsData[i]['background'],
-          onPressed: () {
-            print(_recommendTagsData[i]['title']);
-          },
+          textStyle: SectionTextStyle.labelMedium(Colors.white),
+          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+          // onPressed: () {
+          //   print(_recommendTagsData[i]['title']);
+          // },
         )
       );
+      // _recommendTags.add(
+      //   RoundedRectangleTagButton(
+      //     width: 60,
+      //     height: 60,
+      //     text: _recommendTagsData[i]['title'],
+      //     icon: _recommendTagsData[i]['icon'],
+      //     itemColor: Colors.white,
+      //     backgroundColor: _recommendTagsData[i]['background'],
+      //     onPressed: () {
+      //       print(_recommendTagsData[i]['title']);
+      //     },
+      //   )
+      // );
     }
   }
 
@@ -161,9 +174,25 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           child: Container(
             key: _tagSection,
             width: double.infinity,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: _recommendTags,
+            height: 30,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: _recommendTagsData.length,
+              itemBuilder: (BuildContext context, int index) {
+                return TagChip(
+                  text: _recommendTagsData[index]['title'],
+                  // itemColor: Colors.white,
+                  backgroundColor: _recommendTagsData[index]['background'],
+                  textStyle: SectionTextStyle.labelMedium(Colors.white),
+                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                  // onPressed: () {
+                  //   print(_recommendTagsData[i]['title']);
+                  // },
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(width: 4,);
+              },
             ),
           ),
         )
