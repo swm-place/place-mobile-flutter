@@ -179,15 +179,20 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
               scrollDirection: Axis.horizontal,
               itemCount: _recommendTagsData.length,
               itemBuilder: (BuildContext context, int index) {
-                return TagChip(
-                  text: _recommendTagsData[index]['title'],
-                  // itemColor: Colors.white,
-                  backgroundColor: _recommendTagsData[index]['background'],
-                  textStyle: SectionTextStyle.labelMedium(Colors.white),
-                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                  // onPressed: () {
-                  //   print(_recommendTagsData[i]['title']);
-                  // },
+                return GestureDetector(
+                  child: TagChip(
+                    text: _recommendTagsData[index]['title'],
+                    // itemColor: Colors.white,
+                    backgroundColor: _recommendTagsData[index]['background'],
+                    textStyle: SectionTextStyle.labelMedium(Colors.white),
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    // onPressed: () {
+                    //   print(_recommendTagsData[i]['title']);
+                    // },
+                  ),
+                  onTap: () {
+                    print(_recommendTagsData[index]['title']);
+                  },
                 );
               },
               separatorBuilder: (BuildContext context, int index) {
