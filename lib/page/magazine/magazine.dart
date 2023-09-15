@@ -57,7 +57,17 @@ class _MagazineState extends State<Magazine> {
             ' 우는 하나에 하나에 이름과 당신은 까닭입니다. 이네들은 지나가는 헤는 언덕 노새, 가을로 '
             '봅니다. 릴케 이름과 때 위에 있습니다. 가슴속에 별들을 아무 불러 쓸쓸함과 추억과 별빛이 '
             '애기 있습니다. 무덤 이름을 하늘에는 딴은 아무 자랑처럼 아침이 봅니다.'
-      }
+      },
+      {
+        'type': 'image',
+        'imgUrl': 'https://images.unsplash.com/photo-1694530126645-4300ebe5409c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+        'description': '이미지 설명'
+      },
+      {
+        'type': 'image',
+        'imgUrl': 'https://images.unsplash.com/photo-1694459766923-9ad3145402b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80',
+        'description': null
+      },
     ]
   };
 
@@ -160,6 +170,7 @@ class _MagazineState extends State<Magazine> {
         }
       }
     }
+    section.add(const SizedBox(height: 24));
     return section;
   }
 
