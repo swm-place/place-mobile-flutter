@@ -42,7 +42,7 @@ class _MagazineState extends State<Magazine> {
         'type': 'placeCard',
         'title': '장소 1',
         'placeUrl': '',
-        'placePicture': 'https://source.unsplash.com/random',
+        'placePicture': 'https://images.unsplash.com/photo-1694384580420-46ce717aa50b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80',
         'placeContent': '이름자를 이제 이런 다 소학교 말 이런 까닭이요, 있습니다. 옥 가을로 무성할'
             ' 우는 하나에 하나에 이름과 당신은 까닭입니다. 이네들은 지나가는 헤는 언덕 노새, 가을로 '
             '봅니다. 릴케 이름과 때 위에 있습니다. 가슴속에 별들을 아무 불러 쓸쓸함과 추억과 별빛이 '
@@ -52,7 +52,7 @@ class _MagazineState extends State<Magazine> {
         'type': 'placeCard',
         'title': '장소 2',
         'placeUrl': '',
-        'placePicture': 'https://source.unsplash.com/random',
+        'placePicture': 'https://images.unsplash.com/photo-1693529831174-17595f68be87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1476&q=80',
         'placeContent': '이름자를 이제 이런 다 소학교 말 이런 까닭이요, 있습니다. 옥 가을로 무성할'
             ' 우는 하나에 하나에 이름과 당신은 까닭입니다. 이네들은 지나가는 헤는 언덕 노새, 가을로 '
             '봅니다. 릴케 이름과 때 위에 있습니다. 가슴속에 별들을 아무 불러 쓸쓸함과 추억과 별빛이 '
@@ -90,19 +90,45 @@ class _MagazineState extends State<Magazine> {
   Widget _createTextContentSection(String content) => Container(
     padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
     width: double.infinity,
-    child: Text(content),
+    child: Text(content, style: SectionTextStyle.sectionContentLine(Colors.black),),
   );
 
   Widget _createDividerSection() => Center(
     child: Container(
       // width: double.infinity,
       constraints: const BoxConstraints(
-          maxWidth: 200
+          maxWidth: 250
       ),
       child: const Divider(
         height: 1,
         color: Colors.black54,
       ),
+    ),
+  );
+
+  Widget _createPlaceContentSection(String title, String content, String imgUrl) => Padding(
+    padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: SectionTextStyle.sectionTitle(),),
+        const SizedBox(height: 10,),
+        Container(
+          constraints: const BoxConstraints(
+            maxHeight: 200
+          ),
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                imgUrl,
+                // fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        )
+      ],
     ),
   );
 
@@ -118,6 +144,16 @@ class _MagazineState extends State<Magazine> {
         }
         case 'divider': {
           section.add(_createDividerSection());
+          break;
+        }
+        case 'placeCard': {
+          section.add(
+              _createPlaceContentSection(
+                  content['title'],
+                  content['placeContent'],
+                  content['placePicture']
+              )
+          );
           break;
         }
       }
