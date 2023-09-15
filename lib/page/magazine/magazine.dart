@@ -144,6 +144,30 @@ class _MagazineState extends State<Magazine> {
     ),
   );
 
+  Widget _createImageSection(String imgUrl, String? description) => Padding(
+    padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+    child: Column(
+      children: [
+        Container(
+          constraints: const BoxConstraints(
+              maxHeight: 200
+          ),
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                imgUrl,
+                // fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8,),
+        if (description != null) Text(description, style: SectionTextStyle.labelMedium(Colors.grey),)
+      ],
+    ),
+  );
+
   List<Widget> _createMagazineSection() {
     List<Widget> section = [_createHeader(), const SizedBox(height: 24)];
     for (int i = 0;i < _magazineContents['contents'].length;i++) {
@@ -159,13 +183,18 @@ class _MagazineState extends State<Magazine> {
           break;
         }
         case 'placeCard': {
-          section.add(
-              _createPlaceContentSection(
-                  content['title'],
-                  content['placeContent'],
-                  content['placePicture']
-              )
-          );
+          section.add(_createPlaceContentSection(
+            content['title'],
+            content['placeContent'],
+            content['placePicture']
+          ));
+          break;
+        }
+        case 'image': {
+          section.add(_createImageSection(
+            content['imgUrl'],
+            content['description']
+          ));
           break;
         }
       }
