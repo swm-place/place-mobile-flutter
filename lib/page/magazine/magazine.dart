@@ -88,17 +88,36 @@ class _MagazineState extends State<Magazine> {
   );
 
   Widget _createTextContentSection(String content) => Container(
-    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+    padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
     width: double.infinity,
     child: Text(content),
   );
 
+  Widget _createDividerSection() => Center(
+    child: Container(
+      // width: double.infinity,
+      constraints: const BoxConstraints(
+          maxWidth: 200
+      ),
+      child: const Divider(
+        height: 1,
+        color: Colors.black54,
+      ),
+    ),
+  );
+
   List<Widget> _createMagazineSection() {
-    List<Widget> section = [_createHeader()];
-    for (Map<String, dynamic> i in _magazineContents['contents']) {
-      switch(i['type']) {
+    List<Widget> section = [_createHeader(), const SizedBox(height: 24)];
+    for (int i = 0;i < _magazineContents['contents'].length;i++) {
+      Map<String, dynamic> content =  _magazineContents['contents'][i];
+      if (i > 0) section.add(const SizedBox(height: 18,));
+      switch(content['type']) {
         case 'text': {
-          section.add(_createTextContentSection(i['content']));
+          section.add(_createTextContentSection(content['content']));
+          break;
+        }
+        case 'divider': {
+          section.add(_createDividerSection());
           break;
         }
       }
