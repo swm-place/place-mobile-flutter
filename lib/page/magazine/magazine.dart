@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 
@@ -11,6 +12,9 @@ class Magazine extends StatefulWidget {
 }
 
 class _MagazineState extends State<Magazine> {
+
+  bool likeClicked = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +27,21 @@ class _MagazineState extends State<Magazine> {
               slivers: [
                 SliverAppBar(
                   actions: [
-
+                    FlexibleTopBarActionButton(
+                      onPressed: () {
+                        setState(() {
+                          likeClicked = !likeClicked;
+                        });
+                      },
+                      icon: likeClicked ? Icon(
+                        MdiIcons.heart,
+                        color: Colors.pink,
+                        size: 18,
+                      ) : Icon(
+                        MdiIcons.heartOutline,
+                        size: 18,
+                      ),
+                    ),
                   ],
                   leading: FlexibleTopBarActionButton(
                     onPressed: () {
