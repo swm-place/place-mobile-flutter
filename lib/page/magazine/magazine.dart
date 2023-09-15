@@ -101,7 +101,7 @@ class _MagazineState extends State<Magazine> {
       ),
       child: const Divider(
         height: 1,
-        color: Colors.black54,
+        color: Colors.black87,
       ),
     ),
   );
@@ -113,7 +113,7 @@ class _MagazineState extends State<Magazine> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: SectionTextStyle.sectionTitle(),),
-        const SizedBox(height: 10,),
+        const SizedBox(height: 18,),
         Container(
           constraints: const BoxConstraints(
             maxHeight: 200
@@ -127,16 +127,18 @@ class _MagazineState extends State<Magazine> {
               ),
             ),
           ),
-        )
+        ),
+        const SizedBox(height: 18,),
+        Text(content, style: SectionTextStyle.sectionContentLine(Colors.black),)
       ],
     ),
   );
 
   List<Widget> _createMagazineSection() {
-    List<Widget> section = [_createHeader(), const SizedBox(height: 18)];
+    List<Widget> section = [_createHeader(), const SizedBox(height: 24)];
     for (int i = 0;i < _magazineContents['contents'].length;i++) {
       Map<String, dynamic> content =  _magazineContents['contents'][i];
-      if (i > 0) section.add(const SizedBox(height: 18,));
+      if (i > 0) section.add(const SizedBox(height: 24,));
       switch(content['type']) {
         case 'text': {
           section.add(_createTextContentSection(content['content']));
