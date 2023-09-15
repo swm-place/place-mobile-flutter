@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 
@@ -15,6 +16,32 @@ class Magazine extends StatefulWidget {
 class _MagazineState extends State<Magazine> {
 
   bool likeClicked = false;
+
+  Widget _createHeader() => Padding(
+    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+    child: Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: Text("매거진 제목", style: PageTextStyle.headlineBold(Colors.black)),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundImage: NetworkImage('https://source.unsplash.com/random'),
+            ),
+            const SizedBox(width: 10,),
+            Text("작성자", style: SectionTextStyle.sectionContent(Colors.black),),
+            const SizedBox(width: 10,),
+            Text("2022.01.01", style: SectionTextStyle.sectionContent(Colors.grey),),
+          ],
+        )
+      ],
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +90,7 @@ class _MagazineState extends State<Magazine> {
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate([
-
+                    _createHeader()
                   ]),
                 )
               ],
