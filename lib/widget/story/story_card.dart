@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 
 class RoundedRectangleStoryCard extends StatelessWidget {
+  final Function()? onTap;
+
   RoundedRectangleStoryCard({
     required this.title,
     required this.message,
     required this.location,
     required this.imageUrl,
+    required this.onTap,
     this.width,
     this.height,
     Key? key,
@@ -27,9 +30,7 @@ class RoundedRectangleStoryCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: GestureDetector(
-        onTap: () => {
-          print("$title, $message, $location")
-        },
+        onTap: onTap,
         child: Stack(
           children: [
             SizedBox(
