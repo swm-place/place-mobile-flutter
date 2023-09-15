@@ -9,6 +9,10 @@ import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 
 class Magazine extends StatefulWidget {
+  const Magazine({
+    Key? key
+  }) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _MagazineState();
 }
