@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
@@ -29,6 +30,7 @@ class _MagazineState extends State<Magazine> {
                   actions: [
                     FlexibleTopBarActionButton(
                       onPressed: () {
+                        HapticFeedback.lightImpact();
                         setState(() {
                           likeClicked = !likeClicked;
                         });
