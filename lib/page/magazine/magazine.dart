@@ -36,7 +36,7 @@ class _MagazineState extends State<Magazine> {
             const SizedBox(width: 10,),
             Text("작성자", style: SectionTextStyle.sectionContent(Colors.black),),
             const SizedBox(width: 10,),
-            Text("2022.01.01", style: SectionTextStyle.sectionContent(Colors.grey),),
+            Text("2022.01.01", style: SectionTextStyle.labelMedium(Colors.grey),),
           ],
         )
       ],
