@@ -62,7 +62,7 @@ class _MagazineState extends State<Magazine> {
   };
 
   Widget _createHeader() => Padding(
-    padding: const EdgeInsets.fromLTRB(24, 18, 24, 0),
+    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
     child: Column(
       children: [
         SizedBox(
@@ -107,7 +107,7 @@ class _MagazineState extends State<Magazine> {
   );
 
   List<Widget> _createMagazineSection() {
-    List<Widget> section = [_createHeader(), const SizedBox(height: 24)];
+    List<Widget> section = [_createHeader(), const SizedBox(height: 18)];
     for (int i = 0;i < _magazineContents['contents'].length;i++) {
       Map<String, dynamic> content =  _magazineContents['contents'][i];
       if (i > 0) section.add(const SizedBox(height: 18,));
