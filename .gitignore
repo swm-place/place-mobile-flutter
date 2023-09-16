@@ -11,6 +11,8 @@ ios/fastlane/report.xml
 ios/Runner.ipa
 ios/Runner.app.dSYM.zip
 
+ios/fastlane/.env
+
 ### Flutter ###
 # Flutter/Dart/Pub related
 **/doc/api/
