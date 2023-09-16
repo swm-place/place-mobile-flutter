@@ -11,6 +11,12 @@ ios/fastlane/report.xml
 ios/Runner.ipa
 ios/Runner.app.dSYM.zip
 
+android/fastlane/.env
+android/fastlane/README.md
+android/fastlane/report.xml
+
+android/authorization.json
+
 ios/fastlane/.env
 
 ### Flutter ###

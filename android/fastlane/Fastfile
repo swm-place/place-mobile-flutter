@@ -7,7 +7,9 @@ platform :android do
     gradle(task: "clean assembleRelease")
     upload_to_play_store(
         track: 'internal',
+        json_key_data: ENV['key'],
         version_code: flutter_version()["version_code"],
+        version_name: flutter_version()["version_name"],
         aab: '../build/app/outputs/bundle/release/app-release.aab',
         skip_upload_screenshots: true,
         skip_upload_images: true
