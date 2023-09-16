@@ -3,8 +3,19 @@ default_platform(:android)
 platform :android do
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
+    gradle(task: "clean")
     Dir.chdir "../.." do sh("flutter", "build", "appbundle", "--release") end
-    gradle(task: "clean assembleRelease")
+    gradle(
+        task: "bundle",
+        build_type: "Release",
+        print_command: true,
+        properties: {
+            "android.injected.signing.store.file" => ENV['PWD'] + ENV['ANDROID_APP_SIGNING_KEY'],
+            "android.injected.signing.store.password" => ENV['ANDROID_APP_SIGNING_STORE_PASSWORD'],
+            "android.injected.signing.key.alias" => ENV['ANDROID_APP_SIGNING_KEY_ALIAS'],
+            "android.injected.signing.key.password" => ENV['ANDROID_APP_SIGNING_KEY_PASSWORD'],
+        }
+    )
     upload_to_play_store(
         track: 'internal',
         json_key_data: ENV['key'],
