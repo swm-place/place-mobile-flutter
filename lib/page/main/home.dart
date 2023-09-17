@@ -128,6 +128,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     }
   }
 
+  late final Future<Map<String, dynamic>?> _getPlace;
+
   @override
   void initState() {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -135,6 +137,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
         __createTagSection();
       });
     });
+
+    _getPlace = _getPlaceRecommendationSection();
     super.initState();
   }
 
@@ -348,7 +352,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
 
   Widget _loadPlaceRecommendSection() {
     return FutureBuilder<Map<String, dynamic>?>(
-      future: _getPlaceRecommendationSection(),
+      future: _getPlace,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           List<Widget> items = [];
