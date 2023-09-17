@@ -213,28 +213,6 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     ),
   );
 
-  Widget _informationSection() => Padding(
-    padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-    child: Row(
-      children: [
-       CourseInformationCard(
-         title: '지역',
-         content: '서울시 강남구',
-       ),
-        const SizedBox(width: 12,),
-        CourseInformationCard(
-          title: '이동 거리',
-          content: '2.4 km',
-        ),
-        const SizedBox(width: 12,),
-        CourseInformationCard(
-          title: '방문 장소',
-          content: '5곳',
-        ),
-      ],
-    ),
-  );
-
   void __showBookmarkSelectionSheet() {
     bool stateFirst = true;
     showModalBottomSheet(
@@ -397,6 +375,28 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         }
     );
   }
+
+  Widget _informationSection() => Padding(
+    padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+    child: Row(
+      children: [
+        CourseInformationCard(
+          title: '지역',
+          content: '서울시 강남구',
+        ),
+        const SizedBox(width: 12,),
+        CourseInformationCard(
+          title: '이동 거리',
+          content: '2.4 km',
+        ),
+        const SizedBox(width: 12,),
+        CourseInformationCard(
+          title: '방문 장소',
+          content: '5곳',
+        ),
+      ],
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
