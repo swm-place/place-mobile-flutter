@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -191,7 +192,7 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
   List<Widget> __createTags() {
     List<Widget> chips = [];
     int tagCount = tags.length < 2 ? tags.length : 2;
-    for (int i = 0;i < tagCount;i++) {
+    for (int i = 0; i < tagCount; i++) {
       if (i != 0) chips.add(SizedBox(width: 4,));
       chips.add(
           TagChip(
@@ -205,7 +206,7 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
 
   List<Widget> __createInfo() {
     List<Widget> inform = [];
-    if(distance != null) {
+    if (distance != null) {
       inform.add(
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -252,7 +253,7 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
           child: Row(
             children: [
               AspectRatio(
-                aspectRatio: 1.1/1,
+                aspectRatio: 1.1 / 1,
                 child: Image.network(
                   'https://source.unsplash.com/random',
                   fit: BoxFit.cover,
@@ -266,39 +267,25 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: double.infinity,
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final rightTextWidth = (TextPainter(
-                              text: TextSpan(
-                                text: 'placeType',
-                                style: SectionTextStyle.labelMedium(Colors.grey[600]!)
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '장소이름',
+                                overflow: TextOverflow.ellipsis,
+                                style: SectionTextStyle.sectionContentExtraLarge(
+                                    Colors.black),
                               ),
-                              maxLines: 1,
-                              textDirection: TextDirection.ltr,
-                            )..layout()).width;
-
-                            final maxLeftTextWidth = constraints.maxWidth - rightTextWidth - 8;
-
-                            return Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              // mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(maxWidth: maxLeftTextWidth),
-                                  child: Text(
-                                    'placeName',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
-                                  ),
-                                ),
-                                const SizedBox(width: 8,),
-                                Text(
-                                  'placeType',
-                                  style: SectionTextStyle.labelMedium(Colors.grey[600]!),
-                                ),
-                              ],
-                            );
-                          },
+                            ),
+                            // Text(
+                            //   '카테고리',
+                            //   maxLines: 1,
+                            //   style: SectionTextStyle.labelMedium(
+                            //       Colors.grey[600]!),
+                            // ),
+                          ],
                         ),
                       ),
                       SizedBox(
