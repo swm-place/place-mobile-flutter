@@ -218,6 +218,7 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
             ],
           )
       );
+      inform.add(SizedBox(width: 8,));
     }
     inform.addAll([
       Row(
