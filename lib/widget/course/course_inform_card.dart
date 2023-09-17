@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 
 class CourseInformationCard extends StatelessWidget {
-  const CourseInformationCard({super.key});
+  CourseInformationCard({
+    required this.title,
+    required this.content,
+    Key? key
+  }) : super(key: key);
+
+  String title;
+  String content;
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +24,8 @@ class CourseInformationCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('지역', style: SectionTextStyle.labelMedium(Colors.grey[600]!),),
-            AutoSizeText('서울시 강남구', style: SectionTextStyle.sectionContent(Colors.black),),
+            Text(title, style: SectionTextStyle.labelMedium(Colors.grey[600]!),),
+            AutoSizeText(content, style: SectionTextStyle.sectionContent(Colors.black),),
           ],
         ),
       ),
