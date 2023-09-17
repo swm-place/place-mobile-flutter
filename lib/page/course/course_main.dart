@@ -29,14 +29,10 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   late ScrollController _bookmarkScrollController;
 
-  bool likePlace = false;
-  bool bookmarkPlace = false;
-
-  bool isTimeOpen = false;
+  bool likeCourse = false;
+  bool bookmarkCourse = false;
 
   String? _bookmarkNameError;
-
-  int? commentSortKey = 0;
 
   final List<Map<String, dynamic>> _bookmarkData = [
     {"name": "북마크", "include": true},
@@ -128,8 +124,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 __showBookmarkSelectionSheet();
                 setState(() {
                   HapticFeedback.lightImpact();
-                  bookmarkPlace = !bookmarkPlace;
-                  if (bookmarkPlace) {
+                  bookmarkCourse = !bookmarkCourse;
+                  if (bookmarkCourse) {
                     _bookmarkButtonController.animateTo(1);
                   } else {
                     _bookmarkButtonController.animateBack(0);
@@ -153,7 +149,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                           controller: _bookmarkButtonController,
                           onLoaded: (conposition) {
                             _bookmarkButtonController.duration = conposition.duration;
-                            if (bookmarkPlace) {
+                            if (bookmarkCourse) {
                               _bookmarkButtonController.animateTo(1);
                             } else {
                               _bookmarkButtonController.animateBack(0);
@@ -171,8 +167,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
               onTap: () {
                 setState(() {
                   HapticFeedback.lightImpact();
-                  likePlace = !likePlace;
-                  if (likePlace) {
+                  likeCourse = !likeCourse;
+                  if (likeCourse) {
                     _likeButtonController.animateTo(1);
                   } else {
                     _likeButtonController.animateBack(0);
@@ -196,7 +192,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                           controller: _likeButtonController,
                           onLoaded: (conposition) {
                             _likeButtonController.duration = conposition.duration;
-                            if (likePlace) {
+                            if (likeCourse) {
                               _likeButtonController.animateTo(1);
                             } else {
                               _likeButtonController.animateBack(0);
