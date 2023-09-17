@@ -239,7 +239,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 });
               }
               return Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(8),
                     topLeft: Radius.circular(8),
@@ -402,12 +402,17 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   Widget _visitPlaceSection() => MainSection(
     title: '장소 목록',
-    content: Column(
-      children: [
-        RoundedRowRectanglePlaceCard(),
-        RoundedRowRectanglePlaceCard(),
-        RoundedRowRectanglePlaceCard(),
-      ],
+    content: Padding(
+      padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+      child: Column(
+        children: [
+          RoundedRowRectanglePlaceCard(),
+          SizedBox(height: 12,),
+          RoundedRowRectanglePlaceCard(),
+          SizedBox(height: 12,),
+          RoundedRowRectanglePlaceCard(),
+        ],
+      ),
     ),
   );
 
