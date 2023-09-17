@@ -10,6 +10,7 @@ import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/course/course_inform_card.dart';
+import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
@@ -402,7 +403,11 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   Widget _visitPlaceSection() => MainSection(
     title: '장소 목록',
     content: Column(
-
+      children: [
+        RoundedRowRectanglePlaceCard(),
+        RoundedRowRectanglePlaceCard(),
+        RoundedRowRectanglePlaceCard(),
+      ],
     ),
   );
 

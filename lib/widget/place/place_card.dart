@@ -174,5 +174,15 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
       ),
     );
   }
-  
+}
+
+class RoundedRowRectanglePlaceCard extends StatelessWidget {
+  const RoundedRowRectanglePlaceCard({
+    Key? key
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
 }
