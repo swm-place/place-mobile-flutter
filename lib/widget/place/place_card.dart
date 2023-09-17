@@ -49,7 +49,6 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
     return chips;
   }
 
-
   List<Widget> __createInfo() {
     List<Widget> inform = [];
     if(distance != null) {
@@ -177,9 +176,66 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
 }
 
 class RoundedRowRectanglePlaceCard extends StatelessWidget {
-  const RoundedRowRectanglePlaceCard({
+  RoundedRowRectanglePlaceCard({
     Key? key
   }) : super(key: key);
+
+  final List<Map<String, dynamic>> tags = [
+    {"text": "조용한", "color": "#3232a8"},
+    {"text": "넓은", "color": "#326da8"},
+  ];
+
+  final String? distance = '2.4km';
+  final String open = '영업중';
+
+  List<Widget> __createTags() {
+    List<Widget> chips = [];
+    int tagCount = tags.length < 2 ? tags.length : 2;
+    for (int i = 0;i < tagCount;i++) {
+      if (i != 0) chips.add(SizedBox(width: 4,));
+      chips.add(
+          TagChip(
+            text: tags[i]['text'],
+            backgroundColor: UnitConverter.hexToColor(tags[i]['color']),
+          )
+      );
+    }
+    return chips;
+  }
+
+  List<Widget> __createInfo() {
+    List<Widget> inform = [];
+    if(distance != null) {
+      inform.add(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(MdiIcons.mapMarkerOutline, size: 18,),
+              Text(
+                distance!,
+                style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+              )
+            ],
+          )
+      );
+    }
+    inform.addAll([
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(MdiIcons.clockCheckOutline, size: 18),
+          const SizedBox(
+            width: 2,
+          ),
+          Text(
+            open,
+            style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+          )
+        ],
+      ),
+    ]);
+    return inform;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +246,7 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: SizedBox(
-          height: 90,
+          height: 95,
           width: double.infinity,
           child: Row(
             children: [
@@ -199,6 +255,46 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
                 child: Image.network(
                   'https://source.unsplash.com/random',
                   fit: BoxFit.cover,
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          // mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'placeName',
+                                overflow: TextOverflow.ellipsis,
+                                style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
+                              ),
+                            ),
+                            const SizedBox(width: 8,),
+                            Text(
+                              'placeType',
+                              style: SectionTextStyle.labelMedium(Colors.grey[600]!),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Row(
+                          children: __createTags(),
+                        ),
+                      ),
+                      Row(
+                        children: __createInfo(),
+                      )
+                    ],
+                  ),
                 ),
               )
             ],
