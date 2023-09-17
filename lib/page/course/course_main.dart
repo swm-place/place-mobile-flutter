@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -211,6 +212,64 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     ),
   );
 
+  Widget _informationSection() => Padding(
+    padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+    child: Row(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.grey[300]
+            ),
+            padding: EdgeInsets.fromLTRB(12, 12, 12, 12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('지역', style: SectionTextStyle.labelMedium(Colors.grey[600]!),),
+                AutoSizeText('서울시 강남구', style: SectionTextStyle.sectionContent(Colors.black),),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 12,),
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.grey[300]
+            ),
+            padding: EdgeInsets.fromLTRB(12, 12, 12, 12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('이동거리', style: SectionTextStyle.labelMedium(Colors.grey[600]!),),
+                AutoSizeText('3.6km', style: SectionTextStyle.sectionContent(Colors.black),),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 12,),
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.grey[300]
+            ),
+            padding: EdgeInsets.fromLTRB(12, 12, 12, 12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('방문장소', style: SectionTextStyle.labelMedium(Colors.grey[600]!),),
+                AutoSizeText('5곳', style: SectionTextStyle.sectionContent(Colors.black),),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
   void __showBookmarkSelectionSheet() {
     bool stateFirst = true;
     showModalBottomSheet(
@@ -403,7 +462,10 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate([
-                    _detailHead()
+                    _detailHead(),
+                    const SizedBox(height: 24,),
+                    _informationSection(),
+                    const SizedBox(height: 24,)
                   ]),
                 )
               ],
