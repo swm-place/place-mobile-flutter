@@ -183,6 +183,23 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: SizedBox(
+        height: 80,
+        width: double.infinity,
+        child: Row(
+          children: [
+            AspectRatio(
+              aspectRatio: 1/1,
+              child: Image.network(
+                'https://source.unsplash.com/random',
+                fit: BoxFit.cover,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
