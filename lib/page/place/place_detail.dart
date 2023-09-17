@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
@@ -19,6 +20,8 @@ import 'dart:math' as math;
 
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
+import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
+import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -232,31 +235,21 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           return CustomScrollView(
             slivers: [
               SliverAppBar(
-                leading:IconButton(
+                leading: FlexibleTopBarActionButton(
                   onPressed: () {
                     Get.back();
                   },
-                  icon: Ink(
-                    width: 32,
-                    height: 32,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: Padding(
-                      padding: Platform.isAndroid ? EdgeInsets.zero : EdgeInsets.fromLTRB(6, 0, 0, 0),
-                      child: Icon(
-                        Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                        size: 18,
-                      ),
-                    ),
+                  icon: Icon(
+                    Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                    size: 18,
                   ),
+                  iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
                 ),
                 pinned: true,
                 expandedHeight: 220.0,
                 surfaceTintColor: Colors.white,
                 backgroundColor: Colors.white,
-                flexibleSpace: _PlacePictureFlexibleSpace(),
+                flexibleSpace: const PictureFlexibleSpace(),
               ),
               SliverList(
                 delegate: SliverChildListDelegate([
@@ -748,6 +741,9 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             imageUrl: _relevanceStoryData[i]['background'],
             width: 250,
             height: 194,
+            onTap: () {
+              Get.to(() => Magazine());
+            },
           )
       );
       placeCards.add(const SizedBox(width: 8,));
@@ -1225,41 +1221,6 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             ),
           );
         }
-    );
-  }
-}
-
-class _PlacePictureFlexibleSpace extends StatelessWidget {
-  const _PlacePictureFlexibleSpace({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, c) {
-        final settings = context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
-        final deltaExtent = settings!.maxExtent - settings.minExtent;
-        final t = (1.0 - (settings.currentExtent - settings.minExtent) / deltaExtent).clamp(0.0, 1.0);
-        final fadeStart = math.max(0.0, 1.0 - kToolbarHeight / deltaExtent);
-        const fadeEnd = 1.0;
-        final opacity = 1.0 - Interval(fadeStart, fadeEnd).transform(t);
-
-        return Opacity(
-          opacity: opacity,
-          child: Column(
-            children: [
-              Flexible(
-                child: Container(
-                  width: double.infinity,
-                  child: Image.network(
-                    'https://source.unsplash.com/random',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

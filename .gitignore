@@ -3,6 +3,22 @@
 # Created by https://www.toptal.com/developers/gitignore/api/androidstudio,flutter
 # Edit at https://www.toptal.com/developers/gitignore?templates=androidstudio,flutter
 
+### Fastlane ###
+ios/fastlane/authorization.json
+ios/fastlane/README.md
+ios/fastlane/report.xml
+
+ios/Runner.ipa
+ios/Runner.app.dSYM.zip
+
+android/fastlane/.env
+android/fastlane/README.md
+android/fastlane/report.xml
+
+android/authorization.json
+
+ios/fastlane/.env
+
 ### Flutter ###
 # Flutter/Dart/Pub related
 **/doc/api/

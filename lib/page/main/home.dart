@@ -3,11 +3,13 @@ import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
+import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
+import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_button.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
@@ -117,18 +119,30 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     final double tagCount = tagRow.size.width / 75;
     for (int i = 0;i < tagCount;i++) {
       _recommendTags.add(
-        RoundedRectangleTagButton(
-          width: 60,
-          height: 60,
+        TagChip(
           text: _recommendTagsData[i]['title'],
-          icon: _recommendTagsData[i]['icon'],
-          itemColor: Colors.white,
+          // itemColor: Colors.white,
           backgroundColor: _recommendTagsData[i]['background'],
-          onPressed: () {
-            print(_recommendTagsData[i]['title']);
-          },
+          textStyle: SectionTextStyle.labelMedium(Colors.white),
+          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+          // onPressed: () {
+          //   print(_recommendTagsData[i]['title']);
+          // },
         )
       );
+      // _recommendTags.add(
+      //   RoundedRectangleTagButton(
+      //     width: 60,
+      //     height: 60,
+      //     text: _recommendTagsData[i]['title'],
+      //     icon: _recommendTagsData[i]['icon'],
+      //     itemColor: Colors.white,
+      //     backgroundColor: _recommendTagsData[i]['background'],
+      //     onPressed: () {
+      //       print(_recommendTagsData[i]['title']);
+      //     },
+      //   )
+      // );
     }
   }
 
@@ -160,9 +174,30 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           child: Container(
             key: _tagSection,
             width: double.infinity,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: _recommendTags,
+            height: 30,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: _recommendTagsData.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  child: TagChip(
+                    text: _recommendTagsData[index]['title'],
+                    // itemColor: Colors.white,
+                    backgroundColor: _recommendTagsData[index]['background'],
+                    textStyle: SectionTextStyle.labelMedium(Colors.white),
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    // onPressed: () {
+                    //   print(_recommendTagsData[i]['title']);
+                    // },
+                  ),
+                  onTap: () {
+                    print(_recommendTagsData[index]['title']);
+                  },
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(width: 4,);
+              },
             ),
           ),
         )
@@ -196,10 +231,13 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
               itemCount: _storyData.length,
               itemBuilder: (context, index, realIndex) {
                 return RoundedRectangleStoryCard(
-                    imageUrl: _storyData[index]['background'],
-                    location: _storyData[index]['location'],
-                    title: _storyData[index]['title'],
-                    message: _storyData[index]['message']
+                  imageUrl: _storyData[index]['background'],
+                  location: _storyData[index]['location'],
+                  title: _storyData[index]['title'],
+                  message: _storyData[index]['message'],
+                  onTap: () {
+                    Get.to(() => Magazine());
+                  },
                 );
               },
             ),
@@ -318,8 +356,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     List<Widget> section = [
       __searchSection(),
       const SizedBox(height: 24,),
-      // __storySection(),
-      // const SizedBox(height: 24,)
+      __storySection(),
+      const SizedBox(height: 24,)
     ];
     section.add(_loadPlaceRecommendSection());
     // for (int i = 0;i < _recommendData.length;i++) {
