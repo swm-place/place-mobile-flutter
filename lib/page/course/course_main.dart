@@ -9,6 +9,7 @@ import 'package:lottie/lottie.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
+import 'package:place_mobile_flutter/widget/course/course_inform_card.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
@@ -216,55 +217,19 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
     child: Row(
       children: [
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.grey[300]
-            ),
-            padding: EdgeInsets.fromLTRB(12, 12, 12, 12),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('지역', style: SectionTextStyle.labelMedium(Colors.grey[600]!),),
-                AutoSizeText('서울시 강남구', style: SectionTextStyle.sectionContent(Colors.black),),
-              ],
-            ),
-          ),
+       CourseInformationCard(
+         title: '지역',
+         content: '서울시 강남구',
+       ),
+        const SizedBox(width: 12,),
+        CourseInformationCard(
+          title: '이동 거리',
+          content: '2.4 km',
         ),
         const SizedBox(width: 12,),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.grey[300]
-            ),
-            padding: EdgeInsets.fromLTRB(12, 12, 12, 12),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('이동거리', style: SectionTextStyle.labelMedium(Colors.grey[600]!),),
-                AutoSizeText('3.6km', style: SectionTextStyle.sectionContent(Colors.black),),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 12,),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.grey[300]
-            ),
-            padding: EdgeInsets.fromLTRB(12, 12, 12, 12),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('방문장소', style: SectionTextStyle.labelMedium(Colors.grey[600]!),),
-                AutoSizeText('5곳', style: SectionTextStyle.sectionContent(Colors.black),),
-              ],
-            ),
-          ),
+        CourseInformationCard(
+          title: '방문 장소',
+          content: '5곳',
         ),
       ],
     ),
