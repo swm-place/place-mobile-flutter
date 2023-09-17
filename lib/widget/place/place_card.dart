@@ -266,23 +266,39 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: double.infinity,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          // mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'placeName',
-                                overflow: TextOverflow.ellipsis,
-                                style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final rightTextWidth = (TextPainter(
+                              text: TextSpan(
+                                text: 'placeType',
+                                style: SectionTextStyle.labelMedium(Colors.grey[600]!)
                               ),
-                            ),
-                            const SizedBox(width: 8,),
-                            Text(
-                              'placeType',
-                              style: SectionTextStyle.labelMedium(Colors.grey[600]!),
-                            ),
-                          ],
+                              maxLines: 1,
+                              textDirection: TextDirection.ltr,
+                            )..layout()).width;
+
+                            final maxLeftTextWidth = constraints.maxWidth - rightTextWidth - 8;
+
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              // mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(maxWidth: maxLeftTextWidth),
+                                  child: Text(
+                                    'placeName',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
+                                  ),
+                                ),
+                                const SizedBox(width: 8,),
+                                Text(
+                                  'placeType',
+                                  style: SectionTextStyle.labelMedium(Colors.grey[600]!),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ),
                       SizedBox(
