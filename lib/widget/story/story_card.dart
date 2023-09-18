@@ -10,6 +10,7 @@ class RoundedRectangleStoryCard extends StatelessWidget {
     required this.location,
     required this.imageUrl,
     required this.onTap,
+    this.padding=const EdgeInsets.fromLTRB(24, 20, 24, 20),
     this.width,
     this.height,
     this.titleStyle,
@@ -29,6 +30,8 @@ class RoundedRectangleStoryCard extends StatelessWidget {
   TextStyle? titleStyle;
   TextStyle? messageStyle;
   TextStyle? locationStyle;
+
+  EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +56,7 @@ class RoundedRectangleStoryCard extends StatelessWidget {
               height: height,
               color: const Color.fromARGB(102, 1, 1, 1),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                padding: padding,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
