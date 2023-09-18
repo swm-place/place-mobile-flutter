@@ -4,7 +4,9 @@ import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:lottie/lottie.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -15,6 +17,9 @@ import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CourseMainPage extends StatefulWidget {
   const CourseMainPage({
@@ -400,21 +405,67 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     ),
   );
 
-  Widget _visitPlaceSection() => MainSection(
-    title: '장소 목록',
-    content: Padding(
-      padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-      child: Column(
-        children: [
-          RoundedRowRectanglePlaceCard(),
-          SizedBox(height: 12,),
-          RoundedRowRectanglePlaceCard(),
-          SizedBox(height: 12,),
-          RoundedRowRectanglePlaceCard(),
-        ],
+  Widget _visitPlaceSection() {
+    // MaplibreMapController controller = MaplibreMapController(
+    //     mapboxGlPlatform: mapboxGlPlatform,
+    //     initialCameraPosition: initialCameraPosition,
+    //     annotationOrder: annotationOrder,
+    //     annotationConsumeTapEvents: annotationConsumeTapEvents
+    // );
+
+    // final MaplibreMap map = MaplibreMap(
+    //   initialCameraPosition: CameraPosition(
+    //     target: LatLng(37.5036, 127.0448),
+    //     zoom: 7.0,
+    //   ),
+    // );
+
+    return MainSection(
+      title: '장소 목록',
+      content: Padding(
+        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+        child: Column(
+          children: [
+            RoundedRowRectanglePlaceCard(),
+            SizedBox(height: 12,),
+            RoundedRowRectanglePlaceCard(),
+            SizedBox(height: 12,),
+            RoundedRowRectanglePlaceCard(),
+            SizedBox(height: 12,),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: AspectRatio(
+                aspectRatio: 16/9,
+                child: FlutterMap(
+                  options: MapOptions(
+                    center: const LatLng(37.5036, 127.0448),
+                    zoom: 14,
+                  ),
+                  nonRotatedChildren: [
+                    RichAttributionWidget(
+                      attributions: [
+                        TextSourceAttribution(
+                          'OpenStreetMap contributors',
+                          onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
+                        ),
+                      ],
+                    ),
+                  ],
+                  children: [
+                    TileLayer(
+                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      // urlTemplate: 'http://localhost:50001/tile/v1/foot/tile({x},{y},{z}).mvt',
+                      userAgentPackageName: 'com.example.app',
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
