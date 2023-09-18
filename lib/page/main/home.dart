@@ -157,39 +157,41 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
-          child: Container(
-            key: _tagSection,
-            width: double.infinity,
-            height: 30,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: _recommendTagsData.length,
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  child: TagChip(
-                    text: _recommendTagsData[index]['title'],
-                    // itemColor: Colors.white,
-                    backgroundColor: _recommendTagsData[index]['background'],
-                    textStyle: SectionTextStyle.labelMedium(Colors.white),
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                    // onPressed: () {
-                    //   print(_recommendTagsData[i]['title']);
-                    // },
-                  ),
-                  onTap: () {
-                    print(_recommendTagsData[index]['title']);
-                  },
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return const SizedBox(width: 4,);
-              },
-            ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: __createTag(),
+            )
           ),
         )
       ],
     ),
   );
+
+  List<Widget> __createTag() {
+    List<Widget> tags = [];
+    for (int i = 0;i < _recommendTagsData.length;i++) {
+      if (i > 0) tags.add(const SizedBox(width: 4,));
+      tags.add(
+          GestureDetector(
+            child: TagChip(
+              text: _recommendTagsData[i]['title'],
+              // itemColor: Colors.white,
+              backgroundColor: _recommendTagsData[i]['background'],
+              textStyle: SectionTextStyle.labelMedium(Colors.white),
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+              // onPressed: () {
+              //   print(_recommendTagsData[i]['title']);
+              // },
+            ),
+            onTap: () {
+              print(_recommendTagsData[i]['title']);
+            },
+          )
+      );
+    }
+    return tags;
+  }
 
   Widget __storySection() => SizedBox(
     width: double.infinity,
