@@ -27,9 +27,6 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<HomePage> {
-  final GlobalKey _tagSection = GlobalKey();
-
-  final List<Widget> _recommendTags = [];
 
   final PlaceProvider _placeProvider = PlaceProvider();
 
@@ -96,48 +93,10 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   @override
   bool get wantKeepAlive => true;
 
-  void __createTagSection() {
-    final RenderBox tagRow = _tagSection.currentContext!.findRenderObject() as RenderBox;
-    final double tagCount = tagRow.size.width / 75;
-    for (int i = 0;i < tagCount;i++) {
-      _recommendTags.add(
-        TagChip(
-          text: _recommendTagsData[i]['title'],
-          // itemColor: Colors.white,
-          backgroundColor: _recommendTagsData[i]['background'],
-          textStyle: SectionTextStyle.labelMedium(Colors.white),
-          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-          // onPressed: () {
-          //   print(_recommendTagsData[i]['title']);
-          // },
-        )
-      );
-      // _recommendTags.add(
-      //   RoundedRectangleTagButton(
-      //     width: 60,
-      //     height: 60,
-      //     text: _recommendTagsData[i]['title'],
-      //     icon: _recommendTagsData[i]['icon'],
-      //     itemColor: Colors.white,
-      //     backgroundColor: _recommendTagsData[i]['background'],
-      //     onPressed: () {
-      //       print(_recommendTagsData[i]['title']);
-      //     },
-      //   )
-      // );
-    }
-  }
-
   late final Future<Map<String, dynamic>?> _getPlace;
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      setState(() {
-        __createTagSection();
-      });
-    });
-
     _getPlace = _getPlaceRecommendationSection();
     super.initState();
   }
