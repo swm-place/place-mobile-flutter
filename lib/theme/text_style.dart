@@ -49,7 +49,8 @@ class SectionTextStyle {
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: color,
-    height: 20/14,
+    height: 1,
+    // height: 20/14,
   );
 
   static TextStyle labelMediumThick(Color color) => TextStyle(
