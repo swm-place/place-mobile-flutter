@@ -265,6 +265,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                 imageUrl: data['courses'][index]['background'],
                 width: 250,
                 height: 194,
+                titleStyle: SectionTextStyle.lineContentExtraLarge(Colors.white),
+                messageStyle: SectionTextStyle.labelMedium(Colors.white),
                 onTap: () {
                   Get.to(() => CourseMainPage());
                 },

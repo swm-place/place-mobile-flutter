@@ -124,4 +124,12 @@ class SectionTextStyle {
     color: color,
     height: 0.9,
   );
+
+  static TextStyle lineContentExtraLarge(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: color,
+    height: 1.1,
+  );
 }
