@@ -182,6 +182,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                   location: _storyData[index]['location'],
                   title: _storyData[index]['title'],
                   message: _storyData[index]['message'],
+                  messageStyle: SectionTextStyle.sectionContent(Colors.white),
                   onTap: () {
                     Get.to(() => Magazine());
                   },

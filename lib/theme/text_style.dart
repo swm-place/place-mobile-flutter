@@ -130,6 +130,6 @@ class SectionTextStyle {
     fontSize: 20,
     fontWeight: FontWeight.w600,
     color: color,
-    height: 1.1,
+    height: 1.2,
   );
 }

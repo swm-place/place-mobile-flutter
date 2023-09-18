@@ -10,7 +10,7 @@ class RoundedRectangleStoryCard extends StatelessWidget {
     required this.location,
     required this.imageUrl,
     required this.onTap,
-    this.padding=const EdgeInsets.fromLTRB(24, 20, 24, 20),
+    this.padding=const EdgeInsets.fromLTRB(20, 20, 20, 20),
     this.width,
     this.height,
     this.titleStyle,
