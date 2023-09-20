@@ -10,10 +10,12 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:lottie/lottie.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
+import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
 import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/course/course_inform_card.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
@@ -72,7 +74,48 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   ];
 
   final List<Map<String, dynamic>> _coursePlaceData = [
-    {}
+    {
+      "imageUrl": "https://source.unsplash.com/random?seq=2",
+      "placeName": "날쏘고가라",
+      "placeType": "레포츠",
+      "location": {
+        'lat': 37.554,
+        'lon': 126.9227
+      },
+      "open": "영업중",
+      "tags": [
+        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
+        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
+      ]
+    },
+    {
+      "imageUrl": "https://source.unsplash.com/random?seq=3",
+      "placeName": "니컷네컷 홍대점",
+      "placeType": "사진",
+      "location": {
+        'lat': 37.5542,
+        'lon': 126.9224
+      },
+      "open": "영업중",
+      "tags": [
+        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
+        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
+      ]
+    },
+    {
+      "imageUrl": "https://source.unsplash.com/random?seq=4",
+      "placeName": "산울림1992",
+      "placeType": "주점",
+      "location": {
+        'lat': 37.5547,
+        'lon': 126.9306
+      },
+      "open": "영업중",
+      "tags": [
+        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
+        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
+      ]
+    },
   ];
 
   @override
@@ -95,7 +138,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   }
 
   Widget _detailHead() => Padding(
-    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -109,7 +152,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                   style: PageTextStyle.headlineExtraLarge(Colors.black),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 6,
               ),
               Row(
@@ -117,19 +160,19 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                   TagChip(
                     text: "#자연",
                     textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                    padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
                   ),
-                  SizedBox(width: 4,),
+                  const SizedBox(width: 4,),
                   TagChip(
                     text: "#자연",
                     textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                    padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
                   ),
-                  SizedBox(width: 4,),
+                  const SizedBox(width: 4,),
                   TagChip(
                     text: "#자연",
                     textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                    padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
                   ),
                 ],
               )
@@ -152,7 +195,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 });
               },
               child: Padding(
-                padding: EdgeInsets.fromLTRB(4, 10, 4, 4),
+                padding: const EdgeInsets.fromLTRB(4, 10, 4, 4),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -176,12 +219,12 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                           }
                       ),
                     ),
-                    Text("븍마크")
+                    const Text("븍마크")
                   ],
                 ),
               ),
             ),
-            SizedBox(width: 12,),
+            const SizedBox(width: 12,),
             GestureDetector(
               onTap: () {
                 setState(() {
@@ -195,7 +238,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 });
               },
               child: Padding(
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -219,7 +262,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                           }
                       ),
                     ),
-                    Text("1.2K")
+                    const Text("1.2K")
                   ],
                 ),
               ),
@@ -264,7 +307,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                   children: [
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -275,7 +318,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                                   print('add bookmark');
                                   __showCreateBookmarkDialog();
                                 },
-                                child: Row(
+                                child: const Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Icon(Icons.playlist_add),
@@ -287,13 +330,13 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                         ],
                       ),
                     ),
-                    SizedBox(height: 18,),
+                    const SizedBox(height: 18,),
                     Expanded(
                         child: Scrollbar(
                           controller: _bookmarkScrollController,
                           child: ListView.separated(
                             controller: _bookmarkScrollController,
-                            padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                             itemCount: _bookmarkData.length + 1,
                             itemBuilder: (context, index) {
                               if (index < _bookmarkData.length) {
@@ -303,7 +346,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                                   title: Text("${_bookmarkData[index]['name']} $index"),
                                   trailing: _bookmarkData[index]['include']
                                       ? Icon(Icons.check_box, color: lightColorScheme.primary,)
-                                      : Icon(Icons.check_box_outline_blank),
+                                      : const Icon(Icons.check_box_outline_blank),
                                   onTap: () {
                                     bottomState(() {
                                       setState(() {
@@ -327,13 +370,13 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                     ),
                     // SizedBox(height: 18,),
                     Container(
-                      padding: EdgeInsets.fromLTRB(24, 0, 24, 18),
+                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 18),
                       width: double.infinity,
                       child: FilledButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('닫기')
+                          child: const Text('닫기')
                       ),
                     )
                   ],
@@ -355,7 +398,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter dialogState) {
               return AlertDialog(
-                title: Text("북마크 추가"),
+                title: const Text("북마크 추가"),
                 content: TextField(
                   maxLength: 50,
                   controller: _bookmarkNameController,
@@ -367,7 +410,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                     });
                   },
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       hintText: "북마크 이름",
                       errorText: _bookmarkNameError
                   ),
@@ -377,13 +420,13 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                     onPressed: () {
                       Navigator.of(context, rootNavigator: true).pop();
                     },
-                    child: Text('취소', style: TextStyle(color: Colors.red),),
+                    child: const Text('취소', style: TextStyle(color: Colors.red),),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context, rootNavigator: true).pop();
                     },
-                    child: Text('만들기', style: TextStyle(color: Colors.blue),),
+                    child: const Text('만들기', style: TextStyle(color: Colors.blue),),
                   )
                 ],
               );
@@ -415,63 +458,81 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     ),
   );
 
+  List<Widget> __createPlaceList() {
+    List<Widget> course = [];
+    for (var place in _coursePlaceData) {
+      int? distance;
+      if (PlaceController.to.userPosition.value != null) {
+        double lat2 = place['location']['lat'];
+        double lon2 = place['location']['lon'];
+        distance = PlaceController.to.haversineDistance(lat2, lon2);
+      }
+      course.addAll([
+        RoundedRowRectanglePlaceCard(
+          imageUrl: place['imageUrl'],
+          tags: place['tags'],
+          placeName: place['placeName'],
+          placeType: place['placeType'],
+          open: place['open'],
+          distance: distance == null ? null : UnitConverter.formatDistance(distance),
+        ),
+        const SizedBox(height: 12)
+      ]);
+    }
+    course.add(
+        ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                final double width = constraints.maxWidth;
+                final double height = width / 16 * 9;
+
+                final Widget map = FlutterMap(
+                  options: MapOptions(
+                      center: const LatLng(37.5036, 127.0448),
+                      zoom: 12,
+                      maxZoom: 22,
+                      interactiveFlags: InteractiveFlag.drag |
+                      InteractiveFlag.flingAnimation |
+                      InteractiveFlag.pinchMove |
+                      InteractiveFlag.pinchZoom |
+                      InteractiveFlag.doubleTapZoom
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate: 'http://192.168.0.2:8080/styles/bright/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.example.app',
+                      tileProvider: CacheTileProvider(cacheManager),
+                    ),
+                  ],
+                );
+
+                if (height < 200) {
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 200,
+                    child: map,
+                  );
+                } else {
+                  return AspectRatio(
+                    aspectRatio: 16/9,
+                    child: map,
+                  );
+                }
+              },
+            )
+        )
+    );
+    return course;
+  }
+
   Widget _visitPlaceSection() {
     return MainSection(
       title: '장소 목록',
       content: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
         child: Column(
-          children: [
-            RoundedRowRectanglePlaceCard(),
-            const SizedBox(height: 12,),
-            RoundedRowRectanglePlaceCard(),
-            const SizedBox(height: 12,),
-            RoundedRowRectanglePlaceCard(),
-            const SizedBox(height: 12,),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-                  final double width = constraints.maxWidth;
-                  final double height = width / 16 * 9;
-
-                  final Widget map = FlutterMap(
-                    options: MapOptions(
-                        center: const LatLng(37.5036, 127.0448),
-                        zoom: 12,
-                        maxZoom: 22,
-                        interactiveFlags: InteractiveFlag.drag |
-                        InteractiveFlag.flingAnimation |
-                        InteractiveFlag.pinchMove |
-                        InteractiveFlag.pinchZoom |
-                        InteractiveFlag.doubleTapZoom
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate: 'http://192.168.0.2:8080/styles/bright/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.example.app',
-                        tileProvider: CacheTileProvider(cacheManager),
-                      ),
-                    ],
-                  );
-
-                  if (height < 200) {
-                    print('too short');
-                    return SizedBox(
-                      width: double.infinity,
-                      height: 200,
-                      child: map,
-                    );
-                  } else {
-                    return AspectRatio(
-                      aspectRatio: 16/9,
-                      child: map,
-                    );
-                  }
-                },
-              )
-            )
-          ],
+          children: __createPlaceList(),
         ),
       ),
     );
