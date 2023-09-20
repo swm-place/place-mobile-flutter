@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
 import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:latlong2/latlong.dart';
@@ -15,6 +17,8 @@ class CourseMapPage extends StatefulWidget {
 
 class _CourseMapPageState extends State<CourseMapPage> {
   final MapController _controller = MapController();
+  late final CacheManager cacheManager;
+
   Style? _style;
   Object? _error;
 
@@ -25,6 +29,8 @@ class _CourseMapPageState extends State<CourseMapPage> {
   }
 
   void _initStyle() async {
+    cacheManager = MapCacheManager.instance;
+
     try {
       _style = await _readStyle();
     } catch (e, stack) {
