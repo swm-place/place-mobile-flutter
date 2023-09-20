@@ -60,10 +60,6 @@ dependencies:
   html_unescape: ^2.0.0
   webview_flutter: ^4.2.3
 
-  maplibre_gl:
-    git:
-      url: https://github.com/maplibre/flutter-maplibre-gl.git
-      ref: main
   flutter_map: ^5.0.0
   vector_map_tiles: ^5.0.0
   flutter_cache_manager: ^3.3.1
