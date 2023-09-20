@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
@@ -11,6 +12,8 @@ import 'package:lottie/lottie.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
+import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/course/course_inform_card.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
@@ -38,6 +41,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   late final TextEditingController _bookmarkNameController;
 
   late ScrollController _bookmarkScrollController;
+  late final CacheManager cacheManager;
 
   bool likeCourse = false;
   bool bookmarkCourse = false;
@@ -67,12 +71,17 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     {"name": "북마크", "include": false},
   ];
 
+  final List<Map<String, dynamic>> _coursePlaceData = [
+    {}
+  ];
+
   @override
   void initState() {
     _likeButtonController = AnimationController(vsync: this);
     _bookmarkButtonController = AnimationController(vsync: this);
     _bookmarkScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
+    cacheManager = MapCacheManager.instance;
     super.initState();
   }
 
@@ -407,24 +416,10 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   );
 
   Widget _visitPlaceSection() {
-    // MaplibreMapController controller = MaplibreMapController(
-    //     mapboxGlPlatform: mapboxGlPlatform,
-    //     initialCameraPosition: initialCameraPosition,
-    //     annotationOrder: annotationOrder,
-    //     annotationConsumeTapEvents: annotationConsumeTapEvents
-    // );
-
-    // final MaplibreMap map = MaplibreMap(
-    //   initialCameraPosition: CameraPosition(
-    //     target: LatLng(37.5036, 127.0448),
-    //     zoom: 7.0,
-    //   ),
-    // );
-
     return MainSection(
       title: '장소 목록',
       content: Padding(
-        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
         child: Column(
           children: [
             RoundedRowRectanglePlaceCard(),
@@ -439,18 +434,20 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 aspectRatio: 16/9,
                 child: FlutterMap(
                   options: MapOptions(
-                      center: const LatLng(37.5036, 127.0448),
-                      zoom: 12,
-                      maxZoom: 22,
-                      interactiveFlags: InteractiveFlag.drag |
-                      InteractiveFlag.flingAnimation |
-                      InteractiveFlag.pinchMove |
-                      InteractiveFlag.pinchZoom |
-                      InteractiveFlag.doubleTapZoom),
+                    center: const LatLng(37.5036, 127.0448),
+                    zoom: 12,
+                    maxZoom: 22,
+                    interactiveFlags: InteractiveFlag.drag |
+                    InteractiveFlag.flingAnimation |
+                    InteractiveFlag.pinchMove |
+                    InteractiveFlag.pinchZoom |
+                    InteractiveFlag.doubleTapZoom
+                  ),
                   children: [
                     TileLayer(
                       urlTemplate: 'http://192.168.0.2:8080/styles/bright/{z}/{x}/{y}.png',
                       userAgentPackageName: 'com.example.app',
+                      tileProvider: CacheTileProvider(cacheManager),
                     ),
                   ],
                 ),
