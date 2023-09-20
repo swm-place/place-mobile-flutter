@@ -5,8 +5,8 @@ class MapCacheManager {
   static CacheManager instance = CacheManager(
     Config(
       key,
-      stalePeriod: const Duration(days: 30),
-      maxNrOfCacheObjects: 50,
+      stalePeriod: const Duration(days: 180),
+      maxNrOfCacheObjects: 3000,
       repo: JsonCacheInfoRepository(databaseName: key),
     ),
   );

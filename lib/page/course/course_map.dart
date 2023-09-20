@@ -99,7 +99,7 @@ class _CourseMapPageState extends State<CourseMapPage> {
         urlTemplate: 'http://192.168.0.2:8080/styles/bright/{z}/{x}/{y}.png',
         // urlTemplate: 'http://localhost:50001/tile/v1/foot/tile({x},{y},{z}).mvt',
         userAgentPackageName: 'com.example.app',
-        tileProvider: CacheTileProvider(),
+        tileProvider: CacheTileProvider(cacheManager),
       ),
     ],
   );
