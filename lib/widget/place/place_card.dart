@@ -178,16 +178,23 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
 
 class RoundedRowRectanglePlaceCard extends StatelessWidget {
   RoundedRowRectanglePlaceCard({
-    Key? key
+    required this.tags,
+    required this.imageUrl,
+    required this.placeName,
+    required this.placeType,
+    required this.distance,
+    required this.open,
+    Key? key,
   }) : super(key: key);
 
-  final List<Map<String, dynamic>> tags = [
-    {"text": "조용한", "color": "#3232a8"},
-    {"text": "넓은", "color": "#326da8"},
-  ];
+  final List<Map<String, dynamic>> tags;
 
-  final String? distance = '2.4km';
-  final String open = '영업중';
+  final String imageUrl;
+  String placeName;
+  String placeType;
+
+  String? distance;
+  String open;
 
   List<Widget> __createTags() {
     List<Widget> chips = [];
@@ -255,7 +262,7 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
               AspectRatio(
                 aspectRatio: 1.1 / 1,
                 child: Image.network(
-                  'https://source.unsplash.com/random',
+                  imageUrl,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -273,7 +280,7 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                '장소이름',
+                                placeName,
                                 overflow: TextOverflow.ellipsis,
                                 style: SectionTextStyle.sectionContentExtraLarge(
                                     Colors.black),
