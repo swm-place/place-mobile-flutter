@@ -79,8 +79,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
       "placeName": "날쏘고가라",
       "placeType": "레포츠",
       "location": {
-        'lat': 37.554,
-        'lon': 126.9227
+        'lat': 37.553979,
+        'lon': 126.922668
       },
       "open": "영업중",
       "tags": [
@@ -93,8 +93,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
       "placeName": "니컷네컷 홍대점",
       "placeType": "사진",
       "location": {
-        'lat': 37.5542,
-        'lon': 126.9224
+        'lat': 37.554218,
+        'lon': 126.922398
       },
       "open": "영업중",
       "tags": [
@@ -104,11 +104,25 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     },
     {
       "imageUrl": "https://source.unsplash.com/random?seq=4",
+      "placeName": "무신사 테라스 홍대",
+      "placeType": "옷가게",
+      "location": {
+        'lat': 37.557574,
+        'lon': 126.926882
+      },
+      "open": "영업중",
+      "tags": [
+        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
+        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
+      ]
+    },
+    {
+      "imageUrl": "https://source.unsplash.com/random?seq=5",
       "placeName": "산울림1992",
       "placeType": "주점",
       "location": {
-        'lat': 37.5547,
-        'lon': 126.9306
+        'lat': 37.554666,
+        'lon': 126.930591
       },
       "open": "영업중",
       "tags": [
