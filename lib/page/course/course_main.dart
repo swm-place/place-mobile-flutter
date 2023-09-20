@@ -430,28 +430,46 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
             const SizedBox(height: 12,),
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: AspectRatio(
-                aspectRatio: 16/9,
-                child: FlutterMap(
-                  options: MapOptions(
-                    center: const LatLng(37.5036, 127.0448),
-                    zoom: 12,
-                    maxZoom: 22,
-                    interactiveFlags: InteractiveFlag.drag |
-                    InteractiveFlag.flingAnimation |
-                    InteractiveFlag.pinchMove |
-                    InteractiveFlag.pinchZoom |
-                    InteractiveFlag.doubleTapZoom
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate: 'http://192.168.0.2:8080/styles/bright/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.example.app',
-                      tileProvider: CacheTileProvider(cacheManager),
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  final double width = constraints.maxWidth;
+                  final double height = width / 16 * 9;
+
+                  final Widget map = FlutterMap(
+                    options: MapOptions(
+                        center: const LatLng(37.5036, 127.0448),
+                        zoom: 12,
+                        maxZoom: 22,
+                        interactiveFlags: InteractiveFlag.drag |
+                        InteractiveFlag.flingAnimation |
+                        InteractiveFlag.pinchMove |
+                        InteractiveFlag.pinchZoom |
+                        InteractiveFlag.doubleTapZoom
                     ),
-                  ],
-                ),
-              ),
+                    children: [
+                      TileLayer(
+                        urlTemplate: 'http://192.168.0.2:8080/styles/bright/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.example.app',
+                        tileProvider: CacheTileProvider(cacheManager),
+                      ),
+                    ],
+                  );
+
+                  if (height < 200) {
+                    print('too short');
+                    return SizedBox(
+                      width: double.infinity,
+                      height: 200,
+                      child: map,
+                    );
+                  } else {
+                    return AspectRatio(
+                      aspectRatio: 16/9,
+                      child: map,
+                    );
+                  }
+                },
+              )
             )
           ],
         ),
