@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -66,12 +67,15 @@ class _CourseMapPageState extends State<CourseMapPage> {
       // apiKey: mapboxApiKey,
   ).read();
 
+  // VectorTileProvider _tileProvider() => NetworkTileProvider();
+
   Widget _map(Style style) => FlutterMap(
     mapController: _controller,
     options: MapOptions(
         center: style.center ?? const LatLng(37.5036, 127.0448),
         zoom: 12,
-        maxZoom: 22,
+        maxZoom: 17,
+        minZoom: 10,
         interactiveFlags: InteractiveFlag.drag |
         InteractiveFlag.flingAnimation |
         InteractiveFlag.pinchMove |
@@ -89,6 +93,7 @@ class _CourseMapPageState extends State<CourseMapPage> {
         urlTemplate: 'http://192.168.0.2:8080/styles/bright/{z}/{x}/{y}.png',
         // urlTemplate: 'http://localhost:50001/tile/v1/foot/tile({x},{y},{z}).mvt',
         userAgentPackageName: 'com.example.app',
+        tileProvider: CacheTileProvider(),
       ),
     ],
   );
