@@ -9,6 +9,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:lottie/lottie.dart';
+import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
@@ -49,6 +50,9 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   bool bookmarkCourse = false;
 
   String? _bookmarkNameError;
+
+  late Future<Map<String, dynamic>?> courseLineData;
+  CourseProvider courseProvider= CourseProvider();
 
   final List<Map<String, dynamic>> _bookmarkData = [
     {"name": "북마크", "include": true},
@@ -139,6 +143,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _bookmarkScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
     cacheManager = MapCacheManager.instance;
+    courseLineData = courseProvider.getCourseLine(_coursePlaceData.expand((element) => [element['location']]).toList().cast<Map<String, dynamic>>());
     super.initState();
   }
 
