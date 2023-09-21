@@ -54,6 +54,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   Map<String, dynamic>? courseLineData;
   CourseProvider courseProvider= CourseProvider();
 
+  bool loadCourseLine = false;
+
   final List<Map<String, dynamic>> _bookmarkData = [
     {"name": "북마크", "include": true},
     {"name": "북마크", "include": false},
@@ -148,7 +150,10 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 (element) => [element['location']]).toList().cast<Map<String, dynamic>>())
     .then((value) {
       print(value);
-      setState(() {});
+      courseLineData = value;
+      setState(() {
+        loadCourseLine = true;
+      });
     })
     .catchError((err) {
 
@@ -569,51 +574,52 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    Widget body;
+    if (loadCourseLine) {
+      body = CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            leading: FlexibleTopBarActionButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(
+                Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                size: 18,
+              ),
+              iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
+            ),
+            pinned: true,
+            expandedHeight: 220.0,
+            surfaceTintColor: Colors.white,
+            backgroundColor: Colors.white,
+            flexibleSpace: const PictureFlexibleSpace(),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              _detailHead(),
+              const SizedBox(height: 24,),
+              _informationSection(),
+              const SizedBox(height: 24,),
+              _visitPlaceSection(),
+              const SizedBox(height: 24,),
+              ElevatedButton(
+                onPressed: () {
+                  Get.to(() => CourseMapPage());
+                },
+                child: Text('test'),
+              )
+            ]),
+          )
+        ],
+      );
+    } else {
+      body = const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Scaffold(
-      // extendBodyBehindAppBar: true,
-        body: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            // print(constraints.maxWidth);
-            double commentHeight = 58640 / (constraints.maxWidth - 96);
-            return CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  leading: FlexibleTopBarActionButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: Icon(
-                      Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                      size: 18,
-                    ),
-                    iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
-                  ),
-                  pinned: true,
-                  expandedHeight: 220.0,
-                  surfaceTintColor: Colors.white,
-                  backgroundColor: Colors.white,
-                  flexibleSpace: const PictureFlexibleSpace(),
-                ),
-                SliverList(
-                  delegate: SliverChildListDelegate([
-                    _detailHead(),
-                    const SizedBox(height: 24,),
-                    _informationSection(),
-                    const SizedBox(height: 24,),
-                    _visitPlaceSection(),
-                    const SizedBox(height: 24,),
-                    ElevatedButton(
-                      onPressed: () {
-                        Get.to(() => CourseMapPage());
-                      },
-                      child: Text('test'),
-                    )
-                  ]),
-                )
-              ],
-            );
-          },
-        )
+      body: body
     );
   }
 }
