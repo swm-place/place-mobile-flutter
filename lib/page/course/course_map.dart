@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
 import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
 import 'package:vector_map_tiles/vector_map_tiles.dart';
@@ -49,7 +50,7 @@ class _CourseMapPageState extends State<CourseMapPage> {
                     InteractiveFlag.doubleTapZoom),
                 children: [
                   TileLayer(
-                    urlTemplate: 'http://192.168.0.2:8080/styles/bright/{z}/{x}/{y}.png',
+                    urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.png',
                     userAgentPackageName: 'com.example.app',
                     tileProvider: CacheTileProvider(cacheManager),
                   ),

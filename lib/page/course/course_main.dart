@@ -9,6 +9,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:lottie/lottie.dart';
+import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
@@ -534,7 +535,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                   ),
                   children: [
                     TileLayer(
-                      urlTemplate: 'http://192.168.0.2:8080/styles/bright/{z}/{x}/{y}.png',
+                      urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.png',
                       userAgentPackageName: 'com.example.app',
                       tileProvider: CacheTileProvider(cacheManager),
                     ),
