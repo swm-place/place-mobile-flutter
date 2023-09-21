@@ -51,7 +51,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   String? _bookmarkNameError;
 
-  late Future<Map<String, dynamic>?> courseLineData;
+  Map<String, dynamic>? courseLineData;
   CourseProvider courseProvider= CourseProvider();
 
   final List<Map<String, dynamic>> _bookmarkData = [
@@ -143,7 +143,16 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _bookmarkScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
     cacheManager = MapCacheManager.instance;
-    courseLineData = courseProvider.getCourseLine(_coursePlaceData.expand((element) => [element['location']]).toList().cast<Map<String, dynamic>>());
+    courseProvider.getCourseLine(
+        _coursePlaceData.expand(
+                (element) => [element['location']]).toList().cast<Map<String, dynamic>>())
+    .then((value) {
+      print(value);
+      setState(() {});
+    })
+    .catchError((err) {
+
+    });
     super.initState();
   }
 
@@ -153,6 +162,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _bookmarkButtonController.dispose();
     _bookmarkScrollController.dispose();
     _bookmarkNameController.dispose();
+    cacheManager.dispose();
     super.dispose();
   }
 
