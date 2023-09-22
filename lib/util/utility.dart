@@ -37,14 +37,39 @@ class UnitConverter {
   }
 
   static List<double> findCenter(List<Map<String, double>> points) {
-    double totalLat = 0;
-    double totalLong = 0;
+    // double totalLat = 0;
+    // double totalLong = 0;
+    //
+    // for (var point in points) {
+    //   totalLat += point['lat']!;
+    //   totalLong += point['lon']!;
+    // }
+    // return [totalLat / points.length, totalLong / points.length];
+
+    double x = 0.0;
+    double y = 0.0;
+    double z = 0.0;
 
     for (var point in points) {
-      totalLat += point['lat']!;
-      totalLong += point['lon']!;
+      double latitude = point['lat']! * pi / 180;
+      double longitude = point['lon']! * pi / 180;
+
+      x += cos(latitude) * cos(longitude);
+      y += cos(latitude) * sin(longitude);
+      z += sin(latitude);
     }
-    return [totalLat / points.length, totalLong / points.length];
+
+    x = x / points.length;
+    y = y / points.length;
+    z = z / points.length;
+
+    double centralLongitude = atan2(y, x);
+    double centralSquareRoot = sqrt(x * x + y * y);
+    double centralLatitude = atan2(z, centralSquareRoot);
+
+    print('${centralLatitude * 180 / pi} ${centralLongitude * 180 / pi}');
+
+    return [centralLatitude * 180 / pi, centralLongitude * 180 / pi];
   }
 
   static double degreeToRadian(double degree) {
@@ -56,23 +81,16 @@ class UnitConverter {
   }
 
   static double calculateZoomLevel(List<Map<String, double>> points, double mapWidth, double mapHeight) {
-    // const double WORLD_PX_HEIGHT = 256.0;
-    // const double WORLD_PX_WIDTH = 256.0;
     const double ZOOM_MAX = 18;
     const double TILE_SIZE = 256.0;
 
     List<double> lats = points.expand((element) => [element['lat']!]).toList();
     List<double> longs = points.expand((element) => [element['lon']!]).toList();
-    print('$lats $longs');
 
     double minLat = lats.reduce(min);
     double maxLat = lats.reduce(max);
     double minLon = longs.reduce(min);
     double maxLon = longs.reduce(max);
-    print('$maxLat $minLat | $maxLon $minLon | $mapWidth');
-
-    double latDistance = maxLat - minLat;
-    double longDistance = maxLon - minLon;
 
     double latFraction = (sin(maxLat * pi / 180) - sin(minLat * pi / 180)) / pi;
     double lngDiff = maxLon - minLon;
