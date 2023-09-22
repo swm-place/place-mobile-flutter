@@ -35,6 +35,19 @@ class UnitConverter {
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
   }
+
+  static List<double> findCenter(List<Map<String, double>> points) {
+    double totalLat = 0;
+    double totalLong = 0;
+
+    for (var point in points) {
+      totalLat += point['lat']!;
+      totalLong += point['lon']!;
+    }
+
+    return [totalLat / points.length, totalLong / points.length];
+  }
+
 }
 
 class RandomGenerator {

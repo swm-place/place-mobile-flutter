@@ -57,7 +57,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   bool loadCourseLine = false;
 
-  List<Map<String, dynamic>> placesPosition = [];
+  List<Map<String, double>> placesPosition = [];
 
   final List<Map<String, dynamic>> _bookmarkData = [
     {"name": "북마크", "include": true},
@@ -150,7 +150,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
     cacheManager = MapCacheManager.instance;
     placesPosition = _coursePlaceData.expand(
-            (element) => [element['location']]).toList().cast<Map<String, dynamic>>();
+            (element) => [element['location']]).toList().cast<Map<String, double>>();
 
     courseProvider.getCourseLine(placesPosition)
     .then((value) {
@@ -540,9 +540,11 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 final double width = constraints.maxWidth;
                 final double height = width / 16 * 9;
 
+                final List<double> center = UnitConverter.findCenter(placesPosition);
+
                 final Widget map = FlutterMap(
                   options: MapOptions(
-                      center: const LatLng(37.5036, 127.0448),
+                      center: LatLng(center[0], center[1]),
                       zoom: 12,
                       maxZoom: 22,
                       interactiveFlags: InteractiveFlag.drag |
