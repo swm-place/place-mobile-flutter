@@ -541,12 +541,16 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 final double height = width / 16 * 9;
 
                 final List<double> center = UnitConverter.findCenter(placesPosition);
+                final double initZoom = UnitConverter.calculateZoomLevel(
+                    placesPosition,
+                    constraints.maxWidth,
+                    height < 200 ? 200 : height);
 
                 final Widget map = FlutterMap(
                   options: MapOptions(
                       center: LatLng(center[0], center[1]),
-                      zoom: 12,
-                      maxZoom: 22,
+                      zoom: initZoom,
+                      maxZoom: 18,
                       interactiveFlags: InteractiveFlag.drag |
                       InteractiveFlag.flingAnimation |
                       InteractiveFlag.pinchMove |

@@ -44,10 +44,50 @@ class UnitConverter {
       totalLat += point['lat']!;
       totalLong += point['lon']!;
     }
-
     return [totalLat / points.length, totalLong / points.length];
   }
 
+  static double degreeToRadian(double degree) {
+    return degree * (pi / 180);
+  }
+
+  static double radianToDegree(double radian) {
+    return radian * (180 / pi);
+  }
+
+  static double calculateZoomLevel(List<Map<String, double>> points, double mapWidth, double mapHeight) {
+    // const double WORLD_PX_HEIGHT = 256.0;
+    // const double WORLD_PX_WIDTH = 256.0;
+    const double ZOOM_MAX = 18;
+    const double TILE_SIZE = 256.0;
+
+    List<double> lats = points.expand((element) => [element['lat']!]).toList();
+    List<double> longs = points.expand((element) => [element['lon']!]).toList();
+    print('$lats $longs');
+
+    double minLat = lats.reduce(min);
+    double maxLat = lats.reduce(max);
+    double minLon = longs.reduce(min);
+    double maxLon = longs.reduce(max);
+    print('$maxLat $minLat | $maxLon $minLon | $mapWidth');
+
+    double latDistance = maxLat - minLat;
+    double longDistance = maxLon - minLon;
+
+    double latFraction = (sin(maxLat * pi / 180) - sin(minLat * pi / 180)) / pi;
+    double lngDiff = maxLon - minLon;
+    double lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
+
+    double latZoom = log(mapHeight / TILE_SIZE / latFraction) / ln2;
+    double lngZoom = log(mapWidth / TILE_SIZE / lngFraction) / ln2;
+
+    double zoom = min(latZoom, lngZoom);
+    zoom = min(zoom, ZOOM_MAX);
+
+    print(zoom);
+
+    return zoom;
+  }
 }
 
 class RandomGenerator {
