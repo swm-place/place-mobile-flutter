@@ -9,7 +9,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_geojson/flutter_map_geojson.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
-import 'package:lottie/lottie.dart';
+import 'package:lottie/lottie.dart' as lottie;
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
@@ -243,7 +243,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                     Container(
                       // width: 24,
                       // height: 24,
-                      child: Lottie.asset(
+                      child: lottie.Lottie.asset(
                           "assets/lottie/animation_bookmark.json",
                           repeat: false,
                           reverse: false,
@@ -286,7 +286,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                     Container(
                       // width: 24,
                       // height: 24,
-                      child: Lottie.asset(
+                      child: lottie.Lottie.asset(
                           "assets/lottie/animation_like_button.json",
                           repeat: false,
                           reverse: false,
@@ -517,6 +517,26 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     return lines;
   }
 
+  List<Marker> __generateMarkers(Map<String, dynamic> data) {
+    List<Marker> markers = [];
+    final List<dynamic> points = data['waypoints'];
+
+    for (var p in points) {
+      markers.add(
+          Marker(
+            point: LatLng(p['location'][1], p['location'][0]),
+            width: 18,
+            height: 18,
+            builder: (context) => const Icon(
+              Icons.location_pin,
+              color: Colors.pink,
+            )
+          )
+      );
+    }
+    return markers;
+  }
+
   List<Widget> __createPlaceList() {
     List<Widget> course = [];
     for (var place in _coursePlaceData) {
@@ -571,6 +591,9 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                     ),
                     if (courseLineData != null) PolylineLayer(
                       polylines: __generatePolyLines(courseLineData!),
+                    ),
+                    if (courseLineData != null) MarkerLayer(
+                      markers: __generateMarkers(courseLineData!),
                     )
                   ],
                 );
