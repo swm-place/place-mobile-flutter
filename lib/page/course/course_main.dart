@@ -516,15 +516,13 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
     List<LatLng> points = [];
     for (var l in course) {
-      points.add(LatLng(
-          l[1],
-          l[0]));
+      points.add(LatLng(l[1], l[0]));
     }
     lines.add(
         Polyline(
             points: points,
             strokeWidth: 3.0,
-            color: Colors.black54.withOpacity(0.5)
+            color: Colors.blueAccent.withOpacity(0.8)
         )
     );
     return lines;
