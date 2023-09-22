@@ -150,7 +150,6 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         _coursePlaceData.expand(
                 (element) => [element['location']]).toList().cast<Map<String, dynamic>>())
     .then((value) {
-      print(value);
       courseLineData = value;
       setState(() {
         loadCourseLine = true;
@@ -493,6 +492,21 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     ),
   );
 
+  List<Polyline> __generatePolyLines(Map<String, dynamic> data) {
+    List<Polyline> lines = [];
+    final List<Map<String, dynamic>> course = List<Map<String, dynamic>>.from(data['routes'][0]['legs']);
+    for (var l in course) {
+      List<LatLng> points = [];
+      for (var p in l['steps']) {
+        points.add(LatLng(
+            p['intersections'][0]['location'][1],
+            p['intersections'][0]['location'][0]));
+      }
+      lines.add(Polyline(points: points));
+    }
+    return lines;
+  }
+
   List<Widget> __createPlaceList() {
     List<Widget> course = [];
     for (var place in _coursePlaceData) {
@@ -539,6 +553,9 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                       userAgentPackageName: 'com.example.app',
                       tileProvider: CacheTileProvider(cacheManager),
                     ),
+                    if (courseLineData != null) PolylineLayer(
+                      polylines: __generatePolyLines(courseLineData!),
+                    )
                   ],
                 );
 
