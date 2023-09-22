@@ -63,6 +63,7 @@ dependencies:
   flutter_map: ^5.0.0
   vector_map_tiles: ^5.0.0
   flutter_cache_manager: ^3.3.1
+  flutter_map_geojson: ^1.0.3
 
 dev_dependencies:
   flutter_test:
