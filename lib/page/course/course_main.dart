@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_geojson/flutter_map_geojson.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:lottie/lottie.dart';
@@ -141,6 +142,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     },
   ];
 
+  GeoJsonParser myGeoJson = GeoJsonParser();
+
   @override
   void initState() {
     _likeButtonController = AnimationController(vsync: this);
@@ -155,6 +158,17 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     courseProvider.getCourseLine(placesPosition)
     .then((value) {
       courseLineData = value;
+      // if (value != null) myGeoJson.parseGeoJson(value);
+      // List<List<double>> positions = [];
+      // final List<Map<String, dynamic>> course = List<Map<String, dynamic>>.from(data['routes'][0]['legs']);
+      // for (var l in course) {
+      //   List<LatLng> points = [];
+      //   for (var p in l['steps']) {
+      //     points.add(LatLng(
+      //         p['intersections'][0]['location'][1],
+      //         p['intersections'][0]['location'][0]));
+      //   }
+      // }
       setState(() {
         loadCourseLine = true;
       });
@@ -498,22 +512,21 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   List<Polyline> __generatePolyLines(Map<String, dynamic> data) {
     List<Polyline> lines = [];
-    final List<Map<String, dynamic>> course = List<Map<String, dynamic>>.from(data['routes'][0]['legs']);
+    final List<dynamic> course = data['routes'][0]['geometry']['coordinates'];
+
+    List<LatLng> points = [];
     for (var l in course) {
-      List<LatLng> points = [];
-      for (var p in l['steps']) {
-        points.add(LatLng(
-            p['intersections'][0]['location'][1],
-            p['intersections'][0]['location'][0]));
-      }
-      lines.add(
-          Polyline(
+      points.add(LatLng(
+          l[1],
+          l[0]));
+    }
+    lines.add(
+        Polyline(
             points: points,
             strokeWidth: 3.0,
             color: Colors.black54.withOpacity(0.5)
-          )
-      );
-    }
+        )
+    );
     return lines;
   }
 

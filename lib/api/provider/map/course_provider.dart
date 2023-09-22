@@ -7,7 +7,7 @@ import 'package:place_mobile_flutter/api/provider/default_provider.dart';
 class CourseProvider extends DefaultProvider {
   Future<Map<String, dynamic>?> getCourseLine(List<Map<String, dynamic>> coordinates) async {
     String course = coordinates.expand((element) => ["${element['lon']},${element['lat']}"]).toList().join(';');
-    Uri uri = Uri.parse("$routeBaseUrl/route/v1/foot/$course?steps=true");
+    Uri uri = Uri.parse("$routeBaseUrl/route/v1/foot/$course?steps=true&overview=full&geometries=geojson");
     Response response;
     try {
       response = await get(uri, headers: setHeader(null));
