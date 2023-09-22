@@ -93,8 +93,8 @@ class UnitConverter {
     double lngDiff = maxLon - minLon;
     double lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
 
-    double latZoom = log(mapHeight / TILE_SIZE / latFraction) / ln2;
-    double lngZoom = log(mapWidth / TILE_SIZE / lngFraction) / ln2;
+    double latZoom = log(mapHeight * 0.8 / TILE_SIZE / latFraction) / ln2;
+    double lngZoom = log(mapWidth * 0.8 / TILE_SIZE / lngFraction) / ln2;
 
     double zoom = min(latZoom, lngZoom);
     zoom = min(zoom, ZOOM_MAX);

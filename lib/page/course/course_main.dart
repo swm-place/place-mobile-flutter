@@ -158,17 +158,6 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     courseProvider.getCourseLine(placesPosition)
     .then((value) {
       courseLineData = value;
-      // if (value != null) myGeoJson.parseGeoJson(value);
-      // List<List<double>> positions = [];
-      // final List<Map<String, dynamic>> course = List<Map<String, dynamic>>.from(data['routes'][0]['legs']);
-      // for (var l in course) {
-      //   List<LatLng> points = [];
-      //   for (var p in l['steps']) {
-      //     points.add(LatLng(
-      //         p['intersections'][0]['location'][1],
-      //         p['intersections'][0]['location'][0]));
-      //   }
-      // }
       setState(() {
         loadCourseLine = true;
       });
