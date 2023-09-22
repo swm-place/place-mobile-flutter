@@ -57,6 +57,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   bool loadCourseLine = false;
 
+  List<Map<String, dynamic>> placesPosition = [];
+
   final List<Map<String, dynamic>> _bookmarkData = [
     {"name": "북마크", "include": true},
     {"name": "북마크", "include": false},
@@ -145,10 +147,12 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _bookmarkButtonController = AnimationController(vsync: this);
     _bookmarkScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
+
     cacheManager = MapCacheManager.instance;
-    courseProvider.getCourseLine(
-        _coursePlaceData.expand(
-                (element) => [element['location']]).toList().cast<Map<String, dynamic>>())
+    placesPosition = _coursePlaceData.expand(
+            (element) => [element['location']]).toList().cast<Map<String, dynamic>>();
+
+    courseProvider.getCourseLine(placesPosition)
     .then((value) {
       courseLineData = value;
       setState(() {
