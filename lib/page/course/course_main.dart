@@ -506,7 +506,13 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
             p['intersections'][0]['location'][1],
             p['intersections'][0]['location'][0]));
       }
-      lines.add(Polyline(points: points));
+      lines.add(
+          Polyline(
+            points: points,
+            strokeWidth: 3.0,
+            color: Colors.black54.withOpacity(0.5)
+          )
+      );
     }
     return lines;
   }
