@@ -36,23 +36,14 @@ class UnitConverter {
     return Color(int.parse(buffer.toString(), radix: 16));
   }
 
-  static List<double> findCenter(List<Map<String, double>> points) {
-    // double totalLat = 0;
-    // double totalLong = 0;
-    //
-    // for (var point in points) {
-    //   totalLat += point['lat']!;
-    //   totalLong += point['lon']!;
-    // }
-    // return [totalLat / points.length, totalLong / points.length];
-
+  static List<double> findCenter(List<dynamic> points) {
     double x = 0.0;
     double y = 0.0;
     double z = 0.0;
 
     for (var point in points) {
-      double latitude = point['lat']! * pi / 180;
-      double longitude = point['lon']! * pi / 180;
+      double latitude = point[1]! * pi / 180;
+      double longitude = point[0]! * pi / 180;
 
       x += cos(latitude) * cos(longitude);
       y += cos(latitude) * sin(longitude);
@@ -80,17 +71,23 @@ class UnitConverter {
     return radian * (180 / pi);
   }
 
-  static double calculateZoomLevel(List<Map<String, double>> points, double mapWidth, double mapHeight) {
+  static double calculateZoomLevel(List<dynamic> points, double mapWidth, double mapHeight) {
     const double ZOOM_MAX = 18;
     const double TILE_SIZE = 256.0;
 
-    List<double> lats = points.expand((element) => [element['lat']!]).toList();
-    List<double> longs = points.expand((element) => [element['lon']!]).toList();
+    double minLat = 90.0;
+    double maxLat = -90.0;
+    double minLon = 180.0;
+    double maxLon = -180.0;
 
-    double minLat = lats.reduce(min);
-    double maxLat = lats.reduce(max);
-    double minLon = longs.reduce(min);
-    double maxLon = longs.reduce(max);
+    for (var point in points) {
+      double lat = point[1];
+      double lon = point[0];
+      if (lat < minLat) minLat = lat;
+      if (lat > maxLat) maxLat = lat;
+      if (lon < minLon) minLon = lon;
+      if (lon > maxLon) maxLon = lon;
+    }
 
     double latFraction = (sin(maxLat * pi / 180) - sin(minLat * pi / 180)) / pi;
     double lngDiff = maxLon - minLon;

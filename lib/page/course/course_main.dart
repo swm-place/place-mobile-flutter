@@ -557,9 +557,9 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 final double width = constraints.maxWidth;
                 final double height = width / 16 * 9;
 
-                final List<double> center = UnitConverter.findCenter(placesPosition);
+                final List<double> center = UnitConverter.findCenter(courseLineData!['routes'][0]['geometry']['coordinates']);
                 final double initZoom = UnitConverter.calculateZoomLevel(
-                    placesPosition,
+                    courseLineData!['routes'][0]['geometry']['coordinates'],
                     constraints.maxWidth,
                     height < 200 ? 200 : height);
 
