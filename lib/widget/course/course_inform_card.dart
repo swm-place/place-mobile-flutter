@@ -26,6 +26,7 @@ class CourseInformationCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(title, style: SectionTextStyle.labelMedium(Colors.grey[600]!),),
+            const SizedBox(height: 2,),
             AutoSizeText(
               content,
               style: SectionTextStyle.sectionContent(Colors.black),
