@@ -521,15 +521,26 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     List<Marker> markers = [];
     final List<dynamic> points = data['waypoints'];
 
-    for (var p in points) {
+    for (int i = 0;i < points.length;i++) {
       markers.add(
           Marker(
-            point: LatLng(p['location'][1], p['location'][0]),
+            point: LatLng(points[i]['location'][1], points[i]['location'][0]),
             width: 18,
             height: 18,
-            builder: (context) => const Icon(
-              Icons.location_pin,
-              color: Colors.pink,
+            builder: (context) => Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blueAccent
+              ),
+              child: Center(
+                child: Text(
+                  '${i + 1}',
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Colors.white
+                  ),
+                )
+              ),
             )
           )
       );
