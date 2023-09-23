@@ -142,8 +142,6 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     },
   ];
 
-  GeoJsonParser myGeoJson = GeoJsonParser();
-
   @override
   void initState() {
     _likeButtonController = AnimationController(vsync: this);
@@ -477,27 +475,36 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     );
   }
 
-  Widget _informationSection() => Padding(
-    padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-    child: Row(
-      children: [
-        CourseInformationCard(
-          title: '지역',
-          content: '서울시 강남구',
-        ),
-        const SizedBox(width: 12,),
-        CourseInformationCard(
-          title: '이동 거리',
-          content: '2.4 km',
-        ),
-        const SizedBox(width: 12,),
-        CourseInformationCard(
-          title: '방문 장소',
-          content: '5곳',
-        ),
-      ],
-    ),
-  );
+  Widget _informationSection() {
+    int placeCount = _coursePlaceData.length;
+    double distance = 0.0;
+    if (courseLineData != null) distance = courseLineData!['routes'][0]['distance'];
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+      child: Row(
+        children: [
+          CourseInformationCard(
+            title: '지역',
+            content: '서울시 강남구',
+          ),
+          const SizedBox(
+            width: 12,
+          ),
+          CourseInformationCard(
+            title: '이동 거리',
+            content: UnitConverter.formatDistance(distance.floor()),
+          ),
+          const SizedBox(
+            width: 12,
+          ),
+          CourseInformationCard(
+            title: '방문 장소',
+            content: '$placeCount곳',
+          ),
+        ],
+      ),
+    );
+  }
 
   List<Polyline> __generatePolyLines(Map<String, dynamic> data) {
     List<Polyline> lines = [];
