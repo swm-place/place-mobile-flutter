@@ -511,7 +511,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         Polyline(
             points: points,
             strokeWidth: 3.0,
-            color: Colors.blueAccent.withOpacity(0.8)
+            color: Colors.black87.withOpacity(0.5)
         )
     );
     return lines;
@@ -530,14 +530,15 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
             builder: (context) => Container(
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.blueAccent
+                color: Colors.black87
               ),
               child: Center(
                 child: Text(
                   '${i + 1}',
                   style: const TextStyle(
                     fontSize: 10,
-                    color: Colors.white
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600
                   ),
                 )
               ),
