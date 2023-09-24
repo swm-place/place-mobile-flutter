@@ -52,11 +52,13 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   bool bookmarkCourse = false;
 
   String? _bookmarkNameError;
+  String courseRegion = '';
 
   Map<String, dynamic>? courseLineData;
   CourseProvider courseProvider= CourseProvider();
 
   bool loadCourseLine = false;
+  bool centerLoad = false;
 
   List<Map<String, double>> placesPosition = [];
 
@@ -485,7 +487,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         children: [
           CourseInformationCard(
             title: '지역',
-            content: '서울시 강남구',
+            content: courseRegion,
           ),
           const SizedBox(
             width: 12,
@@ -590,6 +592,29 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                     courseLineData!['routes'][0]['geometry']['coordinates'],
                     constraints.maxWidth,
                     height < 200 ? 200 : height);
+
+                if (!centerLoad) {
+                  courseProvider.getReverseGeocode(LatLng(center[0], center[1]))
+                  .then((value) {
+                    if (value != null) {
+                      setState(() {
+                        courseRegion = value['region_name']!;
+                      });
+                    } else {
+                      setState(() {
+                        courseRegion = '서울시';
+                      });
+                    }
+                  })
+                  .catchError((error) {
+                    setState(() {
+                      courseRegion = '에러';
+                    });
+                  })
+                  .whenComplete(() {
+                    centerLoad = true;
+                  });
+                }
 
                 final Widget map = FlutterMap(
                   options: MapOptions(
