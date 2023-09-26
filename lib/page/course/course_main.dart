@@ -690,6 +690,14 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
               ),
               iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
             ),
+            actions: [
+              FlexibleTopBarActionButton(
+                onPressed: () {
+
+                },
+                icon: Icon(Icons.ios_share, size: 18,)
+              )
+            ],
             pinned: true,
             expandedHeight: 220.0,
             surfaceTintColor: Colors.white,
