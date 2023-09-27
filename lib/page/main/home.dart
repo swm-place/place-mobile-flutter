@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
+import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
@@ -26,9 +27,6 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<HomePage> {
-  final GlobalKey _tagSection = GlobalKey();
-
-  final List<Widget> _recommendTags = [];
 
   final PlaceProvider _placeProvider = PlaceProvider();
 
@@ -63,96 +61,43 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     },
   ];
 
+  final Map<String, dynamic> _courseData = {
+    'title': '코스 추천',
+    'summary': '코스 설명',
+    'courses': [
+      {
+        'background': "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
+        'title': '감성여행',
+        'message': '바쁜 일상에 지친 마음을 회복',
+        'location': '대부도, 안산'
+      },
+      {
+        'background': "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2560&q=80",
+        'title': '피톤치드',
+        'message': '도심에서는 느낄수 없는 맑은 공기',
+        'location': '사려니 숲길, 제주도'
+      },
+      {
+        'background': "https://images.unsplash.com/photo-1548115184-bc6544d06a58?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
+        'title': '전통',
+        'message': '한국의 전통적인 아름다움',
+        'location': '한옥마을, 전주'
+      }
+    ]
+  };
+
   Map<String, dynamic>? _recommendData;
-  // List<Map<String, dynamic>>? _recommendData = [
-    // {
-    //   "title": "연인과 함께",
-    //   "summary": "데이트 장소 추천",
-    //   "places": [
-    //     {
-    //       "imageUrl": "https://images.unsplash.com/photo-1619536095378-c96a5639ccc5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
-    //       "placeName": "소마카페",
-    //       "placeType": "카페",
-    //       "distance": 2930,
-    //       "open": "영업중",
-    //       "likeCount": 13924,
-    //       "tags": [
-    //         {"text": "조용한", "color": "#3232a8"},
-    //         {"text": "넓은", "color": "#326da8"},
-    //       ]
-    //     },
-    //     {
-    //       "imageUrl": "https://images.unsplash.com/photo-1508737804141-4c3b688e2546?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=986&q=80",
-    //       "placeName": "소마 디저트",
-    //       "placeType": "디저트",
-    //       "distance": 892,
-    //       "open": "영업중",
-    //       "likeCount": 55,
-    //       "tags": [
-    //         {"text": "조용한", "color": "#3232a8"},
-    //         {"text": "넓은", "color": "#326da8"},
-    //       ]
-    //     },
-    //     {
-    //       "imageUrl": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2274&q=80",
-    //       "placeName": "소마 전시",
-    //       "placeType": "전시회",
-    //       "distance": 34567,
-    //       "open": "영업종료",
-    //       "likeCount": 22935,
-    //       "tags": [
-    //         {"text": "조용한", "color": "#3232a8"},
-    //         {"text": "넓은", "color": "#326da8"},
-    //       ]
-    //     },
-    //   ]
-    // }
-  // ];
 
   int activeIndex = 0;
 
   @override
   bool get wantKeepAlive => true;
 
-  void __createTagSection() {
-    final RenderBox tagRow = _tagSection.currentContext!.findRenderObject() as RenderBox;
-    final double tagCount = tagRow.size.width / 75;
-    for (int i = 0;i < tagCount;i++) {
-      _recommendTags.add(
-        TagChip(
-          text: _recommendTagsData[i]['title'],
-          // itemColor: Colors.white,
-          backgroundColor: _recommendTagsData[i]['background'],
-          textStyle: SectionTextStyle.labelMedium(Colors.white),
-          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-          // onPressed: () {
-          //   print(_recommendTagsData[i]['title']);
-          // },
-        )
-      );
-      // _recommendTags.add(
-      //   RoundedRectangleTagButton(
-      //     width: 60,
-      //     height: 60,
-      //     text: _recommendTagsData[i]['title'],
-      //     icon: _recommendTagsData[i]['icon'],
-      //     itemColor: Colors.white,
-      //     backgroundColor: _recommendTagsData[i]['background'],
-      //     onPressed: () {
-      //       print(_recommendTagsData[i]['title']);
-      //     },
-      //   )
-      // );
-    }
-  }
+  late final Future<Map<String, dynamic>?> _getPlace;
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      setState(() {
-        __createTagSection();
-      });
-    });
+    _getPlace = _getPlaceRecommendationSection();
     super.initState();
   }
 
@@ -171,39 +116,41 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
-          child: Container(
-            key: _tagSection,
-            width: double.infinity,
-            height: 30,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: _recommendTagsData.length,
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  child: TagChip(
-                    text: _recommendTagsData[index]['title'],
-                    // itemColor: Colors.white,
-                    backgroundColor: _recommendTagsData[index]['background'],
-                    textStyle: SectionTextStyle.labelMedium(Colors.white),
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                    // onPressed: () {
-                    //   print(_recommendTagsData[i]['title']);
-                    // },
-                  ),
-                  onTap: () {
-                    print(_recommendTagsData[index]['title']);
-                  },
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return const SizedBox(width: 4,);
-              },
-            ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: __createTag(),
+            )
           ),
         )
       ],
     ),
   );
+
+  List<Widget> __createTag() {
+    List<Widget> tags = [];
+    for (int i = 0;i < _recommendTagsData.length;i++) {
+      if (i > 0) tags.add(const SizedBox(width: 4,));
+      tags.add(
+          GestureDetector(
+            child: TagChip(
+              text: _recommendTagsData[i]['title'],
+              // itemColor: Colors.white,
+              backgroundColor: _recommendTagsData[i]['background'],
+              textStyle: SectionTextStyle.labelMedium(Colors.white),
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+              // onPressed: () {
+              //   print(_recommendTagsData[i]['title']);
+              // },
+            ),
+            onTap: () {
+              print(_recommendTagsData[i]['title']);
+            },
+          )
+      );
+    }
+    return tags;
+  }
 
   Widget __storySection() => SizedBox(
     width: double.infinity,
@@ -235,6 +182,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                   location: _storyData[index]['location'],
                   title: _storyData[index]['title'],
                   message: _storyData[index]['message'],
+                  messageStyle: SectionTextStyle.sectionContent(Colors.white),
                   onTap: () {
                     Get.to(() => Magazine());
                   },
@@ -252,6 +200,46 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             ),
           )
         ],
+      ),
+    ),
+  );
+
+  Widget __courseSection(Map<String, dynamic> data) => SizedBox(
+    width: double.infinity,
+    child: MainSection(
+      title: data['title'],
+      message: data["summary"],
+      content: SizedBox(
+        height: 160,
+        child: ListView.separated(
+          padding: EdgeInsets.zero,
+          scrollDirection: Axis.horizontal,
+          itemCount: data['courses'].length + 2,
+          itemBuilder: (BuildContext context, int index) {
+            if (index == 0 || index == data['courses'].length + 1) {
+              return const SizedBox(width: 24,);
+            } else {
+              index -= 1;
+              return RoundedRectangleStoryCard(
+                title: data['courses'][index]['title'],
+                message: data['courses'][index]['message'],
+                location: data['courses'][index]['location'],
+                imageUrl: data['courses'][index]['background'],
+                width: 250,
+                height: 194,
+                titleStyle: SectionTextStyle.lineContentExtraLarge(Colors.white),
+                messageStyle: SectionTextStyle.labelMedium(Colors.white),
+                padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+                onTap: () {
+                  Get.to(() => CourseMainPage());
+                },
+              );
+            }
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return SizedBox(width: 8,);
+          },
+        ),
       ),
     ),
   );
@@ -329,7 +317,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
 
   Widget _loadPlaceRecommendSection() {
     return FutureBuilder<Map<String, dynamic>?>(
-      future: _getPlaceRecommendationSection(),
+      future: _getPlace,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           List<Widget> items = [];
@@ -359,6 +347,10 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
       __storySection(),
       const SizedBox(height: 24,)
     ];
+    section.addAll([
+      __courseSection(_courseData),
+      const SizedBox(height: 24,)
+    ]);
     section.add(_loadPlaceRecommendSection());
     // for (int i = 0;i < _recommendData.length;i++) {
     //   section.add(__recommendSection(_recommendData[i]));

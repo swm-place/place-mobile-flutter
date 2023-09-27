@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -245,6 +246,14 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   ),
                   iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
                 ),
+                actions: [
+                  FlexibleTopBarActionButton(
+                      onPressed: () {
+
+                      },
+                      icon: Icon(Icons.ios_share, size: 18,)
+                  )
+                ],
                 pinned: true,
                 expandedHeight: 220.0,
                 surfaceTintColor: Colors.white,
@@ -742,7 +751,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             width: 250,
             height: 194,
             onTap: () {
-              Get.to(() => Magazine());
+              Get.to(() => CourseMainPage());
             },
           )
       );

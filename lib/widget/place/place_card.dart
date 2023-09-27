@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -48,7 +49,6 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
     }
     return chips;
   }
-
 
   List<Widget> __createInfo() {
     List<Widget> inform = [];
@@ -174,5 +174,144 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
       ),
     );
   }
-  
+}
+
+class RoundedRowRectanglePlaceCard extends StatelessWidget {
+  RoundedRowRectanglePlaceCard({
+    required this.tags,
+    required this.imageUrl,
+    required this.placeName,
+    required this.placeType,
+    required this.distance,
+    required this.open,
+    Key? key,
+  }) : super(key: key);
+
+  final List<Map<String, dynamic>> tags;
+
+  final String imageUrl;
+  String placeName;
+  String placeType;
+
+  String? distance;
+  String open;
+
+  List<Widget> __createTags() {
+    List<Widget> chips = [];
+    int tagCount = tags.length < 2 ? tags.length : 2;
+    for (int i = 0; i < tagCount; i++) {
+      if (i != 0) chips.add(SizedBox(width: 4,));
+      chips.add(
+          TagChip(
+            text: tags[i]['text'],
+            backgroundColor: UnitConverter.hexToColor(tags[i]['color']),
+          )
+      );
+    }
+    return chips;
+  }
+
+  List<Widget> __createInfo() {
+    List<Widget> inform = [];
+    if (distance != null) {
+      inform.add(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(MdiIcons.mapMarkerOutline, size: 18,),
+              Text(
+                distance!,
+                style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+              )
+            ],
+          )
+      );
+      inform.add(SizedBox(width: 8,));
+    }
+    inform.addAll([
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(MdiIcons.clockCheckOutline, size: 18),
+          const SizedBox(
+            width: 2,
+          ),
+          Text(
+            open,
+            style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+          )
+        ],
+      ),
+    ]);
+    return inform;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 2.5,
+      shadowColor: Colors.grey[100],
+      borderRadius: BorderRadius.circular(8),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          height: 95,
+          width: double.infinity,
+          child: Row(
+            children: [
+              AspectRatio(
+                aspectRatio: 1.1 / 1,
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                placeName,
+                                overflow: TextOverflow.ellipsis,
+                                style: SectionTextStyle.sectionContentExtraLarge(
+                                    Colors.black),
+                              ),
+                            ),
+                            // Text(
+                            //   '카테고리',
+                            //   maxLines: 1,
+                            //   style: SectionTextStyle.labelMedium(
+                            //       Colors.grey[600]!),
+                            // ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Row(
+                          children: __createTags(),
+                        ),
+                      ),
+                      Row(
+                        children: __createInfo(),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
