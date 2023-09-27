@@ -27,6 +27,12 @@ class _CourseMapPageState extends State<CourseMapPage> {
   }
 
   @override
+  void dispose() {
+    cacheManager.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
