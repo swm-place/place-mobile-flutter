@@ -220,6 +220,12 @@ class _MagazineState extends State<Magazine> {
                 SliverAppBar(
                   actions: [
                     FlexibleTopBarActionButton(
+                        onPressed: () {
+
+                        },
+                        icon: Icon(Icons.ios_share, size: 18,)
+                    ),
+                    FlexibleTopBarActionButton(
                       onPressed: () {
                         HapticFeedback.lightImpact();
                         setState(() {

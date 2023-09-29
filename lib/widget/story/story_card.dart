@@ -10,8 +10,12 @@ class RoundedRectangleStoryCard extends StatelessWidget {
     required this.location,
     required this.imageUrl,
     required this.onTap,
+    this.padding=const EdgeInsets.fromLTRB(20, 20, 20, 20),
     this.width,
     this.height,
+    this.titleStyle,
+    this.messageStyle,
+    this.locationStyle,
     Key? key,
   }) : super(key: key);
 
@@ -23,10 +27,19 @@ class RoundedRectangleStoryCard extends StatelessWidget {
   double? width;
   double? height;
 
+  TextStyle? titleStyle;
+  TextStyle? messageStyle;
+  TextStyle? locationStyle;
+
+  EdgeInsets padding;
+
   @override
   Widget build(BuildContext context) {
     width ??= double.infinity;
     height ??= double.infinity;
+    titleStyle ??= SectionTextStyle.sectionTitleSmall(Colors.white);
+    messageStyle ??= SectionTextStyle.sectionContentLarge(Colors.white);
+    locationStyle ??= SectionTextStyle.labelMedium(Colors.white);
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: GestureDetector(
@@ -43,7 +56,7 @@ class RoundedRectangleStoryCard extends StatelessWidget {
               height: height,
               color: const Color.fromARGB(102, 1, 1, 1),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                padding: padding,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -51,7 +64,7 @@ class RoundedRectangleStoryCard extends StatelessWidget {
                       width: double.infinity,
                       child: Text(
                         location,
-                        style: SectionTextStyle.labelMedium(Colors.white),
+                        style: locationStyle,
                       ),
                     ),
                     Column(
@@ -60,14 +73,14 @@ class RoundedRectangleStoryCard extends StatelessWidget {
                           width: double.infinity,
                           child: Text(
                             title,
-                            style: SectionTextStyle.sectionTitleSmall(Colors.white),
+                            style: titleStyle,
                           ),
                         ),
                         SizedBox(
                           width: double.infinity,
                           child: Text(
                               message,
-                              style: SectionTextStyle.sectionContentLarge(Colors.white)
+                              style: messageStyle
                           ),
                         )
                       ],
