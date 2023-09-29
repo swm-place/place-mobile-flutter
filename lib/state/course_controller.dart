@@ -4,7 +4,7 @@ import 'package:place_mobile_flutter/util/utility.dart';
 class CourseController extends GetxController {
   static CourseController get to => Get.find();
 
-  RxList<Map<String, dynamic>> coursePlaceData = RxList(null);
+  RxList<Map<String, dynamic>> coursePlaceData = RxList([]);
 
   Future<void> getCourseData() async {
     coursePlaceData.clear();
