@@ -629,7 +629,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                   ),
                   children: [
                     TileLayer(
-                      urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.png',
+                      urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.jpg',
                       userAgentPackageName: 'com.example.app',
                       tileProvider: CacheTileProvider(cacheManager),
                     ),
