@@ -1,10 +1,15 @@
 import 'package:get/get.dart';
+import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 
 class CourseController extends GetxController {
   static CourseController get to => Get.find();
 
+  final CourseProvider _courseProvider = CourseProvider();
+
   RxList<Map<String, dynamic>> coursePlaceData = RxList([]);
+  RxList<Map<String, double>> placesPosition = RxList([]);
+  Rxn<Map<String, dynamic>> courseLineData = Rxn(null);
 
   Future<void> getCourseData() async {
     coursePlaceData.clear();
@@ -71,5 +76,26 @@ class CourseController extends GetxController {
         ]
     );
     coursePlaceData.refresh();
+
+    placesPosition.clear();
+    placesPosition.addAll(
+        coursePlaceData.expand((element) =>
+          [element['location']]).toList().cast<Map<String, double>>()
+    );
+    placesPosition.refresh();
+
+    getCourseLineData();
+  }
+
+  Future<void> getCourseLineData() async {
+    Map<String, dynamic>? result = await _courseProvider.getCourseLine(placesPosition);
+    if (result == null) {
+      courseLineData.value = null;
+      courseLineData.refresh();
+      return;
+    }
+
+    courseLineData.value = result;
+    courseLineData.refresh();
   }
 }

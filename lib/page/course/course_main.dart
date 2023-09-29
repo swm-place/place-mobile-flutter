@@ -55,14 +55,11 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   String? _bookmarkNameError;
   String courseRegion = '';
 
-  Map<String, dynamic>? courseLineData;
   CourseProvider courseProvider= CourseProvider();
 
   // bool loadCourseLine = false;
   bool loadCourseLine = true;
   bool centerLoad = false;
-
-  List<Map<String, double>> placesPosition = [];
 
   final List<Map<String, dynamic>> _bookmarkData = [
     {"name": "북마크", "include": true},
@@ -87,8 +84,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     {"name": "북마크", "include": false},
   ];
 
-  final List<Map<String, dynamic>> _coursePlaceData = [
-  ];
+  final List<Map<String, dynamic>> _coursePlaceData = [];
 
   @override
   void initState() {
@@ -101,19 +97,6 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
     cacheManager = MapCacheManager.instance;
     CourseController.to.getCourseData();
-    // placesPosition = _coursePlaceData.expand(
-    //         (element) => [element['location']]).toList().cast<Map<String, double>>();
-    //
-    // courseProvider.getCourseLine(placesPosition)
-    // .then((value) {
-    //   courseLineData = value;
-    //   setState(() {
-    //     loadCourseLine = true;
-    //   });
-    // })
-    // .catchError((err) {
-    //
-    // });
     super.initState();
   }
 
@@ -430,7 +413,9 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   Widget _informationSection() {
     int placeCount = CourseController.to.coursePlaceData.length;
     double distance = 0.0;
-    if (courseLineData != null) distance = courseLineData!['routes'][0]['distance'];
+    if (CourseController.to.courseLineData.value != null) {
+      distance = CourseController.to.courseLineData.value!['routes'][0]['distance'];
+    }
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Row(
@@ -537,15 +522,15 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 final double width = constraints.maxWidth;
                 final double height = width / 16 * 9;
 
-                // final List<double> center = UnitConverter.findCenter(courseLineData!['routes'][0]['geometry']['coordinates']);
-                // final double initZoom = UnitConverter.calculateZoomLevel(
-                //     courseLineData!['routes'][0]['geometry']['coordinates'],
-                //     constraints.maxWidth,
-                //     height < 200 ? 200 : height);
+                final List<double> center = UnitConverter.findCenter(
+                    CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates']);
+                final double initZoom = UnitConverter.calculateZoomLevel(
+                    CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                    constraints.maxWidth,
+                    height < 200 ? 200 : height);
 
                 if (!centerLoad) {
-                  // courseProvider.getReverseGeocode(LatLng(center[0], center[1]))
-                  courseProvider.getReverseGeocode(LatLng(38, 128))
+                  courseProvider.getReverseGeocode(LatLng(center[0], center[1]))
                   .then((value) {
                     if (value != null) {
                       setState(() {
@@ -569,10 +554,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
                 final Widget map = FlutterMap(
                   options: MapOptions(
-                      // center: LatLng(center[0], center[1]),
-                      // zoom: initZoom,
-                      center: LatLng(38, 128),
-                      zoom: 17,
+                      center: LatLng(center[0], center[1]),
+                      zoom: initZoom,
                       maxZoom: 18,
                       interactiveFlags: InteractiveFlag.drag |
                       InteractiveFlag.flingAnimation |
@@ -586,11 +569,11 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                       userAgentPackageName: 'com.example.app',
                       tileProvider: CacheTileProvider(cacheManager),
                     ),
-                    if (courseLineData != null) PolylineLayer(
-                      polylines: __generatePolyLines(courseLineData!),
+                    if (CourseController.to.courseLineData.value != null) PolylineLayer(
+                      polylines: __generatePolyLines(CourseController.to.courseLineData.value!),
                     ),
-                    if (courseLineData != null) MarkerLayer(
-                      markers: __generateMarkers(courseLineData!),
+                    if (CourseController.to.courseLineData.value != null) MarkerLayer(
+                      markers: __generateMarkers(CourseController.to.courseLineData.value!),
                     )
                   ],
                 );
