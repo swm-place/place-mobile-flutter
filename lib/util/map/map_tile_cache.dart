@@ -8,6 +8,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart';
 import 'package:flutter/painting.dart';
 import 'package:http/retry.dart';
+import 'package:place_mobile_flutter/api/secrets.dart';
 
 class CacheTileProvider extends TileProvider {
   CacheTileProvider(this.cacheManager, {
@@ -88,6 +89,7 @@ class _FlutterMapNetworkImageProvider
     // cacheManager.getFileFromCache(coordinates);
 
     final Uint8List bytes;
+    headers[API_KEY_MAP_KEY] = API_KEY_MAP_VALUE;
     try {
       bytes = (await cacheManager.getSingleFile(
         useFallback ? fallbackUrl ?? '' : url,
