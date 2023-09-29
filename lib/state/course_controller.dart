@@ -9,6 +9,7 @@ class CourseController extends GetxController {
   Future<void> getCourseData() async {
     coursePlaceData.clear();
     await Future.delayed(const Duration(seconds: 2));
+    print('object');
     coursePlaceData.addAll(
         [
           {

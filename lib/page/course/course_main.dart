@@ -13,6 +13,7 @@ import 'package:lottie/lottie.dart' as lottie;
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
+import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -57,7 +58,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   Map<String, dynamic>? courseLineData;
   CourseProvider courseProvider= CourseProvider();
 
-  bool loadCourseLine = false;
+  // bool loadCourseLine = false;
+  bool loadCourseLine = true;
   bool centerLoad = false;
 
   List<Map<String, double>> placesPosition = [];
@@ -86,85 +88,32 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   ];
 
   final List<Map<String, dynamic>> _coursePlaceData = [
-    {
-      "imageUrl": "https://source.unsplash.com/random?seq=2",
-      "placeName": "날쏘고가라",
-      "placeType": "레포츠",
-      "location": {
-        'lat': 37.553979,
-        'lon': 126.922668
-      },
-      "open": "영업중",
-      "tags": [
-        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
-        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
-      ]
-    },
-    {
-      "imageUrl": "https://source.unsplash.com/random?seq=3",
-      "placeName": "니컷네컷 홍대점",
-      "placeType": "사진",
-      "location": {
-        'lat': 37.554218,
-        'lon': 126.922398
-      },
-      "open": "영업중",
-      "tags": [
-        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
-        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
-      ]
-    },
-    {
-      "imageUrl": "https://source.unsplash.com/random?seq=4",
-      "placeName": "무신사 테라스 홍대",
-      "placeType": "옷가게",
-      "location": {
-        'lat': 37.557574,
-        'lon': 126.926882
-      },
-      "open": "영업중",
-      "tags": [
-        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
-        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
-      ]
-    },
-    {
-      "imageUrl": "https://source.unsplash.com/random?seq=5",
-      "placeName": "산울림1992",
-      "placeType": "주점",
-      "location": {
-        'lat': 37.554666,
-        'lon': 126.930591
-      },
-      "open": "영업중",
-      "tags": [
-        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
-        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
-      ]
-    },
   ];
 
   @override
   void initState() {
+    Get.put(CourseController());
+
     _likeButtonController = AnimationController(vsync: this);
     _bookmarkButtonController = AnimationController(vsync: this);
     _bookmarkScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
 
     cacheManager = MapCacheManager.instance;
-    placesPosition = _coursePlaceData.expand(
-            (element) => [element['location']]).toList().cast<Map<String, double>>();
-
-    courseProvider.getCourseLine(placesPosition)
-    .then((value) {
-      courseLineData = value;
-      setState(() {
-        loadCourseLine = true;
-      });
-    })
-    .catchError((err) {
-
-    });
+    CourseController.to.getCourseData();
+    // placesPosition = _coursePlaceData.expand(
+    //         (element) => [element['location']]).toList().cast<Map<String, double>>();
+    //
+    // courseProvider.getCourseLine(placesPosition)
+    // .then((value) {
+    //   courseLineData = value;
+    //   setState(() {
+    //     loadCourseLine = true;
+    //   });
+    // })
+    // .catchError((err) {
+    //
+    // });
     super.initState();
   }
 
@@ -175,6 +124,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _bookmarkScrollController.dispose();
     _bookmarkNameController.dispose();
     cacheManager.dispose();
+    Get.delete<CourseController>();
     super.dispose();
   }
 
@@ -478,7 +428,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   }
 
   Widget _informationSection() {
-    int placeCount = _coursePlaceData.length;
+    int placeCount = CourseController.to.coursePlaceData.length;
     double distance = 0.0;
     if (courseLineData != null) distance = courseLineData!['routes'][0]['distance'];
     return Padding(
@@ -560,7 +510,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   List<Widget> __createPlaceList() {
     List<Widget> course = [];
-    for (var place in _coursePlaceData) {
+    for (var place in CourseController.to.coursePlaceData) {
       int? distance;
       if (PlaceController.to.userPosition.value != null) {
         double lat2 = place['location']['lat'];
@@ -587,14 +537,15 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 final double width = constraints.maxWidth;
                 final double height = width / 16 * 9;
 
-                final List<double> center = UnitConverter.findCenter(courseLineData!['routes'][0]['geometry']['coordinates']);
-                final double initZoom = UnitConverter.calculateZoomLevel(
-                    courseLineData!['routes'][0]['geometry']['coordinates'],
-                    constraints.maxWidth,
-                    height < 200 ? 200 : height);
+                // final List<double> center = UnitConverter.findCenter(courseLineData!['routes'][0]['geometry']['coordinates']);
+                // final double initZoom = UnitConverter.calculateZoomLevel(
+                //     courseLineData!['routes'][0]['geometry']['coordinates'],
+                //     constraints.maxWidth,
+                //     height < 200 ? 200 : height);
 
                 if (!centerLoad) {
-                  courseProvider.getReverseGeocode(LatLng(center[0], center[1]))
+                  // courseProvider.getReverseGeocode(LatLng(center[0], center[1]))
+                  courseProvider.getReverseGeocode(LatLng(38, 128))
                   .then((value) {
                     if (value != null) {
                       setState(() {
@@ -618,8 +569,10 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
                 final Widget map = FlutterMap(
                   options: MapOptions(
-                      center: LatLng(center[0], center[1]),
-                      zoom: initZoom,
+                      // center: LatLng(center[0], center[1]),
+                      // zoom: initZoom,
+                      center: LatLng(38, 128),
+                      zoom: 17,
                       maxZoom: 18,
                       interactiveFlags: InteractiveFlag.drag |
                       InteractiveFlag.flingAnimation |
@@ -704,22 +657,24 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
             backgroundColor: Colors.white,
             flexibleSpace: const PictureFlexibleSpace(),
           ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              _detailHead(),
-              const SizedBox(height: 24,),
-              _informationSection(),
-              const SizedBox(height: 24,),
-              _visitPlaceSection(),
-              const SizedBox(height: 24,),
-              ElevatedButton(
-                onPressed: () {
-                  Get.to(() => CourseMapPage());
-                },
-                child: Text('test'),
-              )
-            ]),
-          )
+          Obx(() {
+            return SliverList(
+              delegate: SliverChildListDelegate([
+                _detailHead(),
+                const SizedBox(height: 24,),
+                _informationSection(),
+                const SizedBox(height: 24,),
+                _visitPlaceSection(),
+                const SizedBox(height: 24,),
+                ElevatedButton(
+                  onPressed: () {
+                    Get.to(() => CourseMapPage());
+                  },
+                  child: Text('test'),
+                )
+              ]),
+            );
+          })
         ],
       );
     } else {
