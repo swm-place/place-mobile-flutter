@@ -15,6 +15,7 @@ import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
+import 'package:place_mobile_flutter/state/state_const.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
@@ -56,9 +57,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   CourseProvider courseProvider= CourseProvider();
 
-  // bool loadCourseLine = false;
-  bool loadCourseLine = false;
-  bool centerLoad = false;
+  bool initData = false;
 
   final List<Map<String, dynamic>> _bookmarkData = [
     {"name": "북마크", "include": true},
@@ -83,6 +82,29 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     {"name": "북마크", "include": false},
   ];
 
+  void initCourseData() async {
+    Future<void> loadData() async {
+      Map<String, dynamic> resultCourse = await CourseController.to.getCourseData();
+      if (resultCourse['code'] != ASYNC_SUCCESS) {
+        return;
+      }
+
+      int resultLine = await CourseController.to.getCourseLineData();
+      if (resultLine != ASYNC_SUCCESS) {
+        return;
+      }
+
+      int resultGeocode = await CourseController.to.getGeocodeData();
+      if (resultGeocode != ASYNC_SUCCESS) {
+        return;
+      }
+    }
+    await loadData();
+    setState(() {
+      initData = true;
+    });
+  }
+
   @override
   void initState() {
     Get.put(CourseController());
@@ -93,15 +115,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _bookmarkNameController = TextEditingController();
 
     cacheManager = MapCacheManager.instance;
-    CourseController.to.getCourseData()
-    .then((value) {
-      setState(() {
-        loadCourseLine = true;
-      });
-    })
-    .catchError((error) {
 
-    });
+    initCourseData();
     super.initState();
   }
 
@@ -595,7 +610,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   @override
   Widget build(BuildContext context) {
     Widget body;
-    if (loadCourseLine) {
+    if (initData) {
       body = CustomScrollView(
         slivers: [
           SliverAppBar(

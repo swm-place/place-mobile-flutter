@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
+import 'package:place_mobile_flutter/state/state_const.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -16,10 +17,9 @@ class CourseController extends GetxController {
 
   RxString regionName = RxString('서울시');
 
-  Future<void> getCourseData() async {
+  Future<Map<String, dynamic>> getCourseData() async {
     coursePlaceData.clear();
     await Future.delayed(const Duration(seconds: 2));
-    print('object');
     coursePlaceData.addAll(
         [
           {
@@ -89,15 +89,15 @@ class CourseController extends GetxController {
     );
     placesPosition.refresh();
 
-    await getCourseLineData();
+    return {'code': ASYNC_SUCCESS};
   }
 
-  Future<void> getCourseLineData() async {
+  Future<int> getCourseLineData() async {
     Map<String, dynamic>? result = await _courseProvider.getCourseLine(placesPosition);
     if (result == null) {
       courseLineData.value = null;
       courseLineData.refresh();
-      return;
+      return ASYNC_ERROR;
     }
 
     courseLineData.value = result;
@@ -106,18 +106,19 @@ class CourseController extends GetxController {
     center.value = UnitConverter.findCenter(courseLineData.value!['routes'][0]['geometry']['coordinates']);
     center.refresh();
 
-    await getGeocodeData();
+    return ASYNC_SUCCESS;
   }
 
-  Future<void> getGeocodeData() async {
+  Future<int> getGeocodeData() async {
     Map<String, dynamic>? result = await _courseProvider.getReverseGeocode(LatLng(center[0], center[1]));
     if (result == null) {
       regionName.value = '오류';
       regionName.refresh();
-      return;
+      return ASYNC_ERROR;
     }
 
     regionName.value = result['region_name'];
     regionName.refresh();
+    return ASYNC_SUCCESS;
   }
 }

@@ -1,0 +1,2 @@
+const ASYNC_SUCCESS = 1;
+const ASYNC_ERROR = 2;
