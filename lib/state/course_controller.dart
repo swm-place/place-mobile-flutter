@@ -89,7 +89,7 @@ class CourseController extends GetxController {
     );
     placesPosition.refresh();
 
-    getCourseLineData();
+    await getCourseLineData();
   }
 
   Future<void> getCourseLineData() async {
@@ -106,7 +106,7 @@ class CourseController extends GetxController {
     center.value = UnitConverter.findCenter(courseLineData.value!['routes'][0]['geometry']['coordinates']);
     center.refresh();
 
-    getGeocodeData();
+    await getGeocodeData();
   }
 
   Future<void> getGeocodeData() async {

@@ -57,7 +57,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   CourseProvider courseProvider= CourseProvider();
 
   // bool loadCourseLine = false;
-  bool loadCourseLine = true;
+  bool loadCourseLine = false;
   bool centerLoad = false;
 
   final List<Map<String, dynamic>> _bookmarkData = [
@@ -93,7 +93,15 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _bookmarkNameController = TextEditingController();
 
     cacheManager = MapCacheManager.instance;
-    CourseController.to.getCourseData();
+    CourseController.to.getCourseData()
+    .then((value) {
+      setState(() {
+        loadCourseLine = true;
+      });
+    })
+    .catchError((error) {
+
+    });
     super.initState();
   }
 
