@@ -549,17 +549,16 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
                 final Widget map = FlutterMap(
                   options: MapOptions(
-                      center: LatLng(
-                        CourseController.to.center[0],
-                        CourseController.to.center[1]
-                      ),
-                      zoom: initZoom,
-                      maxZoom: 18,
-                      interactiveFlags: InteractiveFlag.drag |
-                      InteractiveFlag.flingAnimation |
-                      InteractiveFlag.pinchMove |
-                      InteractiveFlag.pinchZoom |
-                      InteractiveFlag.doubleTapZoom
+                    center: LatLng(
+                      CourseController.to.center[0],
+                      CourseController.to.center[1]
+                    ),
+                    zoom: initZoom,
+                    maxZoom: 18,
+                    interactiveFlags: InteractiveFlag.none,
+                    onTap: (tapPos, cord) {
+                      Get.to(() => CourseMapPage());
+                    }
                   ),
                   children: [
                     TileLayer(
@@ -647,12 +646,6 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 const SizedBox(height: 24,),
                 _visitPlaceSection(),
                 const SizedBox(height: 24,),
-                ElevatedButton(
-                  onPressed: () {
-                    Get.to(() => CourseMapPage());
-                  },
-                  child: Text('test'),
-                )
               ]),
             );
           })
