@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
+import 'package:latlong2/latlong.dart';
 
 class CourseController extends GetxController {
   static CourseController get to => Get.find();
@@ -10,6 +11,10 @@ class CourseController extends GetxController {
   RxList<Map<String, dynamic>> coursePlaceData = RxList([]);
   RxList<Map<String, double>> placesPosition = RxList([]);
   Rxn<Map<String, dynamic>> courseLineData = Rxn(null);
+
+  RxList<double> center = RxList([37, 127.5]);
+
+  RxString regionName = RxString('서울시');
 
   Future<void> getCourseData() async {
     coursePlaceData.clear();
@@ -97,5 +102,22 @@ class CourseController extends GetxController {
 
     courseLineData.value = result;
     courseLineData.refresh();
+
+    center.value = UnitConverter.findCenter(courseLineData.value!['routes'][0]['geometry']['coordinates']);
+    center.refresh();
+
+    getGeocodeData();
+  }
+
+  Future<void> getGeocodeData() async {
+    Map<String, dynamic>? result = await _courseProvider.getReverseGeocode(LatLng(center[0], center[1]));
+    if (result == null) {
+      regionName.value = '오류';
+      regionName.refresh();
+      return;
+    }
+
+    regionName.value = result['region_name'];
+    regionName.refresh();
   }
 }

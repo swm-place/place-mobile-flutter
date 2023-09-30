@@ -53,7 +53,6 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   bool bookmarkCourse = false;
 
   String? _bookmarkNameError;
-  String courseRegion = '';
 
   CourseProvider courseProvider= CourseProvider();
 
@@ -83,8 +82,6 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     {"name": "북마크", "include": false},
     {"name": "북마크", "include": false},
   ];
-
-  final List<Map<String, dynamic>> _coursePlaceData = [];
 
   @override
   void initState() {
@@ -422,7 +419,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         children: [
           CourseInformationCard(
             title: '지역',
-            content: courseRegion,
+            content: CourseController.to.regionName.value,
           ),
           const SizedBox(
             width: 12,
@@ -522,39 +519,17 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 final double width = constraints.maxWidth;
                 final double height = width / 16 * 9;
 
-                final List<double> center = UnitConverter.findCenter(
-                    CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates']);
                 final double initZoom = UnitConverter.calculateZoomLevel(
                     CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates'],
                     constraints.maxWidth,
                     height < 200 ? 200 : height);
 
-                if (!centerLoad) {
-                  courseProvider.getReverseGeocode(LatLng(center[0], center[1]))
-                  .then((value) {
-                    if (value != null) {
-                      setState(() {
-                        courseRegion = value['region_name']!;
-                      });
-                    } else {
-                      setState(() {
-                        courseRegion = '서울시';
-                      });
-                    }
-                  })
-                  .catchError((error) {
-                    setState(() {
-                      courseRegion = '에러';
-                    });
-                  })
-                  .whenComplete(() {
-                    centerLoad = true;
-                  });
-                }
-
                 final Widget map = FlutterMap(
                   options: MapOptions(
-                      center: LatLng(center[0], center[1]),
+                      center: LatLng(
+                        CourseController.to.center[0],
+                        CourseController.to.center[1]
+                      ),
                       zoom: initZoom,
                       maxZoom: 18,
                       interactiveFlags: InteractiveFlag.drag |
