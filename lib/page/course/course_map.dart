@@ -36,50 +36,40 @@ class _CourseMapPageState extends State<CourseMapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Flexible(
-              child: FlutterMap(
-                mapController: _controller,
-                options: MapOptions(
-                    center: const LatLng(37.5036, 127.0448),
-                    zoom: 12,
-                    maxZoom: 17,
-                    minZoom: 10,
-                    interactiveFlags: InteractiveFlag.drag |
-                    InteractiveFlag.flingAnimation |
-                    InteractiveFlag.pinchMove |
-                    InteractiveFlag.pinchZoom |
-                    InteractiveFlag.doubleTapZoom),
-                children: [
-                  TileLayer(
-                    urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.jpg',
-                    userAgentPackageName: 'com.example.app',
-                    tileProvider: CacheTileProvider(cacheManager),
-                  ),
-                ],
+      body: Stack(
+        children: [
+          FlutterMap(
+            mapController: _controller,
+            options: MapOptions(
+                center: const LatLng(37.5036, 127.0448),
+                zoom: 12,
+                maxZoom: 17,
+                minZoom: 10,
+                interactiveFlags: InteractiveFlag.drag |
+                InteractiveFlag.flingAnimation |
+                InteractiveFlag.pinchMove |
+                InteractiveFlag.pinchZoom |
+                InteractiveFlag.doubleTapZoom),
+            children: [
+              TileLayer(
+                urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.jpg',
+                userAgentPackageName: 'com.example.app',
+                tileProvider: CacheTileProvider(cacheManager),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 8, bottom: 8),
-                  child: StreamBuilder(
-                    stream: _controller.mapEventStream,
-                    builder: (context, snapshot) {
-                      return Text('Zoom: ${_controller.zoom.toStringAsFixed(2)} Center: ${_controller.center.latitude.toStringAsFixed(4)},${_controller.center.longitude.toStringAsFixed(4)}');
-                    }
-                  )
-                )
-              ]
+            ],
+          ),
+          Positioned(
+            bottom: 0,
+            child: SafeArea(
+              child: Container(
+                width: 800,
+                height: 200,
+                color: Colors.blue,
+              ),
             )
-          ]
-        )
-      )
+          )
+        ],
+      ),
     );
   }
 }
