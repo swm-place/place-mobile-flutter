@@ -46,17 +46,13 @@ class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    double bottomSafePad = MediaQuery.of(context).viewPadding.bottom;
     return Scaffold(
       appBar: AppBar(),
       body: Stack(
         children: [
           LayoutBuilder(
             builder: (context, constraints) {
-
-              // final double initZoom = UnitConverter.calculateZoomLevel(
-              //     CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-              //     constraints.maxWidth, constraints.maxHeight);
-
               LatLng center;
               if (CourseController.to.coursePlaceData.isNotEmpty) {
                 double lat = CourseController.to.coursePlaceData[0]['location']['lat'];
@@ -96,7 +92,7 @@ class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateM
             },
           ),
           Positioned(
-            bottom: 24,
+            bottom: bottomSafePad == 0 ? 24 : 0,
             left: 0,
             right: 0,
             child: SafeArea(
