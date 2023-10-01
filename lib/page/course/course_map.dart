@@ -52,18 +52,24 @@ class _CourseMapPageState extends State<CourseMapPage> {
           LayoutBuilder(
             builder: (context, constraints) {
 
-              final double initZoom = UnitConverter.calculateZoomLevel(
-                  CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-                  constraints.maxWidth, constraints.maxHeight);
+              // final double initZoom = UnitConverter.calculateZoomLevel(
+              //     CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+              //     constraints.maxWidth, constraints.maxHeight);
+
+              LatLng center;
+              if (CourseController.to.coursePlaceData.isNotEmpty) {
+                double lat = CourseController.to.coursePlaceData[0]['location']['lat'];
+                double lon = CourseController.to.coursePlaceData[0]['location']['lon'];
+                center = LatLng(lat, lon);
+              } else {
+                center = const LatLng(37.575000, 126.976937);
+              }
 
               return FlutterMap(
                 mapController: _mapController,
                 options: MapOptions(
-                    center: LatLng(
-                        CourseController.to.center[0],
-                        CourseController.to.center[1]
-                    ),
-                    zoom: initZoom,
+                    center: center,
+                    zoom: 18,
                     maxZoom: 18,
                     interactiveFlags: InteractiveFlag.drag |
                     InteractiveFlag.flingAnimation |
@@ -100,8 +106,14 @@ class _CourseMapPageState extends State<CourseMapPage> {
                   enableInfiniteScroll: false,
                   height: 90,
                   viewportFraction: 0.85,
+                  clipBehavior: Clip.none,
                   onPageChanged: (index, reason) {
-                    print(index);
+                    double lat = CourseController.to.coursePlaceData[index]['location']['lat'];
+                    double lon = CourseController.to.coursePlaceData[index]['location']['lon'];
+                    _mapController.move(
+                      LatLng(lat, lon),
+                      _mapController.zoom
+                    );
                   }
                 ),
                 carouselController: _carouselController,
@@ -113,7 +125,7 @@ class _CourseMapPageState extends State<CourseMapPage> {
                     double lon2 = CourseController.to.coursePlaceData[index]['location']['lon'];
                     distance = PlaceController.to.haversineDistance(lat2, lon2);
                   }
-                  return Padding(
+                  return Container(
                     padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
                     child: RoundedRowRectanglePlaceCard(
                       imageUrl: CourseController.to.coursePlaceData[index]['imageUrl'],
