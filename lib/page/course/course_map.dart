@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
@@ -22,8 +23,8 @@ class CourseMapPage extends StatefulWidget {
   State<StatefulWidget> createState() => _CourseMapPageState();
 }
 
-class _CourseMapPageState extends State<CourseMapPage> {
-  late final MapController _mapController;
+class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateMixin {
+  late final AnimatedMapController _mapController;
   late final CarouselController _carouselController;
 
   late final CacheManager cacheManager;
@@ -31,7 +32,7 @@ class _CourseMapPageState extends State<CourseMapPage> {
   @override
   void initState() {
     cacheManager = MapCacheManager.instance;
-    _mapController = MapController();
+    _mapController = AnimatedMapController(vsync: this);
     _carouselController = CarouselController();
     super.initState();
   }
@@ -66,7 +67,7 @@ class _CourseMapPageState extends State<CourseMapPage> {
               }
 
               return FlutterMap(
-                mapController: _mapController,
+                mapController: _mapController.mapController,
                 options: MapOptions(
                     center: center,
                     zoom: 18,
@@ -110,9 +111,9 @@ class _CourseMapPageState extends State<CourseMapPage> {
                   onPageChanged: (index, reason) {
                     double lat = CourseController.to.coursePlaceData[index]['location']['lat'];
                     double lon = CourseController.to.coursePlaceData[index]['location']['lon'];
-                    _mapController.move(
-                      LatLng(lat, lon),
-                      _mapController.zoom
+                    _mapController.animateTo(
+                      dest: LatLng(lat, lon),
+                      zoom: _mapController.mapController.zoom
                     );
                   }
                 ),
