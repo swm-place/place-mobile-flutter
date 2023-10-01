@@ -48,7 +48,9 @@ class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateM
   Widget build(BuildContext context) {
     double bottomSafePad = MediaQuery.of(context).viewPadding.bottom;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("상세보기"),
+      ),
       body: Stack(
         children: [
           LayoutBuilder(
