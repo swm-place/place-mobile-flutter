@@ -13,10 +13,13 @@ import 'package:lottie/lottie.dart' as lottie;
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
+import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
+import 'package:place_mobile_flutter/state/state_const.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
+import 'package:place_mobile_flutter/util/map/map_layer.dart';
 import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
@@ -52,15 +55,10 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   bool bookmarkCourse = false;
 
   String? _bookmarkNameError;
-  String courseRegion = '';
 
-  Map<String, dynamic>? courseLineData;
   CourseProvider courseProvider= CourseProvider();
 
-  bool loadCourseLine = false;
-  bool centerLoad = false;
-
-  List<Map<String, double>> placesPosition = [];
+  bool initData = false;
 
   final List<Map<String, dynamic>> _bookmarkData = [
     {"name": "북마크", "include": true},
@@ -85,86 +83,41 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     {"name": "북마크", "include": false},
   ];
 
-  final List<Map<String, dynamic>> _coursePlaceData = [
-    {
-      "imageUrl": "https://source.unsplash.com/random?seq=2",
-      "placeName": "날쏘고가라",
-      "placeType": "레포츠",
-      "location": {
-        'lat': 37.553979,
-        'lon': 126.922668
-      },
-      "open": "영업중",
-      "tags": [
-        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
-        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
-      ]
-    },
-    {
-      "imageUrl": "https://source.unsplash.com/random?seq=3",
-      "placeName": "니컷네컷 홍대점",
-      "placeType": "사진",
-      "location": {
-        'lat': 37.554218,
-        'lon': 126.922398
-      },
-      "open": "영업중",
-      "tags": [
-        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
-        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
-      ]
-    },
-    {
-      "imageUrl": "https://source.unsplash.com/random?seq=4",
-      "placeName": "무신사 테라스 홍대",
-      "placeType": "옷가게",
-      "location": {
-        'lat': 37.557574,
-        'lon': 126.926882
-      },
-      "open": "영업중",
-      "tags": [
-        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
-        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
-      ]
-    },
-    {
-      "imageUrl": "https://source.unsplash.com/random?seq=5",
-      "placeName": "산울림1992",
-      "placeType": "주점",
-      "location": {
-        'lat': 37.554666,
-        'lon': 126.930591
-      },
-      "open": "영업중",
-      "tags": [
-        {"text": "조용한", "color": RandomGenerator.generateRandomDarkHexColor()},
-        {"text": "넓은", "color": RandomGenerator.generateRandomDarkHexColor()},
-      ]
-    },
-  ];
+  void initCourseData() async {
+    Future<void> loadData() async {
+      Map<String, dynamic> resultCourse = await CourseController.to.getCourseData();
+      if (resultCourse['code'] != ASYNC_SUCCESS) {
+        return;
+      }
+
+      int resultLine = await CourseController.to.getCourseLineData();
+      if (resultLine != ASYNC_SUCCESS) {
+        return;
+      }
+
+      int resultGeocode = await CourseController.to.getGeocodeData();
+      if (resultGeocode != ASYNC_SUCCESS) {
+        return;
+      }
+    }
+    await loadData();
+    setState(() {
+      initData = true;
+    });
+  }
 
   @override
   void initState() {
+    Get.put(CourseController());
+
     _likeButtonController = AnimationController(vsync: this);
     _bookmarkButtonController = AnimationController(vsync: this);
     _bookmarkScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
 
     cacheManager = MapCacheManager.instance;
-    placesPosition = _coursePlaceData.expand(
-            (element) => [element['location']]).toList().cast<Map<String, double>>();
 
-    courseProvider.getCourseLine(placesPosition)
-    .then((value) {
-      courseLineData = value;
-      setState(() {
-        loadCourseLine = true;
-      });
-    })
-    .catchError((err) {
-
-    });
+    initCourseData();
     super.initState();
   }
 
@@ -175,6 +128,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _bookmarkScrollController.dispose();
     _bookmarkNameController.dispose();
     cacheManager.dispose();
+    Get.delete<CourseController>();
     super.dispose();
   }
 
@@ -478,16 +432,18 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   }
 
   Widget _informationSection() {
-    int placeCount = _coursePlaceData.length;
+    int placeCount = CourseController.to.coursePlaceData.length;
     double distance = 0.0;
-    if (courseLineData != null) distance = courseLineData!['routes'][0]['distance'];
+    if (CourseController.to.courseLineData.value != null) {
+      distance = CourseController.to.courseLineData.value!['routes'][0]['distance'];
+    }
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Row(
         children: [
           CourseInformationCard(
             title: '지역',
-            content: courseRegion,
+            content: CourseController.to.regionName.value,
           ),
           const SizedBox(
             width: 12,
@@ -508,59 +464,9 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     );
   }
 
-  List<Polyline> __generatePolyLines(Map<String, dynamic> data) {
-    List<Polyline> lines = [];
-    final List<dynamic> course = data['routes'][0]['geometry']['coordinates'];
-
-    List<LatLng> points = [];
-    for (var l in course) {
-      points.add(LatLng(l[1], l[0]));
-    }
-    lines.add(
-        Polyline(
-            points: points,
-            strokeWidth: 3.0,
-            color: Colors.black87.withOpacity(0.5)
-        )
-    );
-    return lines;
-  }
-
-  List<Marker> __generateMarkers(Map<String, dynamic> data) {
-    List<Marker> markers = [];
-    final List<dynamic> points = data['waypoints'];
-
-    for (int i = 0;i < points.length;i++) {
-      markers.add(
-          Marker(
-            point: LatLng(points[i]['location'][1], points[i]['location'][0]),
-            width: 18,
-            height: 18,
-            builder: (context) => Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black87
-              ),
-              child: Center(
-                child: Text(
-                  '${i + 1}',
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600
-                  ),
-                )
-              ),
-            )
-          )
-      );
-    }
-    return markers;
-  }
-
   List<Widget> __createPlaceList() {
     List<Widget> course = [];
-    for (var place in _coursePlaceData) {
+    for (var place in CourseController.to.coursePlaceData) {
       int? distance;
       if (PlaceController.to.userPosition.value != null) {
         double lat2 = place['location']['lat'];
@@ -587,57 +493,37 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 final double width = constraints.maxWidth;
                 final double height = width / 16 * 9;
 
-                final List<double> center = UnitConverter.findCenter(courseLineData!['routes'][0]['geometry']['coordinates']);
                 final double initZoom = UnitConverter.calculateZoomLevel(
-                    courseLineData!['routes'][0]['geometry']['coordinates'],
+                    CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates'],
                     constraints.maxWidth,
                     height < 200 ? 200 : height);
 
-                if (!centerLoad) {
-                  courseProvider.getReverseGeocode(LatLng(center[0], center[1]))
-                  .then((value) {
-                    if (value != null) {
-                      setState(() {
-                        courseRegion = value['region_name']!;
-                      });
-                    } else {
-                      setState(() {
-                        courseRegion = '서울시';
-                      });
-                    }
-                  })
-                  .catchError((error) {
-                    setState(() {
-                      courseRegion = '에러';
-                    });
-                  })
-                  .whenComplete(() {
-                    centerLoad = true;
-                  });
-                }
-
                 final Widget map = FlutterMap(
                   options: MapOptions(
-                      center: LatLng(center[0], center[1]),
-                      zoom: initZoom,
-                      maxZoom: 18,
-                      interactiveFlags: InteractiveFlag.drag |
-                      InteractiveFlag.flingAnimation |
-                      InteractiveFlag.pinchMove |
-                      InteractiveFlag.pinchZoom |
-                      InteractiveFlag.doubleTapZoom
+                    center: LatLng(
+                      CourseController.to.center[0],
+                      CourseController.to.center[1]
+                    ),
+                    zoom: initZoom,
+                    maxZoom: 18,
+                    interactiveFlags: InteractiveFlag.none,
+                    onTap: (tapPos, cord) {
+                      Get.to(() => CourseMapPage());
+                    }
                   ),
                   children: [
                     TileLayer(
-                      urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.png',
+                      urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.jpg',
                       userAgentPackageName: 'com.example.app',
                       tileProvider: CacheTileProvider(cacheManager),
                     ),
-                    if (courseLineData != null) PolylineLayer(
-                      polylines: __generatePolyLines(courseLineData!),
+                    if (CourseController.to.courseLineData.value != null) PolylineLayer(
+                      polylines: MapLayerGenerator.generatePolyLines(
+                          CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates']),
                     ),
-                    if (courseLineData != null) MarkerLayer(
-                      markers: __generateMarkers(courseLineData!),
+                    if (CourseController.to.courseLineData.value != null) MarkerLayer(
+                      markers: MapLayerGenerator.generateMarkers(
+                          CourseController.to.courseLineData.value!['waypoints']),
                     )
                   ],
                 );
@@ -676,7 +562,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   @override
   Widget build(BuildContext context) {
     Widget body;
-    if (loadCourseLine) {
+    if (initData) {
       body = CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -704,22 +590,18 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
             backgroundColor: Colors.white,
             flexibleSpace: const PictureFlexibleSpace(),
           ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              _detailHead(),
-              const SizedBox(height: 24,),
-              _informationSection(),
-              const SizedBox(height: 24,),
-              _visitPlaceSection(),
-              const SizedBox(height: 24,),
-              ElevatedButton(
-                onPressed: () {
-                  Get.to(() => CourseMapPage());
-                },
-                child: Text('test'),
-              )
-            ]),
-          )
+          Obx(() {
+            return SliverList(
+              delegate: SliverChildListDelegate([
+                _detailHead(),
+                const SizedBox(height: 24,),
+                _informationSection(),
+                const SizedBox(height: 24,),
+                _visitPlaceSection(),
+                const SizedBox(height: 24,),
+              ]),
+            );
+          })
         ],
       );
     } else {
