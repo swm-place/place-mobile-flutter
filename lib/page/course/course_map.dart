@@ -6,6 +6,7 @@ import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
+import 'package:place_mobile_flutter/util/map/map_layer.dart';
 import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
@@ -48,25 +49,44 @@ class _CourseMapPageState extends State<CourseMapPage> {
       appBar: AppBar(),
       body: Stack(
         children: [
-          FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-                center: const LatLng(37.5036, 127.0448),
-                zoom: 12,
-                maxZoom: 17,
-                minZoom: 10,
-                interactiveFlags: InteractiveFlag.drag |
-                InteractiveFlag.flingAnimation |
-                InteractiveFlag.pinchMove |
-                InteractiveFlag.pinchZoom |
-                InteractiveFlag.doubleTapZoom),
-            children: [
-              TileLayer(
-                urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.jpg',
-                userAgentPackageName: 'com.example.app',
-                tileProvider: CacheTileProvider(cacheManager),
-              ),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+
+              final double initZoom = UnitConverter.calculateZoomLevel(
+                  CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                  constraints.maxWidth, constraints.maxHeight);
+
+              return FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                    center: LatLng(
+                        CourseController.to.center[0],
+                        CourseController.to.center[1]
+                    ),
+                    zoom: initZoom,
+                    maxZoom: 18,
+                    interactiveFlags: InteractiveFlag.drag |
+                    InteractiveFlag.flingAnimation |
+                    InteractiveFlag.pinchMove |
+                    InteractiveFlag.pinchZoom |
+                    InteractiveFlag.doubleTapZoom),
+                children: [
+                  TileLayer(
+                    urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.jpg',
+                    userAgentPackageName: 'com.example.app',
+                    tileProvider: CacheTileProvider(cacheManager),
+                  ),
+                  if (CourseController.to.courseLineData.value != null) PolylineLayer(
+                    polylines: MapLayerGenerator.generatePolyLines(
+                        CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates']),
+                  ),
+                  if (CourseController.to.courseLineData.value != null) MarkerLayer(
+                    markers: MapLayerGenerator.generateMarkers(
+                        CourseController.to.courseLineData.value!['waypoints']),
+                  )
+                ],
+              );
+            },
           ),
           Positioned(
             bottom: 24,

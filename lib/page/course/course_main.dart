@@ -19,6 +19,7 @@ import 'package:place_mobile_flutter/state/state_const.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
+import 'package:place_mobile_flutter/util/map/map_layer.dart';
 import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
@@ -463,56 +464,6 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     );
   }
 
-  List<Polyline> __generatePolyLines(Map<String, dynamic> data) {
-    List<Polyline> lines = [];
-    final List<dynamic> course = data['routes'][0]['geometry']['coordinates'];
-
-    List<LatLng> points = [];
-    for (var l in course) {
-      points.add(LatLng(l[1], l[0]));
-    }
-    lines.add(
-        Polyline(
-            points: points,
-            strokeWidth: 3.0,
-            color: Colors.black87.withOpacity(0.5)
-        )
-    );
-    return lines;
-  }
-
-  List<Marker> __generateMarkers(Map<String, dynamic> data) {
-    List<Marker> markers = [];
-    final List<dynamic> points = data['waypoints'];
-
-    for (int i = 0;i < points.length;i++) {
-      markers.add(
-          Marker(
-            point: LatLng(points[i]['location'][1], points[i]['location'][0]),
-            width: 18,
-            height: 18,
-            builder: (context) => Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black87
-              ),
-              child: Center(
-                child: Text(
-                  '${i + 1}',
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600
-                  ),
-                )
-              ),
-            )
-          )
-      );
-    }
-    return markers;
-  }
-
   List<Widget> __createPlaceList() {
     List<Widget> course = [];
     for (var place in CourseController.to.coursePlaceData) {
@@ -567,10 +518,12 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                       tileProvider: CacheTileProvider(cacheManager),
                     ),
                     if (CourseController.to.courseLineData.value != null) PolylineLayer(
-                      polylines: __generatePolyLines(CourseController.to.courseLineData.value!),
+                      polylines: MapLayerGenerator.generatePolyLines(
+                          CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates']),
                     ),
                     if (CourseController.to.courseLineData.value != null) MarkerLayer(
-                      markers: __generateMarkers(CourseController.to.courseLineData.value!),
+                      markers: MapLayerGenerator.generateMarkers(
+                          CourseController.to.courseLineData.value!['waypoints']),
                     )
                   ],
                 );
