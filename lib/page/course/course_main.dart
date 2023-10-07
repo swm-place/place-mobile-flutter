@@ -610,7 +610,15 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
       );
     }
     return Scaffold(
-      body: body
+      body: body,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+
+        },
+        backgroundColor: lightColorScheme.primary,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.edit, color: Colors.white,),
+      ),
     );
   }
 }
