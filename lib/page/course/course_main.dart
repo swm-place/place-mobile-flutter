@@ -561,64 +561,66 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    Widget body;
+    Widget scaffold;
     if (initData) {
-      body = CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            leading: FlexibleTopBarActionButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: Icon(
-                Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                size: 18,
-              ),
-              iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
-            ),
-            actions: [
-              FlexibleTopBarActionButton(
+      scaffold = Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              leading: FlexibleTopBarActionButton(
                 onPressed: () {
-
+                  Get.back();
                 },
-                icon: Icon(Icons.ios_share, size: 18,)
-              )
-            ],
-            pinned: true,
-            expandedHeight: 220.0,
-            surfaceTintColor: Colors.white,
-            backgroundColor: Colors.white,
-            flexibleSpace: const PictureFlexibleSpace(),
-          ),
-          Obx(() {
-            return SliverList(
-              delegate: SliverChildListDelegate([
-                _detailHead(),
-                const SizedBox(height: 24,),
-                _informationSection(),
-                const SizedBox(height: 24,),
-                _visitPlaceSection(),
-                const SizedBox(height: 24,),
-              ]),
-            );
-          })
-        ],
+                icon: Icon(
+                  Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                  size: 18,
+                ),
+                iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
+              ),
+              actions: [
+                FlexibleTopBarActionButton(
+                    onPressed: () {
+
+                    },
+                    icon: Icon(Icons.ios_share, size: 18,)
+                )
+              ],
+              pinned: true,
+              expandedHeight: 220.0,
+              surfaceTintColor: Colors.white,
+              backgroundColor: Colors.white,
+              flexibleSpace: const PictureFlexibleSpace(),
+            ),
+            Obx(() {
+              return SliverList(
+                delegate: SliverChildListDelegate([
+                  _detailHead(),
+                  const SizedBox(height: 24,),
+                  _informationSection(),
+                  const SizedBox(height: 24,),
+                  _visitPlaceSection(),
+                  const SizedBox(height: 24,),
+                ]),
+              );
+            })
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+
+          },
+          backgroundColor: lightColorScheme.primary,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.edit, color: Colors.white,),
+        ),
       );
     } else {
-      body = const Center(
-        child: CircularProgressIndicator(),
+      scaffold = const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
       );
     }
-    return Scaffold(
-      body: body,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-
-        },
-        backgroundColor: lightColorScheme.primary,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.edit, color: Colors.white,),
-      ),
-    );
+    return scaffold;
   }
 }
