@@ -101,44 +101,60 @@ class _CourseEditPageState extends State<CourseEditPage> {
               );
             }),
             Flexible(
-              child: Obx(() => ReorderableListView(
-                children: () {
-                  List<Widget> course = [];
-                  int index = 0;
-                  for (var place in CourseController.to.coursePlaceData) {
-                    int? distance;
-                    if (PlaceController.to.userPosition.value != null) {
-                      double lat2 = place['location']['lat'];
-                      double lon2 = place['location']['lon'];
-                      distance = PlaceController.to.haversineDistance(lat2, lon2);
-                    }
-                    course.addAll([
-                      RoundedRowRectanglePlaceCard(
+              child: Obx(() => Padding(
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                child: ReorderableListView(
+                  children: () {
+                    List<Widget> course = [];
+                    int index = 0;
+                    for (var place in CourseController.to.coursePlaceData) {
+                      int? distance;
+                      if (PlaceController.to.userPosition.value != null) {
+                        double lat2 = place['location']['lat'];
+                        double lon2 = place['location']['lon'];
+                        distance = PlaceController.to.haversineDistance(lat2, lon2);
+                      }
+                      EdgeInsets padding;
+                      if (index == 0) {
+                        padding = const EdgeInsets.fromLTRB(0, 0, 0, 6);
+                      } else if(index == CourseController.to.coursePlaceData.length - 1) {
+                        padding = const EdgeInsets.fromLTRB(0, 6, 0, 0);
+                      } else {
+                        padding = const EdgeInsets.fromLTRB(0, 6, 0, 6);
+                      }
+                      course.addAll([
+                      Container(
                         key: Key('$index'),
-                        imageUrl: place['imageUrl'],
-                        tags: place['tags'],
-                        placeName: place['placeName'],
-                        placeType: place['placeType'],
-                        open: place['open'],
-                        distance: distance == null ? null : UnitConverter.formatDistance(distance),
+                        padding: padding,
+                        color: Colors.transparent,
+                        child: RoundedRowRectanglePlaceCard(
+                          key: Key('$index'),
+                          imageUrl: place['imageUrl'],
+                          tags: place['tags'],
+                          placeName: place['placeName'],
+                          placeType: place['placeType'],
+                          open: place['open'],
+                          distance: distance == null ? null : UnitConverter.formatDistance(distance),
+                        ),
                       ),
-                    ]);
-                    index++;
-                  }
-                  return course;
-                } (),
-                onReorder: (int oldIndex, int newIndex) {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  CourseController.to.changePlaceOrder(oldIndex, newIndex);
-                  CourseController.to.getCourseLineData()
-                      .then((value) {
-                    if (value == ASYNC_SUCCESS) {
-                      CourseController.to.getGeocodeData();
+                      ]);
+                      index++;
                     }
-                  });
-                },
+                    return course;
+                  } (),
+                  onReorder: (int oldIndex, int newIndex) {
+                    if (oldIndex < newIndex) {
+                      newIndex -= 1;
+                    }
+                    CourseController.to.changePlaceOrder(oldIndex, newIndex);
+                    CourseController.to.getCourseLineData()
+                        .then((value) {
+                      if (value == ASYNC_SUCCESS) {
+                        CourseController.to.getGeocodeData();
+                      }
+                    });
+                  },
+                ),
               )),
             )
           ],
