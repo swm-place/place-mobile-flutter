@@ -12,6 +12,7 @@ import 'package:http/http.dart';
 import 'package:lottie/lottie.dart' as lottie;
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
+import 'package:place_mobile_flutter/page/course/course_edit.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
@@ -607,7 +608,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-
+            Get.to(() => CourseEditPage());
           },
           backgroundColor: lightColorScheme.primary,
           shape: const CircleBorder(),
