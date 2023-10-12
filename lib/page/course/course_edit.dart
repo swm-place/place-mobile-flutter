@@ -125,7 +125,7 @@ class _CourseEditPageState extends State<CourseEditPage> {
                       course.addAll([
                       Container(
                         key: Key('$index'),
-                        padding: padding,
+                        // padding: padding,
                         color: Colors.transparent,
                         child: RoundedRowRectanglePlaceCard(
                           key: Key('$index'),
