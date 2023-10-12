@@ -105,7 +105,6 @@ class CourseController extends GetxController {
 
     center.value = UnitConverter.findCenter(courseLineData.value!['routes'][0]['geometry']['coordinates']);
     center.refresh();
-
     return ASYNC_SUCCESS;
   }
 
@@ -126,5 +125,11 @@ class CourseController extends GetxController {
     final Map<String, dynamic> item = coursePlaceData.removeAt(oldIndex);
     coursePlaceData.insert(newIndex, item);
     coursePlaceData.refresh();
+    placesPosition.clear();
+    placesPosition.addAll(
+        coursePlaceData.expand((element) =>
+        [element['location']]).toList().cast<Map<String, double>>()
+    );
+    placesPosition.refresh();
   }
 }
