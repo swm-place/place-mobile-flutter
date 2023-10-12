@@ -436,7 +436,11 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     int placeCount = CourseController.to.coursePlaceData.length;
     double distance = 0.0;
     if (CourseController.to.courseLineData.value != null) {
-      distance = CourseController.to.courseLineData.value!['routes'][0]['distance'];
+      if (CourseController.to.courseLineData.value!['routes'][0]['distance'] is int) {
+        distance = CourseController.to.courseLineData.value!['routes'][0]['distance'].toDouble();
+      } else {
+        distance = CourseController.to.courseLineData.value!['routes'][0]['distance'];
+      }
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
