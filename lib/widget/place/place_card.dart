@@ -184,6 +184,10 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
     required this.placeType,
     required this.distance,
     required this.open,
+    this.elevation=2.5,
+    this.borderRadius=8,
+    this.imageBorderRadius=0,
+    this.imagePadding=EdgeInsets.zero,
     Key? key,
   }) : super(key: key);
 
@@ -195,6 +199,12 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
 
   String? distance;
   String open;
+
+  double elevation;
+  double borderRadius;
+  double imageBorderRadius;
+
+  EdgeInsets imagePadding;
 
   List<Widget> __createTags() {
     List<Widget> chips = [];
@@ -249,21 +259,27 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 2.5,
+      elevation: elevation,
       shadowColor: Colors.grey[100],
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(borderRadius),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(borderRadius),
         child: SizedBox(
           height: 95,
           width: double.infinity,
           child: Row(
             children: [
-              AspectRatio(
-                aspectRatio: 1.1 / 1,
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
+              Padding(
+                padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+                child: ClipRRect(
+                borderRadius: BorderRadius.circular(imageBorderRadius),
+                  child: AspectRatio(
+                    aspectRatio: 1.1 / 1,
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
               Expanded(

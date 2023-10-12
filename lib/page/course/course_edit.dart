@@ -135,6 +135,10 @@ class _CourseEditPageState extends State<CourseEditPage> {
                           placeType: place['placeType'],
                           open: place['open'],
                           distance: distance == null ? null : UnitConverter.formatDistance(distance),
+                          elevation: 0,
+                          borderRadius: 0,
+                          imageBorderRadius: 8,
+                          imagePadding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
                         ),
                       ),
                       ]);
