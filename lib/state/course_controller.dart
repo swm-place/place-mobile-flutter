@@ -121,4 +121,10 @@ class CourseController extends GetxController {
     regionName.refresh();
     return ASYNC_SUCCESS;
   }
+
+  void changePlaceOrder(int oldIndex, int newIndex) {
+    final Map<String, dynamic> item = coursePlaceData.removeAt(oldIndex);
+    coursePlaceData.insert(newIndex, item);
+    coursePlaceData.refresh();
+  }
 }
