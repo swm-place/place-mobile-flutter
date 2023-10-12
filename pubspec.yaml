@@ -65,6 +65,7 @@ dependencies:
   flutter_cache_manager: ^3.3.1
   flutter_map_geojson: ^1.0.3
   flutter_map_animations: ^0.4.1
+  drag_and_drop_lists: ^0.3.3
 
 dev_dependencies:
   flutter_test:
