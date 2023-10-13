@@ -6,6 +6,7 @@ import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/state/state_const.dart';
+import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
 import 'package:place_mobile_flutter/util/map/map_layer.dart';
 import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
@@ -92,6 +93,25 @@ class _CourseEditPageState extends State<CourseEditPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('편집'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return Container(
+                width: double.infinity,
+                height: double.infinity,
+                child: Text('ssss'),
+              );
+            },
+            isScrollControlled: true,
+            useSafeArea: true
+          );
+        },
+        backgroundColor: lightColorScheme.primary,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, color: Colors.white,),
       ),
       body: SafeArea(
         child: Column(
