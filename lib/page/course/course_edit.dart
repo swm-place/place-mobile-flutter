@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
@@ -122,26 +123,36 @@ class _CourseEditPageState extends State<CourseEditPage> {
                       } else {
                         padding = const EdgeInsets.fromLTRB(0, 6, 0, 6);
                       }
-                      course.addAll([
-                      Container(
-                        key: Key('$index'),
-                        // padding: padding,
-                        color: Colors.transparent,
-                        child: RoundedRowRectanglePlaceCard(
+                      course.add(
+                        Slidable(
                           key: Key('$index'),
-                          imageUrl: place['imageUrl'],
-                          tags: place['tags'],
-                          placeName: place['placeName'],
-                          placeType: place['placeType'],
-                          open: place['open'],
-                          distance: distance == null ? null : UnitConverter.formatDistance(distance),
-                          elevation: 0,
-                          borderRadius: 0,
-                          imageBorderRadius: 8,
-                          imagePadding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-                        ),
-                      ),
-                      ]);
+                          endActionPane: ActionPane(
+                            motion: const ScrollMotion(),
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) {
+                                  print('delete');
+                                },
+                                label: '삭제',
+                                backgroundColor: Colors.red,
+                                icon: Icons.delete,
+                              )
+                            ],
+                          ),
+                          child: RoundedRowRectanglePlaceCard(
+                            imageUrl: place['imageUrl'],
+                            tags: place['tags'],
+                            placeName: place['placeName'],
+                            placeType: place['placeType'],
+                            open: place['open'],
+                            distance: distance == null ? null : UnitConverter.formatDistance(distance),
+                            elevation: 0,
+                            borderRadius: 0,
+                            imageBorderRadius: 8,
+                            imagePadding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                          ),
+                        )
+                      );
                       index++;
                     }
                     return course;

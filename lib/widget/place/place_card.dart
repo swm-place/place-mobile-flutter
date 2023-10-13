@@ -270,7 +270,7 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
           child: Row(
             children: [
               Padding(
-                padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+                padding: imagePadding,
                 child: ClipRRect(
                 borderRadius: BorderRadius.circular(imageBorderRadius),
                   child: AspectRatio(
