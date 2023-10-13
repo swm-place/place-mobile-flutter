@@ -132,4 +132,15 @@ class CourseController extends GetxController {
     );
     placesPosition.refresh();
   }
+
+  void deletePlace(int index) {
+    coursePlaceData.removeAt(index);
+    coursePlaceData.refresh();
+    placesPosition.clear();
+    placesPosition.addAll(
+        coursePlaceData.expand((element) =>
+        [element['location']]).toList().cast<Map<String, double>>()
+    );
+    placesPosition.refresh();
+  }
 }
