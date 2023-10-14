@@ -7,6 +7,7 @@ import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/state/state_const.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
+import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
 import 'package:place_mobile_flutter/util/map/map_layer.dart';
 import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
@@ -96,17 +97,68 @@ class _CourseEditPageState extends State<CourseEditPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          double bottomPadding = MediaQuery.of(context).viewPadding.bottom;
+          if (bottomPadding == 0) bottomPadding = 24;
           showModalBottomSheet(
             context: context,
             builder: (BuildContext context) {
-              return Container(
-                width: double.infinity,
-                height: double.infinity,
-                child: Text('ssss'),
+              return Padding(
+                padding: EdgeInsets.fromLTRB(24, 12, 24, bottomPadding),
+                child: Column(
+                  children: [
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text('장소 추가', style: SectionTextStyle.sectionTitle(),)
+                            ),
+                            Ink(
+                              decoration: BoxDecoration(
+                                // color: Colors.grey[300],
+                                shape: BoxShape.circle,
+                              ),
+                              child: InkWell(
+                                customBorder: CircleBorder(),
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+                                  child: Icon(Icons.close, size: 18,),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          width: double.infinity,
+                          height: 1800,
+                          child: Container(color: Colors.red, width: double.infinity, height: double.infinity,),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: FilledButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('추가')
+                      ),
+                    )
+                  ],
+                ),
               );
             },
             isScrollControlled: true,
-            useSafeArea: true
+            useSafeArea: true,
+            enableDrag: false,
+            isDismissible: false
           );
         },
         backgroundColor: lightColorScheme.primary,
