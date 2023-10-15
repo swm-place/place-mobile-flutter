@@ -19,7 +19,7 @@ class CourseController extends GetxController {
 
   Future<Map<String, dynamic>> getCourseData() async {
     coursePlaceData.clear();
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 500));
     coursePlaceData.addAll(
         [
           {

@@ -331,3 +331,42 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
     );
   }
 }
+
+class SelectedPlaceCard extends StatelessWidget {
+  SelectedPlaceCard({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 40,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: Colors.grey,
+              )
+          ),
+          child: Row(
+            children: [
+              AspectRatio(
+                aspectRatio: 1,
+                child: Image.network(
+                  'https://source.unsplash.com/random',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                child: Text('장소 이름'),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

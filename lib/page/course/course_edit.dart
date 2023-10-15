@@ -3,6 +3,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
+import 'package:place_mobile_flutter/page/course/course_add.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
 import 'package:place_mobile_flutter/state/state_const.dart';
@@ -22,7 +23,6 @@ class CourseEditPage extends StatefulWidget {
 }
 
 class _CourseEditPageState extends State<CourseEditPage> {
-
   late final CacheManager cacheManager;
 
   @override
@@ -97,69 +97,7 @@ class _CourseEditPageState extends State<CourseEditPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          double bottomPadding = MediaQuery.of(context).viewPadding.bottom;
-          if (bottomPadding == 0) bottomPadding = 24;
-          showModalBottomSheet(
-            context: context,
-            builder: (BuildContext context) {
-              return Padding(
-                padding: EdgeInsets.fromLTRB(24, 12, 24, bottomPadding),
-                child: Column(
-                  children: [
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text('장소 추가', style: SectionTextStyle.sectionTitle(),)
-                            ),
-                            Ink(
-                              decoration: BoxDecoration(
-                                // color: Colors.grey[300],
-                                shape: BoxShape.circle,
-                              ),
-                              child: InkWell(
-                                customBorder: CircleBorder(),
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
-                                  child: Icon(Icons.close, size: 18,),
-                                ),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                    Flexible(
-                      child: SingleChildScrollView(
-                        child: Container(
-                          width: double.infinity,
-                          height: 1800,
-                          child: Container(color: Colors.red, width: double.infinity, height: double.infinity,),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      child: FilledButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('추가')
-                      ),
-                    )
-                  ],
-                ),
-              );
-            },
-            isScrollControlled: true,
-            useSafeArea: true,
-            enableDrag: false,
-            isDismissible: false
-          );
+          Get.to(() => CourseAddPage());
         },
         backgroundColor: lightColorScheme.primary,
         shape: const CircleBorder(),
