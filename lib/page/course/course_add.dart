@@ -20,10 +20,16 @@ class _CourseAddPageState extends State<CourseAddPage> {
 
   @override
   Widget build(BuildContext context) {
+    double bottomPadding = MediaQuery.of(context).viewPadding.bottom;
+    if (bottomPadding == 0) {
+      bottomPadding = 24;
+    } else {
+      bottomPadding = 0;
+    }
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(24, 24, 24, 24),
+          padding: EdgeInsets.fromLTRB(24, 24, 24, bottomPadding),
           child: Column(
             children: [
               Column(
@@ -64,14 +70,14 @@ class _CourseAddPageState extends State<CourseAddPage> {
                       child: Text('추가할 장소를 선택해주세요'),
                     ),
                   ) : Container(
-                    height: 40,
+                    height: 45,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: _selectedAddPlace.length,
                       itemBuilder: (BuildContext context, int index) {
                         return SelectedPlaceCard();
                       },
-                      separatorBuilder: (BuildContext context, int index) => const SizedBox(width: 8,),
+                      separatorBuilder: (BuildContext context, int index) => const SizedBox(width: 12,),
                     ),
                   )
                 ],

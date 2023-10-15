@@ -340,32 +340,84 @@ class SelectedPlaceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          decoration: BoxDecoration(
+      height: 45,
+      child: Stack(
+        fit: StackFit.loose,
+        clipBehavior: Clip.none,
+        alignment: AlignmentDirectional.bottomStart,
+        children: [
+          SizedBox(
+            height: 40,
+            child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Colors.grey,
-              )
-          ),
-          child: Row(
-            children: [
-              AspectRatio(
-                aspectRatio: 1,
-                child: Image.network(
-                  'https://source.unsplash.com/random',
-                  fit: BoxFit.cover,
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.grey,
+                    )
+                ),
+                child: Row(
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 1,
+                      child: Image.network(
+                        'https://source.unsplash.com/random',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                      child: Text('장소 이름'),
+                    )
+                  ],
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
-                child: Text('장소 이름'),
-              )
-            ],
+            ),
           ),
-        ),
+          Positioned(
+            top: 0,
+            right: -5,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: 18,
+                height: 18,
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.red
+                ),
+                child: const Center(
+                  child: Icon(Icons.close, size: 14, color: Colors.white,),
+                ),
+              ),
+            ),
+          )
+          // Positioned(
+          //   top: -5,
+          //   right: -5,
+          //   child: Ink(
+          //     width: 18,
+          //     height: 18,
+          //     decoration: const BoxDecoration(
+          //       shape: BoxShape.circle,
+          //       color: Colors.red
+          //     ),
+          //     child: InkWell(
+          //       customBorder: const CircleBorder(),
+          //       child: const Padding(
+          //         padding: EdgeInsets.zero,
+          //         child: Icon(Icons.close, size: 14, color: Colors.white,),
+          //       ),
+          //       onTap: () {
+          //         Navigator.pop(context);
+          //       },
+          //     ),
+          //   ),
+          // )
+        ],
       ),
     );
   }
