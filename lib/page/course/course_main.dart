@@ -12,6 +12,7 @@ import 'package:http/http.dart';
 import 'package:lottie/lottie.dart' as lottie;
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
+import 'package:place_mobile_flutter/page/course/course_edit.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/place_controller.dart';
@@ -435,7 +436,11 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     int placeCount = CourseController.to.coursePlaceData.length;
     double distance = 0.0;
     if (CourseController.to.courseLineData.value != null) {
-      distance = CourseController.to.courseLineData.value!['routes'][0]['distance'];
+      if (CourseController.to.courseLineData.value!['routes'][0]['distance'] is int) {
+        distance = CourseController.to.courseLineData.value!['routes'][0]['distance'].toDouble();
+      } else {
+        distance = CourseController.to.courseLineData.value!['routes'][0]['distance'];
+      }
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
@@ -561,56 +566,66 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    Widget body;
+    Widget scaffold;
     if (initData) {
-      body = CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            leading: FlexibleTopBarActionButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: Icon(
-                Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                size: 18,
-              ),
-              iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
-            ),
-            actions: [
-              FlexibleTopBarActionButton(
+      scaffold = Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              leading: FlexibleTopBarActionButton(
                 onPressed: () {
-
+                  Get.back();
                 },
-                icon: Icon(Icons.ios_share, size: 18,)
-              )
-            ],
-            pinned: true,
-            expandedHeight: 220.0,
-            surfaceTintColor: Colors.white,
-            backgroundColor: Colors.white,
-            flexibleSpace: const PictureFlexibleSpace(),
-          ),
-          Obx(() {
-            return SliverList(
-              delegate: SliverChildListDelegate([
-                _detailHead(),
-                const SizedBox(height: 24,),
-                _informationSection(),
-                const SizedBox(height: 24,),
-                _visitPlaceSection(),
-                const SizedBox(height: 24,),
-              ]),
-            );
-          })
-        ],
+                icon: Icon(
+                  Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                  size: 18,
+                ),
+                iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
+              ),
+              actions: [
+                FlexibleTopBarActionButton(
+                    onPressed: () {
+
+                    },
+                    icon: Icon(Icons.ios_share, size: 18,)
+                )
+              ],
+              pinned: true,
+              expandedHeight: 220.0,
+              surfaceTintColor: Colors.white,
+              backgroundColor: Colors.white,
+              flexibleSpace: const PictureFlexibleSpace(),
+            ),
+            Obx(() {
+              return SliverList(
+                delegate: SliverChildListDelegate([
+                  _detailHead(),
+                  const SizedBox(height: 24,),
+                  _informationSection(),
+                  const SizedBox(height: 24,),
+                  _visitPlaceSection(),
+                  const SizedBox(height: 24,),
+                ]),
+              );
+            })
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Get.to(() => CourseEditPage());
+          },
+          backgroundColor: lightColorScheme.primary,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.edit, color: Colors.white,),
+        ),
       );
     } else {
-      body = const Center(
-        child: CircularProgressIndicator(),
+      scaffold = const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
       );
     }
-    return Scaffold(
-      body: body
-    );
+    return scaffold;
   }
 }
