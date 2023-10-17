@@ -19,7 +19,7 @@ class CourseController extends GetxController {
 
   Future<Map<String, dynamic>> getCourseData() async {
     coursePlaceData.clear();
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 500));
     coursePlaceData.addAll(
         [
           {
@@ -105,7 +105,6 @@ class CourseController extends GetxController {
 
     center.value = UnitConverter.findCenter(courseLineData.value!['routes'][0]['geometry']['coordinates']);
     center.refresh();
-
     return ASYNC_SUCCESS;
   }
 
@@ -120,5 +119,28 @@ class CourseController extends GetxController {
     regionName.value = result['region_name'];
     regionName.refresh();
     return ASYNC_SUCCESS;
+  }
+
+  void changePlaceOrder(int oldIndex, int newIndex) {
+    final Map<String, dynamic> item = coursePlaceData.removeAt(oldIndex);
+    coursePlaceData.insert(newIndex, item);
+    coursePlaceData.refresh();
+    placesPosition.clear();
+    placesPosition.addAll(
+        coursePlaceData.expand((element) =>
+        [element['location']]).toList().cast<Map<String, double>>()
+    );
+    placesPosition.refresh();
+  }
+
+  void deletePlace(int index) {
+    coursePlaceData.removeAt(index);
+    coursePlaceData.refresh();
+    placesPosition.clear();
+    placesPosition.addAll(
+        coursePlaceData.expand((element) =>
+        [element['location']]).toList().cast<Map<String, double>>()
+    );
+    placesPosition.refresh();
   }
 }
