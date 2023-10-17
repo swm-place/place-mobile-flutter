@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
+import 'package:place_mobile_flutter/widget/search_bar.dart';
+import 'package:place_mobile_flutter/widget/section/main_section.dart';
 
 class CourseAddPage extends StatefulWidget {
   @override
@@ -10,12 +12,12 @@ class CourseAddPage extends StatefulWidget {
 class _CourseAddPageState extends State<CourseAddPage> {
 
   List<Map<String, dynamic>> _selectedAddPlace = [
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
+    // {},
+    // {},
+    // {},
+    // {},
+    // {},
+    // {},
   ];
 
   @override
@@ -53,13 +55,24 @@ class _CourseAddPageState extends State<CourseAddPage> {
                             Navigator.pop(context);
                           },
                         ),
-                      )
+                      ),
                     ],
+                  ),
+                  const SizedBox(height: 12,),
+                  RoundedRectangleSearchBar(
+                    elevation: 0,
+                    borderRadius: 8,
+                    hintText: "검색어",
+                    fillColor: Colors.grey[200]!,
+                    contentPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                    onSuffixIconPressed: () {
+                      print("searchbar clicked");
+                    },
                   ),
                   const SizedBox(height: 12,),
                   _selectedAddPlace.isEmpty ?
                   Container(
-                    height: 40,
+                    height: 45,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
@@ -83,15 +96,22 @@ class _CourseAddPageState extends State<CourseAddPage> {
                 ],
               ),
               const SizedBox(height: 12,),
-              Flexible(
+              Expanded(
                 child: SingleChildScrollView(
                   child: Container(
                     width: double.infinity,
-                    height: 1800,
-                    child: Container(color: Colors.red, width: double.infinity, height: double.infinity,),
+                    child: Column(
+                      children: [
+                        MainSection(
+                          title: "sdds",
+                          content: Text("ss")
+                        )
+                      ],
+                    )
                   ),
                 ),
               ),
+              const SizedBox(height: 12,),
               Container(
                 width: double.infinity,
                 child: FilledButton(
