@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/page/account/login.dart';
 import 'package:place_mobile_flutter/page/preference/preference.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
@@ -10,6 +12,7 @@ import 'package:place_mobile_flutter/state/user_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/async_dialog.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
+import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
@@ -23,7 +26,43 @@ class ProfilePage extends StatefulWidget {
   }
 }
 
+enum Sex {male, female}
+
 class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin<ProfilePage> {
+  final _formKey = GlobalKey<FormState>();
+
+  final FocusNode passwordCheckFocusNode = FocusNode();
+  final FocusNode phoneNumberFocusNode = FocusNode();
+
+  final PageController pageController = PageController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passwordCheckController = TextEditingController();
+
+  final TextEditingController nicknameController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController birthController = TextEditingController();
+
+  bool hidePassword = true;
+  bool emailEnable = true;
+  bool checkNicknameDup = false;
+
+  String? emailError;
+  String? passwordError;
+  String? passwordCheckError;
+
+  String? nicknameError;
+  String? nicknameHelper;
+  String? phoneNumberError;
+  String? birthError;
+  int pageIdx = 0;
+
+  DateTime? selectedBirth;
+
+  Sex selectedSex = Sex.male;
+
+  final UserProvider userProvider = UserProvider();
+
   final List<Map<String, dynamic>> _categoryCandidates = [
     {
       "id": null,
@@ -777,6 +816,37 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     );
   }
 
+  Future<bool> checkNickname(String nickname) async {
+    setState(() {
+      nicknameHelper = null;
+      nicknameError = nicknameTextFieldValidator(nickname);
+    });
+    if (nicknameError == null) {
+      int? result = await userProvider.checkNickname(nickname);
+      if (result == 200) {
+        checkNicknameDup = true;
+        setState(() {
+          nicknameError = null;
+          nicknameHelper = '사용 가능한 닉네임입니다!';
+        });
+        return true;
+      } else if (result == 409) {
+        checkNicknameDup = false;
+        setState(() {
+          nicknameError = "이미 사용중인 닉네임입니다.";
+        });
+        return false;
+      } else {
+        print(result);
+        setState(() {
+          nicknameError = "다시 시도해주세요.";
+        });
+        return false;
+      }
+    }
+    return false;
+  }
+
   Widget _createAccountPref() {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
@@ -830,7 +900,175 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
                                     child: Column(
                                       children: [
-
+                                        Expanded(
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              children: [
+                                                SizedBox(
+                                                  width: double.infinity,
+                                                  child: Text('프로필 설정', style: SectionTextStyle.sectionTitle(),),
+                                                ),
+                                                // const SizedBox(height: 8,),
+                                                // SizedBox(
+                                                //   width: double.infinity,
+                                                //   child: Text('프로필 정보를 변경할 수 있습니다.', style: SectionTextStyle.sectionContent(Colors.grey[500]!),),
+                                                // ),
+                                                const SizedBox(height: 24,),
+                                                Form(
+                                                  autovalidateMode: AutovalidateMode.always,
+                                                  key: _formKey,
+                                                  child: Column(
+                                                    children: [
+                                                      SizedBox(
+                                                        width: double.infinity,
+                                                        child: Column(
+                                                          children: [
+                                                            SizedBox(
+                                                              width: double.infinity,
+                                                              child: Text("닉네임 *"),
+                                                            ),
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              children: [
+                                                                Expanded(
+                                                                  child: TextFormField(
+                                                                    decoration: InputDecoration(
+                                                                        hintText: "닉네임",
+                                                                        hintStyle: PageTextStyle.headlineSmall(Colors.grey[700]!),
+                                                                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                                        errorText: nicknameError,
+                                                                        helperText: nicknameHelper
+                                                                    ),
+                                                                    textInputAction: TextInputAction.next,
+                                                                    controller: nicknameController,
+                                                                    style: PageTextStyle.headlineSmall(Colors.black),
+                                                                    validator: nicknameTextFieldValidator,
+                                                                    onFieldSubmitted: (String value) {
+                                                                      FocusScope.of(context).requestFocus(phoneNumberFocusNode);
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                                ElevatedButton(
+                                                                    onPressed: () async {
+                                                                      await checkNickname(nicknameController.text.tr);
+                                                                    },
+                                                                    child: Text("중복확인")
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 24,
+                                                      ),
+                                                      SizedBox(
+                                                        width: double.infinity,
+                                                        child: Text("전화번호 *"),
+                                                      ),
+                                                      TextFormField(
+                                                        focusNode: phoneNumberFocusNode,
+                                                        decoration: InputDecoration(
+                                                          hintText: "01012341234",
+                                                          hintStyle: PageTextStyle.headlineSmall(Colors.grey[700]!),
+                                                          contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                          errorText: phoneNumberError,
+                                                        ),
+                                                        textInputAction: TextInputAction.done,
+                                                        controller: phoneNumberController,
+                                                        style: PageTextStyle.headlineSmall(Colors.black),
+                                                        validator: phoneNumberTextFieldValidator,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 24,
+                                                      ),
+                                                      SizedBox(
+                                                        width: double.infinity,
+                                                        child: Text("성별 *"),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      SizedBox(
+                                                        width: double.infinity,
+                                                        child: SegmentedButton<Sex>(
+                                                          segments: [
+                                                            ButtonSegment<Sex>(
+                                                                value: Sex.male,
+                                                                label: Text("남성"),
+                                                                icon: Icon(Icons.male)
+                                                            ),
+                                                            ButtonSegment<Sex>(
+                                                                value: Sex.female,
+                                                                label: Text("여성"),
+                                                                icon: Icon(Icons.female)
+                                                            ),
+                                                          ],
+                                                          selected: <Sex>{selectedSex},
+                                                          onSelectionChanged: (newValue) {
+                                                            setState(() {
+                                                              selectedSex = newValue.first;
+                                                            });
+                                                          },
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 24,
+                                                      ),
+                                                      SizedBox(
+                                                        width: double.infinity,
+                                                        child: Text("생년월일 *"),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () async {
+                                                          selectedBirth = await showDatePicker(
+                                                              locale: Locale('ko', 'KR'),
+                                                              context: context,
+                                                              initialDate: DateTime.now(),
+                                                              firstDate: DateTime(1900),
+                                                              lastDate: DateTime.now()
+                                                          );
+                                                          if (selectedBirth != null) {
+                                                            birthController.text = DateFormat('yyyy/MM/dd').format(selectedBirth!);
+                                                          }
+                                                        },
+                                                        child: TextFormField(
+                                                          enabled: false,
+                                                          decoration: InputDecoration(
+                                                              hintText: "yyyy/mm/dd",
+                                                              hintStyle: PageTextStyle.headlineSmall(Colors.grey[700]!),
+                                                              contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                              errorText: birthError
+                                                          ),
+                                                          controller: birthController,
+                                                          style: PageTextStyle.headlineSmall(Colors.black),
+                                                          validator: (value) {
+                                                            if (value == null || value.isEmpty) {
+                                                              return "생년월일을 선택해주세요";
+                                                            }
+                                                            return null;
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        // SizedBox(height: 24,),
+                                        Container(
+                                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+                                          width: double.infinity,
+                                          child: FilledButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text('닫기')
+                                          ),
+                                        )
                                       ],
                                     ),
                                   );
