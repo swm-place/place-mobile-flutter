@@ -854,7 +854,23 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     final birth = birthController.text.tr;
 
     if (_formKey.currentState!.validate() && await checkNickname(prevNickName, nickname, bottomState)) {
-        ProfileController.to.changeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index);
+      bool result = await ProfileController.to.changeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index);
+      if (result == true) {
+        Navigator.pop(context);
+        Get.showSnackbar(
+            SuccessGetSnackBar(
+                title: "프로필 변경 완료",
+                message: "프로필 정보가 성공적으로 변경되었습니다"
+            )
+        );
+      } else {
+        Get.showSnackbar(
+            ErrorGetSnackBar(
+              title: "프로필 변경 실패",
+              message: "프로필 정보 변경 과정에서 오류가 발생했습니다"
+            )
+        );
+      }
     }
   }
 
