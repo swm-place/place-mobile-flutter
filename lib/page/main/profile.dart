@@ -31,31 +31,23 @@ enum Sex {male, female}
 class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
 
-  final FocusNode passwordCheckFocusNode = FocusNode();
   final FocusNode phoneNumberFocusNode = FocusNode();
 
-  final PageController pageController = PageController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController passwordCheckController = TextEditingController();
+  PageController pageController = PageController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordCheckController = TextEditingController();
 
-  final TextEditingController nicknameController = TextEditingController();
-  final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController birthController = TextEditingController();
+  TextEditingController nicknameController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController birthController = TextEditingController();
 
-  bool hidePassword = true;
-  bool emailEnable = true;
   bool checkNicknameDup = false;
-
-  String? emailError;
-  String? passwordError;
-  String? passwordCheckError;
 
   String? nicknameError;
   String? nicknameHelper;
   String? phoneNumberError;
   String? birthError;
-  int pageIdx = 0;
 
   DateTime? selectedBirth;
 
@@ -881,6 +873,44 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       title: '프로필 설정',
                       textColor: Colors.black,
                       onTap: () {
+                        pageController = PageController();
+                        emailController = TextEditingController();
+                        passwordController = TextEditingController();
+                        passwordCheckController = TextEditingController();
+
+                        nicknameController = TextEditingController();
+                        phoneNumberController = TextEditingController();
+                        birthController = TextEditingController();
+
+                        if (ProfileController.to.nickname.value != null) {
+                          nicknameController.text = ProfileController.to.nickname.value!;
+                        }
+
+                        if (ProfileController.to.phoneNumber.value != null) {
+                          phoneNumberController.text = ProfileController.to.phoneNumber.value!;
+                        }
+
+                        DateTime? birth;
+                        if (ProfileController.to.birthday.value != null) {
+                          birth = DateTime.parse(ProfileController.to.birthday.value!);
+                          birthController.text = DateFormat('yyyy/MM/dd').format(birth);
+                        }
+
+                        checkNicknameDup = false;
+
+                        nicknameError = null;
+                        nicknameHelper = null;
+                        phoneNumberError = null;
+                        birthError = null;
+
+                        selectedBirth = null;
+
+                        if (ProfileController.to.gender.value != null) {
+                          selectedSex = Sex.values[ProfileController.to.gender.value!];
+                        } else {
+                          selectedSex = Sex.male;
+                        }
+
                         showModalBottomSheet(
                             context: context,
                             isScrollControlled: true,
