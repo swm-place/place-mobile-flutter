@@ -12,7 +12,7 @@ import 'package:place_mobile_flutter/util/async_dialog.dart';
 class ProfileController extends GetxController {
   static ProfileController get to => Get.find();
 
-  UserProvider _userProvider = UserProvider();
+  final UserProvider _userProvider = UserProvider();
 
   RxnString nickname = RxnString();
   RxnString email = RxnString();
