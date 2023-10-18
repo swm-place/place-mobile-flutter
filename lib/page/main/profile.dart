@@ -839,6 +839,15 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     return false;
   }
 
+  // void _changeProfileData() {
+  //   final nickname = nicknameController.text.tr;
+  //   final phoneNumber = phoneNumberController.text.tr;
+  //   final sex = selectedSex;
+  //   final birth = birthController.text.tr;
+  //
+  //   ProfileController.to.makeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index, agreeTermIdx);
+  // }
+
   Widget _createAccountPref() {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
@@ -890,7 +899,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                           phoneNumberController.text = ProfileController.to.phoneNumber.value!;
                         }
 
-                        DateTime? birth;
+                        DateTime birth = DateTime.now();
                         if (ProfileController.to.birthday.value != null) {
                           birth = DateTime.parse(ProfileController.to.birthday.value!);
                           birthController.text = DateFormat('yyyy/MM/dd').format(birth);
@@ -1055,7 +1064,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                                                           selectedBirth = await showDatePicker(
                                                               locale: Locale('ko', 'KR'),
                                                               context: context,
-                                                              initialDate: DateTime.now(),
+                                                              initialDate: birth,
                                                               firstDate: DateTime(1900),
                                                               lastDate: DateTime.now()
                                                           );
