@@ -854,8 +854,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     final birth = birthController.text.tr;
 
     if (_formKey.currentState!.validate() && await checkNickname(prevNickName, nickname, bottomState)) {
-        FocusScope.of(context).unfocus();
-        // ProfileController.to.makeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index, agreeTermIdx);
+        ProfileController.to.changeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index);
     }
   }
 

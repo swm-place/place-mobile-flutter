@@ -110,4 +110,76 @@ class ProfileController extends GetxController {
     }
     // return null;
   }
+
+  void changeUserProfile(String nickname, phoneNumber, birthday, int gender) async {
+    String? idToken = AuthController.to.idToken;
+    User? user = AuthController.to.user.value;
+
+    if (!await AuthController.to.checkTokenValid()) idToken = AuthController.to.idToken;
+
+    if (idToken != null && user != null) {
+      Map<String, dynamic> profileData = {
+        "userIndex": user.uid,
+        "nickname": nickname,
+        "phoneNumber": phoneNumber,
+        "gender": gender,
+        "birthday": birthday,
+      };
+      _progressDialogHelper.showProgressDialog('프로필 수정중');
+      int? result = await _userProvider.patchProfile(profileData, idToken);
+      _progressDialogHelper.hideProgressDialog();
+      if (result == 200) {
+        int? status = await getUserProfile(user!.uid);
+        if (status == 200) {
+          // Get.offAll(() => const MyApp());
+        } else {
+          Get.dialog(
+              AlertDialog(
+                title: Text("회원가입 오류"),
+                content: Text("회원가입 처리 중 오류가 발생했습니다. 회원가입을 다시 진행해주세요."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        AuthController.to.signOut();
+                      },
+                      child: Text("확인")
+                  ),
+                ],
+              )
+          );
+        }
+      } else {
+        Get.dialog(
+          AlertDialog(
+            title: Text("회원가입 오류"),
+            content: Text("회원가입 처리 중 오류가 발생했습니다. 회원가입을 다시 진행해주세요."),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    AuthController.to.signOut();
+                  },
+                  child: Text("확인")
+              ),
+            ],
+          )
+        );
+      }
+    } else {
+      Get.dialog(
+        AlertDialog(
+          title: Text("회원가입 오류"),
+          content: Text("회원가입을 다시 진행해주세요."),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  AuthController.to.signOut();
+                },
+                child: Text("확인")
+            ),
+          ],
+        )
+      );
+    }
+    // return null;
+  }
 }
