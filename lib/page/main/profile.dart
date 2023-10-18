@@ -808,39 +808,38 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       },
                     ),
                     PreferenceItem(
-                      title: '프로필 변경',
+                      title: '프로필 설정',
                       textColor: Colors.black,
                       onTap: () {
-                        print("프로필 변경");
+                        showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            useSafeArea: true,
+                            builder: (BuildContext context) {
+                              return StatefulBuilder(
+                                builder: (BuildContext context, StateSetter bottomState) {
+                                  return Container(
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(8),
+                                        topLeft: Radius.circular(8),
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                                    child: Column(
+                                      children: [
+
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                        );
                       },
                     ),
-                    // PreferenceItem(
-                    //   title: 'SNS 계정 연동',
-                    //   textColor: Colors.black,
-                    //   onTap: () {
-                    //     showModalBottomSheet(
-                    //         context: context,
-                    //         builder: (BuildContext context) {
-                    //           return StatefulBuilder(
-                    //             builder: (BuildContext context, StateSetter bottomState) {
-                    //               return Container(
-                    //                 width: double.infinity,
-                    //                 height: 500,
-                    //                 decoration: const BoxDecoration(
-                    //                   borderRadius: BorderRadius.only(
-                    //                     topRight: Radius.circular(8),
-                    //                     topLeft: Radius.circular(8),
-                    //                   ),
-                    //                 ),
-                    //                 padding: const EdgeInsets.all(24),
-                    //                 child: Column(),
-                    //               );
-                    //             },
-                    //           );
-                    //         }
-                    //     );
-                    //   },
-                    // ),
                     PreferenceItem(
                       title: controller.providerId.contains('google.com') ? '구글 연결 해제' : '구글 연결',
                       textColor: Colors.black,
