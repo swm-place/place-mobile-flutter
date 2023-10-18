@@ -808,8 +808,16 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     );
   }
 
-  Future<bool> checkNickname(String nickname) async {
-    setState(() {
+  Future<bool> checkNickname(String prevNickName, String nickname, StateSetter bottomState) async {
+    if (prevNickName != '' && prevNickName == nickname) {
+      checkNicknameDup = true;
+      bottomState(() {
+        nicknameError = null;
+        nicknameHelper = '사용 가능한 닉네임입니다!';
+      });
+      return true;
+    }
+    bottomState(() {
       nicknameHelper = null;
       nicknameError = nicknameTextFieldValidator(nickname);
     });
@@ -817,20 +825,20 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
       int? result = await userProvider.checkNickname(nickname);
       if (result == 200) {
         checkNicknameDup = true;
-        setState(() {
+        bottomState(() {
           nicknameError = null;
           nicknameHelper = '사용 가능한 닉네임입니다!';
         });
         return true;
       } else if (result == 409) {
         checkNicknameDup = false;
-        setState(() {
+        bottomState(() {
           nicknameError = "이미 사용중인 닉네임입니다.";
         });
         return false;
       } else {
         print(result);
-        setState(() {
+        bottomState(() {
           nicknameError = "다시 시도해주세요.";
         });
         return false;
@@ -839,14 +847,17 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     return false;
   }
 
-  // void _changeProfileData() {
-  //   final nickname = nicknameController.text.tr;
-  //   final phoneNumber = phoneNumberController.text.tr;
-  //   final sex = selectedSex;
-  //   final birth = birthController.text.tr;
-  //
-  //   ProfileController.to.makeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index, agreeTermIdx);
-  // }
+  void _changeProfileData(String prevNickName, StateSetter bottomState) async {
+    final nickname = nicknameController.text.tr;
+    final phoneNumber = phoneNumberController.text.tr;
+    final sex = selectedSex;
+    final birth = birthController.text.tr;
+
+    if (_formKey.currentState!.validate() && await checkNickname(prevNickName, nickname, bottomState)) {
+        FocusScope.of(context).unfocus();
+        // ProfileController.to.makeUserProfile(nickname, phoneNumber, birth.replaceAll('/', '-') + "T00:00:00.000Z", sex.index, agreeTermIdx);
+    }
+  }
 
   Widget _createAccountPref() {
     return Padding(
@@ -891,8 +902,10 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                         phoneNumberController = TextEditingController();
                         birthController = TextEditingController();
 
+                        String prevNickName = '';
                         if (ProfileController.to.nickname.value != null) {
                           nicknameController.text = ProfileController.to.nickname.value!;
+                          prevNickName = ProfileController.to.nickname.value!;
                         }
 
                         if (ProfileController.to.phoneNumber.value != null) {
@@ -990,7 +1003,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                                                                 ),
                                                                 ElevatedButton(
                                                                     onPressed: () async {
-                                                                      await checkNickname(nicknameController.text.tr);
+                                                                      await checkNickname(prevNickName, nicknameController.text.tr, bottomState);
                                                                     },
                                                                     child: Text("중복확인")
                                                                 )
@@ -1046,7 +1059,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                                                           ],
                                                           selected: <Sex>{selectedSex},
                                                           onSelectionChanged: (newValue) {
-                                                            setState(() {
+                                                            bottomState(() {
                                                               selectedSex = newValue.first;
                                                             });
                                                           },
@@ -1103,7 +1116,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                                           width: double.infinity,
                                           child: FilledButton(
                                               onPressed: () {
-                                                Navigator.of(context).pop();
+                                                _changeProfileData(prevNickName, bottomState);
                                               },
                                               child: const Text('닫기')
                                           ),
