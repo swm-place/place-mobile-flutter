@@ -75,4 +75,22 @@ class UserProvider extends DefaultProvider {
     }
     return null;
   }
+
+  Future<int?> patchProfile(Map<String, dynamic> profileData, String token) async {
+    User? user = AuthController.to.user.value;
+    if (user != null) {
+      Uri uri = Uri.parse("$baseUrl/api/user");
+      Map<String, String>? header = setHeader(token);
+      header!["Content-Type"] = 'application/json';
+
+      Response response;
+      try {
+        response = await patch(uri, headers: header, body: json.encode(profileData));
+      } catch(e) {
+        return null;
+      }
+      return response.statusCode;
+    }
+    return null;
+  }
 }
