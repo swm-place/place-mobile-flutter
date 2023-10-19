@@ -199,8 +199,8 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       placeCards.add(
           MyStoryCard(
             title: _myStoryData[i]['title'],
-            width: 180,
-            height: 180,
+            width: 140,
+            height: 140,
             places: _myStoryData[i]['places'],
           )
       );
@@ -237,8 +237,8 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       placeCards.add(
           MyStoryCard(
             title: _myStoryData[i]['title'],
-            width: 180,
-            height: 180,
+            width: 140,
+            height: 140,
             places: _myStoryData[i]['places'],
           )
       );
@@ -278,7 +278,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
           child: Column(
             children: [
               _searchSection(),
-              _myStorySection(),
+              // _myStorySection(),
               _locationBookmarkSection(),
               _storyBookmarkSection(),
               SizedBox(height: 24,)
