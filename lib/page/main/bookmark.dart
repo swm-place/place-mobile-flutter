@@ -194,20 +194,6 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
   }
 
   Widget _locationBookmarkSection() {
-    List<Widget> placeCards = [const SizedBox(width: 24,)];
-    for (int i = 0;i < _myStoryData.length;i++) {
-      placeCards.add(
-          MyStoryCard(
-            title: _myStoryData[i]['title'],
-            width: 140,
-            height: 140,
-            places: _myStoryData[i]['places'],
-          )
-      );
-      placeCards.add(const SizedBox(width: 8,));
-    }
-    placeCards.add(const SizedBox(width: 16,));
-
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
       child: MainSection(
@@ -221,10 +207,26 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
             ),
           ),
         ),
-        content: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: placeCards,
+        content: SizedBox(
+          height: 288,
+          width: double.infinity,
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8
+            ),
+            scrollDirection: Axis.horizontal,
+            itemCount: _myStoryData.length,
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+            itemBuilder: (context, index) {
+              return MyStoryCard(
+                title: _myStoryData[index]['title'],
+                width: 140,
+                height: 140,
+                places: _myStoryData[index]['places'],
+              );
+            },
           ),
         ),
       ),
@@ -232,24 +234,10 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
   }
 
   Widget _storyBookmarkSection() {
-    List<Widget> placeCards = [const SizedBox(width: 24,)];
-    for (int i = 0;i < _myStoryData.length;i++) {
-      placeCards.add(
-          MyStoryCard(
-            title: _myStoryData[i]['title'],
-            width: 140,
-            height: 140,
-            places: _myStoryData[i]['places'],
-          )
-      );
-      placeCards.add(const SizedBox(width: 8,));
-    }
-    placeCards.add(const SizedBox(width: 16,));
-
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
       child: MainSection(
-        title: "스토리 북마크",
+        title: "코스 북마크",
         action: Ink(
           child: InkWell(
             onTap: () {},
@@ -259,10 +247,26 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
             ),
           ),
         ),
-        content: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: placeCards,
+        content: SizedBox(
+          height: 288,
+          width: double.infinity,
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8
+            ),
+            scrollDirection: Axis.horizontal,
+            itemCount: _myStoryData.length,
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+            itemBuilder: (context, index) {
+              return MyStoryCard(
+                title: _myStoryData[index]['title'],
+                width: 140,
+                height: 140,
+                places: _myStoryData[index]['places'],
+              );
+            },
           ),
         ),
       ),
