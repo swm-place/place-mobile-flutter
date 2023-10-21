@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
@@ -199,12 +200,19 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       child: MainSection(
         title: "장소 북마크",
         action: Ink(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            // color: lightColorScheme.primary
+          ),
           child: InkWell(
-            onTap: () {},
-            child: Text(
-              "전체보기",
-              style: SectionTextStyle.labelMedium(Colors.blue),
+            customBorder: const CircleBorder(),
+            child: const Padding(
+              padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+              child: Icon(Icons.add, size: 18, color: Colors.black,),
             ),
+            onTap: () {
+              // Navigator.pop(context);
+            },
           ),
         ),
         content: SizedBox(
@@ -239,14 +247,30 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       child: MainSection(
         title: "코스 북마크",
         action: Ink(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            // color: lightColorScheme.primary
+          ),
           child: InkWell(
-            onTap: () {},
-            child: Text(
-              "전체보기",
-              style: SectionTextStyle.labelMedium(Colors.blue),
+            customBorder: const CircleBorder(),
+            child: const Padding(
+              padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+              child: Icon(Icons.add, size: 18, color: Colors.black,),
             ),
+            onTap: () {
+              // Navigator.pop(context);
+            },
           ),
         ),
+        // action: Ink(
+        //   child: InkWell(
+        //     onTap: () {},
+        //     child: Text(
+        //       "전체보기",
+        //       style: SectionTextStyle.labelMedium(Colors.blue),
+        //     ),
+        //   ),
+        // ),
         content: SizedBox(
           height: 288,
           width: double.infinity,
