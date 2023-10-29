@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/story/story_my_card.dart';
@@ -138,6 +139,10 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     },
   ];
 
+  late final TextEditingController _bookmarkNameController;
+
+  String? _bookmarkNameError;
+
   @override
   bool get wantKeepAlive => true;
 
@@ -211,7 +216,48 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
               child: Icon(Icons.add, size: 18, color: Colors.black,),
             ),
             onTap: () {
-              // Navigator.pop(context);
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return StatefulBuilder(
+                      builder: (BuildContext context, StateSetter dialogState) {
+                        return AlertDialog(
+                          title: Text("북마크 추가"),
+                          content: TextField(
+                            maxLength: 50,
+                            controller: _bookmarkNameController,
+                            onChanged: (text) {
+                              dialogState(() {
+                                setState(() {
+                                  _bookmarkNameError = bookmarkTextFieldValidator(text);
+                                });
+                              });
+                            },
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: "북마크 이름",
+                                errorText: _bookmarkNameError
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true).pop();
+                              },
+                              child: Text('취소', style: TextStyle(color: Colors.red),),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true).pop();
+                              },
+                              child: Text('만들기', style: TextStyle(color: Colors.blue),),
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  }
+              );
             },
           ),
         ),
@@ -295,6 +341,18 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    _bookmarkNameController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _bookmarkNameController.dispose();
+    super.dispose();
   }
 
   @override
