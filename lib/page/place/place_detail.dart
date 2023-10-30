@@ -511,16 +511,17 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                     children: [
                       SizedBox(height: 4,),
                       Text(
-                        "제주 제주시 봉개동 산 64-5",
+                        placeData['road_address'],
                         style: SectionTextStyle.sectionContent(Colors.black),
                       ),
-                      Row(
-                        children: [
-                          Text("지번"),
-                          SizedBox(width: 4,),
-                          Text("제주 제주시 봉개동 산 64-5")
-                        ],
-                      )
+                      if (placeData['address'] != null)
+                        Row(
+                          children: [
+                            Text("지번"),
+                            SizedBox(width: 4,),
+                            Text(placeData['address'])
+                          ],
+                        )
                     ],
                   ),
                 )
@@ -603,7 +604,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             GestureDetector(
               onTap: () {
                 print("call");
-                launchUrlString("tel:010-0000-0000");
+                launchUrlString("tel:${placeData['phone_number']}");
               },
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -616,7 +617,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                       children: [
                         SizedBox(height: 4,),
                         Text(
-                          "010-0000-0000",
+                          placeData['phone_number'],
                           style: SectionTextStyle.sectionContent(Colors.black),
                         ),
                       ],
