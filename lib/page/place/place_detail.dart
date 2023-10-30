@@ -214,6 +214,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   int _loadData = -1;
 
+  late final Map<String, dynamic> placeData;
+
   @override
   void initState() {
     _likeButtonController = AnimationController(vsync: this);
@@ -238,6 +240,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   void getPlaceData() async {
     Map<String, dynamic>? result = await _placeProvider.getPlaceData(widget.placeId);
     if (result != null) {
+      placeData = result;
       setState(() {
         _loadData = 1;
       });
@@ -291,13 +294,14 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                     SliverList(
                       delegate: SliverChildListDelegate([
                         _detailHead(),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-                          child: Text(
-                            "장소에 대한 소개글입니다 장소에대한 소개글입니다 장소에대한 소개글입니다",
-                            style: SectionTextStyle.sectionContentLargeLine(Colors.black),
+                        if (placeData['summary'] != null)
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                            child: Text(
+                              placeData['summary'],
+                              style: SectionTextStyle.sectionContentLargeLine(Colors.black),
+                            ),
                           ),
-                        ),
                         _detailInform(),
                         _detailReview(commentHeight),
                         _detailPicture(),
@@ -339,7 +343,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
               SizedBox(
                 width: double.infinity,
                 child: Text(
-                  "사려니 숲길",
+                  placeData['name'],
                   style: PageTextStyle.headlineExtraLarge(Colors.black),
                 ),
               ),
