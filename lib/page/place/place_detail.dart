@@ -212,6 +212,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     {"name": "북마크", "include": false},
   ];
 
+  int _loadData = -1;
+
   @override
   void initState() {
     _likeButtonController = AnimationController(vsync: this);
@@ -235,7 +237,15 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   void getPlaceData() async {
     Map<String, dynamic>? result = await _placeProvider.getPlaceData(widget.placeId);
-    print(result);
+    if (result != null) {
+      setState(() {
+        _loadData = 1;
+      });
+    } else {
+      setState(() {
+        _loadData = 0;
+      });
+    }
   }
 
   @override
@@ -243,62 +253,79 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     //   statusBarColor: Colors.transparent
     // ));
-    return Scaffold(
-      // extendBodyBehindAppBar: true,
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          // print(constraints.maxWidth);
-          double commentHeight = 58640 / (constraints.maxWidth - 96);
-          return CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                leading: FlexibleTopBarActionButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  icon: Icon(
-                    Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                    size: 18,
-                  ),
-                  iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
-                ),
-                actions: [
-                  FlexibleTopBarActionButton(
-                      onPressed: () {
+    if (_loadData != -1) {
+      if (_loadData == 1) {
+        return Scaffold(
+          // extendBodyBehindAppBar: true,
+            body: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                // print(constraints.maxWidth);
+                double commentHeight = 58640 / (constraints.maxWidth - 96);
+                return CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      leading: FlexibleTopBarActionButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: Icon(
+                          Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                          size: 18,
+                        ),
+                        iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
+                      ),
+                      actions: [
+                        FlexibleTopBarActionButton(
+                            onPressed: () {
 
-                      },
-                      icon: Icon(Icons.ios_share, size: 18,)
-                  )
-                ],
-                pinned: true,
-                expandedHeight: 220.0,
-                surfaceTintColor: Colors.white,
-                backgroundColor: Colors.white,
-                flexibleSpace: const PictureFlexibleSpace(),
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  _detailHead(),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-                    child: Text(
-                      "장소에 대한 소개글입니다 장소에대한 소개글입니다 장소에대한 소개글입니다",
-                      style: SectionTextStyle.sectionContentLargeLine(Colors.black),
+                            },
+                            icon: Icon(Icons.ios_share, size: 18,)
+                        )
+                      ],
+                      pinned: true,
+                      expandedHeight: 220.0,
+                      surfaceTintColor: Colors.white,
+                      backgroundColor: Colors.white,
+                      flexibleSpace: const PictureFlexibleSpace(),
                     ),
-                  ),
-                  _detailInform(),
-                  _detailReview(commentHeight),
-                  _detailPicture(),
-                  _detailRelevantPlace(),
-                  _detailRelevantStory(),
-                  SizedBox(height: 24,)
-                ]),
-              )
-            ],
-          );
-        },
-      )
-    );
+                    SliverList(
+                      delegate: SliverChildListDelegate([
+                        _detailHead(),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                          child: Text(
+                            "장소에 대한 소개글입니다 장소에대한 소개글입니다 장소에대한 소개글입니다",
+                            style: SectionTextStyle.sectionContentLargeLine(Colors.black),
+                          ),
+                        ),
+                        _detailInform(),
+                        _detailReview(commentHeight),
+                        _detailPicture(),
+                        _detailRelevantPlace(),
+                        _detailRelevantStory(),
+                        SizedBox(height: 24,)
+                      ]),
+                    )
+                  ],
+                );
+              },
+            )
+        );
+      } else {
+        return Scaffold(
+          appBar: AppBar(),
+          body: Center(
+            child: Text('오류 발생')
+          ),
+        );
+      }
+    } else {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
   }
 
   Widget _detailHead() => Padding(
