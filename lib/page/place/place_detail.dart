@@ -57,6 +57,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   bool bookmarkPlace = false;
 
   bool isTimeOpen = false;
+  bool nowOpen = false;
 
   String? _bookmarkNameError;
 
@@ -468,169 +469,219 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     ),
   );
 
-  Widget _detailInform() => Padding(
-    padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
-    child: MainSection(
-      title: '정보',
-      action: TextButton.icon(
-        onPressed: () {
-          final Uri emailLaunchUri = Uri(
-            scheme: 'mailto',
-            path: 'our.email@gmail.com',
-            query: 'subject=[오류제보] {장소이름} 정보 오류 제보&body=오류 내용: '
-          );
-          launchUrl(emailLaunchUri);
-        },
-        label: Text("오류 신고"),
-        icon: Icon(MdiIcons.alertOctagon, size: 20,),
-        style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            minimumSize: Size(30, 30),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            alignment: Alignment.centerLeft,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8)
+  List<Widget> _generateSchedule() {
+    Map<int, Text> scheduleList = {
+      0: Text("일 휴무"),
+      1: Text("월 휴무"),
+      2: Text("화 휴무"),
+      3: Text("수 휴무"),
+      4: Text("목 휴무"),
+      5: Text("금 휴무"),
+      6: Text("토 휴무"),
+    };
+
+    DateTime now = DateTime.now();
+    int dayOfWeek = now.weekday % 7;
+    bool checkOpen = false;
+
+    for (var data in placeData['opening_hours']) {
+      String open = data['open'].toString().padLeft(4, '0').replaceRange(2, 2, ':');
+      String close = data['close'].toString().padLeft(4, '0').replaceRange(2, 2, ':');
+      scheduleList[data['weekday']] = Text(scheduleList[data['weekday']]!.data!.replaceAll('휴무', '$open ~ $close'));
+      if (!checkOpen && dayOfWeek == data['weekday']) {
+        checkOpen = true;
+        DateTime startTime = DateTime(now.year, now.month, now.day,
+            int.parse(open.split(":")[0]), int.parse(open.split(":")[1]));
+        DateTime endTime = DateTime(now.year, now.month, now.day,
+            int.parse(close.split(":")[0]), int.parse(close.split(":")[1]));
+
+        nowOpen = now.isAfter(startTime) && now.isBefore(endTime);
+      }
+    }
+
+    if (!checkOpen) {
+      nowOpen = false;
+    }
+    return scheduleList.values.toList();
+  }
+
+  Widget _detailInform() {
+    List<Widget>? timeList;
+    if (placeData['opening_hours'] != null) timeList = _generateSchedule();
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      child: MainSection(
+          title: '정보',
+          action: TextButton.icon(
+            onPressed: () {
+              final Uri emailLaunchUri = Uri(
+                  scheme: 'mailto',
+                  path: 'our.email@gmail.com',
+                  query: 'subject=[오류제보] {장소이름} 정보 오류 제보&body=오류 내용: '
+              );
+              launchUrl(emailLaunchUri);
+            },
+            label: Text("오류 신고"),
+            icon: Icon(MdiIcons.alertOctagon, size: 20,),
+            style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: Size(30, 30),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                alignment: Alignment.centerLeft,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)
+                ),
+                iconColor: Colors.red,
+                surfaceTintColor: Colors.red,
+                foregroundColor: Colors.red
             ),
-            iconColor: Colors.red,
-            surfaceTintColor: Colors.red,
-            foregroundColor: Colors.red
-        ),
-      ),
-      content: Padding(
-        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          content: Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+            child: Column(
               children: [
-                Icon(MdiIcons.mapMarkerOutline, color: Colors.grey[700], size: 24,),
-                SizedBox(width: 10,),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 4,),
-                      Text(
-                        placeData['road_address'],
-                        style: SectionTextStyle.sectionContent(Colors.black),
-                      ),
-                      if (placeData['address'] != null)
-                        Row(
-                          children: [
-                            Text("지번"),
-                            SizedBox(width: 4,),
-                            Text(placeData['address'])
-                          ],
-                        )
-                    ],
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: 8,),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(MdiIcons.clockOutline, color: Colors.grey[700], size: 24,),
-                SizedBox(width: 10,),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 4,),
-                      Ink(
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                isTimeOpen = !isTimeOpen;
-                              });
-                            },
-                            child: Row(
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(MdiIcons.mapMarkerOutline, color: Colors.grey[700],
+                      size: 24,),
+                    SizedBox(width: 10,),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 4,),
+                          Text(
+                            placeData['road_address'],
+                            style: SectionTextStyle.sectionContent(
+                                Colors.black),
+                          ),
+                          if (placeData['address'] != null)
+                            Row(
                               children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                Text("지번"),
+                                SizedBox(width: 4,),
+                                Text(placeData['address'])
+                              ],
+                            )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: 8,),
+                if (placeData['opening_hours'] != null)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(MdiIcons.clockOutline, color: Colors.grey[700],
+                        size: 24,),
+                      SizedBox(width: 10,),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 4,),
+                            Ink(
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      isTimeOpen = !isTimeOpen;
+                                    });
+                                  },
+                                  child: Row(
                                     children: [
-                                      Text(
-                                        "현재 운영중",
-                                        style: SectionTextStyle.sectionContentLarge(Colors.green),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            nowOpen ? Text(
+                                              "현재 운영중",
+                                              style: SectionTextStyle
+                                                  .sectionContentLarge(
+                                                  Colors.green),
+                                            ) : Text(
+                                              "현재 운영중 아님",
+                                              style: SectionTextStyle
+                                                  .sectionContentLarge(
+                                                  Colors.red),
+                                            ),
+                                            Text("최근 1시간 동안 5명이 운영중이 아니라고 제보"),
+                                            GestureDetector(
+                                              child: Text("운영중 오류 제보하기"),
+                                              onTap: () {
+                                                __showTimeReportDialog();
+                                              },
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                      Text("최근 1시간 동안 5명이 운영중이 아니라고 제보"),
-                                      GestureDetector(
-                                        child: Text("운영중 오류 제보하기"),
-                                        onTap: () {
-                                          __showTimeReportDialog();
-                                        },
+                                      AnimatedCrossFade(
+                                        duration: Duration(milliseconds: 250),
+                                        crossFadeState: isTimeOpen
+                                            ? CrossFadeState.showSecond
+                                            : CrossFadeState.showFirst,
+                                        firstChild: Icon(
+                                            Icons.keyboard_arrow_down),
+                                        secondChild: Icon(
+                                            Icons.keyboard_arrow_up),
                                       )
                                     ],
                                   ),
-                                ),
-                                AnimatedCrossFade(
-                                  duration: Duration(milliseconds: 250),
-                                  crossFadeState: isTimeOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                  firstChild: Icon(Icons.keyboard_arrow_down),
-                                  secondChild: Icon(Icons.keyboard_arrow_up),
                                 )
-                              ],
                             ),
-                          )
-                      ),
-                      AnimatedSize(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.fastOutSlowIn,
-                          child: Container(
-                            height: isTimeOpen ? null : 0,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("월 10:00~22:00"),
-                                Text("화 10:00~22:00"),
-                                Text("수 10:00~22:00"),
-                                Text("목 10:00~22:00"),
-                                Text("금 10:00~22:00"),
-                                Text("토 휴무"),
-                                Text("일 휴무"),
-                              ],
+                            AnimatedSize(
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.fastOutSlowIn,
+                                child: Container(
+                                  height: isTimeOpen ? null : 0,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: timeList!,
+                                  ),
+                                )
                             ),
-                          )
-                      ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
-                )
+                if (placeData['opening_hours'] != null)
+                  SizedBox(height: 8,),
+                GestureDetector(
+                  onTap: () {
+                    print("call");
+                    launchUrlString("tel:${placeData['phone_number']}");
+                  },
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(MdiIcons.phone, color: Colors.grey[700], size: 24,),
+                      SizedBox(width: 10,),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 4,),
+                            Text(
+                              placeData['phone_number'],
+                              style: SectionTextStyle.sectionContent(
+                                  Colors.black),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ],
             ),
-            SizedBox(height: 8,),
-            GestureDetector(
-              onTap: () {
-                print("call");
-                launchUrlString("tel:${placeData['phone_number']}");
-              },
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(MdiIcons.phone, color: Colors.grey[700], size: 24,),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 4,),
-                        Text(
-                          placeData['phone_number'],
-                          style: SectionTextStyle.sectionContent(Colors.black),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      )
-    ),
-  );
+          )
+      ),
+    );
+  }
 
   Widget _detailReview(double commentHeight) {
     return Padding(
