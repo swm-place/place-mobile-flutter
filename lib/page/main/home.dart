@@ -90,14 +90,14 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
 
   int activeIndex = 0;
 
+  int _loadRecommendData = -1;
+
   @override
   bool get wantKeepAlive => true;
 
-  late final Future<Map<String, dynamic>?> _getPlace;
-
   @override
   void initState() {
-    _getPlace = _getPlaceRecommendationSection();
+    _getPlaceRecommendationSection();
     super.initState();
   }
 
@@ -290,9 +290,15 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     );
   }
 
-  Future<Map<String, dynamic>?> _getPlaceRecommendationSection() async {
+  void _getPlaceRecommendationSection() async {
     Map<String, dynamic>? data = await _placeProvider.getPlaceRecommendSection();
-    if (data == null) return null;
+    if (data == null) {
+      _recommendData = null;
+      setState(() {
+        _loadRecommendData = 0;
+      });
+      return null;
+    }
 
     for (int c = 0;c < data['collections'].length;c++) {
       for (int index = 0;index < data['collections'][c]["places"].length;index++) {
@@ -312,32 +318,30 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
         }
       }
     }
-    return data;
+    _recommendData = data;
+    setState(() {
+      _loadRecommendData = 1;
+    });
   }
 
   Widget _loadPlaceRecommendSection() {
-    return FutureBuilder<Map<String, dynamic>?>(
-      future: _getPlace,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          List<Widget> items = [];
-          _recommendData = snapshot.data;
-          if (_recommendData != null) {
-            for (int i = 0;i < _recommendData!['collections'].length;i++) {
-              items.add(__recommendSection(_recommendData!['collections'][i]));
-              items.add(const SizedBox(height: 24,));
-            }
-            return Column(
-              children: items,
-            );
-          } else {
-            return Container();
-          }
-        } else {
-          return Container();
+    print('sssss');
+    if (_loadRecommendData != -1) {
+      List<Widget> items = [];
+      if (_recommendData != null) {
+        for (int i = 0;i < _recommendData!['collections'].length;i++) {
+          items.add(__recommendSection(_recommendData!['collections'][i]));
+          items.add(const SizedBox(height: 24,));
         }
-      },
-    );
+        return Column(
+          children: items,
+        );
+      } else {
+        return Container();
+      }
+    } else {
+      return Container();
+    }
   }
 
   List<Widget> _createSection() {
