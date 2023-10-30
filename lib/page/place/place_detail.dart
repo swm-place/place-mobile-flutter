@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
@@ -28,6 +29,13 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PlaceDetailPage extends StatefulWidget {
+  PlaceDetailPage({
+    required this.placeId,
+    Key? key
+  }) : super(key: key);
+
+  String placeId;
+
   @override
   State<StatefulWidget> createState() {
     return _PlaceDetailPageState();
@@ -35,6 +43,8 @@ class PlaceDetailPage extends StatefulWidget {
 }
 
 class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderStateMixin {
+  final PlaceProvider _placeProvider = PlaceProvider();
+
   late final AnimationController _likeButtonController;
   late final AnimationController _bookmarkButtonController;
 
@@ -209,6 +219,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     _bookmarkScrollController = ScrollController();
     _commentScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
+    getPlaceData();
     super.initState();
   }
 
@@ -220,6 +231,11 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     _commentScrollController.dispose();
     _bookmarkNameController.dispose();
     super.dispose();
+  }
+
+  void getPlaceData() async {
+    Map<String, dynamic>? result = await _placeProvider.getPlaceData(widget.placeId);
+    print(result);
   }
 
   @override
@@ -706,7 +722,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             likeCount: UnitConverter.formatNumber(_relevantPlaceData[i]['likeCount']),
             onPressed: () {
               print("place");
-              Get.to(() => PlaceDetailPage(), preventDuplicates: false);
+              // Get.to(() => PlaceDetailPage(), preventDuplicates: false);
             },
           )
       );

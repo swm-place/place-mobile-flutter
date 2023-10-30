@@ -277,8 +277,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                     // likeCount: UnitConverter.formatNumber(data["places"][index]['likeCount']),
                     likeCount: UnitConverter.formatNumber(Random().nextInt(1000000)),
                     onPressed: () {
+                      print(data["places"][index]['id']);
                       Get.to(() => PlaceDetailPage(
-
+                        placeId: data["places"][index]['id'],
                       ));
                     },
                   );
