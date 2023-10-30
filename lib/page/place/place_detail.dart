@@ -487,6 +487,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     for (var data in placeData['opening_hours']) {
       String open = data['open'].toString().padLeft(4, '0').replaceRange(2, 2, ':');
       String close = data['close'].toString().padLeft(4, '0').replaceRange(2, 2, ':');
+      if (close.startsWith('00')) close = close.replaceRange(0, 2, '24');
       scheduleList[data['weekday']] = Text(scheduleList[data['weekday']]!.data!.replaceAll('휴무', '$open ~ $close'));
       if (!checkOpen && dayOfWeek == data['weekday']) {
         checkOpen = true;
@@ -734,12 +735,14 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   List<Widget> __createImageTile() {
     List<Widget> tiles = [];
-    for (int i = 0;i < 8;i++) {
+    int imgCount = placeData['photos'].length;
+    if (imgCount > 8) imgCount = 8;
+    for (int i = 0;i < imgCount;i++) {
       tiles.add(
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.network(
-            'https://source.unsplash.com/random?sig=$i',
+            "https://been-dev.yeoksi.com/api-recommender/place-photo/?${placeData['photos'][i]['url'].split('?')[1]}&max_width=480",
             fit: BoxFit.cover,
           ),
         )
@@ -776,6 +779,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 crossAxisSpacing: 6,
                 crossAxisCount: 4,
                 pattern: [
+                  // QuiltedGridTile(1, 1),
+                  // QuiltedGridTile(1, 1),
                   QuiltedGridTile(2, 2),
                   QuiltedGridTile(1, 1),
                   QuiltedGridTile(1, 1),
