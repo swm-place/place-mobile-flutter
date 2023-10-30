@@ -5,7 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/page/course/course_add.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
-import 'package:place_mobile_flutter/state/place_controller.dart';
+import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/state/state_const.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -42,10 +42,10 @@ class _CourseEditPageState extends State<CourseEditPage> {
     int index = 0;
     for (var place in CourseController.to.coursePlaceData) {
       int? distance;
-      if (PlaceController.to.userPosition.value != null) {
+      if (GISController.to.userPosition.value != null) {
         double lat2 = place['location']['lat'];
         double lon2 = place['location']['lon'];
-        distance = PlaceController.to.haversineDistance(lat2, lon2);
+        distance = GISController.to.haversineDistance(lat2, lon2);
       }
       int targetIndex = index;
       course.add(

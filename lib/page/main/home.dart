@@ -6,7 +6,7 @@ import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/page/place/place_detail.dart';
-import 'package:place_mobile_flutter/state/place_controller.dart';
+import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
@@ -309,12 +309,12 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             "color": RandomGenerator.generateRandomDarkHexColor()
           };
         }
-        if (PlaceController.to.userPosition.value == null) {
+        if (GISController.to.userPosition.value == null) {
           data['collections'][c]["places"][index]['distance'] = null;
         } else {
           double lat2 = data['collections'][c]["places"][index]['location']['lat'];
           double lon2 = data['collections'][c]["places"][index]['location']['lon'];
-          data['collections'][c]["places"][index]['distance'] = PlaceController.to.haversineDistance(lat2, lon2);
+          data['collections'][c]["places"][index]['distance'] = GISController.to.haversineDistance(lat2, lon2);
         }
       }
     }
@@ -325,7 +325,6 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   }
 
   Widget _loadPlaceRecommendSection() {
-    print('sssss');
     if (_loadRecommendData != -1) {
       List<Widget> items = [];
       if (_recommendData != null) {

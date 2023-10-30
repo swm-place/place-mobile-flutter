@@ -11,7 +11,7 @@ import 'package:place_mobile_flutter/page/main/home.dart';
 import 'package:place_mobile_flutter/page/main/profile.dart';
 import 'package:place_mobile_flutter/page/main/random.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
-import 'package:place_mobile_flutter/state/place_controller.dart';
+import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/state/user_controller.dart';
 import 'theme/color_schemes.g.dart';
 import 'package:get/get.dart';
@@ -21,12 +21,12 @@ Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp();
-  Get.put(PlaceController());
+  Get.put(GISController());
   Get.put(ProfileController());
   Get.put(AuthController());
 
-  await PlaceController.to.checkPermission();
-  await PlaceController.to.getPosition();
+  await GISController.to.checkPermission();
+  await GISController.to.getPosition();
 
   runApp(GetMaterialApp(
     // builder: (context, child) {

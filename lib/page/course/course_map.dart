@@ -5,7 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
-import 'package:place_mobile_flutter/state/place_controller.dart';
+import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
 import 'package:place_mobile_flutter/util/map/map_layer.dart';
 import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
@@ -119,10 +119,10 @@ class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateM
                 itemCount: CourseController.to.coursePlaceData.length,
                 itemBuilder: (context, index, realIndex) {
                   int? distance;
-                  if (PlaceController.to.userPosition.value != null) {
+                  if (GISController.to.userPosition.value != null) {
                     double lat2 = CourseController.to.coursePlaceData[index]['location']['lat'];
                     double lon2 = CourseController.to.coursePlaceData[index]['location']['lon'];
-                    distance = PlaceController.to.haversineDistance(lat2, lon2);
+                    distance = GISController.to.haversineDistance(lat2, lon2);
                   }
                   return Container(
                     padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),

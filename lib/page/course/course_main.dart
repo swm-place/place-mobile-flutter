@@ -15,7 +15,7 @@ import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_edit.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
-import 'package:place_mobile_flutter/state/place_controller.dart';
+import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/state/state_const.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -473,10 +473,10 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     List<Widget> course = [];
     for (var place in CourseController.to.coursePlaceData) {
       int? distance;
-      if (PlaceController.to.userPosition.value != null) {
+      if (GISController.to.userPosition.value != null) {
         double lat2 = place['location']['lat'];
         double lon2 = place['location']['lon'];
-        distance = PlaceController.to.haversineDistance(lat2, lon2);
+        distance = GISController.to.haversineDistance(lat2, lon2);
       }
       course.addAll([
         RoundedRowRectanglePlaceCard(
