@@ -333,6 +333,21 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     }
   }
 
+  List<Widget> __generateTags() {
+    List<Widget> tags = [];
+    for (int i = 0;i < placeData['hashtags'].length;i++) {
+      tags.add(
+        TagChip(
+          text: "#${placeData['hashtags'][i]}",
+          textStyle: SectionTextStyle.labelMediumThick(Colors.white),
+          padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+          backgroundColor: UnitConverter.hexToColor(RandomGenerator.generateRandomDarkHexColor()),
+        )
+      );
+    }
+    return tags;
+  }
+
   Widget _detailHead() => Padding(
     padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
     child: Row(
@@ -351,30 +366,28 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
               SizedBox(
                 height: 6,
               ),
-              Row(
-                children: [
-                  TagChip(
-                    text: "#자연",
-                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                  ),
-                  SizedBox(width: 4,),
-                  TagChip(
-                    text: "#자연",
-                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                  ),
-                  SizedBox(width: 4,),
-                  TagChip(
-                    text: "#자연",
-                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                  ),
-                ],
+              SizedBox(
+                height: 25.5,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, int index) {
+                    return TagChip(
+                      text: "#${placeData['hashtags'][index]}",
+                      textStyle: SectionTextStyle.labelMediumThick(Colors.white),
+                      padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                      backgroundColor: UnitConverter.hexToColor(RandomGenerator.generateRandomDarkHexColor()),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(width: 4,);
+                  },
+                  itemCount: placeData['hashtags'].length,
+                ),
               )
             ],
           ),
         ),
+        SizedBox(width: 6,),
         Row(
           children: [
             GestureDetector(
@@ -518,7 +531,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
               final Uri emailLaunchUri = Uri(
                   scheme: 'mailto',
                   path: 'our.email@gmail.com',
-                  query: 'subject=[오류제보] {장소이름} 정보 오류 제보&body=오류 내용: '
+                  query: 'subject=[오류제보] ${placeData["name"]} 정보 오류 제보&body=오류 내용: '
               );
               launchUrl(emailLaunchUri);
             },
