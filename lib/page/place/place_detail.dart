@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -358,9 +359,13 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             children: [
               SizedBox(
                 width: double.infinity,
-                child: Text(
+                child: AutoSizeText(
                   placeData['name'],
                   style: PageTextStyle.headlineExtraLarge(Colors.black),
+                  maxLines: 1,
+                  minFontSize: 24,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               SizedBox(
@@ -664,32 +669,33 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   ),
                 if (placeData['opening_hours'] != null)
                   SizedBox(height: 8,),
-                GestureDetector(
-                  onTap: () {
-                    print("call");
-                    launchUrlString("tel:${placeData['phone_number']}");
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(MdiIcons.phone, color: Colors.grey[700], size: 24,),
-                      SizedBox(width: 10,),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: 4,),
-                            Text(
-                              placeData['phone_number'],
-                              style: SectionTextStyle.sectionContent(
-                                  Colors.black),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
+                if (placeData['phone_number'] != null)
+                  GestureDetector(
+                    onTap: () {
+                      print("call");
+                      launchUrlString("tel:${placeData['phone_number']}");
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(MdiIcons.phone, color: Colors.grey[700], size: 24,),
+                        SizedBox(width: 10,),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 4,),
+                              Text(
+                                placeData['phone_number'],
+                                style: SectionTextStyle.sectionContent(
+                                    Colors.black),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
           )
