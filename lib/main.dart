@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:place_mobile_flutter/page/account/login.dart';
 import 'package:place_mobile_flutter/page/main/bookmark.dart';
+import 'package:place_mobile_flutter/page/main/course.dart';
 import 'package:place_mobile_flutter/page/main/home.dart';
 import 'package:place_mobile_flutter/page/main/profile.dart';
 import 'package:place_mobile_flutter/page/main/random.dart';
@@ -117,6 +118,7 @@ class _MainPageState extends State<MainPage> {
     _selectedPageIndex = 0;
     _pages = [
       HomePage(),
+      CoursePage(),
       BookmarkPage(),
       RandomPage(),
       ProfilePage()
@@ -145,6 +147,7 @@ class _MainPageState extends State<MainPage> {
         selectedIndex: _selectedPageIndex,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'home'),
+          NavigationDestination(icon: Icon(Icons.route), label: 'course'),
           NavigationDestination(icon: Icon(Icons.bookmark_border_outlined), label: 'bookmark'),
           NavigationDestination(icon: Icon(Icons.lightbulb_outline), label: 'discover'),
           NavigationDestination(icon: Icon(Icons.person), label: 'profile'),
