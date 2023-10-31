@@ -243,6 +243,9 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     Map<String, dynamic>? result = await _placeProvider.getPlaceData(widget.placeId);
     if (result != null) {
       placeData = result;
+      for (int i = 0;i < placeData['hashtags'].length;i++) {
+        placeData['hashtags'][i] = {'name': placeData['hashtags'][i], 'color': RandomGenerator.generateRandomDarkHexColor()};
+      }
       setState(() {
         _loadData = 1;
       });
@@ -339,10 +342,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     for (int i = 0;i < placeData['hashtags'].length;i++) {
       tags.add(
         TagChip(
-          text: "#${placeData['hashtags'][i]}",
+          text: "#${placeData['hashtags'][i]['name']}",
           textStyle: SectionTextStyle.labelMediumThick(Colors.white),
           padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-          backgroundColor: UnitConverter.hexToColor(RandomGenerator.generateRandomDarkHexColor()),
+          backgroundColor: UnitConverter.hexToColor(placeData['hashtags'][i]['color']),
         )
       );
     }
@@ -377,10 +380,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index) {
                     return TagChip(
-                      text: "#${placeData['hashtags'][index]}",
+                      text: "#${placeData['hashtags'][index]['name']}",
                       textStyle: SectionTextStyle.labelMediumThick(Colors.white),
                       padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                      backgroundColor: UnitConverter.hexToColor(RandomGenerator.generateRandomDarkHexColor()),
+                      backgroundColor: UnitConverter.hexToColor(placeData['hashtags'][index]['color']),
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
