@@ -120,7 +120,7 @@ class _MainPageState extends State<MainPage> {
       HomePage(),
       CoursePage(),
       BookmarkPage(),
-      RandomPage(),
+      // RandomPage(),
       ProfilePage()
     ];
     _pageController = PageController(initialPage: _selectedPageIndex);
@@ -149,7 +149,7 @@ class _MainPageState extends State<MainPage> {
           NavigationDestination(icon: Icon(Icons.home), label: 'home'),
           NavigationDestination(icon: Icon(Icons.route), label: 'course'),
           NavigationDestination(icon: Icon(Icons.bookmark_border_outlined), label: 'bookmark'),
-          NavigationDestination(icon: Icon(Icons.lightbulb_outline), label: 'discover'),
+          // NavigationDestination(icon: Icon(Icons.lightbulb_outline), label: 'discover'),
           NavigationDestination(icon: Icon(Icons.person), label: 'profile'),
         ],
         onDestinationSelected: (selectedPageIndex) {
