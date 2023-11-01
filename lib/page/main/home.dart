@@ -114,15 +114,15 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             print("searchbar clicked");
           },
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: __createTag(),
-            )
-          ),
-        )
+        // Padding(
+        //   padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
+        //   child: SingleChildScrollView(
+        //     scrollDirection: Axis.horizontal,
+        //     child: Row(
+        //       children: __createTag(),
+        //     )
+        //   ),
+        // )
       ],
     ),
   );
@@ -351,10 +351,10 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
       __storySection(),
       const SizedBox(height: 24,)
     ];
-    section.addAll([
-      __courseSection(_courseData),
-      const SizedBox(height: 24,)
-    ]);
+    // section.addAll([
+    //   __courseSection(_courseData),
+    //   const SizedBox(height: 24,)
+    // ]);
     section.add(_loadPlaceRecommendSection());
     // for (int i = 0;i < _recommendData.length;i++) {
     //   section.add(__recommendSection(_recommendData[i]));
