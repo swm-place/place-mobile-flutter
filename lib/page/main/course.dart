@@ -39,6 +39,29 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
     ]
   };
 
+  final List<Map<String, dynamic>> _recommendKeywordData = [
+    {
+      'background': [
+        "https://source.unsplash.com/random?sig=1",
+        "https://source.unsplash.com/random?sig=2",
+        "https://source.unsplash.com/random?sig=3",
+      ],
+      'title': '강남 데이트 1',
+      'location': '서울특뱔시 강남구'
+    },
+    {
+      'background': [
+        "https://source.unsplash.com/random?sig=4",
+        "https://source.unsplash.com/random?sig=5",
+        "https://source.unsplash.com/random?sig=6",
+        "https://source.unsplash.com/random?sig=7",
+        "https://source.unsplash.com/random?sig=8",
+      ],
+      'title': '파주 데이트 2',
+      'location': '경기도 파주시'
+    },
+  ];
+
   @override
   bool get wantKeepAlive => true;
 
@@ -47,29 +70,62 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
       title: '인기있는 키워드',
       content: SizedBox(
         width: double.infinity,
-        child: Row(
+        child: Column(
           children: [
-            const SizedBox(width: 24,),
-            Expanded(
-              child: Center(
-                child: Text('키워드1', style: SectionTextStyle.sectionContent(Colors.black),),
-              ),
+            Row(
+              children: [
+                const SizedBox(width: 24,),
+                Expanded(
+                  child: Center(
+                    child: Text('키워드1', style: SectionTextStyle.sectionContent(Colors.black),),
+                  ),
+                ),
+                const Icon(Icons.keyboard_double_arrow_right_sharp),
+                Expanded(
+                  child: Center(
+                    child: Text('키워드1', style: SectionTextStyle.sectionContent(Colors.black)),
+                  ),
+                ),
+                const Icon(Icons.keyboard_double_arrow_right_sharp),
+                Expanded(
+                  child: Center(
+                    child: Text('키워드1', style: SectionTextStyle.sectionContent(Colors.black)),
+                  ),
+                ),
+                const SizedBox(width: 24,),
+              ],
             ),
-            const Icon(Icons.keyboard_double_arrow_right_sharp),
-            Expanded(
-              child: Center(
-                child: Text('키워드1', style: SectionTextStyle.sectionContent(Colors.black)),
+            const SizedBox(height: 10,),
+            SizedBox(
+              height: 150,
+              child: ListView.separated(
+                padding: EdgeInsets.zero,
+                scrollDirection: Axis.horizontal,
+                itemCount: _recommendKeywordData.length + 2,
+                itemBuilder: (BuildContext context, int index) {
+                  if (index == 0 || index == _recommendKeywordData.length + 1) {
+                    return const SizedBox(width: 16,);
+                  } else {
+                    index -= 1;
+                    return RoundedRectangleCourseCard(
+                      title: _recommendKeywordData[index]['title'],
+                      location: _recommendKeywordData[index]['location'],
+                      imageUrls: _recommendKeywordData[index]['background'],
+                      width: 230,
+                      height: 150,
+                      titleStyle: SectionTextStyle.lineContentExtraLarge(Colors.white),
+                      padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
+                      onTap: () {
+                        Get.to(() => CourseMainPage());
+                      },
+                    );
+                  }
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return SizedBox(width: 8,);
+                },
               ),
-            ),
-            const Icon(Icons.keyboard_double_arrow_right_sharp),
-            Expanded(
-              child: Center(
-                child: Text('키워드1', style: SectionTextStyle.sectionContent(Colors.black)),
-              ),
-            ),
-            const SizedBox(width: 24,),
-            // Expanded(child: Text('data1')),
-            // Expanded(child: Text('data1')),
+            )
           ],
         ),
       ),
