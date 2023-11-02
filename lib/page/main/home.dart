@@ -252,13 +252,13 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           message: data["summary"],
           content: SizedBox(
             height: 195,
-            child: ListView.builder(
+            child: ListView.separated(
               padding: EdgeInsets.zero,
               scrollDirection: Axis.horizontal,
               itemCount: data['places'].length + 2,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0 || index == data['places'].length + 1) {
-                  return const SizedBox(width: 24,);
+                  return const SizedBox(width: 16,);
                 } else {
                   index -= 1;
                   return RoundedRectanglePlaceCard(
@@ -284,6 +284,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                     },
                   );
                 }
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(width: 4,);
               },
             ),
           ),
