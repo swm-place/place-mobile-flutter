@@ -54,6 +54,44 @@ class CourseListCardItem extends StatefulWidget {
 }
 
 class CourseListCardItemState extends State<CourseListCardItem> {
+
+  late final PageController _pageController;
+
+  List<String> placeName = ['장소1', '장소2', '장소3'];
+  String place = '';
+
+  List<Widget> _generatePlaceImage() {
+    List<Widget> images = [];
+    for (int i = 0;i < 3;i++) {
+      images.add(
+        Image.network('https://source.unsplash.com/random?sig=$i', fit: BoxFit.cover)
+      );
+    }
+    return images;
+  }
+
+  @override
+  void initState() {
+    place = placeName[0];
+
+    _pageController = PageController();
+    _pageController.addListener(() {
+      int now = _pageController.page!.round().toInt();
+      if (now < 0) now = 0;
+      if (now > 2) now = 2;
+      setState(() {
+        place = placeName[now];
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -67,11 +105,36 @@ class CourseListCardItemState extends State<CourseListCardItem> {
           children: [
             SizedBox(
               height: 130,
-              child: PageView(
+              child: Stack(
                 children: [
-                  Image.network('https://source.unsplash.com/random?sig=1', fit: BoxFit.cover,),
-                  Image.network('https://source.unsplash.com/random?sig=2', fit: BoxFit.cover),
-                  Image.network('https://source.unsplash.com/random?sig=3', fit: BoxFit.cover),
+                  SizedBox(
+                    height: 130,
+                    child: PageView(
+                      controller: _pageController,
+                      children: _generatePlaceImage(),
+                    ),
+                  ),
+                  IgnorePointer(
+                    child: Container(
+                      height: 130,
+                      color: const Color.fromARGB(102, 1, 1, 1),
+                      child: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: Text(
+                                place,
+                                style: SectionTextStyle.sectionContent(Colors.white),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
