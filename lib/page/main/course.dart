@@ -42,6 +42,40 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
   @override
   bool get wantKeepAlive => true;
 
+  Widget _recommendKeywordSection() {
+    return MainSection(
+      title: '인기있는 키워드',
+      content: SizedBox(
+        width: double.infinity,
+        child: Row(
+          children: [
+            const SizedBox(width: 24,),
+            Expanded(
+              child: Center(
+                child: Text('키워드1', style: SectionTextStyle.sectionContent(Colors.black),),
+              ),
+            ),
+            const Icon(Icons.keyboard_double_arrow_right_sharp),
+            Expanded(
+              child: Center(
+                child: Text('키워드1', style: SectionTextStyle.sectionContent(Colors.black)),
+              ),
+            ),
+            const Icon(Icons.keyboard_double_arrow_right_sharp),
+            Expanded(
+              child: Center(
+                child: Text('키워드1', style: SectionTextStyle.sectionContent(Colors.black)),
+              ),
+            ),
+            const SizedBox(width: 24,),
+            // Expanded(child: Text('data1')),
+            // Expanded(child: Text('data1')),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _createMyCourseSection() {
     return MainSection(
       title: '나의 코스',
@@ -80,20 +114,6 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
     );
   }
 
-  Widget _recentlyDiscoverCourseSection() {
-    return MainSection(
-      title: '최근 탐색한 코스',
-      content: Text("sss")
-    );
-  }
-
-  Widget _recentlyEditedCourseSection() {
-    return MainSection(
-      title: '최근 편집한 코스',
-      content: Text("sss")
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,11 +130,9 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
           child: Column(
             children: [
               SizedBox(height: 24,),
+              _recommendKeywordSection(),
+              SizedBox(height: 24,),
               _createMyCourseSection(),
-              SizedBox(height: 24,),
-              _recentlyDiscoverCourseSection(),
-              SizedBox(height: 24,),
-              _recentlyEditedCourseSection(),
               SizedBox(height: 24,)
             ],
           ),
