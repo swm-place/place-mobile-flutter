@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/widget/course/course_inform_card.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
 
@@ -133,38 +134,18 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
   }
 
   Widget _createMyCourseSection() {
+    List<Widget> course = [];
+    for (int i = 0;i < _courseData.length;i++) {
+      if (i > 0) course.add(SizedBox(height: 12,));
+      course.add(CourseListCardItem());
+    }
+
     return MainSection(
       title: '나의 코스',
-      content: SizedBox(
-        height: 160,
-        child: ListView.separated(
-          padding: EdgeInsets.zero,
-          scrollDirection: Axis.horizontal,
-          itemCount: _courseData['courses'].length + 2,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0 || index == _courseData['courses'].length + 1) {
-              return const SizedBox(width: 16,);
-            } else {
-              index -= 1;
-              return RoundedRectangleStoryCard(
-                title: _courseData['courses'][index]['title'],
-                message: _courseData['courses'][index]['message'],
-                location: _courseData['courses'][index]['location'],
-                imageUrl: _courseData['courses'][index]['background'],
-                width: 250,
-                height: 194,
-                titleStyle: SectionTextStyle.lineContentExtraLarge(Colors.white),
-                messageStyle: SectionTextStyle.labelMedium(Colors.white),
-                padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-                onTap: () {
-                  Get.to(() => CourseMainPage());
-                },
-              );
-            }
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return SizedBox(width: 8,);
-          },
+      content: Padding(
+        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+        child: Column(
+          children: course,
         ),
       )
     );

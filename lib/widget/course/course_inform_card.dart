@@ -38,3 +38,61 @@ class CourseInformationCard extends StatelessWidget {
     );
   }
 }
+
+class CourseListCardItem extends StatefulWidget {
+  CourseListCardItem({
+    this.width=double.infinity,
+    this.height=double.infinity,
+    Key? key
+  }) : super(key: key);
+
+  double width;
+  double height;
+
+  @override
+  State<StatefulWidget> createState() => CourseListCardItemState();
+}
+
+class CourseListCardItemState extends State<CourseListCardItem> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: widget.width,
+      // height: widget.height,
+      child: Card(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        surfaceTintColor: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 130,
+              child: PageView(
+                children: [
+                  Image.network('https://source.unsplash.com/random?sig=1', fit: BoxFit.cover,),
+                  Image.network('https://source.unsplash.com/random?sig=2', fit: BoxFit.cover),
+                  Image.network('https://source.unsplash.com/random?sig=3', fit: BoxFit.cover),
+                ],
+              ),
+            ),
+            Container(
+              height: 100,
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '코스 이름',
+                    overflow: TextOverflow.ellipsis,
+                    style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
