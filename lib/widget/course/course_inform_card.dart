@@ -182,39 +182,39 @@ class CourseListCardItemState extends State<CourseListCardItem> {
                     overflow: TextOverflow.ellipsis,
                     style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
                   ),
-                  SizedBox(height: 8,),
+                  const SizedBox(height: 8,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          Icon(MdiIcons.mapMarkerOutline, size: 18,),
+                          Icon(MdiIcons.mapMarkerOutline, size: 18, color: Colors.grey[700],),
                           Text(
                             '서울특별시 강남구',
                             style: SectionTextStyle.labelSmall(Colors.grey[700]!),
                           )
                         ],
                       ),
-                      SizedBox(width: 4,),
+                      const SizedBox(width: 8,),
                       Row(
                         children: [
-                          Icon(MdiIcons.mapMarkerOutline, size: 18,),
+                          Icon(Icons.route, size: 18, color: Colors.grey[700]),
+                          Text(
+                            '1.5km',
+                            style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+                          )
+                        ],
+                      ),
+                      const SizedBox(width: 8,),
+                      Row(
+                        children: [
+                          Icon(Icons.signpost, size: 18, color: Colors.grey[700]),
                           Text(
                             '5곳',
                             style: SectionTextStyle.labelSmall(Colors.grey[700]!),
                           )
                         ],
                       ),
-                      SizedBox(width: 4,),
-                      Row(
-                        children: [
-                          Icon(MdiIcons.mapMarkerOutline, size: 18,),
-                          Text(
-                            '1.5km',
-                            style: SectionTextStyle.labelSmall(Colors.grey[700]!),
-                          )
-                        ],
-                      )
                     ],
                   )
                 ],
