@@ -594,7 +594,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
               expandedHeight: 220.0,
               surfaceTintColor: Colors.white,
               backgroundColor: Colors.white,
-              flexibleSpace: const PictureFlexibleSpace(),
+              flexibleSpace: PictureFlexibleSpace(),
             ),
             Obx(() {
               return SliverList(

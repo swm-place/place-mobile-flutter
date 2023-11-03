@@ -294,7 +294,11 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                       expandedHeight: 220.0,
                       surfaceTintColor: Colors.white,
                       backgroundColor: Colors.white,
-                      flexibleSpace: const PictureFlexibleSpace(),
+                      flexibleSpace: PictureFlexibleSpace(
+                        imageUrl: placeData['photos'] != null && placeData['photos'].length > 0 ?
+                        "https://been-dev.yeoksi.com/api-recommender/place-photo/?${placeData['photos'][0]['url'].split('?')[1]}&max_width=480" :
+                        null,
+                      ),
                     ),
                     SliverList(
                       delegate: SliverChildListDelegate([
@@ -778,17 +782,17 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       padding: EdgeInsets.fromLTRB(0, 28, 0, 0),
       child: MainSection(
         title: '사진',
-        action: Ink(
-          child: InkWell(
-            onTap: () {
-              __showPhotoSheet();
-            },
-            child: Text(
-              "더보기 (100)",
-              style: SectionTextStyle.labelMedium(Colors.blue),
-            ),
-          ),
-        ),
+        // action: Ink(
+        //   child: InkWell(
+        //     onTap: () {
+        //       __showPhotoSheet();
+        //     },
+        //     child: Text(
+        //       "더보기 (100)",
+        //       style: SectionTextStyle.labelMedium(Colors.blue),
+        //     ),
+        //   ),
+        // ),
         content: Padding(
           padding: EdgeInsets.fromLTRB(24, 8, 24, 0),
           child: GridView.custom(

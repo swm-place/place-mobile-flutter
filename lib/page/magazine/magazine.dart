@@ -256,7 +256,7 @@ class _MagazineState extends State<Magazine> {
                   expandedHeight: 220.0,
                   surfaceTintColor: Colors.white,
                   backgroundColor: Colors.white,
-                  flexibleSpace: const PictureFlexibleSpace(),
+                  flexibleSpace: PictureFlexibleSpace(),
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate(_createMagazineSection()),

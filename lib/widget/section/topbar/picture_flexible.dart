@@ -3,7 +3,12 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class PictureFlexibleSpace extends StatelessWidget {
-  const PictureFlexibleSpace({Key? key}) : super(key: key);
+  PictureFlexibleSpace({
+    this.imageUrl,
+    Key? key
+  }) : super(key: key);
+
+  String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +28,13 @@ class PictureFlexibleSpace extends StatelessWidget {
               Flexible(
                 child: Container(
                   width: double.infinity,
-                  child: Image.network(
-                    'https://source.unsplash.com/random',
-                    fit: BoxFit.cover,
-                  ),
+                  child: imageUrl != null ?
+                    Image.network(
+                      imageUrl!,
+                      fit: BoxFit.cover,
+                    ) :
+                  Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,)
+                  ,
                 ),
               ),
             ],

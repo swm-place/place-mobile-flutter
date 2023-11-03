@@ -261,12 +261,16 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                   return const SizedBox(width: 16,);
                 } else {
                   index -= 1;
+                  String? imgUrl;
+                  if (data['places'][index]['photos'] != null && data['places'][index]['photos'].length > 0) {
+                    imgUrl = "https://been-dev.yeoksi.com/api-recommender/place-photo/?${data['places'][index]['photos'][0]['url'].split('?')[1]}&max_width=480";
+                  }
                   return RoundedRectanglePlaceCard(
                     width: 250,
                     aspectRatio: 18/14,
                     tags: List<Map<String, dynamic>>.from(data["places"][index]['hashtags']),
                     // imageUrl: data["places"][index]['imageUrl'],
-                    imageUrl: 'https://source.unsplash.com/random?seq=$index',
+                    imageUrl: imgUrl,
                     placeName: data["places"][index]['name'],
                     placeType: data["places"][index]['category'],
                     distance: data["places"][index]['distance'] == null ?
