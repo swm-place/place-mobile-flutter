@@ -57,7 +57,8 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(MdiIcons.mapMarkerOutline, size: 18,),
+            Icon(MdiIcons.mapMarkerDistance, size: 18,),
+            SizedBox(width: 2,),
             Text(
               distance!,
               style: SectionTextStyle.labelSmall(Colors.grey[700]!),

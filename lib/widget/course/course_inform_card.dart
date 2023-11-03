@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 
 class CourseInformationCard extends StatelessWidget {
@@ -135,11 +136,42 @@ class CourseListCardItemState extends State<CourseListCardItem> {
                       ),
                     ),
                   ),
+                  IgnorePointer(
+                    child: Container(
+                      height: 130,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(17, 0, 12, 0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Visibility(
+                                visible: _pageController.page!.round() > 0,
+                                child: Icon(
+                                  Icons.arrow_back_ios,
+                                  color: Colors.white.withOpacity(0.5),
+                                  size: 20,
+                                ),
+                              ),
+                              Visibility(
+                                visible: _pageController.page!.round() < 2,
+                                child: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.white.withOpacity(0.5),
+                                  size: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
             Container(
-              height: 100,
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
               child: Column(
@@ -150,6 +182,41 @@ class CourseListCardItemState extends State<CourseListCardItem> {
                     overflow: TextOverflow.ellipsis,
                     style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
                   ),
+                  SizedBox(height: 8,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(MdiIcons.mapMarkerOutline, size: 18,),
+                          Text(
+                            '서울특별시 강남구',
+                            style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+                          )
+                        ],
+                      ),
+                      SizedBox(width: 4,),
+                      Row(
+                        children: [
+                          Icon(MdiIcons.mapMarkerOutline, size: 18,),
+                          Text(
+                            '5곳',
+                            style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+                          )
+                        ],
+                      ),
+                      SizedBox(width: 4,),
+                      Row(
+                        children: [
+                          Icon(MdiIcons.mapMarkerOutline, size: 18,),
+                          Text(
+                            '1.5km',
+                            style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+                          )
+                        ],
+                      )
+                    ],
+                  )
                 ],
               ),
             )
