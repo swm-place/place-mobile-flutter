@@ -65,22 +65,22 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   int? commentSortKey = 0;
 
   final List<Map<String, dynamic>> _commentData = [
-    // {
-    //  "name": "민준",
-    //  "date": "2023-08-05T14:29:20.725Z",
-    //  "comment": "사려니 숲길은 제주도 여행의 필수 코스! 자연의 아름다움을 느낄 수 있어요.",
-    //  "profileUrl": "https://source.unsplash.com/random",
-    //  "likeCount": 3254546,
-    //  "likeComment": false,
-    // },
-    // {
-    //  "name": "Ethan",
-    //  "date": "2023-08-04T14:29:20.725Z",
-    //  "comment": "여행 중 가장 기억에 남는 곳이었어요. 특히 아침 일찍 방문해서 조용한 분위기를 느끼는 것을 추천합니다.",
-    //  "profileUrl": "https://source.unsplash.com/random",
-    //  "likeCount": 42355,
-    //  "likeComment": true,
-    // },
+    {
+     "name": "민준",
+     "date": "2023-08-05T14:29:20.725Z",
+     "comment": "사려니 숲길은 제주도 여행의 필수 코스! 자연의 아름다움을 느낄 수 있어요.",
+     "profileUrl": "https://source.unsplash.com/random",
+     "likeCount": 3254546,
+     "likeComment": false,
+    },
+    {
+     "name": "Ethan",
+     "date": "2023-08-04T14:29:20.725Z",
+     "comment": "여행 중 가장 기억에 남는 곳이었어요. 특히 아침 일찍 방문해서 조용한 분위기를 느끼는 것을 추천합니다.",
+     "profileUrl": "https://source.unsplash.com/random",
+     "likeCount": 42355,
+     "likeComment": true,
+    },
     // {
     //  "name": "Emma",
     //  "date": "2023-07-30T14:29:20.725Z",
@@ -718,7 +718,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         action: Ink(
           child: InkWell(
             onTap: () {
-              __showCommentSheet(commentHeight);
+
             },
             child: Text(
               "한줄평 작성",
@@ -727,10 +727,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           ),
         ),
         content: Padding(
-          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
           child: SizedBox(
             width: double.infinity,
-            child: _commentData.length > 0 ?
+            child: _commentData.isNotEmpty ?
               CarouselSlider.builder(
                 options: CarouselOptions(
                   initialPage: 0,
@@ -738,20 +738,51 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   enableInfiniteScroll: false,
                   height: commentHeight,
                 ),
-                itemCount: _commentData.length,
+                itemCount: _commentData.length + 1,
                 itemBuilder: (context, index, realIndex) {
-                  return Padding(
-                    padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
-                    child: ShortPlaceReviewCard(
-                      vsync: this,
-                      name: _commentData[index]['name'],
-                      comment: _commentData[index]['comment'],
-                      profileUrl: _commentData[index]['profileUrl'],
-                      date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
-                      likeComment: _commentData[index]['likeComment'],
-                      likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
-                    ),
-                  );
+                  if (index == _commentData.length) {
+                    return GestureDetector(
+                      onTap: () {
+                        __showCommentSheet(commentHeight);
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+                        child: Row(
+                          children: [
+                            Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(8)
+                                ),
+                                height: double.infinity,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.navigate_next),
+                                    Text("더보기")
+                                  ],
+                                )
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+                      child: ShortPlaceReviewCard(
+                        vsync: this,
+                        name: _commentData[index]['name'],
+                        comment: _commentData[index]['comment'],
+                        profileUrl: _commentData[index]['profileUrl'],
+                        date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
+                        likeComment: _commentData[index]['likeComment'],
+                        likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
+                      ),
+                    );
+                  }
                 },
               ) :
               Padding(
