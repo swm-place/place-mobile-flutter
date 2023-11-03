@@ -71,6 +71,9 @@ class CourseListCardItemState extends State<CourseListCardItem> {
     return images;
   }
 
+  bool visibleLeft = false;
+  bool visibleRight = false;
+
   @override
   void initState() {
     place = placeName[0];
@@ -82,6 +85,8 @@ class CourseListCardItemState extends State<CourseListCardItem> {
       if (now > 2) now = 2;
       setState(() {
         place = placeName[now];
+        visibleLeft = _pageController.page!.round() > 0;
+        visibleRight = _pageController.page!.round() < 2;
       });
     });
     super.initState();
@@ -147,7 +152,7 @@ class CourseListCardItemState extends State<CourseListCardItem> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Visibility(
-                                visible: _pageController.page!.round() > 0,
+                                visible: visibleLeft,
                                 child: Icon(
                                   Icons.arrow_back_ios,
                                   color: Colors.white.withOpacity(0.5),
@@ -155,7 +160,7 @@ class CourseListCardItemState extends State<CourseListCardItem> {
                                 ),
                               ),
                               Visibility(
-                                visible: _pageController.page!.round() < 2,
+                                visible: visibleRight,
                                 child: Icon(
                                   Icons.arrow_forward_ios,
                                   color: Colors.white.withOpacity(0.5),
