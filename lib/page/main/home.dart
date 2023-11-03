@@ -155,8 +155,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   Widget __storySection() => SizedBox(
     width: double.infinity,
     child: MainSection(
-      title: "스토리",
-      message: "마음에 드는 스토리를 찾아보세요",
+      title: "매거진",
+      // message: "마음에 드는 스토리를 찾아보세요",
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
