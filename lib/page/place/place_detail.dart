@@ -64,33 +64,6 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   int? commentSortKey = 0;
 
-  final List<Map<String, dynamic>> _commentData = [
-    {
-      "id": 2,
-      "user":{
-        "id": "1hA33bRtguZIT2osuZCuFtZ1FDZ2",
-        "nickname": "gr8hyi89",
-        "img_url": null
-      },
-      "place_id": "NP-43okBdbRKLDssGvIj",
-      "contents": "test1",
-      "likes": 0,
-      "created_at": "2023-11-04T15:41:33"
-    },
-    {
-      "id": 1,
-      "user":{
-        "id": "1hA33bRtguZIT2osuZCuFtZ1FDZ2",
-        "nickname": "gr8hyi89",
-        "img_url": null
-      },
-      "place_id": "NP-43okBdbRKLDssGvIj",
-      "contents": "test",
-      "likes": 0,
-      "created_at": "2023-11-04T15:35:14"
-    }
-  ];
-
   final List<Map<String, dynamic>> _relevantPlaceData = [
     {
       "imageUrl": "https://images.unsplash.com/photo-1619536095378-c96a5639ccc5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
@@ -178,6 +151,17 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   late final Map<String, dynamic> placeData;
 
+  List<dynamic> _commentData = [];
+
+  void _loadComments() async {
+    List<dynamic>? result = await _placeProvider.getPlaceReviewData(widget.placeId, 'likes', 0, 5);
+    if (result != null) {
+      setState(() {
+        _commentData = result;
+      });
+    }
+  }
+
   @override
   void initState() {
     _likeButtonController = AnimationController(vsync: this);
@@ -185,6 +169,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     _bookmarkScrollController = ScrollController();
     _commentScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
+    _loadComments();
     getPlaceData();
     super.initState();
   }
@@ -1191,11 +1176,9 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     );
   }
 
-  // Future<void> _loadComments(int offset) async {
-  //   await
-  // }
-
   void __showCommentSheet(double commentHeight) {
+    final List<Map<String, dynamic>> _commentData = [];
+
     bool stateFirst = true;
     bool loadVisibility = false;
     showModalBottomSheet(

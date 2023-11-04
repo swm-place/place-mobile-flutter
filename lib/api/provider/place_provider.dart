@@ -36,8 +36,8 @@ class PlaceProvider extends DefaultProvider {
     }
   }
 
-  Future<Map<String, dynamic>?> getPlaceReviewData(String placeId, String orderBy, int offset) async {
-    Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews?order_by=$orderBy&count=20&offset=$offset");
+  Future<List<dynamic>?> getPlaceReviewData(String placeId, String orderBy, int offset, int count) async {
+    Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews?order_by=$orderBy&count=$count&offset=$offset");
     Response response;
     try {
       response = await get(uri, headers: setHeader(null));
