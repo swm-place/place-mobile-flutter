@@ -1176,11 +1176,33 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     );
   }
 
-  void __showCommentSheet(double commentHeight) {
-    final List<Map<String, dynamic>> _commentData = [];
+  void __showCommentSheet(double commentHeight) async {
+    String sortKey = 'likes';
+    int offset = 5;
+    int count = 5;
 
     bool stateFirst = true;
     bool loadVisibility = false;
+
+    void _addComments(StateSetter bottomState) async {
+      bottomState(() {
+        setState(() {
+          loadVisibility = true;
+          _commentScrollController.jumpTo(_commentScrollController.position.maxScrollExtent);
+        });
+      });
+      List<dynamic>? result = await _placeProvider.getPlaceReviewData(widget.placeId, sortKey, offset, count);
+      if (result != null) {
+        _commentData.addAll(result);
+        offset += count;
+      }
+      bottomState(() {
+        setState(() {
+          loadVisibility = false;
+        });
+      });
+    }
+
     showModalBottomSheet(
       isScrollControlled: true,
       useSafeArea: true,
@@ -1190,84 +1212,9 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           builder: (BuildContext context, StateSetter bottomState) {
             if (stateFirst) {
               _commentScrollController.addListener(() {
-                if (_commentScrollController.position.maxScrollExtent == _commentScrollController.offset) {
+                if (_commentScrollController.position.maxScrollExtent == _commentScrollController.offset && !loadVisibility) {
                   stateFirst = false;
-                  bottomState(() {
-                    setState(() {
-                      loadVisibility = true;
-                    });
-                  });
-                  bottomState(() {
-                    setState(() {
-                      _commentData.addAll([
-                        {
-                          "name": "민준",
-                          "date": "2023-08-05T14:29:20.725Z",
-                          "comment": "사려니 숲길은 제주도 여행의 필수 코스! 자연의 아름다움을 느낄 수 있어요.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 3254546,
-                          "likeComment": false,
-                        },
-                        {
-                          "name": "Ethan",
-                          "date": "2023-08-04T14:29:20.725Z",
-                          "comment": "여행 중 가장 기억에 남는 곳이었어요. 특히 아침 일찍 방문해서 조용한 분위기를 느끼는 것을 추천합니다.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 42355,
-                          "likeComment": true,
-                        },
-                        {
-                          "name": "Emma",
-                          "date": "2023-07-30T14:29:20.725Z",
-                          "comment": "가족과 함께 방문했는데, 아이들도 너무 좋아했어요. 자연과 함께하는 시간이 너무 소중했습니다.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 534,
-                          "likeComment": false,
-                        },
-                        {
-                          "name": "예은",
-                          "date": "2023-07-26T14:29:20.725Z",
-                          "comment": "비오는 날은 미끄러울 수 있으니 조심하세요. 그래도 뷰는 최고!",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 356578,
-                          "likeComment": false,
-                        },
-                        {
-                          "name": "sdsfsfdsdcvb",
-                          "date": "2023-08-05T14:29:20.725Z",
-                          "comment": "사afddasfgsgsg! 자연의 아sgsfsdafds어요.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 3254546,
-                          "likeComment": false,
-                        },
-                        {
-                          "name": "fsdgfvsgrw",
-                          "date": "2023-08-04T14:29:20.725Z",
-                          "comment": "여행adfadf남는 곳이었어요. 특히 sffeqfaf것을 추천합니다.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 42355,
-                          "likeComment": true,
-                        },
-                        {
-                          "name": "rwgw4rgdsg",
-                          "date": "2023-07-30T14:29:20.725Z",
-                          "comment": "가dasdfsgsrgh너무 소중했습니다.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 534,
-                          "likeComment": false,
-                        },
-                        {
-                          "name": "adsasra",
-                          "date": "2023-07-26T14:29:20.725Z",
-                          "comment": "asdefcfsfs",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 356578,
-                          "likeComment": false,
-                        },
-                      ]);
-                      loadVisibility = false;
-                    });
-                  });
+                  _addComments(bottomState);
                 }
               });
             }
@@ -1311,42 +1258,49 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   ),
                   const SizedBox(height: 18,),
                   Expanded(
-                    child: Scrollbar(
-                      controller: _commentScrollController,
-                      child: ListView.separated(
-                        controller: _commentScrollController,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.zero,
-                        itemCount: _commentData.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index < _commentData.length) {
-                            return Padding(
-                              padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-                              child: ShortPlaceReviewCard(
-                                vsync: this,
-                                height: commentHeight,
-                                name: _commentData[index]['user']['nickname'],
-                                comment: _commentData[index]['contents'],
-                                profileUrl: _commentData[index]['user']['img_url'],
-                                date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
-                                likeComment: false,
-                                likeCount: UnitConverter.formatNumber(_commentData[index]['likes']),
+                    child: Stack(
+                      children: [
+                        Scrollbar(
+                          controller: _commentScrollController,
+                          child: ListView.separated(
+                            controller: _commentScrollController,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            itemCount: _commentData.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                child: ShortPlaceReviewCard(
+                                  vsync: this,
+                                  height: commentHeight,
+                                  name: _commentData[index]['user']['nickname'],
+                                  comment: _commentData[index]['contents'],
+                                  profileUrl: _commentData[index]['user']['img_url'],
+                                  date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
+                                  likeComment: false,
+                                  likeCount: UnitConverter.formatNumber(_commentData[index]['likes']),
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return const SizedBox(height: 12,);
+                            },
+                          ),
+                        ),
+                        Visibility(
+                          visible: loadVisibility,
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.all(38),
+                              decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(24)
                               ),
-                            );
-                          } else {
-                            return Visibility(
-                              visible: loadVisibility,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 32),
-                                child: Center(child: CircularProgressIndicator(),),
-                              ),
-                            );
-                          }
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(height: 12,);
-                        },
-                      ),
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        )
+                      ],
                     )
                   ),
                   // SizedBox(height: 18,),
