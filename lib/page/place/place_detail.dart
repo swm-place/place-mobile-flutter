@@ -746,12 +746,14 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   ),
                   SizedBox(height: 8,),
                   TextFormField(
-                    minLines: 3, // any number you need (It works as the rows for the textarea)
-                    keyboardType: TextInputType.multiline,
+                    minLines: 3,
+                    maxLength: 250,
+                    keyboardType: TextInputType.text,
                     maxLines: null,
                     decoration: InputDecoration(
                       alignLabelWithHint: true,
                       border: OutlineInputBorder(),
+                      hintText: "자신의 경험을 공유해주세요!"
                     ),
                   ),
                   SizedBox(height: 12,),
