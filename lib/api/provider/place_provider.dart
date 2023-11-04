@@ -35,4 +35,20 @@ class PlaceProvider extends DefaultProvider {
       return null;
     }
   }
+
+  Future<Map<String, dynamic>?> getPlaceReviewData(String placeId) async {
+    Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews");
+    Response response;
+    try {
+      response = await get(uri, headers: setHeader(null));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
 }

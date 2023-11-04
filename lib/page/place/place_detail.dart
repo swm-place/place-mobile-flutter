@@ -1233,6 +1233,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   void __showCommentSheet(double commentHeight) {
     bool stateFirst = true;
+    bool loadVisibility = false;
     showModalBottomSheet(
       isScrollControlled: true,
       useSafeArea: true,
@@ -1242,8 +1243,14 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           builder: (BuildContext context, StateSetter bottomState) {
             if (stateFirst) {
               _commentScrollController.addListener(() {
+                print('fff');
                 if (_commentScrollController.position.maxScrollExtent == _commentScrollController.offset) {
                   stateFirst = false;
+                  bottomState(() {
+                    setState(() {
+                      loadVisibility = true;
+                    });
+                  });
                   bottomState(() {
                     setState(() {
                       _commentData.addAll([
@@ -1312,13 +1319,14 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           "likeComment": false,
                         },
                       ]);
+                      loadVisibility = false;
                     });
                   });
                 }
               });
             }
             return Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(8),
                   topLeft: Radius.circular(8),
@@ -1338,8 +1346,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           child: DropdownButton<int>(
                             padding: EdgeInsets.zero,
                             value: commentSortKey,
-                            underline: SizedBox(),
-                            items: [
+                            underline: const SizedBox(),
+                            items: const [
                               DropdownMenuItem(child: Text('최신순'), value: 0,),
                               DropdownMenuItem(child: Text('좋아요순'), value: 1,),
                             ],
@@ -1355,12 +1363,13 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                       ],
                     ),
                   ),
-                  SizedBox(height: 18,),
+                  const SizedBox(height: 18,),
                   Expanded(
                     child: Scrollbar(
                       controller: _commentScrollController,
                       child: ListView.separated(
                         controller: _commentScrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
                         padding: EdgeInsets.zero,
                         itemCount: _commentData.length + 1,
                         itemBuilder: (context, index) {
@@ -1379,21 +1388,24 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                               ),
                             );
                           } else {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 32),
-                              child: Center(child: CircularProgressIndicator(),),
+                            return Visibility(
+                              visible: loadVisibility,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 32),
+                                child: Center(child: CircularProgressIndicator(),),
+                              ),
                             );
                           }
                         },
                         separatorBuilder: (context, index) {
-                          return SizedBox(height: 12,);
+                          return const SizedBox(height: 12,);
                         },
                       ),
                     )
                   ),
                   // SizedBox(height: 18,),
                   Container(
-                    padding: EdgeInsets.fromLTRB(24, 0, 24, 18),
+                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 18),
                     width: double.infinity,
                     child: FilledButton(
                         onPressed: () {
