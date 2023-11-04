@@ -51,6 +51,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   late final TextEditingController _bookmarkNameController;
 
+  late TextEditingController _commentEditingController;
+
   late ScrollController _bookmarkScrollController;
   late ScrollController _commentScrollController;
 
@@ -169,6 +171,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     _bookmarkScrollController = ScrollController();
     _commentScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
+    _commentEditingController = TextEditingController();
     _loadComments();
     getPlaceData();
     super.initState();
@@ -181,6 +184,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     _bookmarkScrollController.dispose();
     _commentScrollController.dispose();
     _bookmarkNameController.dispose();
+    _commentEditingController.dispose();
     super.dispose();
   }
 
@@ -681,7 +685,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           child: IconButton(onPressed: () {
                             print('clicked');
                           }, icon: Icon(Icons.delete)),
-                          visible: true,
+                          visible: false,
                           maintainSize: true,
                           maintainAnimation: true,
                           maintainState: true,
@@ -691,6 +695,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   ),
                   SizedBox(height: 8,),
                   TextFormField(
+                    controller: _commentEditingController,
                     minLines: 3,
                     maxLength: 250,
                     keyboardType: TextInputType.text,
@@ -705,10 +710,21 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   Container(
                     width: double.infinity,
                     child: FilledButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          String content = _commentEditingController.text.toString();
+                          if (content == '') return;
+
+                          Map<String, dynamic>? result = await _placeProvider.postPlaceReviewData(widget.placeId, content);
+                          print(result);
+                          if (result != null) {
+                            setState(() {
+                              _commentData.insert(0, result);
+                              if (_commentData.length > 5) _commentData.removeLast();
+                            });
+                          }
                           Navigator.of(context).pop();
                         },
-                        child: Text('저장')
+                        child: Text('게시')
                     ),
                   )
                 ],
@@ -717,7 +733,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           ),
         );
       }
-    );
+    ).whenComplete(() {
+      _commentEditingController.dispose();
+      _commentEditingController = TextEditingController();
+    });
   }
 
   Widget _detailReview(double commentHeight) {
@@ -1177,15 +1196,19 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   }
 
   void __showCommentSheet(double commentHeight) async {
+    List<dynamic> _commentData = [];
+
     String sortKey = 'likes';
-    int offset = 5;
+    int offset = 0;
     int count = 5;
 
     bool stateFirst = true;
     bool loadVisibility = false;
 
-    void _addComments(StateSetter bottomState) async {
-      bottomState(() {
+    StateSetter? state;
+
+    void _addComments() async {
+      state!(() {
         setState(() {
           loadVisibility = true;
           _commentScrollController.jumpTo(_commentScrollController.position.maxScrollExtent);
@@ -1196,7 +1219,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         _commentData.addAll(result);
         offset += count;
       }
-      bottomState(() {
+      state!(() {
         setState(() {
           loadVisibility = false;
         });
@@ -1210,11 +1233,12 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter bottomState) {
+            state = bottomState;
             if (stateFirst) {
               _commentScrollController.addListener(() {
                 if (_commentScrollController.position.maxScrollExtent == _commentScrollController.offset && !loadVisibility) {
                   stateFirst = false;
-                  _addComments(bottomState);
+                  _addComments();
                 }
               });
             }
@@ -1296,7 +1320,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                   color: Colors.black.withOpacity(0.5),
                                   borderRadius: BorderRadius.circular(24)
                               ),
-                              child: CircularProgressIndicator(),
+                              child: const CircularProgressIndicator(),
                             ),
                           ),
                         )
@@ -1323,6 +1347,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     ).whenComplete(() {
       _commentScrollController.dispose();
       _commentScrollController = ScrollController();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _addComments();
     });
   }
 

@@ -1,14 +1,16 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart';
 import 'package:place_mobile_flutter/api/provider/default_provider.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 
 class PlaceProvider extends DefaultProvider {
   Future<Map<String, dynamic>?> getPlaceRecommendSection() async {
     Uri uri = Uri.parse("$baseUrl/api-recommender/recommendation/collection/preset");
     Response response;
     try {
-      response = await get(uri, headers: setHeader(null));
+      response = await get(uri, headers: await setHeader(false));
     } catch(e) {
       return null;
     }
@@ -24,7 +26,7 @@ class PlaceProvider extends DefaultProvider {
     Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId");
     Response response;
     try {
-      response = await get(uri, headers: setHeader(null));
+      response = await get(uri, headers: await setHeader(false));
     } catch(e) {
       return null;
     }
@@ -40,7 +42,35 @@ class PlaceProvider extends DefaultProvider {
     Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews?order_by=$orderBy&count=$count&offset=$offset");
     Response response;
     try {
-      response = await get(uri, headers: setHeader(null));
+      response = await get(uri, headers: await setHeader(false));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> postPlaceReviewData(String placeId, String content) async {
+    String? idToken = AuthController.to.idToken;
+    User? user = AuthController.to.user.value;
+
+    if (idToken == null || user == null) {
+      return null;
+    }
+
+    Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await post(uri, headers: header, body: json.encode({
+        "contents": content
+      }));
     } catch(e) {
       return null;
     }
