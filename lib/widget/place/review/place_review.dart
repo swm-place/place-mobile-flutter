@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 
 class ShortPlaceReviewCard extends StatefulWidget {
   ShortPlaceReviewCard({
     required this.vsync,
     required this.comment,
-    required this.profileUrl,
+    this.profileUrl,
     required this.name,
     required this.date,
     required this.likeComment,
@@ -20,7 +21,7 @@ class ShortPlaceReviewCard extends StatefulWidget {
   String name;
   String date;
   String comment;
-  String profileUrl;
+  String? profileUrl;
   String likeCount;
 
   bool likeComment;
@@ -79,10 +80,16 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundImage: NetworkImage(widget.profileUrl),
-                  ),
+                  widget.profileUrl != null ?
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundImage: NetworkImage(widget.profileUrl!),
+                    ) :
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundColor: RandomGenerator.getRandomLightMaterialColor(),
+                    )
+                  ,
                   const SizedBox(width: 8,),
                   Expanded(
                     child: Column(
@@ -92,6 +99,7 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                           widget.name,
                           style: SectionTextStyle.labelMedium(Colors.black),
                         ),
+                        const SizedBox(height: 4,),
                         Text(
                           widget.date,
                           style: SectionTextStyle.labelSmall(Colors.grey[600]!),

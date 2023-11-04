@@ -66,69 +66,29 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   final List<Map<String, dynamic>> _commentData = [
     {
-     "name": "민준",
-     "date": "2023-08-05T14:29:20.725Z",
-     "comment": "사려니 숲길은 제주도 여행의 필수 코스! 자연의 아름다움을 느낄 수 있어요.",
-     "profileUrl": "https://source.unsplash.com/random",
-     "likeCount": 3254546,
-     "likeComment": false,
+      "id": 2,
+      "user":{
+        "id": "1hA33bRtguZIT2osuZCuFtZ1FDZ2",
+        "nickname": "gr8hyi89",
+        "img_url": null
+      },
+      "place_id": "NP-43okBdbRKLDssGvIj",
+      "contents": "test1",
+      "likes": 0,
+      "created_at": "2023-11-04T15:41:33"
     },
     {
-     "name": "Ethan",
-     "date": "2023-08-04T14:29:20.725Z",
-     "comment": "여행 중 가장 기억에 남는 곳이었어요. 특히 아침 일찍 방문해서 조용한 분위기를 느끼는 것을 추천합니다.",
-     "profileUrl": "https://source.unsplash.com/random",
-     "likeCount": 42355,
-     "likeComment": true,
-    },
-    // {
-    //  "name": "Emma",
-    //  "date": "2023-07-30T14:29:20.725Z",
-    //  "comment": "가족과 함께 방문했는데, 아이들도 너무 좋아했어요. 자연과 함께하는 시간이 너무 소중했습니다.",
-    //  "profileUrl": "https://source.unsplash.com/random",
-    //  "likeCount": 534,
-    //  "likeComment": false,
-    // },
-    // {
-    //  "name": "예은",
-    //  "date": "2023-07-26T14:29:20.725Z",
-    //  "comment": "비오는 날은 미끄러울 수 있으니 조심하세요. 그래도 뷰는 최고!",
-    //  "profileUrl": "https://source.unsplash.com/random",
-    //  "likeCount": 356578,
-    //  "likeComment": false,
-    // },
-    // {
-    //  "name": "sdsfsfdsdcvb",
-    //  "date": "2023-08-05T14:29:20.725Z",
-    //  "comment": "사afddasfgsgsg! 자연의 아sgsfsdafds어요.",
-    //  "profileUrl": "https://source.unsplash.com/random",
-    //  "likeCount": 3254546,
-    //  "likeComment": false,
-    // },
-    // {
-    //  "name": "fsdgfvsgrw",
-    //  "date": "2023-08-04T14:29:20.725Z",
-    //  "comment": "여행adfadf남는 곳이었어요. 특히 sffeqfaf것을 추천합니다.",
-    //  "profileUrl": "https://source.unsplash.com/random",
-    //  "likeCount": 42355,
-    //  "likeComment": true,
-    // },
-    // {
-    //  "name": "rwgw4rgdsg",
-    //  "date": "2023-07-30T14:29:20.725Z",
-    //  "comment": "가dasdfsgsrgh너무 소중했습니다.",
-    //  "profileUrl": "https://source.unsplash.com/random",
-    //  "likeCount": 534,
-    //  "likeComment": false,
-    // },
-    // {
-    //  "name": "adsasra",
-    //  "date": "2023-07-26T14:29:20.725Z",
-    //  "comment": "asdefcfsfs",
-    //  "profileUrl": "https://source.unsplash.com/random",
-    //  "likeCount": 356578,
-    //  "likeComment": false,
-    // },
+      "id": 1,
+      "user":{
+        "id": "1hA33bRtguZIT2osuZCuFtZ1FDZ2",
+        "nickname": "gr8hyi89",
+        "img_url": null
+      },
+      "place_id": "NP-43okBdbRKLDssGvIj",
+      "contents": "test",
+      "likes": 0,
+      "created_at": "2023-11-04T15:35:14"
+    }
   ];
 
   final List<Map<String, dynamic>> _relevantPlaceData = [
@@ -839,12 +799,12 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                       padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
                       child: ShortPlaceReviewCard(
                         vsync: this,
-                        name: _commentData[index]['name'],
-                        comment: _commentData[index]['comment'],
-                        profileUrl: _commentData[index]['profileUrl'],
-                        date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
-                        likeComment: _commentData[index]['likeComment'],
-                        likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
+                        name: _commentData[index]['user']['nickname'],
+                        comment: _commentData[index]['contents'],
+                        profileUrl: _commentData[index]['user']['img_url'],
+                        date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
+                        likeComment: false,
+                        likeCount: UnitConverter.formatNumber(_commentData[index]['likes']),
                       ),
                     );
                   }
@@ -1231,6 +1191,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     );
   }
 
+  // Future<void> _loadComments(int offset) async {
+  //   await
+  // }
+
   void __showCommentSheet(double commentHeight) {
     bool stateFirst = true;
     bool loadVisibility = false;
@@ -1243,7 +1207,6 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           builder: (BuildContext context, StateSetter bottomState) {
             if (stateFirst) {
               _commentScrollController.addListener(() {
-                print('fff');
                 if (_commentScrollController.position.maxScrollExtent == _commentScrollController.offset) {
                   stateFirst = false;
                   bottomState(() {
@@ -1379,12 +1342,12 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                               child: ShortPlaceReviewCard(
                                 vsync: this,
                                 height: commentHeight,
-                                name: _commentData[index]['name'],
-                                comment: _commentData[index]['comment'],
-                                profileUrl: _commentData[index]['profileUrl'],
-                                date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
-                                likeComment: _commentData[index]['likeComment'],
-                                likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
+                                name: _commentData[index]['user']['nickname'],
+                                comment: _commentData[index]['contents'],
+                                profileUrl: _commentData[index]['user']['img_url'],
+                                date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
+                                likeComment: false,
+                                likeCount: UnitConverter.formatNumber(_commentData[index]['likes']),
                               ),
                             );
                           } else {
