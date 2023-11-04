@@ -710,15 +710,78 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     );
   }
 
+  void _openWriteCommentSection() {
+    double bottomPad = MediaQuery.of(context).viewPadding.bottom;
+    if (bottomPad == 0) {
+      bottomPad = 24;
+    } else {
+      // bottomPad = 0;
+    }
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.fromLTRB(24, 12, 24, bottomPad),
+          child: Wrap(
+            children: [
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Row(
+                      children: [
+                        Expanded(child: Text("한줄평 작성", style: SectionTextStyle.sectionTitle(),),),
+                        Visibility(
+                          child: IconButton(onPressed: () {
+                            print('clicked');
+                          }, icon: Icon(Icons.delete)),
+                          visible: true,
+                          maintainSize: true,
+                          maintainAnimation: true,
+                          maintainState: true,
+                        )
+                      ],
+                    )
+                  ),
+                  SizedBox(height: 8,),
+                  TextFormField(
+                    minLines: 3, // any number you need (It works as the rows for the textarea)
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      alignLabelWithHint: true,
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 12,),
+                  Container(
+                    width: double.infinity,
+                    child: FilledButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('저장')
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        );
+      }
+    );
+  }
+
   Widget _detailReview(double commentHeight) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
       child: MainSection(
         title: "한줄평",
         action: Ink(
           child: InkWell(
             onTap: () {
-
+              _openWriteCommentSection();
             },
             child: Text(
               "한줄평 작성",
@@ -751,13 +814,13 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                         child: Row(
                           children: [
                             Container(
-                                padding: EdgeInsets.all(12),
+                                padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                     color: Colors.grey[300],
                                     borderRadius: BorderRadius.circular(8)
                                 ),
                                 height: double.infinity,
-                                child: Column(
+                                child: const Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(Icons.navigate_next),
