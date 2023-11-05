@@ -85,9 +85,9 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                       radius: 18,
                       backgroundImage: NetworkImage(widget.profileUrl!),
                     ) :
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 18,
-                      backgroundColor: RandomGenerator.getRandomLightMaterialColor(),
+                      backgroundImage: AssetImage('assets/images/avatar_male.png'),
                     )
                   ,
                   const SizedBox(width: 8,),

@@ -1280,7 +1280,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
               child: Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
                     width: double.infinity,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1324,7 +1324,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                             itemCount: _commentData.length,
                             itemBuilder: (context, index) {
                               return Padding(
-                                padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                                 child: ShortPlaceReviewCard(
                                   vsync: this,
                                   height: commentHeight,
