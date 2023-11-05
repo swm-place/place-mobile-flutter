@@ -812,8 +812,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                         profileUrl: _commentData[index]['user']['img_url'],
                         date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
                         likeComment: _commentData[index]['is_liked'],
-                        likeCount: UnitConverter.formatNumber(_commentData[index]['likes']),
+                        likeCount: _commentData[index]['likes'],
                         myReview: myReview,
+                        placeId: widget.placeId,
+                        reviewId: _commentData[index]['id'],
                       ),
                     );
                   }
@@ -1339,8 +1341,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                   profileUrl: _commentData[index]['user']['img_url'],
                                   date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
                                   likeComment: _commentData[index]['is_liked'],
-                                  likeCount: UnitConverter.formatNumber(_commentData[index]['likes']),
+                                  likeCount: _commentData[index]['likes'],
                                   myReview: myReview,
+                                  placeId: widget.placeId,
+                                  reviewId: _commentData[index]['id'],
                                 ),
                               );
                             },

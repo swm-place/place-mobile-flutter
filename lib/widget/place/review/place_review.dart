@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
+import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
@@ -18,6 +19,8 @@ class ShortPlaceReviewCard extends StatefulWidget {
     required this.date,
     required this.likeComment,
     required this.likeCount,
+    required this.placeId,
+    required this.reviewId,
     this.height=double.infinity,
     Key? key,
   }) : super(key: key);
@@ -26,7 +29,11 @@ class ShortPlaceReviewCard extends StatefulWidget {
   String date;
   String comment;
   String? profileUrl;
-  String likeCount;
+
+  int likeCount;
+
+  String placeId;
+  dynamic reviewId;
 
   bool likeComment;
   bool myReview;
@@ -43,11 +50,33 @@ class ShortPlaceReviewCard extends StatefulWidget {
 
 class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
   late final AnimationController _likeButtonController;
+  late final PlaceProvider _placeProvider;
+
+  bool awaitLikes = false;
+
+  void like() async {
+    awaitLikes = true;
+    await _placeProvider.postPlaceReviewLike(widget.placeId, widget.reviewId);
+    awaitLikes = false;
+  }
+
+  void unLike() async {
+    awaitLikes = true;
+    await _placeProvider.deletePlaceReviewLike(widget.placeId, widget.reviewId);
+    awaitLikes = false;
+  }
 
   @override
   void initState() {
-  _likeButtonController = AnimationController(vsync: widget.vsync, duration: Duration(milliseconds: 100));
+  _likeButtonController = AnimationController(vsync: widget.vsync, duration: const Duration(milliseconds: 100));
+  _placeProvider = PlaceProvider();
   super.initState();
+  }
+
+  @override
+  void dispose() {
+    _likeButtonController.dispose();
+    super.dispose();
   }
 
   @override
@@ -116,6 +145,8 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                   if (!widget.myReview)
                     GestureDetector(
                       onTap: () {
+                        if (awaitLikes) return;
+
                         if (AuthController.to.user.value == null) {
                           Get.showSnackbar(
                               WarnGetSnackBar(
@@ -125,13 +156,18 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                           );
                           return;
                         }
+
                         setState(() {
                           HapticFeedback.lightImpact();
                           widget.likeComment = !widget.likeComment;
                           if (widget.likeComment) {
+                            like();
                             _likeButtonController.animateTo(0.6);
+                            widget.likeCount += 1;
                           } else {
+                            unLike();
                             _likeButtonController.animateBack(0.1);
+                            widget.likeCount -= 1;
                           }
                         });
                       },
@@ -161,7 +197,7 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                               ),
                             ),
                             const SizedBox(width: 4,),
-                            Text(widget.likeCount)
+                            Text(UnitConverter.formatNumber(widget.likeCount))
                           ],
                         ),
                       ),

@@ -56,9 +56,9 @@ class AuthController extends GetxController {
     if (user.value == null) {
       idToken = null;
     } else {
-      if (!initApp) _progressDialogHelper.showProgressDialog('인증 정보 가져오는중');
-      idToken = await user.value!.getIdToken();
-      if (!initApp) _progressDialogHelper.hideProgressDialog();
+      // if (!initApp) _progressDialogHelper.showProgressDialog('인증 정보 가져오는중');
+      idToken = await user.value!.getIdToken(true);
+      // if (!initApp) _progressDialogHelper.hideProgressDialog();
       if (idToken == null) {
         expireDate = null;
       } else {

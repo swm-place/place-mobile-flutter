@@ -41,8 +41,9 @@ class PlaceProvider extends DefaultProvider {
   Future<List<dynamic>?> getPlaceReviewData(String placeId, String orderBy, int offset, int count, bool my) async {
     Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews?order_by=$orderBy&count=$count&offset=$offset&only_my_reviews=$my");
     Response response;
+
     try {
-      response = await get(uri, headers: await setHeader(my));
+      response = await get(uri, headers: await setHeader(AuthController.to.user.value != null));
     } catch(e) {
       return null;
     }
@@ -79,6 +80,56 @@ class PlaceProvider extends DefaultProvider {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
       return null;
+    }
+  }
+
+  Future<bool> postPlaceReviewLike(String placeId, dynamic reviewId) async {
+    String? idToken = AuthController.to.idToken;
+    User? user = AuthController.to.user.value;
+
+    if (idToken == null || user == null) {
+      return false;
+    }
+
+    Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews/$reviewId/likes");
+    Map<String, String>? header = await setHeader(true);
+
+    Response response;
+    try {
+      response = await post(uri, headers: header);
+    } catch(e) {
+      return false;
+    }
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> deletePlaceReviewLike(String placeId, dynamic reviewId) async {
+    String? idToken = AuthController.to.idToken;
+    User? user = AuthController.to.user.value;
+
+    if (idToken == null || user == null) {
+      return false;
+    }
+
+    Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews/$reviewId/likes");
+    Map<String, String>? header = await setHeader(true);
+
+    Response response;
+    try {
+      response = await delete(uri, headers: header);
+    } catch(e) {
+      return false;
+    }
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
