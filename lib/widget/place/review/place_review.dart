@@ -2,8 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
+import 'package:place_mobile_flutter/widget/get_snackbar.dart';
+import 'package:get/get.dart';
 
 class ShortPlaceReviewCard extends StatefulWidget {
   ShortPlaceReviewCard({
@@ -109,6 +112,15 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      if (AuthController.to.user.value == null) {
+                        Get.showSnackbar(
+                            WarnGetSnackBar(
+                                title: "로그인 필요",
+                                message: "한줄평 작성은 로그인이 필요합니다."
+                            )
+                        );
+                        return;
+                      }
                       setState(() {
                         HapticFeedback.lightImpact();
                         widget.likeComment = !widget.likeComment;

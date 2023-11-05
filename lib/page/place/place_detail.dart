@@ -17,6 +17,7 @@ import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
+import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/place/review/place_review.dart';
 
@@ -750,6 +751,15 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         action: Ink(
           child: InkWell(
             onTap: () {
+              if (AuthController.to.user.value == null) {
+                Get.showSnackbar(
+                    WarnGetSnackBar(
+                        title: "로그인 필요",
+                        message: "한줄평 작성은 로그인이 필요합니다."
+                    )
+                );
+                return;
+              }
               _openWriteCommentSection();
             },
             child: Text(
@@ -810,7 +820,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                         comment: _commentData[index]['contents'],
                         profileUrl: _commentData[index]['user']['img_url'],
                         date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
-                        likeComment: false,
+                        likeComment: _commentData[index]['is_liked'],
                         likeCount: UnitConverter.formatNumber(_commentData[index]['likes']),
                       ),
                     );
@@ -1332,7 +1342,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                   comment: _commentData[index]['contents'],
                                   profileUrl: _commentData[index]['user']['img_url'],
                                   date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
-                                  likeComment: false,
+                                  likeComment: _commentData[index]['is_liked'],
                                   likeCount: UnitConverter.formatNumber(_commentData[index]['likes']),
                                 ),
                               );
