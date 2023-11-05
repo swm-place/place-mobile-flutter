@@ -666,12 +666,15 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     } else {
       // bottomPad = 0;
     }
+    _commentEditingController.text = '';
+
     showModalBottomSheet(
       context: context,
+        isScrollControlled: true,
       builder: (BuildContext context) {
         return Container(
           width: double.infinity,
-          padding: EdgeInsets.fromLTRB(24, 12, 24, bottomPad),
+          padding: EdgeInsets.fromLTRB(24, 12, 24, bottomPad + MediaQuery.of(context).viewInsets.bottom),
           child: Wrap(
             children: [
               Column(
@@ -712,10 +715,12 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                     child: FilledButton(
                         onPressed: () async {
                           String content = _commentEditingController.text.toString();
-                          if (content == '') return;
+                          if (content == '') {
+                            Navigator.of(context).pop();
+                            return;
+                          }
 
                           Map<String, dynamic>? result = await _placeProvider.postPlaceReviewData(widget.placeId, content);
-                          print(result);
                           if (result != null) {
                             setState(() {
                               _commentData.insert(0, result);
@@ -733,10 +738,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           ),
         );
       }
-    ).whenComplete(() {
-      _commentEditingController.dispose();
-      _commentEditingController = TextEditingController();
-    });
+    );
   }
 
   Widget _detailReview(double commentHeight) {
