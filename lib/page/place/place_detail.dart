@@ -12,6 +12,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
@@ -156,7 +157,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   List<dynamic> _commentData = [];
 
   void _loadComments() async {
-    List<dynamic>? result = await _placeProvider.getPlaceReviewData(widget.placeId, 'likes', 0, 5);
+    List<dynamic>? result = await _placeProvider.getPlaceReviewData(widget.placeId, 'likes', 0, 5, false);
     if (result != null) {
       setState(() {
         _commentData = result;
@@ -1201,6 +1202,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     List<dynamic> _commentData = [];
 
     String sortKey = 'likes';
+    bool myReviews = false;
     int offset = 0;
     int count = 5;
 
@@ -1216,7 +1218,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           _commentScrollController.jumpTo(_commentScrollController.position.maxScrollExtent);
         });
       });
-      List<dynamic>? result = await _placeProvider.getPlaceReviewData(widget.placeId, sortKey, offset, count);
+      List<dynamic>? result = await _placeProvider.getPlaceReviewData(widget.placeId, sortKey, offset, count, myReviews);
       if (result != null) {
         _commentData.addAll(result);
         offset += count;
@@ -1226,6 +1228,30 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           loadVisibility = false;
         });
       });
+    }
+
+    void _changeSort() {
+      offset = 0;
+      count = 5;
+      _commentData.clear();
+      switch(commentSortKey) {
+        case 0: {
+          sortKey = 'created_at';
+          myReviews = false;
+          break;
+        }
+        case 1: {
+          sortKey = 'likes';
+          myReviews = false;
+          break;
+        }
+        case 2: {
+          sortKey = 'created_at';
+          myReviews = true;
+          break;
+        }
+      }
+      _addComments();
     }
 
     showModalBottomSheet(
@@ -1266,17 +1292,20 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                             padding: EdgeInsets.zero,
                             value: commentSortKey,
                             underline: const SizedBox(),
-                            items: const [
-                              DropdownMenuItem(child: Text('최신순'), value: 0,),
-                              DropdownMenuItem(child: Text('좋아요순'), value: 1,),
+                            items: [
+                              const DropdownMenuItem(child: Text('최신순'), value: 0,),
+                              const DropdownMenuItem(child: Text('좋아요순'), value: 1,),
+                              if (AuthController.to.user.value != null) const DropdownMenuItem(child: Text('내 한줄평'), value: 2,),
                             ],
-                            onChanged: (int? value) {
-                              bottomState(() {
-                                setState(() {
-                                  commentSortKey = value!;
-                                });
-                              });
-                            },
+                            onChanged: loadVisibility ? null :
+                                (int? value) {
+                                  bottomState(() {
+                                    setState(() {
+                                      commentSortKey = value!;
+                                    });
+                                  });
+                                  _changeSort();
+                                },
                           ),
                         )
                       ],

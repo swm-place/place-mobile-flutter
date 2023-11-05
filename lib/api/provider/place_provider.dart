@@ -38,11 +38,11 @@ class PlaceProvider extends DefaultProvider {
     }
   }
 
-  Future<List<dynamic>?> getPlaceReviewData(String placeId, String orderBy, int offset, int count) async {
-    Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews?order_by=$orderBy&count=$count&offset=$offset");
+  Future<List<dynamic>?> getPlaceReviewData(String placeId, String orderBy, int offset, int count, bool my) async {
+    Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews?order_by=$orderBy&count=$count&offset=$offset&only_my_reviews=$my");
     Response response;
     try {
-      response = await get(uri, headers: await setHeader(false));
+      response = await get(uri, headers: await setHeader(my));
     } catch(e) {
       return null;
     }
