@@ -45,7 +45,7 @@ class AuthController extends GetxController {
       await getIdTokenStream(false);
       return false;
     }
-    if (expireDate!.isAfter(DateTime.now())) {
+    if (expireDate!.isBefore(DateTime.now())) {
       await getIdTokenStream(false);
       return false;
     }
