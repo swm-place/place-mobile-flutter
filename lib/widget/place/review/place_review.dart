@@ -13,6 +13,7 @@ class ShortPlaceReviewCard extends StatefulWidget {
     required this.vsync,
     required this.comment,
     this.profileUrl,
+    this.myReview=false,
     required this.name,
     required this.date,
     required this.likeComment,
@@ -28,6 +29,7 @@ class ShortPlaceReviewCard extends StatefulWidget {
   String likeCount;
 
   bool likeComment;
+  bool myReview;
 
   TickerProvider vsync;
 
@@ -82,6 +84,7 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
               const SizedBox(height: 8,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   widget.profileUrl != null ?
                     CircleAvatar(
@@ -110,58 +113,73 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                       ],
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      if (AuthController.to.user.value == null) {
-                        Get.showSnackbar(
-                            WarnGetSnackBar(
-                                title: "로그인 필요",
-                                message: "한줄평 작성은 로그인이 필요합니다."
-                            )
-                        );
-                        return;
-                      }
-                      setState(() {
-                        HapticFeedback.lightImpact();
-                        widget.likeComment = !widget.likeComment;
-                        if (widget.likeComment) {
-                          _likeButtonController.animateTo(0.6);
-                        } else {
-                          _likeButtonController.animateBack(0.1);
+                  if (!widget.myReview)
+                    GestureDetector(
+                      onTap: () {
+                        if (AuthController.to.user.value == null) {
+                          Get.showSnackbar(
+                              WarnGetSnackBar(
+                                  title: "로그인 필요",
+                                  message: "한줄평 작성은 로그인이 필요합니다."
+                              )
+                          );
+                          return;
                         }
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                            // width: 24,
-                            // height: 24,
-                            child: Lottie.asset(
-                                "assets/lottie/animation_thumbsup.json",
-                                repeat: false,
-                                reverse: false,
-                                width: 24,
-                                height: 24,
-                                controller: _likeButtonController,
-                                onLoaded: (composition) {
-                                  _likeButtonController.duration = composition.duration;
-                                  if (widget.likeComment) {
-                                    _likeButtonController.value = 0.6;
-                                  } else {
-                                    _likeButtonController.value = 0.1;
+                        setState(() {
+                          HapticFeedback.lightImpact();
+                          widget.likeComment = !widget.likeComment;
+                          if (widget.likeComment) {
+                            _likeButtonController.animateTo(0.6);
+                          } else {
+                            _likeButtonController.animateBack(0.1);
+                          }
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              // width: 24,
+                              // height: 24,
+                              child: Lottie.asset(
+                                  "assets/lottie/animation_thumbsup.json",
+                                  repeat: false,
+                                  reverse: false,
+                                  width: 24,
+                                  height: 24,
+                                  controller: _likeButtonController,
+                                  onLoaded: (composition) {
+                                    _likeButtonController.duration = composition.duration;
+                                    if (widget.likeComment) {
+                                      _likeButtonController.value = 0.6;
+                                    } else {
+                                      _likeButtonController.value = 0.1;
+                                    }
                                   }
-                                }
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 4,),
-                          Text(widget.likeCount)
-                        ],
+                            const SizedBox(width: 4,),
+                            Text(widget.likeCount)
+                          ],
+                        ),
                       ),
                     ),
-                  )
+                  if (widget.myReview)
+                    GestureDetector(
+                      onTap: () {
+
+                      },
+                      child: const Icon(Icons.delete, color: Colors.redAccent,),
+                    )
+                  // if (widget.myReview)
+                  //   GestureDetector(
+                  //     onTap: () {
+                  //
+                  //     },
+                  //     child: const Icon(Icons.delete, color: Colors.redAccent,),
+                  //   )
                 ],
               )
             ],

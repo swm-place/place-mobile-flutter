@@ -676,29 +676,16 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       builder: (BuildContext context) {
         return Container(
           width: double.infinity,
-          padding: EdgeInsets.fromLTRB(24, 12, 24, bottomPad + MediaQuery.of(context).viewInsets.bottom),
+          padding: EdgeInsets.fromLTRB(24, 16, 24, bottomPad + MediaQuery.of(context).viewInsets.bottom),
           child: Wrap(
             children: [
               Column(
                 children: [
                   SizedBox(
                     width: double.infinity,
-                    child: Row(
-                      children: [
-                        Expanded(child: Text("한줄평 작성", style: SectionTextStyle.sectionTitle(),),),
-                        Visibility(
-                          child: IconButton(onPressed: () {
-                            print('clicked');
-                          }, icon: Icon(Icons.delete)),
-                          visible: false,
-                          maintainSize: true,
-                          maintainAnimation: true,
-                          maintainState: true,
-                        )
-                      ],
-                    )
+                    child: Text("한줄평 작성", style: SectionTextStyle.sectionTitle(),)
                   ),
-                  SizedBox(height: 8,),
+                  SizedBox(height: 16,),
                   TextFormField(
                     controller: _commentEditingController,
                     minLines: 3,
@@ -812,6 +799,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                       ),
                     );
                   } else {
+                    bool myReview = false;
+                    if (AuthController.to.user.value != null) {
+                      myReview = AuthController.to.user.value!.uid == _commentData[index]['user']['id'];
+                    }
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
                       child: ShortPlaceReviewCard(
@@ -822,6 +813,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                         date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
                         likeComment: _commentData[index]['is_liked'],
                         likeCount: UnitConverter.formatNumber(_commentData[index]['likes']),
+                        myReview: myReview,
                       ),
                     );
                   }
@@ -1333,6 +1325,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                             padding: EdgeInsets.zero,
                             itemCount: _commentData.length,
                             itemBuilder: (context, index) {
+                              bool myReview = false;
+                              if (AuthController.to.user.value != null) {
+                                myReview = AuthController.to.user.value!.uid == _commentData[index]['user']['id'];
+                              }
                               return Padding(
                                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                                 child: ShortPlaceReviewCard(
@@ -1344,6 +1340,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                   date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
                                   likeComment: _commentData[index]['is_liked'],
                                   likeCount: UnitConverter.formatNumber(_commentData[index]['likes']),
+                                  myReview: myReview,
                                 ),
                               );
                             },
