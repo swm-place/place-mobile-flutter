@@ -10,6 +10,8 @@ import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:get/get.dart';
 
 class ShortPlaceReviewCard extends StatefulWidget {
+  final Function() onDeletePressed;
+
   ShortPlaceReviewCard({
     required this.vsync,
     required this.comment,
@@ -22,6 +24,7 @@ class ShortPlaceReviewCard extends StatefulWidget {
     required this.placeId,
     required this.reviewId,
     this.height=double.infinity,
+    required this.onDeletePressed,
     Key? key,
   }) : super(key: key);
 
@@ -204,9 +207,7 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
                     ),
                   if (widget.myReview)
                     GestureDetector(
-                      onTap: () {
-
-                      },
+                      onTap: widget.onDeletePressed,
                       child: const Icon(Icons.delete, color: Colors.redAccent,),
                     )
                   // if (widget.myReview)

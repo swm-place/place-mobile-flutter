@@ -132,4 +132,29 @@ class PlaceProvider extends DefaultProvider {
       return false;
     }
   }
+
+  Future<bool> deletePlaceReview(String placeId, dynamic reviewId) async {
+    String? idToken = AuthController.to.idToken;
+    User? user = AuthController.to.user.value;
+
+    if (idToken == null || user == null) {
+      return false;
+    }
+
+    Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews/$reviewId");
+    Map<String, String>? header = await setHeader(true);
+
+    Response response;
+    try {
+      response = await delete(uri, headers: header);
+    } catch(e) {
+      return false;
+    }
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

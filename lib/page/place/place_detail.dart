@@ -158,6 +158,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   List<dynamic> _commentData = [];
 
   void _loadComments() async {
+    _commentData.clear();
     List<dynamic>? result = await _placeProvider.getPlaceReviewData(widget.placeId, 'likes', 0, 5, false);
     if (result != null) {
       setState(() {
@@ -816,6 +817,35 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                         myReview: myReview,
                         placeId: widget.placeId,
                         reviewId: _commentData[index]['id'],
+                        onDeletePressed: () async {
+                          Get.dialog(
+                              const AlertDialog(
+                                contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                actionsPadding: EdgeInsets.zero,
+                                titlePadding: EdgeInsets.zero,
+                                content: Row(
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(width: 24),
+                                    Text("삭제중..."),
+                                  ],
+                                ),
+                              )
+                          );
+                          bool result = await _placeProvider.deletePlaceReview(widget.placeId, _commentData[index]['id']);
+                          if (result) {
+                            _loadComments();
+                            Get.back();
+                          } else {
+                            Get.back();
+                            Get.showSnackbar(
+                                ErrorGetSnackBar(
+                                    title: "삭제 실패",
+                                    message: "한줄평 삭제 중 오류가 발생했습니다."
+                                )
+                            );
+                          }
+                        },
                       ),
                     );
                   }
@@ -1345,6 +1375,39 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                   myReview: myReview,
                                   placeId: widget.placeId,
                                   reviewId: _commentData[index]['id'],
+                                  onDeletePressed: () async {
+                                    Get.dialog(
+                                        const AlertDialog(
+                                          contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                          actionsPadding: EdgeInsets.zero,
+                                          titlePadding: EdgeInsets.zero,
+                                          content: Row(
+                                            children: [
+                                              CircularProgressIndicator(),
+                                              SizedBox(width: 24),
+                                              Text("삭제중..."),
+                                            ],
+                                          ),
+                                        )
+                                    );
+                                    await _placeProvider.deletePlaceReview(widget.placeId, _commentData[index]['id']);
+                                    bool result = await _placeProvider.deletePlaceReview(widget.placeId, _commentData[index]['id']);
+                                    if (result) {
+                                      offset = 0;
+                                      count = 5;
+                                      _addComments();
+                                      _loadComments();
+                                      Get.back();
+                                    } else {
+                                      Get.back();
+                                      Get.showSnackbar(
+                                          ErrorGetSnackBar(
+                                              title: "삭제 실패",
+                                              message: "한줄평 삭제 중 오류가 발생했습니다."
+                                          )
+                                      );
+                                    }
+                                  },
                                 ),
                               );
                             },
