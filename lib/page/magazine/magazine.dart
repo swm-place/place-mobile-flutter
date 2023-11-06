@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
@@ -22,8 +23,13 @@ class Magazine extends StatefulWidget {
 
 class _MagazineState extends State<Magazine> {
 
+  MagazineProvider _magazineProvider = MagazineProvider();
+
   bool likeClicked = false;
 
+  int _loadData = -1;
+
+  Map<String, dynamic>? _magazineData;
   final Map<String, dynamic> _magazineContents = {
     'title': '서울에서 느끼는 자연 코스로 즐기기',
     'author': {
@@ -77,6 +83,102 @@ class _MagazineState extends State<Magazine> {
       },
     ]
   };
+
+  @override
+  void initState() {
+    getMagazineData();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loadData != -1) {
+      if (_loadData == 1) {
+        return Scaffold(
+            body: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      actions: [
+                        FlexibleTopBarActionButton(
+                            onPressed: () {
+
+                            },
+                            icon: const Icon(Icons.ios_share, size: 18,)
+                        ),
+                        FlexibleTopBarActionButton(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            setState(() {
+                              likeClicked = !likeClicked;
+                            });
+                          },
+                          icon: likeClicked ? Icon(
+                            MdiIcons.heart,
+                            color: Colors.pink,
+                            size: 18,
+                          ) : Icon(
+                            MdiIcons.heartOutline,
+                            size: 18,
+                          ),
+                        ),
+                      ],
+                      leading: FlexibleTopBarActionButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: Icon(
+                          Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                          size: 18,
+                        ),
+                        iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
+                      ),
+                      pinned: true,
+                      expandedHeight: 220.0,
+                      surfaceTintColor: Colors.white,
+                      backgroundColor: Colors.white,
+                      flexibleSpace: PictureFlexibleSpace(),
+                    ),
+                    SliverList(
+                      delegate: SliverChildListDelegate(_createMagazineSection()),
+                    )
+                  ],
+                );
+              },
+            )
+        );
+      } else {
+        return Scaffold(
+          appBar: AppBar(),
+          body: const Center(
+              child: Text('오류 발생')
+          ),
+        );
+      }
+    } else {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+  }
+
+  void getMagazineData() async {
+    Map<String, dynamic>? result = await _magazineProvider.getMagazine(widget.magazineId);
+    if (result != null) {
+      _magazineData = result;
+
+      setState(() {
+        _loadData = 1;
+      });
+    } else {
+      setState(() {
+        _loadData = 0;
+      });
+    }
+  }
 
   Widget _createHeader() => Padding(
     padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
@@ -208,66 +310,5 @@ class _MagazineState extends State<Magazine> {
     }
     section.add(const SizedBox(height: 24));
     return section;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // extendBodyBehindAppBar: true,
-        body: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            // print(constraints.maxWidth);
-            double commentHeight = 58640 / (constraints.maxWidth - 96);
-            return CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  actions: [
-                    FlexibleTopBarActionButton(
-                        onPressed: () {
-
-                        },
-                        icon: Icon(Icons.ios_share, size: 18,)
-                    ),
-                    FlexibleTopBarActionButton(
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        setState(() {
-                          likeClicked = !likeClicked;
-                        });
-                      },
-                      icon: likeClicked ? Icon(
-                        MdiIcons.heart,
-                        color: Colors.pink,
-                        size: 18,
-                      ) : Icon(
-                        MdiIcons.heartOutline,
-                        size: 18,
-                      ),
-                    ),
-                  ],
-                  leading: FlexibleTopBarActionButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: Icon(
-                      Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                      size: 18,
-                    ),
-                    iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
-                  ),
-                  pinned: true,
-                  expandedHeight: 220.0,
-                  surfaceTintColor: Colors.white,
-                  backgroundColor: Colors.white,
-                  flexibleSpace: PictureFlexibleSpace(),
-                ),
-                SliverList(
-                  delegate: SliverChildListDelegate(_createMagazineSection()),
-                )
-              ],
-            );
-          },
-        )
-    );
   }
 }

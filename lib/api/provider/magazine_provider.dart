@@ -21,4 +21,21 @@ class MagazineProvider extends DefaultProvider {
       return null;
     }
   }
+
+  Future<Map<String, dynamic>?> getMagazine(dynamic id) async {
+    Uri uri = Uri.parse("$baseUrl/api/course-magazines/$id");
+    Response response;
+
+    try {
+      response = await get(uri, headers: await setHeader(false));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
 }

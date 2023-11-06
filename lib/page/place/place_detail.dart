@@ -279,13 +279,13 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       } else {
         return Scaffold(
           appBar: AppBar(),
-          body: Center(
+          body: const Center(
             child: Text('오류 발생')
           ),
         );
       }
     } else {
-      return Scaffold(
+      return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
