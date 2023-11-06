@@ -12,10 +12,13 @@ import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_butto
 class Magazine extends StatefulWidget {
   Magazine({
     required this.magazineId,
+    this.imageUrl,
     Key? key
   }) : super(key: key);
 
   dynamic magazineId;
+
+  String? imageUrl;
 
   @override
   State<StatefulWidget> createState() => _MagazineState();
@@ -23,13 +26,14 @@ class Magazine extends StatefulWidget {
 
 class _MagazineState extends State<Magazine> {
 
-  MagazineProvider _magazineProvider = MagazineProvider();
+  final MagazineProvider _magazineProvider = MagazineProvider();
 
   bool likeClicked = false;
 
   int _loadData = -1;
 
   Map<String, dynamic>? _magazineData;
+
   final Map<String, dynamic> _magazineContents = {
     'title': '서울에서 느끼는 자연 코스로 즐기기',
     'author': {
@@ -138,7 +142,9 @@ class _MagazineState extends State<Magazine> {
                       expandedHeight: 220.0,
                       surfaceTintColor: Colors.white,
                       backgroundColor: Colors.white,
-                      flexibleSpace: PictureFlexibleSpace(),
+                      flexibleSpace: PictureFlexibleSpace(
+                        imageUrl: widget.imageUrl,
+                      ),
                     ),
                     SliverList(
                       delegate: SliverChildListDelegate(_createMagazineSection()),

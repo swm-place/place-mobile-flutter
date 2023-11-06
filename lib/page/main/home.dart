@@ -173,6 +173,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                     onTap: () {
                       Get.to(() => Magazine(
                         magazineId: _magazineData![index]['id'],
+                        imageUrl: _magazineData![index]['imgUrl'],
                       ));
                     },
                   );
