@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
@@ -29,6 +30,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<HomePage> {
 
   final PlaceProvider _placeProvider = PlaceProvider();
+  final MagazineProvider _magazineProvider = MagazineProvider();
 
   final List<Map<String, dynamic>> _recommendTagsData = [
     {'icon': Icons.add, 'title': 'test1', 'background': Colors.blue},
@@ -40,24 +42,11 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     {'icon': Icons.accessibility, 'title': 'test7', 'background': Colors.pink},
   ];
 
-  final List<Map<String, dynamic>> _storyData = [
+  List<dynamic>? _storyData = [
     {
-      'background': "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
+      'imgUrl': "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
       'title': '감성여행',
-      'message': '바쁜 일상에 지친 마음을 회복',
-      'location': '대부도, 안산'
-    },
-    {
-      'background': "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2560&q=80",
-      'title': '피톤치드',
-      'message': '도심에서는 느낄수 없는 맑은 공기',
-      'location': '사려니 숲길, 제주도'
-    },
-    {
-      'background': "https://images.unsplash.com/photo-1548115184-bc6544d06a58?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
-      'title': '전통',
-      'message': '한국의 전통적인 아름다움',
-      'location': '한옥마을, 전주'
+      'contents': '바쁜 일상에 지친 마음을 회복',
     },
   ];
 
@@ -91,6 +80,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   int activeIndex = 0;
 
   int _loadRecommendData = -1;
+  int _loadMagazineData = -1;
 
   @override
   bool get wantKeepAlive => true;
@@ -98,6 +88,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   @override
   void initState() {
     _getPlaceRecommendationSection();
+    _getMagazineSection();
     super.initState();
   }
 
@@ -152,57 +143,84 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     return tags;
   }
 
-  Widget __storySection() => SizedBox(
-    width: double.infinity,
-    child: MainSection(
-      title: "매거진",
-      // message: "마음에 드는 스토리를 찾아보세요",
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: CarouselSlider.builder(
-              options: CarouselOptions(
-                  initialPage: 0,
-                  enlargeCenterPage: true,
-                  viewportFraction: 0.9,
-                  autoPlay: true,
-                  aspectRatio: 16/8,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      activeIndex = index;
-                    });
-                  }
+  void _getMagazineSection() async {
+    List<dynamic>? data = await _magazineProvider.getMagazineList();
+    if (data == null) {
+      _storyData = null;
+      setState(() {
+        _loadMagazineData = 0;
+      });
+      return null;
+    }
+
+    for (int i = 0;i < data.length;i++) {
+      String? imgUrl;
+      if (data[i]['imgUrl'] != null) {
+        imgUrl = "https://been-dev.yeoksi.com${data[i]['imgUrl']}";
+      }
+      data[i]['imgUrl'] = imgUrl;
+    }
+
+    _storyData = data;
+
+    setState(() {
+      _loadMagazineData = 1;
+    });
+  }
+
+  Widget __storySection() {
+    if (_loadMagazineData < 1) return Container();
+    if (_storyData == null) return Container();
+    if (_storyData!.isEmpty) return Container();
+    return SizedBox(
+      width: double.infinity,
+      child: MainSection(
+        title: "매거진",
+        // message: "마음에 드는 스토리를 찾아보세요",
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: CarouselSlider.builder(
+                options: CarouselOptions(
+                    initialPage: 0,
+                    enlargeCenterPage: true,
+                    viewportFraction: 0.9,
+                    autoPlay: true,
+                    aspectRatio: 16 / 8,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        activeIndex = index;
+                      });
+                    }),
+                itemCount: _storyData!.length,
+                itemBuilder: (context, index, realIndex) {
+                  return RoundedRectangleStoryCard(
+                    imageUrl: _storyData![index]['imgUrl'],
+                    title: _storyData![index]['title'],
+                    message: _storyData![index]['contents'],
+                    messageStyle: SectionTextStyle.sectionContent(Colors.white),
+                    onTap: () {
+                      Get.to(() => Magazine());
+                    },
+                  );
+                },
               ),
-              itemCount: _storyData.length,
-              itemBuilder: (context, index, realIndex) {
-                return RoundedRectangleStoryCard(
-                  imageUrl: _storyData[index]['background'],
-                  location: _storyData[index]['location'],
-                  title: _storyData[index]['title'],
-                  message: _storyData[index]['message'],
-                  messageStyle: SectionTextStyle.sectionContent(Colors.white),
-                  onTap: () {
-                    Get.to(() => Magazine());
-                  },
-                );
-              },
             ),
-          ),
-          const SizedBox(height: 8,),
-          AnimatedSmoothIndicator(
-            activeIndex: activeIndex,
-            count: _storyData.length,
-            effect: const JumpingDotEffect(
-                dotHeight: 10,
-                dotWidth: 10
+            const SizedBox(
+              height: 8,
             ),
-          )
-        ],
+            AnimatedSmoothIndicator(
+              activeIndex: activeIndex,
+              count: _storyData!.length,
+              effect: const JumpingDotEffect(dotHeight: 10, dotWidth: 10),
+            )
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   Widget __courseSection(Map<String, dynamic> data) => SizedBox(
     width: double.infinity,
