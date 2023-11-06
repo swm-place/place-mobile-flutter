@@ -42,38 +42,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     {'icon': Icons.accessibility, 'title': 'test7', 'background': Colors.pink},
   ];
 
-  List<dynamic>? _storyData = [
-    {
-      'imgUrl': "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
-      'title': '감성여행',
-      'contents': '바쁜 일상에 지친 마음을 회복',
-    },
-  ];
-
-  final Map<String, dynamic> _courseData = {
-    'title': '코스 추천',
-    'summary': '코스 설명',
-    'courses': [
-      {
-        'background': "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
-        'title': '감성여행',
-        'message': '바쁜 일상에 지친 마음을 회복',
-        'location': '대부도, 안산'
-      },
-      {
-        'background': "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2560&q=80",
-        'title': '피톤치드',
-        'message': '도심에서는 느낄수 없는 맑은 공기',
-        'location': '사려니 숲길, 제주도'
-      },
-      {
-        'background': "https://images.unsplash.com/photo-1548115184-bc6544d06a58?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
-        'title': '전통',
-        'message': '한국의 전통적인 아름다움',
-        'location': '한옥마을, 전주'
-      }
-    ]
-  };
+  List<dynamic>? _magazineData = [];
 
   Map<String, dynamic>? _recommendData;
 
@@ -146,7 +115,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   void _getMagazineSection() async {
     List<dynamic>? data = await _magazineProvider.getMagazineList();
     if (data == null) {
-      _storyData = null;
+      _magazineData = null;
       setState(() {
         _loadMagazineData = 0;
       });
@@ -161,17 +130,17 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
       data[i]['imgUrl'] = imgUrl;
     }
 
-    _storyData = data;
+    _magazineData = data;
 
     setState(() {
       _loadMagazineData = 1;
     });
   }
 
-  Widget __storySection() {
+  Widget __magazineSection() {
     if (_loadMagazineData < 1) return Container();
-    if (_storyData == null) return Container();
-    if (_storyData!.isEmpty) return Container();
+    if (_magazineData == null) return Container();
+    if (_magazineData!.isEmpty) return Container();
     return SizedBox(
       width: double.infinity,
       child: MainSection(
@@ -194,12 +163,12 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                         activeIndex = index;
                       });
                     }),
-                itemCount: _storyData!.length,
+                itemCount: _magazineData!.length,
                 itemBuilder: (context, index, realIndex) {
-                  return RoundedRectangleStoryCard(
-                    imageUrl: _storyData![index]['imgUrl'],
-                    title: _storyData![index]['title'],
-                    message: _storyData![index]['contents'],
+                  return RoundedRectangleMagazineCard(
+                    imageUrl: _magazineData![index]['imgUrl'],
+                    title: _magazineData![index]['title'],
+                    message: _magazineData![index]['contents'],
                     messageStyle: SectionTextStyle.sectionContent(Colors.white),
                     onTap: () {
                       Get.to(() => Magazine());
@@ -213,7 +182,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             ),
             AnimatedSmoothIndicator(
               activeIndex: activeIndex,
-              count: _storyData!.length,
+              count: _magazineData!.length,
               effect: const JumpingDotEffect(dotHeight: 10, dotWidth: 10),
             )
           ],
@@ -238,7 +207,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
               return const SizedBox(width: 24,);
             } else {
               index -= 1;
-              return RoundedRectangleStoryCard(
+              return RoundedRectangleMagazineCard(
                 title: data['courses'][index]['title'],
                 message: data['courses'][index]['message'],
                 location: data['courses'][index]['location'],
@@ -373,7 +342,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     List<Widget> section = [
       __searchSection(),
       const SizedBox(height: 24,),
-      __storySection(),
+      __magazineSection(),
       const SizedBox(height: 24,)
     ];
     // section.addAll([

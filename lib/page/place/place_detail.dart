@@ -998,7 +998,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     List<Widget> placeCards = [const SizedBox(width: 24,)];
     for (int i = 0;i < _relevantPlaceData.length;i++) {
       placeCards.add(
-          RoundedRectangleStoryCard(
+          RoundedRectangleMagazineCard(
             title: _relevanceStoryData[i]['title'],
             message: _relevanceStoryData[i]['message'],
             location: _relevanceStoryData[i]['location'],

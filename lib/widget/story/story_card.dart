@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 
-class RoundedRectangleStoryCard extends StatelessWidget {
+class RoundedRectangleMagazineCard extends StatelessWidget {
   final Function()? onTap;
 
-  RoundedRectangleStoryCard({
+  RoundedRectangleMagazineCard({
     required this.title,
     required this.message,
     this.location='',
