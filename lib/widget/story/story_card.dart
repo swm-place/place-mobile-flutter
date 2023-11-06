@@ -8,7 +8,7 @@ class RoundedRectangleMagazineCard extends StatelessWidget {
     required this.title,
     required this.message,
     this.location='',
-    required this.imageUrl,
+    this.imageUrl,
     required this.onTap,
     this.padding=const EdgeInsets.fromLTRB(20, 20, 20, 20),
     this.width,
@@ -22,7 +22,7 @@ class RoundedRectangleMagazineCard extends StatelessWidget {
   String title;
   String message;
   String location;
-  String imageUrl;
+  String? imageUrl;
 
   double? width;
   double? height;
@@ -49,7 +49,9 @@ class RoundedRectangleMagazineCard extends StatelessWidget {
             SizedBox(
               width: width,
               height: height,
-              child: Image.network(imageUrl, fit: BoxFit.cover,),
+              child: imageUrl != null ?
+                Image.network(imageUrl!, fit: BoxFit.cover,) :
+                Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
             ),
             Container(
               width: width,

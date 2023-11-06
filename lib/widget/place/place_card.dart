@@ -120,8 +120,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                           width: double.infinity,
                           child: imageUrl != null ? 
                             Image.network(imageUrl!, fit: BoxFit.cover,) :
-                            Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,)
-                          ,
+                            Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
                         ),
                       ],
                     ),
