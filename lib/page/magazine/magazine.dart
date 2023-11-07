@@ -291,37 +291,48 @@ class _MagazineState extends State<Magazine> {
   );
 
   List<Widget> _createMagazineSection() {
-    List<Widget> section = [_createHeader(), const SizedBox(height: 24)];
-    for (int i = 0;i < _magazineContents['contents'].length;i++) {
-      Map<String, dynamic> content =  _magazineContents['contents'][i];
-      if (i > 0) section.add(const SizedBox(height: 24,));
-      switch(content['type']) {
-        case 'text': {
-          section.add(_createTextContentSection(content['content']));
-          break;
-        }
-        case 'divider': {
-          section.add(_createDividerSection());
-          break;
-        }
-        case 'placeCard': {
-          section.add(_createPlaceContentSection(
-            content['title'],
-            content['placeContent'],
-            content['placePicture']
-          ));
-          break;
-        }
-        case 'image': {
-          section.add(_createImageSection(
-            content['imgUrl'],
-            content['description']
-          ));
-          break;
-        }
-      }
+    List<Widget> section = [_createHeader(), const SizedBox(height: 20)];
+    section.add(_createTextContentSection(_magazineData!['contents']));
+    section.add(const SizedBox(height: 24,));
+    section.add(_createDividerSection());
+    section.add(const SizedBox(height: 24,));
+    for (var place in _magazineData!['placesInCourseMagazine']) {
+      section.add(_createPlaceContentSection(
+        place['place']['name'],
+        place['contents'],
+        "https://been-dev.yeoksi.com${place['place']['imgUrl']}"
+      ));
+      section.add(const SizedBox(height: 24,));
     }
-    section.add(const SizedBox(height: 24));
+    // for (int i = 0;i < _magazineContents['contents'].length;i++) {
+    //   Map<String, dynamic> content =  _magazineContents['contents'][i];
+    //   if (i > 0) section.add(const SizedBox(height: 24,));
+    //   switch(content['type']) {
+    //     case 'text': {
+    //       section.add(_createTextContentSection(content['content']));
+    //       break;
+    //     }
+    //     case 'divider': {
+    //       section.add(_createDividerSection());
+    //       break;
+    //     }
+    //     case 'placeCard': {
+    //       section.add(_createPlaceContentSection(
+    //         content['title'],
+    //         content['placeContent'],
+    //         content['placePicture']
+    //       ));
+    //       break;
+    //     }
+    //     case 'image': {
+    //       section.add(_createImageSection(
+    //         content['imgUrl'],
+    //         content['description']
+    //       ));
+    //       break;
+    //     }
+    //   }
+    // }
     return section;
   }
 }
