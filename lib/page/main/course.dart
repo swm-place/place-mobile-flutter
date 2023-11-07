@@ -205,6 +205,9 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
           placesImageUrls: _myCourseData![i]['placesInCourse'].map((item) => item['place']['imgUrl'].toString()).toList(),
           placesName: _myCourseData![i]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
           regionName: '',
+          onPressed: () {
+            Get.to(() => CourseMainPage());
+          },
         )
       );
     }
