@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 
@@ -248,7 +249,7 @@ class MyStoryCard extends StatelessWidget {
               height: height,
               color: const Color.fromARGB(102, 1, 1, 1),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -256,9 +257,13 @@ class MyStoryCard extends StatelessWidget {
                       children: [
                         SizedBox(
                           width: double.infinity,
-                          child: Text(
+                          child: AutoSizeText(
                             title,
                             style: SectionTextStyle.sectionTitleSmall(Colors.white),
+                            maxLines: 1,
+                            minFontSize: 18,
+                            softWrap: false,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         SizedBox(height: editors == null ? 0: 4,),
