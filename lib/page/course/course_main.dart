@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:lottie/lottie.dart' as lottie;
 import 'package:place_mobile_flutter/api/api_const.dart';
-import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
+import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_edit.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';

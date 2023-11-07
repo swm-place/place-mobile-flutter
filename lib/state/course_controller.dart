@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:place_mobile_flutter/api/provider/map/course_provider.dart';
+import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/state/state_const.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:latlong2/latlong.dart';
