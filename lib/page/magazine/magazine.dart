@@ -192,18 +192,23 @@ class _MagazineState extends State<Magazine> {
       children: [
         SizedBox(
           width: double.infinity,
-          child: Text(_magazineContents['title'], style: PageTextStyle.headlineBold(Colors.black)),
+          child: Text(_magazineData!['title'], style: PageTextStyle.headlineBold(Colors.black)),
         ),
         const SizedBox(height: 10),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 18,
-              backgroundImage: NetworkImage(_magazineContents['author']['profileUrl']),
-            ),
+            _magazineData!['user']['imgUrl'] != null ?
+              CircleAvatar(
+                radius: 18,
+                backgroundImage: NetworkImage(_magazineData!['user']['imgUrl']),
+              ) :
+              const CircleAvatar(
+                radius: 18,
+                backgroundImage: AssetImage('assets/images/avatar_male.png'),
+              ),
             const SizedBox(width: 10,),
-            Text(_magazineContents['author']['name'], style: SectionTextStyle.sectionContent(Colors.black),),
+            Text(_magazineData!['user']['nickname'], style: SectionTextStyle.sectionContent(Colors.black),),
             const SizedBox(width: 10,),
             Text(_magazineContents['createdAt'], style: SectionTextStyle.labelMedium(Colors.grey),),
           ],
