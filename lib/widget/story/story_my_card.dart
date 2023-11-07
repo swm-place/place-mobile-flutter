@@ -9,7 +9,7 @@ class MyStoryCard extends StatelessWidget {
     // required this.imageUrl,
     this.width,
     this.height,
-    this.places,
+    this.placeImageUrls,
     this.editors,
     Key? key,
   }) : super(key: key);
@@ -23,7 +23,7 @@ class MyStoryCard extends StatelessWidget {
   double? height;
 
   List<Map<String, dynamic>>? editors;
-  List<Map<String, dynamic>>? places;
+  List<dynamic>? placeImageUrls;
 
   Widget _editorSection() {
     if (editors == null) return const SizedBox();
@@ -77,7 +77,7 @@ class MyStoryCard extends StatelessWidget {
   }
 
   Widget _createBackground() {
-    if (places == null) {
+    if (placeImageUrls == null) {
       return Container(
         width: double.infinity,
         height: double.infinity,
@@ -86,35 +86,44 @@ class MyStoryCard extends StatelessWidget {
     } else {
       List<Widget> top = [];
       List<Widget> bottom = [];
-      if (places!.length == 1) {
+      if (placeImageUrls!.length == 1) {
         return Image.network(
-          places![0]['imageUrl'],
+          placeImageUrls![0],
           fit: BoxFit.cover,
+          errorBuilder: (context, exception, stackTrace) {
+            return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+          },
         );
       }
-      if (places!.length == 2) {
+      if (placeImageUrls!.length == 2) {
         return Column(
           children: [
             SizedBox(
               width: width!,
               height: height! / 2,
               child: Image.network(
-                places![0]['imageUrl'],
+                placeImageUrls![0],
                 fit: BoxFit.cover,
+                errorBuilder: (context, exception, stackTrace) {
+                  return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+                },
               ),
             ),
             SizedBox(
               width: width!,
               height: height! / 2,
               child: Image.network(
-                places![1]['imageUrl'],
+                placeImageUrls![1],
                 fit: BoxFit.cover,
+                errorBuilder: (context, exception, stackTrace) {
+                  return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+                },
               ),
             ),
           ],
         );
       }
-      if (places!.length == 3) {
+      if (placeImageUrls!.length == 3) {
         return Row(
           children: [
             Column(
@@ -123,16 +132,22 @@ class MyStoryCard extends StatelessWidget {
                   width: width! / 2,
                   height: height! / 2,
                   child: Image.network(
-                    places![0]['imageUrl'],
+                    placeImageUrls![0],
                     fit: BoxFit.cover,
+                    errorBuilder: (context, exception, stackTrace) {
+                      return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+                    },
                   ),
                 ),
                 SizedBox(
                   width: width! / 2,
                   height: height! / 2,
                   child: Image.network(
-                    places![1]['imageUrl'],
+                    placeImageUrls![1],
                     fit: BoxFit.cover,
+                    errorBuilder: (context, exception, stackTrace) {
+                      return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+                    },
                   ),
                 ),
               ],
@@ -141,8 +156,11 @@ class MyStoryCard extends StatelessWidget {
               width: width! / 2,
               height: height!,
               child: Image.network(
-                places![2]['imageUrl'],
+                placeImageUrls![2],
                 fit: BoxFit.cover,
+                errorBuilder: (context, exception, stackTrace) {
+                  return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+                },
               ),
             ),
           ],
@@ -156,16 +174,22 @@ class MyStoryCard extends StatelessWidget {
                 width: width! / 2,
                 height: height! / 2,
                 child: Image.network(
-                  places![0]['imageUrl'],
+                  placeImageUrls![0],
                   fit: BoxFit.cover,
+                  errorBuilder: (context, exception, stackTrace) {
+                    return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+                  },
                 ),
               ),
               SizedBox(
                 width: width! / 2,
                 height: height! / 2,
                 child: Image.network(
-                  places![1]['imageUrl'],
+                  placeImageUrls![1],
                   fit: BoxFit.cover,
+                  errorBuilder: (context, exception, stackTrace) {
+                    return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+                  },
                 ),
               ),
             ],
@@ -176,16 +200,22 @@ class MyStoryCard extends StatelessWidget {
                 width: width! / 2,
                 height: height! / 2,
                 child: Image.network(
-                  places![2]['imageUrl'],
+                  placeImageUrls![2],
                   fit: BoxFit.cover,
+                  errorBuilder: (context, exception, stackTrace) {
+                    return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+                  },
                 ),
               ),
               SizedBox(
                 width: width! / 2,
                 height: height! / 2,
                 child: Image.network(
-                  places![3]['imageUrl'],
+                  placeImageUrls![3],
                   fit: BoxFit.cover,
+                  errorBuilder: (context, exception, stackTrace) {
+                    return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+                  },
                 ),
               ),
             ],

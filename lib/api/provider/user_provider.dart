@@ -93,4 +93,40 @@ class UserProvider extends DefaultProvider {
     }
     return null;
   }
+
+  Future<Map<String, dynamic>?> getPlaceBookmark() async {
+    if (AuthController.to.user.value == null) return null;
+
+    Uri uri = Uri.parse("$baseUrl/api/user/${AuthController.to.user.value!.uid}/place-bookmark");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getCourseBookmark() async {
+    if (AuthController.to.user.value == null) return null;
+
+    Uri uri = Uri.parse("$baseUrl/api/bookmarks/${AuthController.to.user.value!.uid}/course-bookmarks");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
 }

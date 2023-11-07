@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:place_mobile_flutter/api/api_const.dart';
+import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
@@ -140,11 +143,47 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
   ];
 
   late final TextEditingController _bookmarkNameController;
+  late final  BookmarkController _bookmarkController;
 
   String? _bookmarkNameError;
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    _bookmarkNameController = TextEditingController();
+    _bookmarkController = BookmarkController();
+    _bookmarkController.loadPlaceBookmark();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _bookmarkNameController.dispose();
+    _bookmarkController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Scaffold(
+      body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _searchSection(),
+                // _myStorySection(),
+                _locationBookmarkSection(),
+                // _storyBookmarkSection(),
+                SizedBox(height: 24,)
+              ],
+            ),
+          )
+      ),
+    );
+  }
 
   Widget _searchSection() => Padding(
     padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
@@ -160,44 +199,44 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     ),
   );
 
-  Widget _myStorySection() {
-    List<Widget> placeCards = [const SizedBox(width: 24,)];
-    for (int i = 0;i < _myStoryData.length;i++) {
-      placeCards.add(
-          MyStoryCard(
-            title: _myStoryData[i]['title'],
-            width: 250,
-            height: 180,
-            editors: _myStoryData[i]['editor'],
-            places: _myStoryData[i]['places'],
-          )
-      );
-      placeCards.add(const SizedBox(width: 8,));
-    }
-    placeCards.add(const SizedBox(width: 16,));
-
-    return Padding(
-      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
-      child: MainSection(
-        title: "내 스토리",
-        action: Ink(
-          child: InkWell(
-            onTap: () {},
-            child: Text(
-              "전체보기",
-              style: SectionTextStyle.labelMedium(Colors.blue),
-            ),
-          ),
-        ),
-        content: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: placeCards,
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _myStorySection() {
+  //   List<Widget> placeCards = [const SizedBox(width: 24,)];
+  //   for (int i = 0;i < _myStoryData.length;i++) {
+  //     placeCards.add(
+  //         MyStoryCard(
+  //           title: _myStoryData[i]['title'],
+  //           width: 250,
+  //           height: 180,
+  //           editors: _myStoryData[i]['editor'],
+  //           places: _myStoryData[i]['places'],
+  //         )
+  //     );
+  //     placeCards.add(const SizedBox(width: 8,));
+  //   }
+  //   placeCards.add(const SizedBox(width: 16,));
+  //
+  //   return Padding(
+  //     padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+  //     child: MainSection(
+  //       title: "내 스토리",
+  //       action: Ink(
+  //         child: InkWell(
+  //           onTap: () {},
+  //           child: Text(
+  //             "전체보기",
+  //             style: SectionTextStyle.labelMedium(Colors.blue),
+  //           ),
+  //         ),
+  //       ),
+  //       content: SingleChildScrollView(
+  //         scrollDirection: Axis.horizontal,
+  //         child: Row(
+  //           children: placeCards,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _locationBookmarkSection() {
     return Padding(
@@ -262,116 +301,104 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
           ),
         ),
         content: SizedBox(
-          height: 288,
           width: double.infinity,
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8
-            ),
-            scrollDirection: Axis.horizontal,
-            itemCount: _myStoryData.length,
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-            itemBuilder: (context, index) {
-              return MyStoryCard(
-                title: _myStoryData[index]['title'],
-                width: 140,
-                height: 140,
-                places: _myStoryData[index]['places'],
+          child: Obx(() {
+            if (_bookmarkController.placeBookmark.value == null) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[300]
+                ),
+                width: double.infinity,
+                height: 128,
+                padding: EdgeInsets.all(24),
+                child: Center(
+                  child: Text("dddd"),
+                ),
               );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _storyBookmarkSection() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
-      child: MainSection(
-        title: "코스 북마크",
-        action: Ink(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            // color: lightColorScheme.primary
-          ),
-          child: InkWell(
-            customBorder: const CircleBorder(),
-            child: const Padding(
-              padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
-              child: Icon(Icons.add, size: 18, color: Colors.black,),
-            ),
-            onTap: () {
-              // Navigator.pop(context);
-            },
-          ),
-        ),
-        // action: Ink(
-        //   child: InkWell(
-        //     onTap: () {},
-        //     child: Text(
-        //       "전체보기",
-        //       style: SectionTextStyle.labelMedium(Colors.blue),
-        //     ),
-        //   ),
-        // ),
-        content: SizedBox(
-          height: 288,
-          width: double.infinity,
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8
-            ),
-            scrollDirection: Axis.horizontal,
-            itemCount: _myStoryData.length,
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-            itemBuilder: (context, index) {
-              return MyStoryCard(
-                title: _myStoryData[index]['title'],
-                width: 140,
-                height: 140,
-                places: _myStoryData[index]['places'],
+            } else {
+              return SizedBox(
+                width: double.infinity,
+                height: 288,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8
+                  ),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _bookmarkController.placeBookmark.value!.length,
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                  itemBuilder: (context, index) {
+                    return MyStoryCard(
+                      title: _bookmarkController.placeBookmark.value![index]['title'],
+                      width: 140,
+                      height: 140,
+                      placeImageUrls: _bookmarkController.placeBookmark.value![index]['thumbnailInfoList']
+                          .map((item) => "$baseUrlDev${item['placeImgUrl'].toString()}").toList(),
+                    );
+                  },
+                ),
               );
-            },
-          ),
+            }
+          }),
         ),
       ),
     );
   }
 
-  @override
-  void initState() {
-    _bookmarkNameController = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _bookmarkNameController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _searchSection(),
-              // _myStorySection(),
-              _locationBookmarkSection(),
-              _storyBookmarkSection(),
-              SizedBox(height: 24,)
-            ],
-          ),
-        )
-      ),
-    );
-  }
+  // Widget _storyBookmarkSection() {
+  //   return Padding(
+  //     padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+  //     child: MainSection(
+  //       title: "코스 북마크",
+  //       action: Ink(
+  //         decoration: BoxDecoration(
+  //           shape: BoxShape.circle,
+  //           // color: lightColorScheme.primary
+  //         ),
+  //         child: InkWell(
+  //           customBorder: const CircleBorder(),
+  //           child: const Padding(
+  //             padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+  //             child: Icon(Icons.add, size: 18, color: Colors.black,),
+  //           ),
+  //           onTap: () {
+  //             // Navigator.pop(context);
+  //           },
+  //         ),
+  //       ),
+  //       // action: Ink(
+  //       //   child: InkWell(
+  //       //     onTap: () {},
+  //       //     child: Text(
+  //       //       "전체보기",
+  //       //       style: SectionTextStyle.labelMedium(Colors.blue),
+  //       //     ),
+  //       //   ),
+  //       // ),
+  //       content: SizedBox(
+  //         height: 288,
+  //         width: double.infinity,
+  //         child: GridView.builder(
+  //           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+  //             crossAxisCount: 2,
+  //             mainAxisSpacing: 8,
+  //             crossAxisSpacing: 8
+  //           ),
+  //           scrollDirection: Axis.horizontal,
+  //           itemCount: _myStoryData.length,
+  //           padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+  //           itemBuilder: (context, index) {
+  //             return MyStoryCard(
+  //               title: _myStoryData[index]['title'],
+  //               width: 140,
+  //               height: 140,
+  //               places: _myStoryData[index]['places'],
+  //             );
+  //           },
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
