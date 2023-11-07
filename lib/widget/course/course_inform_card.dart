@@ -58,8 +58,8 @@ class CourseListCardItem extends StatefulWidget {
   double width;
   double height;
 
-  List<String> placesName = [];
-  List<String> placesImageUrls = [];
+  List<dynamic> placesName = [];
+  List<dynamic> placesImageUrls = [];
 
   String courseName;
   String regionName;

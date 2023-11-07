@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -14,6 +15,12 @@ class CoursePage extends StatefulWidget {
 }
 
 class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMixin<CoursePage> {
+
+  final CourseProvider _courseProvider = CourseProvider();
+
+  int _loadMyCourseData = -1;
+
+  List<dynamic>? _myCourseData = [];
 
   final Map<String, dynamic> _courseData = {
     'title': '코스 추천',
@@ -65,6 +72,55 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
 
   @override
   bool get wantKeepAlive => true;
+
+  void getMyCourseData() async {
+    List<dynamic>? data = await _courseProvider.getMyCourseData();
+    if (data == null) {
+      _myCourseData = null;
+      setState(() {
+        _loadMyCourseData = 0;
+      });
+      return null;
+    }
+
+    _myCourseData = data;
+    setState(() {
+      _loadMyCourseData = 1;
+    });
+  }
+
+  @override
+  void initState() {
+    getMyCourseData();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+
+        },
+        backgroundColor: lightColorScheme.primary,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, color: Colors.white,),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 24,),
+              _recommendKeywordSection(),
+              const SizedBox(height: 24,),
+              _createMyCourseSection(),
+              const SizedBox(height: 24,)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _recommendKeywordSection() {
     return MainSection(
@@ -134,47 +190,33 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
   }
 
   Widget _createMyCourseSection() {
+    if (_loadMyCourseData < 1) return Container();
+    if (_myCourseData == null) return Container();
+    if (_myCourseData!.isEmpty) return Container();
+
     List<Widget> course = [];
-    for (int i = 0;i < _courseData.length;i++) {
-      if (i > 0) course.add(SizedBox(height: 12,));
-      course.add(CourseListCardItem());
+    for (int i = 0;i < _myCourseData!.length;i++) {
+      if (i > 0) course.add(const SizedBox(height: 12,));
+      course.add(
+        CourseListCardItem(
+          courseName: _myCourseData![i]['title'],
+          placeCount: _myCourseData![i]['placesInCourse'].length,
+          distance: 0,
+          placesImageUrls: _myCourseData![i]['placesInCourse'].map((item) => item['place']['imgUrl'].toString()).toList(),
+          placesName: _myCourseData![i]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
+          regionName: '',
+        )
+      );
     }
 
     return MainSection(
-      title: '나의 코스',
-      content: Padding(
-        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-        child: Column(
-          children: course,
-        ),
-      )
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-
-        },
-        backgroundColor: lightColorScheme.primary,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: Colors.white,),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
+        title: '나의 코스',
+        content: Padding(
+          padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
           child: Column(
-            children: [
-              SizedBox(height: 24,),
-              _recommendKeywordSection(),
-              SizedBox(height: 24,),
-              _createMyCourseSection(),
-              SizedBox(height: 24,)
-            ],
+            children: course,
           ),
-        ),
-      ),
+        )
     );
   }
 }
