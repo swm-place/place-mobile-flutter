@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
@@ -125,7 +126,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     for (int i = 0;i < data.length;i++) {
       String? imgUrl;
       if (data[i]['imgUrl'] != null) {
-        imgUrl = "https://been-dev.yeoksi.com${data[i]['imgUrl']}";
+        imgUrl = "$baseUrlDev${data[i]['imgUrl']}";
       }
       data[i]['imgUrl'] = imgUrl;
     }
