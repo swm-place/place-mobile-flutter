@@ -209,8 +209,10 @@ class _MagazineState extends State<Magazine> {
               ),
             const SizedBox(width: 10,),
             Text(_magazineData!['user']['nickname'], style: SectionTextStyle.sectionContent(Colors.black),),
-            const SizedBox(width: 10,),
-            Text(_magazineContents['createdAt'], style: SectionTextStyle.labelMedium(Colors.grey),),
+            if (_magazineData!['createdAt'] != null)
+              const SizedBox(width: 10,),
+            if (_magazineData!['createdAt'] != null)
+              Text(_magazineData!['createdAt'], style: SectionTextStyle.labelMedium(Colors.grey),),
           ],
         )
       ],
