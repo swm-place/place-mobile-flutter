@@ -303,43 +303,53 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
         content: SizedBox(
           width: double.infinity,
           child: Obx(() {
+            String? msg;
             if (_bookmarkController.placeBookmark.value == null) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[300]
-                ),
-                width: double.infinity,
-                height: 128,
-                padding: EdgeInsets.all(24),
-                child: Center(
-                  child: Text("dddd"),
-                ),
-              );
-            } else {
-              return SizedBox(
-                width: double.infinity,
-                height: 288,
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8
+              msg = "북마크를 가져오는 과정에서 오류가 발생했습니다 :(";
+            } else if (_bookmarkController.placeBookmark.value!.isEmpty) {
+              msg = "아직 생성한 북마크가 없습니다 :(";
+            }
+
+            if (msg != null) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.grey[300]
                   ),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _bookmarkController.placeBookmark.value!.length,
-                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-                  itemBuilder: (context, index) {
-                    return MyStoryCard(
-                      title: _bookmarkController.placeBookmark.value![index]['title'],
-                      width: 140,
-                      height: 140,
-                      placeImageUrls: _bookmarkController.placeBookmark.value![index]['thumbnailInfoList']
-                          .map((item) => "$baseUrlDev${item['placeImgUrl'].toString()}").toList(),
-                    );
-                  },
+                  padding: EdgeInsets.all(24),
+                  child: Center(
+                    child: Text(msg),
+                  ),
                 ),
               );
             }
+
+            return SizedBox(
+              width: double.infinity,
+              height: 288,
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8
+                ),
+                scrollDirection: Axis.horizontal,
+                itemCount: _bookmarkController.placeBookmark.value!.length,
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                itemBuilder: (context, index) {
+                  return MyStoryCard(
+                    title: _bookmarkController.placeBookmark.value![index]['title'],
+                    width: 140,
+                    height: 140,
+                    placeImageUrls: _bookmarkController.placeBookmark.value![index]['thumbnailInfoList']
+                        .map((item) => "$baseUrlDev${item['placeImgUrl'].toString()}").toList(),
+                  );
+                },
+              ),
+            );
           }),
         ),
       ),

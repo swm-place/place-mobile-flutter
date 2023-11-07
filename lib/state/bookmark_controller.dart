@@ -6,7 +6,7 @@ class BookmarkController extends GetxController {
 
   final UserProvider _userProvider = UserProvider();
 
-  Rxn<List<dynamic>> placeBookmark = Rxn(null);
+  Rxn<List<dynamic>> placeBookmark = Rxn([]);
 
   void loadPlaceBookmark() async {
     Map<String, dynamic>? result = await _userProvider.getPlaceBookmark();
