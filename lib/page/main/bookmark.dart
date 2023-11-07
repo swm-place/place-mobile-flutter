@@ -155,6 +155,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     _bookmarkNameController = TextEditingController();
     _bookmarkController = BookmarkController();
     _bookmarkController.loadPlaceBookmark();
+    _bookmarkController.loadCourseBookmark();
     super.initState();
   }
 
@@ -176,7 +177,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                 _searchSection(),
                 // _myStorySection(),
                 _locationBookmarkSection(),
-                // _storyBookmarkSection(),
+                _storyBookmarkSection(),
                 SizedBox(height: 24,)
               ],
             ),
@@ -356,59 +357,88 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     );
   }
 
-  // Widget _storyBookmarkSection() {
-  //   return Padding(
-  //     padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
-  //     child: MainSection(
-  //       title: "코스 북마크",
-  //       action: Ink(
-  //         decoration: BoxDecoration(
-  //           shape: BoxShape.circle,
-  //           // color: lightColorScheme.primary
-  //         ),
-  //         child: InkWell(
-  //           customBorder: const CircleBorder(),
-  //           child: const Padding(
-  //             padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
-  //             child: Icon(Icons.add, size: 18, color: Colors.black,),
-  //           ),
-  //           onTap: () {
-  //             // Navigator.pop(context);
-  //           },
-  //         ),
-  //       ),
-  //       // action: Ink(
-  //       //   child: InkWell(
-  //       //     onTap: () {},
-  //       //     child: Text(
-  //       //       "전체보기",
-  //       //       style: SectionTextStyle.labelMedium(Colors.blue),
-  //       //     ),
-  //       //   ),
-  //       // ),
-  //       content: SizedBox(
-  //         height: 288,
-  //         width: double.infinity,
-  //         child: GridView.builder(
-  //           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  //             crossAxisCount: 2,
-  //             mainAxisSpacing: 8,
-  //             crossAxisSpacing: 8
-  //           ),
-  //           scrollDirection: Axis.horizontal,
-  //           itemCount: _myStoryData.length,
-  //           padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-  //           itemBuilder: (context, index) {
-  //             return MyStoryCard(
-  //               title: _myStoryData[index]['title'],
-  //               width: 140,
-  //               height: 140,
-  //               places: _myStoryData[index]['places'],
-  //             );
-  //           },
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget _storyBookmarkSection() {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      child: MainSection(
+        title: "코스 북마크",
+        action: Ink(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            // color: lightColorScheme.primary
+          ),
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            child: const Padding(
+              padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+              child: Icon(Icons.add, size: 18, color: Colors.black,),
+            ),
+            onTap: () {
+              // Navigator.pop(context);
+            },
+          ),
+        ),
+        // action: Ink(
+        //   child: InkWell(
+        //     onTap: () {},
+        //     child: Text(
+        //       "전체보기",
+        //       style: SectionTextStyle.labelMedium(Colors.blue),
+        //     ),
+        //   ),
+        // ),
+        content: SizedBox(
+          width: double.infinity,
+          child: Obx(() {
+            String? msg;
+            if (_bookmarkController.courseBookmark.value == null) {
+              msg = "북마크를 가져오는 과정에서 오류가 발생했습니다 :(";
+            } else if (_bookmarkController.courseBookmark.value!.isEmpty) {
+              msg = "아직 생성한 북마크가 없습니다 :(";
+            }
+
+            if (msg != null) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.grey[300]
+                  ),
+                  padding: EdgeInsets.all(24),
+                  child: Center(
+                    child: Text(msg),
+                  ),
+                ),
+              );
+            }
+
+            return SizedBox(
+              width: double.infinity,
+              height: 288,
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8
+                ),
+                scrollDirection: Axis.horizontal,
+                itemCount: _bookmarkController.courseBookmark.value!.length,
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                itemBuilder: (context, index) {
+                  return MyStoryCard(
+                    title: _bookmarkController.courseBookmark.value![index]['title'],
+                    width: 140,
+                    height: 140,
+                    placeImageUrls: ["$baseUrlDev${_bookmarkController.courseBookmark.value![index]['imgUrl']}"],
+                  );
+                },
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
 }

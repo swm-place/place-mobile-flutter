@@ -112,7 +112,7 @@ class UserProvider extends DefaultProvider {
     }
   }
 
-  Future<Map<String, dynamic>?> getCourseBookmark() async {
+  Future<List<dynamic>?> getCourseBookmark() async {
     if (AuthController.to.user.value == null) return null;
 
     Uri uri = Uri.parse("$baseUrl/api/bookmarks/${AuthController.to.user.value!.uid}/course-bookmarks");
