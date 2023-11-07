@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 
 class CourseInformationCard extends StatelessWidget {
   CourseInformationCard({
@@ -42,6 +44,12 @@ class CourseInformationCard extends StatelessWidget {
 
 class CourseListCardItem extends StatefulWidget {
   CourseListCardItem({
+    required this.placesName,
+    required this.placesImageUrls,
+    required this.courseName,
+    required this.regionName,
+    required this.distance,
+    required this.placeCount,
     this.width=double.infinity,
     this.height=double.infinity,
     Key? key
@@ -50,6 +58,15 @@ class CourseListCardItem extends StatefulWidget {
   double width;
   double height;
 
+  List<String> placesName = [];
+  List<String> placesImageUrls = [];
+
+  String courseName;
+  String regionName;
+
+  int distance;
+  int placeCount;
+
   @override
   State<StatefulWidget> createState() => CourseListCardItemState();
 }
@@ -57,15 +74,13 @@ class CourseListCardItem extends StatefulWidget {
 class CourseListCardItemState extends State<CourseListCardItem> {
 
   late final PageController _pageController;
-
-  List<String> placeName = ['장소1', '장소2', '장소3'];
   String place = '';
 
   List<Widget> _generatePlaceImage() {
     List<Widget> images = [];
-    for (int i = 0;i < 3;i++) {
+    for (int i = 0;i < widget.placesImageUrls.length;i++) {
       images.add(
-        Image.network('https://source.unsplash.com/random?sig=$i', fit: BoxFit.cover)
+        Image.network('$baseUrlDev${widget.placesImageUrls[i]}', fit: BoxFit.cover)
       );
     }
     return images;
@@ -76,7 +91,7 @@ class CourseListCardItemState extends State<CourseListCardItem> {
 
   @override
   void initState() {
-    place = placeName[0];
+    place = widget.placesName[0];
 
     _pageController = PageController();
     _pageController.addListener(() {
@@ -84,7 +99,7 @@ class CourseListCardItemState extends State<CourseListCardItem> {
       if (now < 0) now = 0;
       if (now > 2) now = 2;
       setState(() {
-        place = placeName[now];
+        place = widget.placesName[now];
         visibleLeft = _pageController.page!.round() > 0;
         visibleRight = _pageController.page!.round() < 2;
       });
@@ -183,7 +198,7 @@ class CourseListCardItemState extends State<CourseListCardItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '코스 이름',
+                    widget.courseName,
                     overflow: TextOverflow.ellipsis,
                     style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
                   ),
@@ -195,7 +210,7 @@ class CourseListCardItemState extends State<CourseListCardItem> {
                         children: [
                           Icon(MdiIcons.mapMarkerOutline, size: 18, color: Colors.grey[700],),
                           Text(
-                            '서울특별시 강남구',
+                            widget.regionName,
                             style: SectionTextStyle.labelSmall(Colors.grey[700]!),
                           )
                         ],
@@ -205,7 +220,7 @@ class CourseListCardItemState extends State<CourseListCardItem> {
                         children: [
                           Icon(Icons.route, size: 18, color: Colors.grey[700]),
                           Text(
-                            '1.5km',
+                            UnitConverter.formatDistance(widget.distance),
                             style: SectionTextStyle.labelSmall(Colors.grey[700]!),
                           )
                         ],
@@ -215,7 +230,7 @@ class CourseListCardItemState extends State<CourseListCardItem> {
                         children: [
                           Icon(Icons.signpost, size: 18, color: Colors.grey[700]),
                           Text(
-                            '5곳',
+                            '${widget.placeCount}곳',
                             style: SectionTextStyle.labelSmall(Colors.grey[700]!),
                           )
                         ],
