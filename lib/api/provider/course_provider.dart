@@ -44,4 +44,20 @@ class CourseProvider extends DefaultProvider {
       return null;
     }
   }
+
+  Future<List<dynamic>?> getMyCourseData() async {
+    Uri uri = Uri.parse("$baseUrl/api/courses");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
 }
