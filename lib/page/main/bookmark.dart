@@ -226,7 +226,8 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
             }
 
             if (msg != null) {
-              return Padding(
+              return Container(
+                height: 288,
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                 child: Container(
                   width: double.infinity,
@@ -312,7 +313,8 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
             }
 
             if (msg != null) {
-              return Padding(
+              return Container(
+                height: 288,
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                 child: Container(
                   width: double.infinity,
