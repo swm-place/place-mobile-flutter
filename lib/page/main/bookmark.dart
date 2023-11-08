@@ -18,129 +18,6 @@ class BookmarkPage extends StatefulWidget {
 }
 
 class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClientMixin<BookmarkPage> {
-  final List<Map<String, dynamic>> _myStoryData =[
-    {
-      "title": "제목1",
-      'share': true,
-      'editor': [
-        {
-          'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=9",
-        },
-      ],
-      "places": null
-    },
-    {
-      "title": "제목2",
-      'share': true,
-      'editor': [
-        {
-          'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=9",
-        },
-      ],
-      "places": [
-        {
-          "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=15"
-        },
-      ]
-    },
-    {
-      "title": "제목3",
-      'share': false,
-      "places": [
-        {
-          "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=1"
-        },
-        {
-          "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=2"
-        },
-      ]
-    },
-    {
-      "title": "제목4",
-      'share': true,
-      'editor': [
-        {
-          'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=3",
-        },
-        {
-          'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=4",
-        },
-        {
-          'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=5",
-        },
-      ],
-      "places": [
-        {
-          "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=6"
-        },
-        {
-          "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=7"
-        },
-        {
-          "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=8"
-        },
-      ]
-    },
-    {
-      "title": "제목5",
-      'share': true,
-      'editor': [
-        {
-          'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=9",
-        },
-        {
-          'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=10",
-        },
-        {
-          'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=11",
-        },
-        {
-          'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=12",
-        },
-        {
-          'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=13",
-        },
-        {
-          'name': 'name',
-          'profileUrl': "https://source.unsplash.com/random?sig=14",
-        },
-      ],
-      "places": [
-        {
-          "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=15"
-        },
-        {
-          "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=16"
-        },
-        {
-          "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=17"
-        },
-        {
-          "name": "name",
-          'imageUrl': "https://source.unsplash.com/random?sig=18"
-        },
-      ]
-    },
-  ];
 
   late final TextEditingController _bookmarkNameController;
   late final  BookmarkController _bookmarkController;
@@ -148,7 +25,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
   String? _bookmarkNameError;
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 
   @override
   void initState() {

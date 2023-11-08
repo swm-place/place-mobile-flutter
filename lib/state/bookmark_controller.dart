@@ -10,9 +10,10 @@ class BookmarkController extends GetxController {
   Rxn<List<dynamic>> courseBookmark = Rxn([]);
 
   void loadPlaceBookmark() async {
-    placeBookmark.value = null;
+    if (placeBookmark.value != null) placeBookmark.value!.clear();
 
     Map<String, dynamic>? result = await _userProvider.getPlaceBookmark();
+
     if (result == null) {
       placeBookmark.value = null;
       placeBookmark.refresh();
@@ -24,9 +25,10 @@ class BookmarkController extends GetxController {
   }
 
   void loadCourseBookmark() async {
-    courseBookmark.value = null;
+    if (courseBookmark.value != null) courseBookmark.value!.clear();
 
     List<dynamic>? result = await _userProvider.getCourseBookmark();
+
     if (result == null) {
       courseBookmark.value = null;
       courseBookmark.refresh();
