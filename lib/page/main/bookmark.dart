@@ -184,6 +184,51 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     }
   }
 
+  void deleteBookmark(dynamic bookmarkId, String type, String title) async {
+    Get.dialog(
+      const AlertDialog(
+        contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+        actionsPadding: EdgeInsets.zero,
+        titlePadding: EdgeInsets.zero,
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 24),
+            Text('북마크 삭제증'),
+          ],
+        ),
+      ),
+      barrierDismissible: false
+    );
+
+    bool result;
+    if (type == 'place') {
+      result = await _bookmarkController.deletePlaceBookmark(bookmarkId);
+    } else {
+      result = await _bookmarkController.deleteCourseBookmark(bookmarkId);
+    }
+    Get.back();
+
+    if (result) {
+      if (type == 'place') {
+        _bookmarkController.loadPlaceBookmark();
+      } else {
+        _bookmarkController.loadCourseBookmark();
+      }
+    } else {
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("북마크 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+    }
+  }
+
   Widget _locationBookmarkSection() {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
@@ -299,7 +344,11 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                       print(_bookmarkController.placeBookmark.value![index]['title']);
                     },
                     onDelete: () {
-
+                      deleteBookmark(
+                        _bookmarkController.placeBookmark.value![index]['placeBookmarkId'],
+                        'place',
+                        _bookmarkController.placeBookmark.value![index]['title']
+                      );
                     },
                     onRename: () {
 
@@ -440,7 +489,11 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                       print(_bookmarkController.courseBookmark.value![index]['title']);
                     },
                     onDelete: () {
-
+                      deleteBookmark(
+                          _bookmarkController.courseBookmark.value![index]['id'],
+                          'course',
+                          _bookmarkController.courseBookmark.value![index]['title']
+                      );
                     },
                     onRename: () {
 

@@ -49,4 +49,14 @@ class BookmarkController extends GetxController {
     if (AuthController.to.user.value == null) return false;
     return await _userProvider.postCourseBookmark(title);
   }
+
+  Future<bool> deletePlaceBookmark(dynamic bookmarkId) async {
+    if (AuthController.to.user.value == null) return false;
+    return await _userProvider.deletePlaceBookmark(bookmarkId);
+  }
+
+  Future<bool> deleteCourseBookmark(dynamic bookmarkId) async {
+    if (AuthController.to.user.value == null) return false;
+    return await _userProvider.deleteCourseBookmark(bookmarkId);
+  }
 }
