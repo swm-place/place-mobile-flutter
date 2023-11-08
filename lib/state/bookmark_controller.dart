@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 
 class BookmarkController extends GetxController {
   static BookmarkController get to => Get.find();
@@ -37,5 +38,10 @@ class BookmarkController extends GetxController {
 
     courseBookmark.value = result;
     courseBookmark.refresh();
+  }
+
+  Future<bool> addPlaceBookmark(String title) async {
+    if (AuthController.to.user.value == null) return false;
+    return await _userProvider.postPlaceBookmark(title);
   }
 }

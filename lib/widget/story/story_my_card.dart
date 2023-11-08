@@ -87,6 +87,9 @@ class BookmarkCard extends StatelessWidget {
     } else {
       List<Widget> top = [];
       List<Widget> bottom = [];
+      if (placeImageUrls!.length == 0) {
+        return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+      }
       if (placeImageUrls!.length == 1) {
         return Image.network(
           placeImageUrls![0],

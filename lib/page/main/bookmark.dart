@@ -116,6 +116,40 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
   //   );
   // }
 
+  void addPlaceBookmark(String text) async {
+    Get.dialog(
+      const AlertDialog(
+        contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+        actionsPadding: EdgeInsets.zero,
+        titlePadding: EdgeInsets.zero,
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 24),
+            Text('북마크 생성중'),
+          ],
+        ),
+      ),
+      barrierDismissible: false
+    );
+    bool result = await _bookmarkController.addPlaceBookmark(text);
+    Get.back();
+    if (result) {
+      _bookmarkController.loadPlaceBookmark();
+    } else {
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("북마크 추가 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+    }
+  }
+
   Widget _locationBookmarkSection() {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
@@ -165,7 +199,10 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                             ),
                             TextButton(
                               onPressed: () {
+                                final String title = _bookmarkNameController.text.toString();
+                                if (bookmarkTextFieldValidator(title) != null) return;
                                 Navigator.of(context, rootNavigator: true).pop();
+                                addPlaceBookmark(title);
                               },
                               child: Text('만들기', style: TextStyle(color: Colors.blue),),
                             )
