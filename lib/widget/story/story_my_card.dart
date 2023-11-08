@@ -248,30 +248,36 @@ class MyStoryCard extends StatelessWidget {
               width: width,
               height: height,
               color: const Color.fromARGB(102, 1, 1, 1),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: AutoSizeText(
-                            title,
-                            style: SectionTextStyle.sectionTitleSmall(Colors.white),
-                            maxLines: 1,
-                            minFontSize: 18,
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  IconButton(onPressed: () {}, icon: Icon(Icons.more_vert, color: Colors.white,)),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: AutoSizeText(
+                          title,
+                          style: const TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            height: 1,
                           ),
+                          maxLines: 1,
+                          minFontSize: 18,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        SizedBox(height: editors == null ? 0: 4,),
-                        _editorSection()
-                      ],
-                    )
-                  ],
-                ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: editors == null ? 0: 4,),
+                  _editorSection()
+                ],
               ),
             ),
           ],
