@@ -163,9 +163,9 @@ class UserProvider extends DefaultProvider {
 
     Response response;
     try {
-      response = await post(uri, headers: header, body: {
+      response = await post(uri, headers: header, body: json.encode({
         'title': title
-      });
+      }));
     } catch(e) {
       return false;
     }

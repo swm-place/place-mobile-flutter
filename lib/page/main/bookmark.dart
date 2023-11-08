@@ -150,6 +150,40 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     }
   }
 
+  void addCourseBookmark(String text) async {
+    Get.dialog(
+      const AlertDialog(
+        contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+        actionsPadding: EdgeInsets.zero,
+        titlePadding: EdgeInsets.zero,
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 24),
+            Text('북마크 생성중'),
+          ],
+        ),
+      ),
+      barrierDismissible: false
+    );
+    bool result = await _bookmarkController.addCourseBookmark(text);
+    Get.back();
+    if (result) {
+      _bookmarkController.loadCourseBookmark();
+    } else {
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("북마크 추가 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+    }
+  }
+
   Widget _locationBookmarkSection() {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
@@ -167,6 +201,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
               child: Icon(Icons.add, size: 18, color: Colors.black,),
             ),
             onTap: () {
+              _bookmarkNameController.text = '';
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -289,7 +324,52 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
               child: Icon(Icons.add, size: 18, color: Colors.black,),
             ),
             onTap: () {
-              // Navigator.pop(context);
+              _bookmarkNameController.text = '';
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return StatefulBuilder(
+                      builder: (BuildContext context, StateSetter dialogState) {
+                        return AlertDialog(
+                          title: Text("북마크 추가"),
+                          content: TextField(
+                            maxLength: 50,
+                            controller: _bookmarkNameController,
+                            onChanged: (text) {
+                              dialogState(() {
+                                setState(() {
+                                  _bookmarkNameError = bookmarkTextFieldValidator(text);
+                                });
+                              });
+                            },
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                hintText: "북마크 이름",
+                                errorText: _bookmarkNameError
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true).pop();
+                              },
+                              child: Text('취소', style: TextStyle(color: Colors.red),),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                final String title = _bookmarkNameController.text.toString();
+                                if (bookmarkTextFieldValidator(title) != null) return;
+                                Navigator.of(context, rootNavigator: true).pop();
+                                addCourseBookmark(title);
+                              },
+                              child: Text('만들기', style: TextStyle(color: Colors.blue),),
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  }
+              );
             },
           ),
         ),

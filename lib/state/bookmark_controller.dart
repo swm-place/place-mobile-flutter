@@ -44,4 +44,9 @@ class BookmarkController extends GetxController {
     if (AuthController.to.user.value == null) return false;
     return await _userProvider.postPlaceBookmark(title);
   }
+
+  Future<bool> addCourseBookmark(String title) async {
+    if (AuthController.to.user.value == null) return false;
+    return await _userProvider.postCourseBookmark(title);
+  }
 }
