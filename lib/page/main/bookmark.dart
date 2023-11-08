@@ -295,6 +295,15 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                     title: _bookmarkController.placeBookmark.value![index]['title'],
                     width: 140,
                     height: 140,
+                    onTap: () {
+                      print(_bookmarkController.placeBookmark.value![index]['title']);
+                    },
+                    onDelete: () {
+
+                    },
+                    onRename: () {
+
+                    },
                     placeImageUrls: _bookmarkController.placeBookmark.value![index]['thumbnailInfoList']
                         .map((item) => "$baseUrlDev${item['placeImgUrl'].toString()}").toList(),
                   );
@@ -427,6 +436,15 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                     title: _bookmarkController.courseBookmark.value![index]['title'],
                     width: 140,
                     height: 140,
+                    onTap: () {
+                      print(_bookmarkController.courseBookmark.value![index]['title']);
+                    },
+                    onDelete: () {
+
+                    },
+                    onRename: () {
+
+                    },
                     placeImageUrls: ["$baseUrlDev${_bookmarkController.courseBookmark.value![index]['imgUrl']}"],
                   );
                 },

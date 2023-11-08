@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 
 class BookmarkCard extends StatelessWidget {
+  final Function()? onTap;
+  final Function()? onDelete;
+  final Function()? onRename;
+
   BookmarkCard({
     required this.title,
+    required this.onTap,
+    required this.onDelete,
+    required this.onRename,
     // required this.message,
     // required this.location,
     // required this.imageUrl,
@@ -236,25 +243,33 @@ class BookmarkCard extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: GestureDetector(
-        onTap: () => {
-          print("story card")
-        },
-        child: Stack(
-          children: [
-            SizedBox(
-              width: width,
-              height: height,
-              child: _createBackground(),
-            ),
-            Container(
-              width: width,
-              height: height,
-              color: const Color.fromARGB(102, 1, 1, 1),
+      child: Stack(
+        children: [
+          SizedBox(
+            width: width,
+            height: height,
+            child: _createBackground(),
+          ),
+          Container(
+            width: width,
+            height: height,
+            color: const Color.fromARGB(102, 1, 1, 1),
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: onTap,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  IconButton(onPressed: () {}, icon: Icon(Icons.more_vert, color: Colors.white,)),
+                  // IconButton(onPressed: () {}, icon: Icon(Icons.more_vert, color: Colors.white,)),
+                  PopupMenuButton(
+                    icon: Icon(Icons.more_vert, color: Colors.white,),
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem(onTap: onRename, child: const Text('이름 변경'),),
+                        PopupMenuItem(onTap: onDelete, child: const Text('삭제'),)
+                      ];
+                    },
+                  ),
                   Expanded(
                     child: Container(
                       width: double.infinity,
@@ -283,8 +298,8 @@ class BookmarkCard extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
