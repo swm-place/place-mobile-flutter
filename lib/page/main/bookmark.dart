@@ -229,6 +229,51 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     }
   }
 
+  void patchBookmark(dynamic bookmarkId, String type, String title) async {
+    Get.dialog(
+      const AlertDialog(
+        contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+        actionsPadding: EdgeInsets.zero,
+        titlePadding: EdgeInsets.zero,
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 24),
+            Text('북마크 이름 변경중'),
+          ],
+        ),
+      ),
+      barrierDismissible: false
+    );
+
+    bool result;
+    if (type == 'place') {
+      result = await _bookmarkController.patchPlaceBookmark(bookmarkId, title);
+    } else {
+      result = await _bookmarkController.patchCourseBookmark(bookmarkId, title);
+    }
+    Get.back();
+
+    if (result) {
+      if (type == 'place') {
+        _bookmarkController.loadPlaceBookmark();
+      } else {
+        _bookmarkController.loadCourseBookmark();
+      }
+    } else {
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("이름 변경 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+    }
+  }
+
   Widget _locationBookmarkSection() {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
@@ -351,7 +396,57 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                       );
                     },
                     onRename: () {
-
+                      _bookmarkNameController.text = _bookmarkController.placeBookmark.value![index]['title'];
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return StatefulBuilder(
+                              builder: (BuildContext context, StateSetter dialogState) {
+                                return AlertDialog(
+                                  title: Text("북마크 이름 변경"),
+                                  content: TextField(
+                                    maxLength: 50,
+                                    controller: _bookmarkNameController,
+                                    onChanged: (text) {
+                                      dialogState(() {
+                                        setState(() {
+                                          _bookmarkNameError = bookmarkTextFieldValidator(text);
+                                        });
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: "북마크 이름",
+                                        errorText: _bookmarkNameError
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context, rootNavigator: true).pop();
+                                      },
+                                      child: Text('취소', style: TextStyle(color: Colors.red),),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        final String title = _bookmarkNameController.text.toString();
+                                        if (bookmarkTextFieldValidator(title) != null) return;
+                                        Navigator.of(context, rootNavigator: true).pop();
+                                        if (_bookmarkController.placeBookmark.value![index]['title'] == title) return;
+                                        patchBookmark(
+                                            _bookmarkController.placeBookmark.value![index]['placeBookmarkId'],
+                                            'place',
+                                            title
+                                        );
+                                      },
+                                      child: Text('변경', style: TextStyle(color: Colors.blue),),
+                                    )
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                      );
                     },
                     placeImageUrls: _bookmarkController.placeBookmark.value![index]['thumbnailInfoList']
                         .map((item) => "$baseUrlDev${item['placeImgUrl'].toString()}").toList(),
@@ -496,7 +591,57 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                       );
                     },
                     onRename: () {
-
+                      _bookmarkNameController.text = _bookmarkController.courseBookmark.value![index]['title'];
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return StatefulBuilder(
+                              builder: (BuildContext context, StateSetter dialogState) {
+                                return AlertDialog(
+                                  title: Text("북마크 이름 변경"),
+                                  content: TextField(
+                                    maxLength: 50,
+                                    controller: _bookmarkNameController,
+                                    onChanged: (text) {
+                                      dialogState(() {
+                                        setState(() {
+                                          _bookmarkNameError = bookmarkTextFieldValidator(text);
+                                        });
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: "북마크 이름",
+                                        errorText: _bookmarkNameError
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context, rootNavigator: true).pop();
+                                      },
+                                      child: Text('취소', style: TextStyle(color: Colors.red),),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        final String title = _bookmarkNameController.text.toString();
+                                        if (bookmarkTextFieldValidator(title) != null) return;
+                                        Navigator.of(context, rootNavigator: true).pop();
+                                        if (_bookmarkController.courseBookmark.value![index]['title'] == title) return;
+                                        patchBookmark(
+                                          _bookmarkController.courseBookmark.value![index]['id'],
+                                          'course',
+                                          title
+                                        );
+                                      },
+                                      child: Text('변경', style: TextStyle(color: Colors.blue),),
+                                    )
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                      );
                     },
                     placeImageUrls: ["$baseUrlDev${_bookmarkController.courseBookmark.value![index]['imgUrl']}"],
                   );
