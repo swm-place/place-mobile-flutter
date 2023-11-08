@@ -341,7 +341,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                 itemCount: _bookmarkController.placeBookmark.value!.length,
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                 itemBuilder: (context, index) {
-                  return MyStoryCard(
+                  return BookmarkCard(
                     title: _bookmarkController.placeBookmark.value![index]['title'],
                     width: 140,
                     height: 140,
@@ -427,7 +427,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                 itemCount: _bookmarkController.courseBookmark.value!.length,
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                 itemBuilder: (context, index) {
-                  return MyStoryCard(
+                  return BookmarkCard(
                     title: _bookmarkController.courseBookmark.value![index]['title'],
                     width: 140,
                     height: 140,

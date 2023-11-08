@@ -2,8 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 
-class MyStoryCard extends StatelessWidget {
-  MyStoryCard({
+class BookmarkCard extends StatelessWidget {
+  BookmarkCard({
     required this.title,
     // required this.message,
     // required this.location,
