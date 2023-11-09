@@ -29,6 +29,7 @@ class _MagazineState extends State<Magazine> {
   final MagazineProvider _magazineProvider = MagazineProvider();
 
   bool likeClicked = false;
+  bool asyncLike = false;
 
   int _loadData = -1;
 
@@ -94,6 +95,26 @@ class _MagazineState extends State<Magazine> {
     super.initState();
   }
 
+  void like() async {
+    asyncLike = true;
+
+    bool result;
+    if (!likeClicked) {
+      result = await _magazineProvider.postMagazineLike(_magazineData!['id']);
+    } else {
+      result = await _magazineProvider.deleteMagazineLike(_magazineData!['id']);
+    }
+
+    if (result) {
+      HapticFeedback.lightImpact();
+      setState(() {
+        likeClicked = !likeClicked;
+      });
+    }
+
+    asyncLike = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loadData != -1) {
@@ -113,10 +134,7 @@ class _MagazineState extends State<Magazine> {
                         ),
                         FlexibleTopBarActionButton(
                           onPressed: () {
-                            HapticFeedback.lightImpact();
-                            setState(() {
-                              likeClicked = !likeClicked;
-                            });
+                            like();
                           },
                           icon: likeClicked ? Icon(
                             MdiIcons.heart,
