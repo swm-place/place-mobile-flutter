@@ -1428,11 +1428,12 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                       ),
                                       barrierDismissible: false,
                                     );
-                                    await _placeProvider.deletePlaceReview(widget.placeId, _commentData[index]['id']);
                                     bool result = await _placeProvider.deletePlaceReview(widget.placeId, _commentData[index]['id']);
+
                                     if (result) {
                                       offset = 0;
                                       count = 5;
+                                      _commentData.clear();
                                       _addComments();
                                       _loadComments();
                                       Get.back();
