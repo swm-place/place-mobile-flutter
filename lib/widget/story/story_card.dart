@@ -82,6 +82,9 @@ class RoundedRectangleMagazineCard extends StatelessWidget {
                           width: double.infinity,
                           child: Text(
                               message,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
                               style: messageStyle
                           ),
                         )
