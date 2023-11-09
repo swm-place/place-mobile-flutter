@@ -259,4 +259,22 @@ class UserProvider extends DefaultProvider {
       return false;
     }
   }
+
+  Future<List<dynamic>?> getUserTagPreferences() async {
+    if (AuthController.to.user.value == null) return null;
+
+    Uri uri = Uri.parse("$baseUrl/api-recommender/user_preference/hashtags");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
 }
