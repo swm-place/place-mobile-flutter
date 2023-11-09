@@ -60,6 +60,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   late ScrollController _commentScrollController;
 
   bool likePlace = false;
+  bool asyncLike = false;
   bool bookmarkPlace = false;
 
   bool isTimeOpen = false;
@@ -310,6 +311,29 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     return tags;
   }
 
+  void like() async {
+    asyncLike = true;
+
+    bool result;
+    if (!likePlace) {
+      result = await _placeProvider.postPlaceLike(widget.placeId);
+    } else {
+      result = await _placeProvider.deletePlaceLike(widget.placeId);
+    }
+
+    if (result) {
+      HapticFeedback.lightImpact();
+      likePlace = !likePlace;
+      if (likePlace) {
+        _likeButtonController.animateTo(1);
+      } else {
+        _likeButtonController.animateBack(0);
+      }
+    }
+
+    asyncLike = false;
+  }
+
   Widget _detailHead() => Padding(
     padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
     child: Row(
@@ -403,13 +427,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             GestureDetector(
               onTap: () {
                 setState(() {
-                  HapticFeedback.lightImpact();
-                  likePlace = !likePlace;
-                  if (likePlace) {
-                    _likeButtonController.animateTo(1);
-                  } else {
-                    _likeButtonController.animateBack(0);
-                  }
+                  if (asyncLike) return;
+                  like();
                 });
               },
               child: Padding(

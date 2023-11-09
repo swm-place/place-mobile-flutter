@@ -157,4 +157,58 @@ class PlaceProvider extends DefaultProvider {
       return false;
     }
   }
+
+  Future<bool> postPlaceLike(String placeId) async {
+    String? idToken = AuthController.to.idToken;
+    User? user = AuthController.to.user.value;
+
+    if (idToken == null || user == null) {
+      return false;
+    }
+
+    Uri uri = Uri.parse("$baseUrl/api/user/${user.uid}/place-favorite");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await post(uri, headers: header, body: json.encode({
+        "placeId": placeId
+      }));
+    } catch(e) {
+      return false;
+    }
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> deletePlaceLike(String placeId) async {
+    String? idToken = AuthController.to.idToken;
+    User? user = AuthController.to.user.value;
+
+    if (idToken == null || user == null) {
+      return false;
+    }
+
+    Uri uri = Uri.parse("$baseUrl/api/user/${user.uid}/place-favorite/$placeId");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await delete(uri, headers: header);
+    } catch(e) {
+      return false;
+    }
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
