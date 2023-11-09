@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
@@ -199,6 +200,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         placeData['hashtags'][i] = {'name': placeData['hashtags'][i], 'color': RandomGenerator.generateRandomDarkHexColor()};
       }
       setState(() {
+        likePlace = placeData['is_favorite'];
         _loadData = 1;
       });
     } else {
@@ -248,7 +250,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                       backgroundColor: Colors.white,
                       flexibleSpace: PictureFlexibleSpace(
                         imageUrl: placeData['photos'] != null && placeData['photos'].length > 0 ?
-                        "https://been-dev.yeoksi.com/api-recommender/place-photo/?${placeData['photos'][0]['url'].split('?')[1]}&max_width=480" :
+                        "$baseUrlDev/api-recommender/place-photo/?${placeData['photos'][0]['url'].split('?')[1]}&max_width=480" :
                         null,
                       ),
                     ),
