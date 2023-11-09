@@ -382,16 +382,16 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           children: [
             GestureDetector(
               onTap: () {
+                HapticFeedback.lightImpact();
                 __showBookmarkSelectionSheet();
-                setState(() {
-                  HapticFeedback.lightImpact();
-                  bookmarkPlace = !bookmarkPlace;
-                  if (bookmarkPlace) {
-                    _bookmarkButtonController.animateTo(1);
-                  } else {
-                    _bookmarkButtonController.animateBack(0);
-                  }
-                });
+                // setState(() {
+                  // bookmarkPlace = !bookmarkPlace;
+                  // if (bookmarkPlace) {
+                  //   _bookmarkButtonController.animateTo(1);
+                  // } else {
+                  //   _bookmarkButtonController.animateBack(0);
+                  // }
+                // });
               },
               child: Padding(
                 padding: EdgeInsets.fromLTRB(4, 10, 4, 4),
@@ -1059,6 +1059,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         ),
       ),
     );
+  }
+
+  void loadBookmarks() async {
+
   }
 
   void __showBookmarkSelectionSheet() {
