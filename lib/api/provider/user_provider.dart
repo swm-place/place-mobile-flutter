@@ -277,4 +277,32 @@ class UserProvider extends DefaultProvider {
       return null;
     }
   }
+
+  Future<bool> putUserTagPreferences(dynamic tagData, int rating) async {
+    if (AuthController.to.user.value == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api-recommender/user_preference/hashtags");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await put(uri, headers: header, body: json.encode([
+        {
+          "hashtag": tagData['hashtag'],
+          "parent": tagData['parent'],
+          "group_large": tagData['group_large'],
+          "rating": rating
+        }
+      ]));
+    } catch(e) {
+      return false;
+    }
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

@@ -152,6 +152,48 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
       });
     }
 
+    void putTagData(List<Map<String, dynamic>> data, int i) async {
+      if (data[i]['rating'] == 1 && _countTagBestRating == 5) {
+        Get.showSnackbar(
+            WarnGetSnackBar(
+              title: '선호도 설정 불가',
+              message: '최고 선호도 태그는 최대 5개만 설정할 수 있습니다.',
+              showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_LONG,
+            )
+        );
+        return;
+      }
+
+      state!(() {
+        setState(() {
+          loadVisibility = true;
+        });
+      });
+
+      int rating = data[i]['rating'];
+      rating++;
+      if (rating > 2) rating = 0;
+
+      bool result = await userProvider.putUserTagPreferences(data[i], rating);
+
+      if (result) {
+        if (data[i]['rating'] == 1) _countTagBestRating++;
+        if (data[i]['rating'] == 2) _countTagBestRating--;
+        state!(() {
+          setState(() {
+            loadVisibility = false;
+            data[i]['rating'] = rating;
+          });
+        });
+      } else {
+        state!(() {
+          setState(() {
+            loadVisibility = false;
+          });
+        });
+      }
+    }
+
     Widget _createChipSection(StateSetter bottomState, List<Map<String, dynamic>> data, String categoryName) {
       List<Widget> chips = [];
       for (int i = 0;i < data.length;i++) {
@@ -161,22 +203,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
               label: Text(data[i]['hashtag'], style: const TextStyle(color: Colors.black),),
               priority: data[i]['rating'],
               onTap: () {
-                if (data[i]['rating'] == 1 && _countTagBestRating == 5) {
-                  Get.showSnackbar(
-                      WarnGetSnackBar(
-                        title: '선호도 설정 불가',
-                        message: '최고 선호도 태그는 최대 5개만 설정할 수 있습니다.',
-                        showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_LONG,
-                      )
-                  );
-                  return;
-                }
-                if (data[i]['rating'] == 1) _countTagBestRating++;
-                if (data[i]['rating'] == 2) _countTagBestRating--;
-                bottomState(() {
-                  data[i]['rating']++;
-                  if (data[i]['rating'] > 2) data[i]['rating'] = 0;
-                });
+                putTagData(data, i);
               },
             )
         );
@@ -229,7 +256,6 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     }
 
     List<Widget> _createTagPreferenceSection(StateSetter bottomState) {
-      //TODO: 관심키워드 api 연동
       Map<String, dynamic> data = _preprocessTagPref();
       // print(data);
       List<Widget> section = [
