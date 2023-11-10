@@ -22,6 +22,13 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
   late final TextEditingController _bookmarkNameController;
   late final  BookmarkController _bookmarkController;
 
+
+  late ScrollController _placeScrollController;
+  late ScrollController _courseScrollController;
+
+  bool loadVisibilityPlace = false;
+  bool loadVisibilityCourse = false;
+
   String? _bookmarkNameError;
 
   @override
@@ -31,6 +38,23 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
   void initState() {
     _bookmarkNameController = TextEditingController();
     _bookmarkController = BookmarkController();
+    _placeScrollController = ScrollController();
+    _courseScrollController = ScrollController();
+
+    _placeScrollController.addListener(() {
+      if (_placeScrollController.position.maxScrollExtent == _placeScrollController.offset && !loadVisibilityPlace) {
+        // _addComments();
+        print('object');
+      }
+    });
+
+    _courseScrollController.addListener(() {
+      if (_courseScrollController.position.maxScrollExtent == _courseScrollController.offset && !loadVisibilityCourse) {
+        // _addComments();
+        print('object22');
+      }
+    });
+
     _bookmarkController.loadPlaceBookmark();
     _bookmarkController.loadCourseBookmark();
     super.initState();
@@ -40,6 +64,8 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
   void dispose() {
     _bookmarkNameController.dispose();
     _bookmarkController.dispose();
+    _placeScrollController.dispose();
+    _courseScrollController.dispose();
     super.dispose();
   }
 
@@ -372,6 +398,8 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
               width: double.infinity,
               height: 288,
               child: GridView.builder(
+                controller: _placeScrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 8,
@@ -567,6 +595,8 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
               width: double.infinity,
               height: 288,
               child: GridView.builder(
+                controller: _courseScrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 8,
