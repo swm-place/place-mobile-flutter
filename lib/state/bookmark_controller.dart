@@ -10,10 +10,17 @@ class BookmarkController extends GetxController {
   Rxn<List<dynamic>> placeBookmark = Rxn([]);
   Rxn<List<dynamic>> courseBookmark = Rxn([]);
 
+  int _courseCount = 20;
+  int _coursePage = 0;
+  int _placeCount = 20;
+  int _placePage = 0;
+
   void loadPlaceBookmark() async {
+    _placePage = 0;
+
     if (placeBookmark.value != null) placeBookmark.value!.clear();
 
-    Map<String, dynamic>? result = await _userProvider.getPlaceBookmark();
+    Map<String, dynamic>? result = await _userProvider.getPlaceBookmark(_placePage, _placeCount, null);
 
     if (result == null) {
       placeBookmark.value = null;
@@ -26,9 +33,11 @@ class BookmarkController extends GetxController {
   }
 
   void loadCourseBookmark() async {
+    _coursePage = 0;
+
     if (courseBookmark.value != null) courseBookmark.value!.clear();
 
-    List<dynamic>? result = await _userProvider.getCourseBookmark();
+    List<dynamic>? result = await _userProvider.getCourseBookmark(_coursePage, _courseCount, null);
 
     if (result == null) {
       courseBookmark.value = null;
@@ -37,6 +46,36 @@ class BookmarkController extends GetxController {
     }
 
     courseBookmark.value = result;
+    courseBookmark.refresh();
+  }
+
+  Future<void> addPlaceBookmarkList() async {
+    if (placeBookmark.value == null) return;
+
+    _placePage++;
+    Map<String, dynamic>? result = await _userProvider.getPlaceBookmark(_placePage, _placeCount, null);
+
+    if (result == null) {
+      _placePage--;
+      return;
+    }
+
+    placeBookmark.value!.addAll(result['result']);
+    placeBookmark.refresh();
+  }
+
+  Future<void> addCourseBookmarkList() async {
+    if (courseBookmark.value == null) return;
+
+    _coursePage++;
+    List<dynamic>? result = await _userProvider.getCourseBookmark(_coursePage, _courseCount, null);
+
+    if (result == null) {
+      _placePage--;
+      return;
+    }
+
+    courseBookmark.value!.addAll(result);
     courseBookmark.refresh();
   }
 

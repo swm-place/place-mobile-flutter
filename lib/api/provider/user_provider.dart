@@ -94,10 +94,10 @@ class UserProvider extends DefaultProvider {
     return null;
   }
 
-  Future<Map<String, dynamic>?> getPlaceBookmark() async {
+  Future<Map<String, dynamic>?> getPlaceBookmark(int page, int size, dynamic? placeId) async {
     if (AuthController.to.user.value == null) return null;
 
-    Uri uri = Uri.parse("$baseUrl/api/user/${AuthController.to.user.value!.uid}/place-bookmark");
+    Uri uri = Uri.parse("$baseUrl/api/user/${AuthController.to.user.value!.uid}/place-bookmark?page=$page&size=$size${placeId != null ? '&placeId=$placeId' : ''}");
     Response response;
     try {
       response = await get(uri, headers: await setHeader(true));
@@ -112,10 +112,10 @@ class UserProvider extends DefaultProvider {
     }
   }
 
-  Future<List<dynamic>?> getCourseBookmark() async {
+  Future<List<dynamic>?> getCourseBookmark(int page, int size, dynamic? courseId) async {
     if (AuthController.to.user.value == null) return null;
 
-    Uri uri = Uri.parse("$baseUrl/api/bookmarks/${AuthController.to.user.value!.uid}/course-bookmarks");
+    Uri uri = Uri.parse("$baseUrl/api/bookmarks/${AuthController.to.user.value!.uid}/course-bookmarks?page=$page&size=$size${courseId != null ? '&courseId=$courseId' : ''}");
     Response response;
     try {
       response = await get(uri, headers: await setHeader(true));

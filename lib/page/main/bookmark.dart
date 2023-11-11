@@ -34,6 +34,18 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
   @override
   bool get wantKeepAlive => false;
 
+  void addPlaceBookmarkList() async {
+    loadVisibilityPlace = true;
+    await _bookmarkController.addPlaceBookmarkList();
+    loadVisibilityPlace = false;
+  }
+
+  void addCourseBookmarkList() async {
+    loadVisibilityCourse = true;
+    await _bookmarkController.addCourseBookmarkList();
+    loadVisibilityCourse = false;
+  }
+
   @override
   void initState() {
     _bookmarkNameController = TextEditingController();
@@ -43,15 +55,13 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
 
     _placeScrollController.addListener(() {
       if (_placeScrollController.position.maxScrollExtent == _placeScrollController.offset && !loadVisibilityPlace) {
-        // _addComments();
-        print('object');
+        addPlaceBookmarkList();
       }
     });
 
     _courseScrollController.addListener(() {
       if (_courseScrollController.position.maxScrollExtent == _courseScrollController.offset && !loadVisibilityCourse) {
-        // _addComments();
-        print('object22');
+        addCourseBookmarkList();
       }
     });
 
@@ -77,7 +87,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
           child: SingleChildScrollView(
             child: Column(
               children: [
-                _searchSection(),
+                // _searchSection(),
                 // _myStorySection(),
                 _locationBookmarkSection(),
                 _storyBookmarkSection(),
