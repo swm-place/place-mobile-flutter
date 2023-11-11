@@ -1064,6 +1064,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         page++;
       }
 
+      print(_bookmarkData);
+
       state!(() {
         setState(() {
           loadVisibility = false;
@@ -1144,67 +1146,65 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                     Expanded(
                       child: Stack(
                         children: [
-                          Positioned.fill(
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(child: Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),),
-                                      Ink(
-                                        child: InkWell(
-                                            onTap: () {
-                                              print('add bookmark');
-                                              __showCreateBookmarkDialog();
-                                            },
-                                            child: const Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Icon(Icons.playlist_add),
-                                                Text("북마크 추가")
-                                              ],
-                                            )
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: 18,),
-                                Expanded(
-                                  child: Scrollbar(
-                                    controller: _bookmarkScrollController,
-                                    child: ListView.separated(
-                                      controller: _bookmarkScrollController,
-                                      padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-                                      itemCount: _bookmarkData.length,
-                                      itemBuilder: (context, index) {
-                                        return ListTile(
-                                          minVerticalPadding: 0,
-                                          contentPadding: EdgeInsets.zero,
-                                          title: Text("${_bookmarkData[index]['title']} $index"),
-                                          trailing: _bookmarkData[index]['bookmark']
-                                              ? Icon(Icons.check_box, color: lightColorScheme.primary,)
-                                              : Icon(Icons.check_box_outline_blank),
+                          Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(child: Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),),
+                                    Ink(
+                                      child: InkWell(
                                           onTap: () {
-                                            bottomState(() {
-                                              setState(() {
-                                                _bookmarkData[index]['bookmark'] = !_bookmarkData[index]['bookmark'];
-                                              });
-                                            });
+                                            print('add bookmark');
+                                            __showCreateBookmarkDialog();
                                           },
-                                        );
-                                      },
-                                      separatorBuilder: (context, index) {
-                                        return Divider(height: 0, color: Colors.grey[250],);
-                                      },
-                                    ),
+                                          child: const Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.playlist_add),
+                                              Text("북마크 추가")
+                                            ],
+                                          )
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 18,),
+                              Expanded(
+                                child: Scrollbar(
+                                  controller: _bookmarkScrollController,
+                                  child: ListView.separated(
+                                    controller: _bookmarkScrollController,
+                                    padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                    itemCount: _bookmarkData.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        minVerticalPadding: 0,
+                                        contentPadding: EdgeInsets.zero,
+                                        title: Text("${_bookmarkData[index]['title']} $index"),
+                                        trailing: _bookmarkData[index]['bookmark']
+                                            ? Icon(Icons.check_box, color: lightColorScheme.primary,)
+                                            : Icon(Icons.check_box_outline_blank),
+                                        onTap: () {
+                                          bottomState(() {
+                                            setState(() {
+                                              _bookmarkData[index]['bookmark'] = !_bookmarkData[index]['bookmark'];
+                                            });
+                                          });
+                                        },
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return Divider(height: 0, color: Colors.grey[250],);
+                                    },
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                           Visibility(
                               visible: loadVisibility,
@@ -1377,126 +1377,124 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                   Expanded(
                     child: Stack(
                       children: [
-                        Positioned.fill(
-                          child: Column(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-                                width: double.infinity,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(child: Text("한줄평", style: SectionTextStyle.sectionTitle(),),),
-                                    SizedBox(
-                                      height: 30,
-                                      child: DropdownButton<int>(
-                                        padding: EdgeInsets.zero,
-                                        value: commentSortKey,
-                                        underline: const SizedBox(),
-                                        items: [
-                                          const DropdownMenuItem(child: Text('최신순'), value: 0,),
-                                          const DropdownMenuItem(child: Text('좋아요순'), value: 1,),
-                                          if (AuthController.to.user.value != null) const DropdownMenuItem(child: Text('내 한줄평'), value: 2,),
-                                        ],
-                                        onChanged: loadVisibility ? null :
-                                            (int? value) {
-                                          bottomState(() {
-                                            setState(() {
-                                              commentSortKey = value!;
-                                            });
+                        Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                              width: double.infinity,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(child: Text("한줄평", style: SectionTextStyle.sectionTitle(),),),
+                                  SizedBox(
+                                    height: 30,
+                                    child: DropdownButton<int>(
+                                      padding: EdgeInsets.zero,
+                                      value: commentSortKey,
+                                      underline: const SizedBox(),
+                                      items: [
+                                        const DropdownMenuItem(child: Text('최신순'), value: 0,),
+                                        const DropdownMenuItem(child: Text('좋아요순'), value: 1,),
+                                        if (AuthController.to.user.value != null) const DropdownMenuItem(child: Text('내 한줄평'), value: 2,),
+                                      ],
+                                      onChanged: loadVisibility ? null :
+                                          (int? value) {
+                                        bottomState(() {
+                                          setState(() {
+                                            commentSortKey = value!;
                                           });
-                                          _changeSort();
+                                        });
+                                        _changeSort();
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 18,),
+                            Expanded(
+                              child: Scrollbar(
+                                controller: _commentScrollController,
+                                child: ListView.separated(
+                                  controller: _commentScrollController,
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  padding: EdgeInsets.zero,
+                                  itemCount: _commentData.length,
+                                  itemBuilder: (context, index) {
+                                    bool myReview = false;
+                                    if (AuthController.to.user.value != null) {
+                                      myReview = AuthController.to.user.value!.uid == _commentData[index]['user']['id'];
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                      child: ShortPlaceReviewCard(
+                                        vsync: this,
+                                        height: commentHeight,
+                                        name: _commentData[index]['user']['nickname'],
+                                        comment: _commentData[index]['contents'],
+                                        profileUrl: _commentData[index]['user']['img_url'],
+                                        date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
+                                        likeComment: _commentData[index]['is_liked'],
+                                        likeCount: _commentData[index]['likes'],
+                                        myReview: myReview,
+                                        placeId: widget.placeId,
+                                        reviewId: _commentData[index]['id'],
+                                        onDeletePressed: () async {
+                                          Get.dialog(
+                                            const AlertDialog(
+                                              contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                              actionsPadding: EdgeInsets.zero,
+                                              titlePadding: EdgeInsets.zero,
+                                              content: Row(
+                                                children: [
+                                                  CircularProgressIndicator(),
+                                                  SizedBox(width: 24),
+                                                  Text("삭제중..."),
+                                                ],
+                                              ),
+                                            ),
+                                            barrierDismissible: false,
+                                          );
+                                          bool result = await _placeProvider.deletePlaceReview(widget.placeId, _commentData[index]['id']);
+
+                                          if (result) {
+                                            offset = 0;
+                                            count = 5;
+                                            _commentData.clear();
+                                            _addComments();
+                                            _loadComments();
+                                            Get.back();
+                                          } else {
+                                            Get.back();
+                                            Get.dialog(
+                                              AlertDialog(
+                                                contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                                titlePadding: EdgeInsets.zero,
+                                                content: const Text("한줄평 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                                                actions: [
+                                                  TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                                                ],
+                                              ),
+                                            );
+                                            // Get.showSnackbar(
+                                            //     ErrorGetSnackBar(
+                                            //         title: "삭제 실패",
+                                            //         message: "한줄평 삭제 중 오류가 발생했습니다.",
+                                            //       showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                                            //     )
+                                            // );
+                                          }
                                         },
                                       ),
-                                    )
-                                  ],
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(height: 12,);
+                                  },
                                 ),
                               ),
-                              const SizedBox(height: 18,),
-                              Expanded(
-                                child: Scrollbar(
-                                  controller: _commentScrollController,
-                                  child: ListView.separated(
-                                    controller: _commentScrollController,
-                                    physics: const AlwaysScrollableScrollPhysics(),
-                                    padding: EdgeInsets.zero,
-                                    itemCount: _commentData.length,
-                                    itemBuilder: (context, index) {
-                                      bool myReview = false;
-                                      if (AuthController.to.user.value != null) {
-                                        myReview = AuthController.to.user.value!.uid == _commentData[index]['user']['id'];
-                                      }
-                                      return Padding(
-                                        padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-                                        child: ShortPlaceReviewCard(
-                                          vsync: this,
-                                          height: commentHeight,
-                                          name: _commentData[index]['user']['nickname'],
-                                          comment: _commentData[index]['contents'],
-                                          profileUrl: _commentData[index]['user']['img_url'],
-                                          date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
-                                          likeComment: _commentData[index]['is_liked'],
-                                          likeCount: _commentData[index]['likes'],
-                                          myReview: myReview,
-                                          placeId: widget.placeId,
-                                          reviewId: _commentData[index]['id'],
-                                          onDeletePressed: () async {
-                                            Get.dialog(
-                                              const AlertDialog(
-                                                contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
-                                                actionsPadding: EdgeInsets.zero,
-                                                titlePadding: EdgeInsets.zero,
-                                                content: Row(
-                                                  children: [
-                                                    CircularProgressIndicator(),
-                                                    SizedBox(width: 24),
-                                                    Text("삭제중..."),
-                                                  ],
-                                                ),
-                                              ),
-                                              barrierDismissible: false,
-                                            );
-                                            bool result = await _placeProvider.deletePlaceReview(widget.placeId, _commentData[index]['id']);
-
-                                            if (result) {
-                                              offset = 0;
-                                              count = 5;
-                                              _commentData.clear();
-                                              _addComments();
-                                              _loadComments();
-                                              Get.back();
-                                            } else {
-                                              Get.back();
-                                              Get.dialog(
-                                                AlertDialog(
-                                                  contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
-                                                  titlePadding: EdgeInsets.zero,
-                                                  content: const Text("한줄평 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
-                                                  actions: [
-                                                    TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
-                                                  ],
-                                                ),
-                                              );
-                                              // Get.showSnackbar(
-                                              //     ErrorGetSnackBar(
-                                              //         title: "삭제 실패",
-                                              //         message: "한줄평 삭제 중 오류가 발생했습니다.",
-                                              //       showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
-                                              //     )
-                                              // );
-                                            }
-                                          },
-                                        ),
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) {
-                                      return const SizedBox(height: 12,);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         Visibility(
                           visible: loadVisibility,
