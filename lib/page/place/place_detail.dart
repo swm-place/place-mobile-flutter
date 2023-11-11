@@ -11,6 +11,7 @@ import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
+import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
@@ -48,6 +49,7 @@ class PlaceDetailPage extends StatefulWidget {
 
 class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderStateMixin {
   final PlaceProvider _placeProvider = PlaceProvider();
+  final UserProvider _userProvider = UserProvider();
 
   late final AnimationController _likeButtonController;
   late final AnimationController _bookmarkButtonController;
@@ -129,8 +131,6 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       'location': '한옥마을, 전주'
     },
   ];
-
-  final List<Map<String, dynamic>> _bookmarkData = [];
 
   int _loadData = -1;
 
@@ -1042,10 +1042,78 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   void __showBookmarkSelectionSheet() {
     bool stateFirst = true;
-    bool loadVisibility = true;
+    bool loadVisibility = false;
 
-    void loadBookmarks() async {
+    int page = 0;
+    int size = 25;
 
+    StateSetter? state;
+
+    List<dynamic> _bookmarkData = [];
+
+    void addBookmarks() async {
+      state!(() {
+        setState(() {
+          loadVisibility = true;
+        });
+      });
+      Map<String, dynamic>? result = await _userProvider.getPlaceBookmark(page, size, widget.placeId);
+
+      if (result != null) {
+        _bookmarkData = result['result'];
+        page++;
+      }
+
+      state!(() {
+        setState(() {
+          loadVisibility = false;
+        });
+      });
+    }
+
+    void __showCreateBookmarkDialog() {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder: (BuildContext context, StateSetter dialogState) {
+                return AlertDialog(
+                  title: Text("북마크 추가"),
+                  content: TextField(
+                    maxLength: 50,
+                    controller: _bookmarkNameController,
+                    onChanged: (text) {
+                      dialogState(() {
+                        setState(() {
+                          _bookmarkNameError = bookmarkTextFieldValidator(text);
+                        });
+                      });
+                    },
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "북마크 이름",
+                        errorText: _bookmarkNameError
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      },
+                      child: Text('취소', style: TextStyle(color: Colors.red),),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      },
+                      child: Text('만들기', style: TextStyle(color: Colors.blue),),
+                    )
+                  ],
+                );
+              },
+            );
+          }
+      );
     }
 
     showModalBottomSheet(
@@ -1055,17 +1123,12 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         builder: (BuildContext context) {
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter bottomState) {
+              state = bottomState;
               if (stateFirst) {
                 _bookmarkScrollController.addListener(() {
-                  if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset) {
+                  if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset && !loadVisibility) {
                     stateFirst = false;
-                    bottomState(() {
-                      setState(() {
-                        for (int i = 0;i < 20;i++) {
-                          _bookmarkData.add({"name": "북마크", "include": math.Random().nextBool()});
-                        }
-                      });
-                    });
+                    addBookmarks();
                   }
                 });
               }
@@ -1097,7 +1160,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                               print('add bookmark');
                                               __showCreateBookmarkDialog();
                                             },
-                                            child: Row(
+                                            child: const Row(
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
                                                 Icon(Icons.playlist_add),
@@ -1116,30 +1179,23 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                     child: ListView.separated(
                                       controller: _bookmarkScrollController,
                                       padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-                                      itemCount: _bookmarkData.length + 1,
+                                      itemCount: _bookmarkData.length,
                                       itemBuilder: (context, index) {
-                                        if (index < _bookmarkData.length) {
-                                          return ListTile(
-                                            minVerticalPadding: 0,
-                                            contentPadding: EdgeInsets.zero,
-                                            title: Text("${_bookmarkData[index]['name']} $index"),
-                                            trailing: _bookmarkData[index]['include']
-                                                ? Icon(Icons.check_box, color: lightColorScheme.primary,)
-                                                : Icon(Icons.check_box_outline_blank),
-                                            onTap: () {
-                                              bottomState(() {
-                                                setState(() {
-                                                  _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
-                                                });
+                                        return ListTile(
+                                          minVerticalPadding: 0,
+                                          contentPadding: EdgeInsets.zero,
+                                          title: Text("${_bookmarkData[index]['title']} $index"),
+                                          trailing: _bookmarkData[index]['bookmark']
+                                              ? Icon(Icons.check_box, color: lightColorScheme.primary,)
+                                              : Icon(Icons.check_box_outline_blank),
+                                          onTap: () {
+                                            bottomState(() {
+                                              setState(() {
+                                                _bookmarkData[index]['bookmark'] = !_bookmarkData[index]['bookmark'];
                                               });
-                                            },
-                                          );
-                                        } else {
-                                          return const Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 32),
-                                            child: Center(child: CircularProgressIndicator(),),
-                                          );
-                                        }
+                                            });
+                                          },
+                                        );
                                       },
                                       separatorBuilder: (context, index) {
                                         return Divider(height: 0, color: Colors.grey[250],);
@@ -1190,51 +1246,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       _bookmarkScrollController.dispose();
       _bookmarkScrollController = ScrollController();
     });
-  }
 
-  void __showCreateBookmarkDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return StatefulBuilder(
-            builder: (BuildContext context, StateSetter dialogState) {
-              return AlertDialog(
-                title: Text("북마크 추가"),
-                content: TextField(
-                  maxLength: 50,
-                  controller: _bookmarkNameController,
-                  onChanged: (text) {
-                    dialogState(() {
-                      setState(() {
-                        _bookmarkNameError = bookmarkTextFieldValidator(text);
-                      });
-                    });
-                  },
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "북마크 이름",
-                      errorText: _bookmarkNameError
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop();
-                    },
-                    child: Text('취소', style: TextStyle(color: Colors.red),),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop();
-                    },
-                    child: Text('만들기', style: TextStyle(color: Colors.blue),),
-                  )
-                ],
-              );
-            },
-          );
-        }
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      addBookmarks();
+    });
   }
 
   void __showTimeReportDialog() {
