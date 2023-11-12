@@ -1060,11 +1060,9 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       Map<String, dynamic>? result = await _userProvider.getPlaceBookmark(page, size, widget.placeId);
 
       if (result != null) {
-        _bookmarkData = result['result'];
+        _bookmarkData.addAll(result['result']);
         page++;
       }
-
-      print(_bookmarkData);
 
       state!(() {
         setState(() {
