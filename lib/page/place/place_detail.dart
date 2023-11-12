@@ -1228,12 +1228,28 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                         trailing: _bookmarkData[index]['bookmark']
                                             ? Icon(Icons.check_box, color: lightColorScheme.primary,)
                                             : Icon(Icons.check_box_outline_blank),
-                                        onTap: () {
+                                        onTap: () async {
                                           bottomState(() {
                                             setState(() {
-                                              _bookmarkData[index]['bookmark'] = !_bookmarkData[index]['bookmark'];
+                                              loadVisibility = true;
                                             });
                                           });
+                                          bool result;
+                                          if (_bookmarkData[index]['bookmark']) {
+                                            result = await _userProvider.deletePlaceInBookmark(
+                                                _bookmarkData[index]['placeBookmarkId'], widget.placeId);
+                                          } else {
+                                            result = await _userProvider.postPlaceInBookmark(
+                                                _bookmarkData[index]['placeBookmarkId'], widget.placeId);
+                                          }
+                                          if (result) {
+                                            bottomState(() {
+                                              setState(() {
+                                                loadVisibility = false;
+                                                _bookmarkData[index]['bookmark'] = !_bookmarkData[index]['bookmark'];
+                                              });
+                                            });
+                                          }
                                         },
                                       );
                                     },

@@ -305,4 +305,47 @@ class UserProvider extends DefaultProvider {
       return false;
     }
   }
+
+  Future<bool> postPlaceInBookmark(dynamic bookmarkId, dynamic placeId) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/place-bookmark/$bookmarkId");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await post(uri, headers: header, body: json.encode({
+        'placeId': placeId
+      }));
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> deletePlaceInBookmark(dynamic bookmarkId, dynamic placeId) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/user/${user.uid}/place-bookmark/$bookmarkId/place/$placeId");
+    Map<String, String>? header = await setHeader(true);
+
+    Response response;
+    try {
+      response = await delete(uri, headers: header);
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
