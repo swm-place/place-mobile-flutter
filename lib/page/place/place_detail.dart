@@ -15,6 +15,7 @@ import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
+import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
@@ -50,6 +51,7 @@ class PlaceDetailPage extends StatefulWidget {
 class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderStateMixin {
   final PlaceProvider _placeProvider = PlaceProvider();
   final UserProvider _userProvider = UserProvider();
+  final BookmarkController _bookmarkController = BookmarkController();
 
   late final AnimationController _likeButtonController;
   late final AnimationController _bookmarkButtonController;
@@ -1071,6 +1073,42 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       });
     }
 
+    void addPlaceBookmark(String text) async {
+      Get.dialog(
+          const AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+            actionsPadding: EdgeInsets.zero,
+            titlePadding: EdgeInsets.zero,
+            content: Row(
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 24),
+                Text('북마크 생성중'),
+              ],
+            ),
+          ),
+          barrierDismissible: false
+      );
+      bool result = await _bookmarkController.addPlaceBookmark(text);
+      Get.back();
+      if (result) {
+        page = 0;
+        _bookmarkData.clear();
+        addBookmarks();
+      } else {
+        Get.dialog(
+          AlertDialog(
+            contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+            titlePadding: EdgeInsets.zero,
+            content: const Text("북마크 추가 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+            actions: [
+              TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+            ],
+          ),
+        );
+      }
+    }
+
     void __showCreateBookmarkDialog() {
       showDialog(
           context: context,
@@ -1104,7 +1142,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                     ),
                     TextButton(
                       onPressed: () {
+                        final String title = _bookmarkNameController.text.toString();
+                        if (bookmarkTextFieldValidator(title) != null) return;
                         Navigator.of(context, rootNavigator: true).pop();
+                        addPlaceBookmark(title);
                       },
                       child: Text('만들기', style: TextStyle(color: Colors.blue),),
                     )
@@ -1183,7 +1224,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                       return ListTile(
                                         minVerticalPadding: 0,
                                         contentPadding: EdgeInsets.zero,
-                                        title: Text("${_bookmarkData[index]['title']} $index"),
+                                        title: Text("${_bookmarkData[index]['title']}"),
                                         trailing: _bookmarkData[index]['bookmark']
                                             ? Icon(Icons.check_box, color: lightColorScheme.primary,)
                                             : Icon(Icons.check_box_outline_blank),

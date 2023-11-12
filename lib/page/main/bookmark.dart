@@ -91,7 +91,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                 // _myStorySection(),
                 _locationBookmarkSection(),
                 _storyBookmarkSection(),
-                SizedBox(height: 24,)
+                const SizedBox(height: 24,)
               ],
             ),
           )
