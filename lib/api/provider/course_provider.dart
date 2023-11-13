@@ -81,6 +81,7 @@ class CourseProvider extends DefaultProvider {
         "finished": false
       }));
     } catch(e) {
+      print(e.toString());
       return null;
     }
 

@@ -47,6 +47,8 @@ class CourseMainPage extends StatefulWidget {
 }
 
 class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStateMixin {
+  late final CourseController courseController;
+
   late final AnimationController _likeButtonController;
   late final AnimationController _bookmarkButtonController;
 
@@ -68,17 +70,17 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   void initCourseData() async {
     Future<void> loadData() async {
-      Map<String, dynamic> resultCourse = await CourseController.to.getCourseData();
+      Map<String, dynamic> resultCourse = await courseController.getCourseData();
       if (resultCourse['code'] != ASYNC_SUCCESS) {
         return;
       }
 
-      int resultLine = await CourseController.to.getCourseLineData();
+      int resultLine = await courseController.getCourseLineData();
       if (resultLine != ASYNC_SUCCESS) {
         return;
       }
 
-      int resultGeocode = await CourseController.to.getGeocodeData();
+      int resultGeocode = await courseController.getGeocodeData();
       if (resultGeocode != ASYNC_SUCCESS) {
         return;
       }
@@ -91,7 +93,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   @override
   void initState() {
-    Get.put(CourseController());
+    courseController = CourseController();
+    courseController.courseId = widget.courseId;
 
     _likeButtonController = AnimationController(vsync: this);
     _bookmarkButtonController = AnimationController(vsync: this);
@@ -111,6 +114,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _bookmarkScrollController.dispose();
     _bookmarkNameController.dispose();
     cacheManager.dispose();
+    courseController.dispose();
     Get.delete<CourseController>();
     super.dispose();
   }
@@ -415,13 +419,13 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   }
 
   Widget _informationSection() {
-    int placeCount = CourseController.to.coursePlaceData.length;
+    int placeCount = courseController.coursePlaceData.length;
     double distance = 0.0;
-    if (CourseController.to.courseLineData.value != null) {
-      if (CourseController.to.courseLineData.value!['routes'][0]['distance'] is int) {
-        distance = CourseController.to.courseLineData.value!['routes'][0]['distance'].toDouble();
+    if (courseController.courseLineData.value != null) {
+      if (courseController.courseLineData.value!['routes'][0]['distance'] is int) {
+        distance = courseController.courseLineData.value!['routes'][0]['distance'].toDouble();
       } else {
-        distance = CourseController.to.courseLineData.value!['routes'][0]['distance'];
+        distance = courseController.courseLineData.value!['routes'][0]['distance'];
       }
     }
     return Padding(
@@ -430,7 +434,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         children: [
           CourseInformationCard(
             title: '지역',
-            content: CourseController.to.regionName.value,
+            content: courseController.regionName.value,
           ),
           const SizedBox(
             width: 12,
@@ -453,7 +457,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   List<Widget> __createPlaceList() {
     List<Widget> course = [];
-    for (var place in CourseController.to.coursePlaceData) {
+    for (var place in courseController.coursePlaceData) {
       int? distance;
       if (GISController.to.userPosition.value != null) {
         double lat2 = place['location']['lat'];
@@ -481,15 +485,15 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 final double height = width / 16 * 9;
 
                 final double initZoom = UnitConverter.calculateZoomLevel(
-                    CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                    courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
                     constraints.maxWidth,
                     height < 200 ? 200 : height);
 
                 final Widget map = FlutterMap(
                   options: MapOptions(
                     center: LatLng(
-                      CourseController.to.center[0],
-                      CourseController.to.center[1]
+                      courseController.center[0],
+                      courseController.center[1]
                     ),
                     zoom: initZoom,
                     maxZoom: 18,
@@ -504,13 +508,13 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                       userAgentPackageName: 'com.example.app',
                       tileProvider: CacheTileProvider(cacheManager),
                     ),
-                    if (CourseController.to.courseLineData.value != null) PolylineLayer(
+                    if (courseController.courseLineData.value != null) PolylineLayer(
                       polylines: MapLayerGenerator.generatePolyLines(
-                          CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates']),
+                          courseController.courseLineData.value!['routes'][0]['geometry']['coordinates']),
                     ),
-                    if (CourseController.to.courseLineData.value != null) MarkerLayer(
+                    if (courseController.courseLineData.value != null) MarkerLayer(
                       markers: MapLayerGenerator.generateMarkers(
-                          CourseController.to.courseLineData.value!['waypoints']),
+                          courseController.courseLineData.value!['waypoints']),
                     )
                   ],
                 );

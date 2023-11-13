@@ -94,19 +94,23 @@ class CourseListCardItemState extends State<CourseListCardItem> {
 
   @override
   void initState() {
-    place = widget.placesName[0];
-
     _pageController = PageController();
-    _pageController.addListener(() {
-      int now = _pageController.page!.round().toInt();
-      if (now < 0) now = 0;
-      if (now > 2) now = 2;
-      setState(() {
-        place = widget.placesName[now];
-        visibleLeft = _pageController.page!.round() > 0;
-        visibleRight = _pageController.page!.round() < 2;
+    if (widget.placesName.isNotEmpty) {
+      place = widget.placesName[0];
+
+      _pageController.addListener(() {
+        int now = _pageController.page!.round().toInt();
+        if (now < 0) now = 0;
+        if (now > 2) now = 2;
+        setState(() {
+          place = widget.placesName[now];
+          visibleLeft = _pageController.page!.round() > 0;
+          visibleRight = _pageController.page!.round() < 2;
+        });
       });
-    });
+    } else {
+
+    }
     super.initState();
   }
 
@@ -130,70 +134,75 @@ class CourseListCardItemState extends State<CourseListCardItem> {
             children: [
               SizedBox(
                 height: 130,
-                child: Stack(
-                  children: [
-                    SizedBox(
-                      height: 130,
-                      child: PageView(
-                        controller: _pageController,
-                        children: _generatePlaceImage(),
-                      ),
-                    ),
-                    IgnorePointer(
-                      child: Container(
+                child: widget.placesName.length > 0 ? Stack(
+                    children: [
+                      SizedBox(
                         height: 130,
-                        color: const Color.fromARGB(102, 1, 1, 1),
-                        child: Padding(
-                          padding: EdgeInsets.all(12),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              SizedBox(
-                                width: double.infinity,
-                                child: Text(
-                                  place,
-                                  style: SectionTextStyle.sectionContent(Colors.white),
-                                ),
-                              )
-                            ],
-                          ),
+                        child: PageView(
+                          controller: _pageController,
+                          children: _generatePlaceImage(),
                         ),
                       ),
-                    ),
-                    IgnorePointer(
-                      child: Container(
-                        height: 130,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(17, 0, 12, 0),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      IgnorePointer(
+                        child: Container(
+                          height: 130,
+                          color: const Color.fromARGB(102, 1, 1, 1),
+                          child: Padding(
+                            padding: EdgeInsets.all(12),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Visibility(
-                                  visible: visibleLeft,
-                                  child: Icon(
-                                    Icons.arrow_back_ios,
-                                    color: Colors.white.withOpacity(0.5),
-                                    size: 20,
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: Text(
+                                    place,
+                                    style: SectionTextStyle.sectionContent(Colors.white),
                                   ),
-                                ),
-                                Visibility(
-                                  visible: visibleRight,
-                                  child: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Colors.white.withOpacity(0.5),
-                                    size: 20,
-                                  ),
-                                ),
+                                )
                               ],
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                      IgnorePointer(
+                        child: Container(
+                          height: 130,
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(17, 0, 12, 0),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Visibility(
+                                    visible: visibleLeft,
+                                    child: Icon(
+                                      Icons.arrow_back_ios,
+                                      color: Colors.white.withOpacity(0.5),
+                                      size: 20,
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: visibleRight,
+                                    child: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Colors.white.withOpacity(0.5),
+                                      size: 20,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ) : 
+                  Container(
+                    color: Colors.white,
+                    width: double.infinity,
+                    child: Image.asset('assets/images/no_image.png', fit: BoxFit.fitHeight,),
+                  ),
               ),
               Container(
                 width: double.infinity,

@@ -7,6 +7,8 @@ import 'package:latlong2/latlong.dart';
 class CourseController extends GetxController {
   static CourseController get to => Get.find();
 
+  dynamic courseId;
+
   final CourseProvider _courseProvider = CourseProvider();
 
   RxList<Map<String, dynamic>> coursePlaceData = RxList([]);
