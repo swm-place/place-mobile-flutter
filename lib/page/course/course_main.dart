@@ -70,7 +70,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   void initCourseData() async {
     Future<void> loadData() async {
-      Map<String, dynamic> resultCourse = await courseController.getCourseData();
+      Map<String, dynamic> resultCourse = await courseController.getCoursePlacesData();
       if (resultCourse['code'] != ASYNC_SUCCESS) {
         return;
       }
