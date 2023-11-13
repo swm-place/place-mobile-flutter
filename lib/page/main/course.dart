@@ -99,8 +99,38 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-
+        onPressed: () async {
+          Get.dialog(
+              const AlertDialog(
+                contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                actionsPadding: EdgeInsets.zero,
+                titlePadding: EdgeInsets.zero,
+                content: Row(
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(width: 24),
+                    Text('내 코스 생성중'),
+                  ],
+                ),
+              ),
+              barrierDismissible: false
+          );
+          Map<String, dynamic>? result = await _courseProvider.postMyCourseData();
+          Get.back();
+          if (result == null) {
+            Get.dialog(
+              AlertDialog(
+                contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                titlePadding: EdgeInsets.zero,
+                content: const Text("새 코스 생성 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                actions: [
+                  TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                ],
+              ),
+            );
+            return;
+          }
+          Get.to(() => CourseMainPage(courseId: result['id']));
         },
         backgroundColor: lightColorScheme.primary,
         shape: const CircleBorder(),
@@ -173,7 +203,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
                       titleStyle: SectionTextStyle.lineContentExtraLarge(Colors.white),
                       padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
                       onTap: () {
-                        Get.to(() => CourseMainPage());
+                        // Get.to(() => CourseMainPage());
                       },
                     );
                   }
@@ -206,7 +236,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
           placesName: _myCourseData![i]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
           regionName: '',
           onPressed: () {
-            Get.to(() => CourseMainPage());
+            // Get.to(() => CourseMainPage());
           },
         )
       );

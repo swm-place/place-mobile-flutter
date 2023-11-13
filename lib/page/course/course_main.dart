@@ -35,9 +35,12 @@ import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CourseMainPage extends StatefulWidget {
-  const CourseMainPage({
+  CourseMainPage({
+    required this.courseId,
     Key? key
   }) : super(key: key);
+
+  dynamic courseId;
 
   @override
   State<StatefulWidget> createState() => _CourseMainPageState();
@@ -61,28 +64,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   bool initData = false;
 
-  final List<Map<String, dynamic>> _bookmarkData = [
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-  ];
+  final List<Map<String, dynamic>> _bookmarkData = [];
 
   void initCourseData() async {
     Future<void> loadData() async {

@@ -222,7 +222,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                 messageStyle: SectionTextStyle.labelMedium(Colors.white),
                 padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
                 onTap: () {
-                  Get.to(() => CourseMainPage());
+                  // Get.to(() => CourseMainPage());
                 },
               );
             }

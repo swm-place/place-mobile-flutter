@@ -1008,7 +1008,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             width: 250,
             height: 194,
             onTap: () {
-              Get.to(() => CourseMainPage());
+              // Get.to(() => CourseMainPage());
             },
           )
       );

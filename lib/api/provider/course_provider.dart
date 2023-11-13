@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/default_provider.dart';
@@ -57,6 +58,36 @@ class CourseProvider extends DefaultProvider {
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> postMyCourseData() async {
+    Uri uri = Uri.parse("$baseUrl/api/courses");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      DateTime now = DateTime.now();
+      DateFormat dateFormat = DateFormat("yy MM dd");
+      String formattedDate = dateFormat.format(now);
+
+      response = await post(uri, headers: header, body: json.encode({
+        "title": "$formattedDate 나의 계획",
+        "description": "",
+        "placesInCourse": [],
+        "inProgress": false,
+        "finished": false
+      }));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      print(response.body);
       return null;
     }
   }
