@@ -185,21 +185,36 @@ class _CourseEditPageState extends State<CourseEditPage> {
             Flexible(
               child: Obx(() => Padding(
                 padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-                child: ReorderableListView(
-                  children: _createList(),
-                  onReorder: (int oldIndex, int newIndex) {
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
-                    }
-                    widget.courseController.changePlaceOrder(oldIndex, newIndex);
-                    widget.courseController.getCourseLineData()
-                        .then((value) {
-                      if (value == ASYNC_SUCCESS) {
-                        widget.courseController.getGeocodeData();
+                child: widget.courseController.coursePlaceData.isEmpty ?
+                  Container(
+                    height: double.infinity,
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.grey[300]
+                      ),
+                      padding: const EdgeInsets.all(24),
+                      child: const Center(
+                        child: Text('장소를 추가해주세요!'),
+                      ),
+                    ),
+                  ) :
+                  ReorderableListView(
+                    children: _createList(),
+                    onReorder: (int oldIndex, int newIndex) {
+                      if (oldIndex < newIndex) {
+                        newIndex -= 1;
                       }
-                    });
-                  },
-                ),
+                      widget.courseController.changePlaceOrder(oldIndex, newIndex);
+                      widget.courseController.getCourseLineData()
+                          .then((value) {
+                        if (value == ASYNC_SUCCESS) {
+                          widget.courseController.getGeocodeData();
+                        }
+                      });
+                    },
+                  ),
               )),
             )
           ],
