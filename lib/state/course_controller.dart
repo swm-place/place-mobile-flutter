@@ -19,6 +19,17 @@ class CourseController extends GetxController {
 
   RxString regionName = RxString('서울시');
 
+  RxString title = RxString('');
+
+  Future<bool> getCourseData() async {
+    Map<String, dynamic>? result = await _courseProvider.getMyCourseDataById(courseId);
+    if (result == null) {
+      return false;
+    }
+    title.value = result['title'];
+    return true;
+  }
+
   Future<Map<String, dynamic>> getCoursePlacesData() async {
     coursePlaceData.clear();
     await Future.delayed(const Duration(milliseconds: 500));

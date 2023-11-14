@@ -64,31 +64,38 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   CourseProvider courseProvider= CourseProvider();
 
-  bool initData = false;
+  int initData = -1;
 
   final List<Map<String, dynamic>> _bookmarkData = [];
 
   void initCourseData() async {
-    Future<void> loadData() async {
-      Map<String, dynamic> resultCourse = await courseController.getCoursePlacesData();
-      if (resultCourse['code'] != ASYNC_SUCCESS) {
-        return;
-      }
-
-      int resultLine = await courseController.getCourseLineData();
-      if (resultLine != ASYNC_SUCCESS) {
-        return;
-      }
-
-      int resultGeocode = await courseController.getGeocodeData();
-      if (resultGeocode != ASYNC_SUCCESS) {
-        return;
-      }
+    // Future<void> loadData() async {
+    //   Map<String, dynamic> resultCourse = await courseController.getCoursePlacesData();
+    //   if (resultCourse['code'] != ASYNC_SUCCESS) {
+    //     return;
+    //   }
+    //
+    //   int resultLine = await courseController.getCourseLineData();
+    //   if (resultLine != ASYNC_SUCCESS) {
+    //     return;
+    //   }
+    //
+    //   int resultGeocode = await courseController.getGeocodeData();
+    //   if (resultGeocode != ASYNC_SUCCESS) {
+    //     return;
+    //   }
+    // }
+    // await loadData();
+    bool result = await courseController.getCourseData();
+    if (result) {
+      setState(() {
+        initData = 1;
+      });
+    } else {
+      setState(() {
+        initData = 0;
+      });
     }
-    await loadData();
-    setState(() {
-      initData = true;
-    });
   }
 
   @override
@@ -552,66 +559,73 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    Widget scaffold;
-    if (initData) {
-      scaffold = Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              leading: FlexibleTopBarActionButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(
-                  Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                  size: 18,
+    if (initData != -1) {
+      if (initData == 1) {
+        return Scaffold(
+          body: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                leading: FlexibleTopBarActionButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  icon: Icon(
+                    Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                    size: 18,
+                  ),
+                  iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
                 ),
-                iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
-              ),
-              actions: [
-                FlexibleTopBarActionButton(
-                    onPressed: () {
+                actions: [
+                  FlexibleTopBarActionButton(
+                      onPressed: () {
 
-                    },
-                    icon: Icon(Icons.ios_share, size: 18,)
-                )
-              ],
-              pinned: true,
-              expandedHeight: 220.0,
-              surfaceTintColor: Colors.white,
-              backgroundColor: Colors.white,
-              flexibleSpace: PictureFlexibleSpace(),
-            ),
-            Obx(() {
-              return SliverList(
-                delegate: SliverChildListDelegate([
-                  _detailHead(),
-                  const SizedBox(height: 24,),
-                  _informationSection(),
-                  const SizedBox(height: 24,),
-                  _visitPlaceSection(),
-                  const SizedBox(height: 24,),
-                ]),
-              );
-            })
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Get.to(() => CourseEditPage());
-          },
-          backgroundColor: lightColorScheme.primary,
-          shape: const CircleBorder(),
-          child: const Icon(Icons.edit, color: Colors.white,),
-        ),
-      );
+                      },
+                      icon: Icon(Icons.ios_share, size: 18,)
+                  )
+                ],
+                pinned: true,
+                expandedHeight: 220.0,
+                surfaceTintColor: Colors.white,
+                backgroundColor: Colors.white,
+                flexibleSpace: PictureFlexibleSpace(),
+              ),
+              Obx(() {
+                return SliverList(
+                  delegate: SliverChildListDelegate([
+                    _detailHead(),
+                    const SizedBox(height: 24,),
+                    _informationSection(),
+                    const SizedBox(height: 24,),
+                    _visitPlaceSection(),
+                    const SizedBox(height: 24,),
+                  ]),
+                );
+              })
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Get.to(() => CourseEditPage());
+            },
+            backgroundColor: lightColorScheme.primary,
+            shape: const CircleBorder(),
+            child: const Icon(Icons.edit, color: Colors.white,),
+          ),
+        );
+      } else {
+        return Scaffold(
+          appBar: AppBar(),
+          body: const Center(
+              child: Text('오류 발생')
+          ),
+        );
+      }
     } else {
-      scaffold = const Scaffold(
+      return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
       );
     }
-    return scaffold;
   }
 }

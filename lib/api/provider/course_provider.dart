@@ -62,6 +62,22 @@ class CourseProvider extends DefaultProvider {
     }
   }
 
+  Future<Map<String, dynamic>?> getMyCourseDataById(dynamic id) async {
+    Uri uri = Uri.parse("$baseUrl/api/courses/$id");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
+
   Future<Map<String, dynamic>?> postMyCourseData() async {
     Uri uri = Uri.parse("$baseUrl/api/courses");
     Map<String, String>? header = await setHeader(true);
