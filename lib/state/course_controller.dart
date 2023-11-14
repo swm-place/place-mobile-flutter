@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/state/state_const.dart';
@@ -11,13 +14,13 @@ class CourseController extends GetxController {
 
   final CourseProvider _courseProvider = CourseProvider();
 
-  RxList<Map<String, dynamic>> coursePlaceData = RxList([]);
+  RxList<dynamic> coursePlaceData = RxList([]);
   RxList<Map<String, double>> placesPosition = RxList([]);
   Rxn<Map<String, dynamic>> courseLineData = Rxn(null);
 
   RxList<double> center = RxList([37, 127.5]);
 
-  RxString regionName = RxString('서울시');
+  RxString regionName = RxString('-');
 
   RxString title = RxString('');
 
@@ -26,7 +29,17 @@ class CourseController extends GetxController {
     if (result == null) {
       return false;
     }
+
+    log(result.toString());
+
     title.value = result['title'];
+    coursePlaceData.value = result['placesInCourse'];
+    if (result['routesJson'] != null) {
+      courseLineData.value = json.decode(result['routesJson']);
+    } else {
+      courseLineData.value = null;
+    }
+
     return true;
   }
 

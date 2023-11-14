@@ -554,9 +554,28 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
       title: '장소 목록',
       content: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-        child: Column(
-          children: __createPlaceList(),
-        ),
+        child: Obx(() {
+          if (courseController.coursePlaceData.isEmpty) {
+            return Container(
+              height: 288,
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.grey[300]
+                ),
+                padding: const EdgeInsets.all(24),
+                child: const Center(
+                  child: Text('장소를 추가해주세요!'),
+                ),
+              ),
+            );
+          } else {
+            return Column(
+              children: __createPlaceList(),
+            );
+          }
+        }),
       ),
     );
   }
