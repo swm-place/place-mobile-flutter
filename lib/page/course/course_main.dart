@@ -126,7 +126,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     super.dispose();
   }
 
-  Widget _detailHead() => Padding(
+  Widget _detailHead() => Obx(() => Padding(
     padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -136,35 +136,39 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
             children: [
               SizedBox(
                 width: double.infinity,
-                child: Text(
-                  "사려니 숲길",
+                child: AutoSizeText(
+                  courseController.title.value,
                   style: PageTextStyle.headlineExtraLarge(Colors.black),
-                ),
+                  maxLines: 1,
+                  minFontSize: 24,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                )
               ),
-              const SizedBox(
-                height: 6,
-              ),
-              Row(
-                children: [
-                  TagChip(
-                    text: "#자연",
-                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
-                  ),
-                  const SizedBox(width: 4,),
-                  TagChip(
-                    text: "#자연",
-                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
-                  ),
-                  const SizedBox(width: 4,),
-                  TagChip(
-                    text: "#자연",
-                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
-                  ),
-                ],
-              )
+              // const SizedBox(
+              //   height: 6,
+              // ),
+              // Row(
+              //   children: [
+              //     TagChip(
+              //       text: "#자연",
+              //       textStyle: SectionTextStyle.labelMediumThick(Colors.white),
+              //       padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
+              //     ),
+              //     const SizedBox(width: 4,),
+              //     TagChip(
+              //       text: "#자연",
+              //       textStyle: SectionTextStyle.labelMediumThick(Colors.white),
+              //       padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
+              //     ),
+              //     const SizedBox(width: 4,),
+              //     TagChip(
+              //       text: "#자연",
+              //       textStyle: SectionTextStyle.labelMediumThick(Colors.white),
+              //       padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
+              //     ),
+              //   ],
+              // )
             ],
           ),
         ),
@@ -260,7 +264,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         )
       ],
     ),
-  );
+  ));
 
   void __showBookmarkSelectionSheet() {
     bool stateFirst = true;
@@ -593,7 +597,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 return SliverList(
                   delegate: SliverChildListDelegate([
                     _detailHead(),
-                    const SizedBox(height: 24,),
+                    const SizedBox(height: 12,),
                     _informationSection(),
                     const SizedBox(height: 24,),
                     _visitPlaceSection(),
