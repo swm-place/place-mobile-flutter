@@ -18,29 +18,38 @@ import 'package:get/get.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 
 class CourseEditPage extends StatefulWidget {
+  CourseEditPage({
+    required this.courseController,
+    required this.cacheManager,
+    Key? key
+  }) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _CourseEditPageState();
+
+  CourseController courseController;
+  CacheManager cacheManager;
 }
 
 class _CourseEditPageState extends State<CourseEditPage> {
-  late final CacheManager cacheManager;
+  // late final CacheManager cacheManager;
 
   @override
   void initState() {
-    cacheManager = MapCacheManager.instance;
+    // cacheManager = MapCacheManager.instance;
     super.initState();
   }
 
   @override
   void dispose() {
-    cacheManager.dispose();
+    // cacheManager.dispose();
     super.dispose();
   }
 
   List<Widget> _createList() {
     List<Widget> course = [];
     int index = 0;
-    for (var place in CourseController.to.coursePlaceData) {
+    for (var place in widget.courseController.coursePlaceData) {
       int? distance;
       if (GISController.to.userPosition.value != null) {
         double lat2 = place['location']['lat'];
@@ -56,11 +65,11 @@ class _CourseEditPageState extends State<CourseEditPage> {
               children: [
                 SlidableAction(
                   onPressed: (context) {
-                    CourseController.to.deletePlace(targetIndex);
-                    CourseController.to.getCourseLineData()
+                    widget.courseController.deletePlace(targetIndex);
+                    widget.courseController.getCourseLineData()
                         .then((value) {
                       if (value == ASYNC_SUCCESS) {
-                        CourseController.to.getGeocodeData();
+                        widget.courseController.getGeocodeData();
                       }
                     });
                   },
@@ -115,16 +124,21 @@ class _CourseEditPageState extends State<CourseEditPage> {
               final double width = MediaQuery.of(context).size.width;
               final double height = width / 16 * 9;
 
-              final double initZoom = UnitConverter.calculateZoomLevel(
-                  CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-                  MediaQuery.of(context).size.width,
-                  height < 200 ? 200 : height);
+              final double initZoom;
+              if (widget.courseController.courseLineData.value != null) {
+                initZoom = UnitConverter.calculateZoomLevel(
+                    widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                    MediaQuery.of(context).size.width,
+                    height < 200 ? 200 : height);
+              } else {
+                initZoom = 15;
+              }
 
               final Widget map = FlutterMap(
                 options: MapOptions(
                     center: LatLng(
-                        CourseController.to.center[0],
-                        CourseController.to.center[1]
+                        widget.courseController.center[0],
+                        widget.courseController.center[1]
                     ),
                     zoom: initZoom,
                     maxZoom: 18,
@@ -134,15 +148,15 @@ class _CourseEditPageState extends State<CourseEditPage> {
                   TileLayer(
                     urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.jpg',
                     userAgentPackageName: 'com.example.app',
-                    tileProvider: CacheTileProvider(cacheManager),
+                    tileProvider: CacheTileProvider(widget.cacheManager),
                   ),
-                  if (CourseController.to.courseLineData.value != null) PolylineLayer(
+                  if (widget.courseController.courseLineData.value != null) PolylineLayer(
                     polylines: MapLayerGenerator.generatePolyLines(
-                        CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates']),
+                        widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates']),
                   ),
-                  if (CourseController.to.courseLineData.value != null) MarkerLayer(
+                  if (widget.courseController.courseLineData.value != null) MarkerLayer(
                     markers: MapLayerGenerator.generateMarkers(
-                        CourseController.to.courseLineData.value!['waypoints']),
+                        widget.courseController.courseLineData.value!['waypoints']),
                   )
                 ],
               );
@@ -177,11 +191,11 @@ class _CourseEditPageState extends State<CourseEditPage> {
                     if (oldIndex < newIndex) {
                       newIndex -= 1;
                     }
-                    CourseController.to.changePlaceOrder(oldIndex, newIndex);
-                    CourseController.to.getCourseLineData()
+                    widget.courseController.changePlaceOrder(oldIndex, newIndex);
+                    widget.courseController.getCourseLineData()
                         .then((value) {
                       if (value == ASYNC_SUCCESS) {
-                        CourseController.to.getGeocodeData();
+                        widget.courseController.getGeocodeData();
                       }
                     });
                   },

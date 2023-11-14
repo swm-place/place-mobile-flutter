@@ -18,7 +18,7 @@ class CourseController extends GetxController {
   RxList<Map<String, double>> placesPosition = RxList([]);
   Rxn<Map<String, dynamic>> courseLineData = Rxn(null);
 
-  RxList<double> center = RxList([37, 127.5]);
+  RxList<double> center = RxList([37.574863, 126.977725]);
 
   RxString regionName = RxString('-');
 

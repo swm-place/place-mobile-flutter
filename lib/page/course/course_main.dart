@@ -628,7 +628,10 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Get.to(() => CourseEditPage());
+              Get.to(() => CourseEditPage(
+                courseController: courseController,
+                cacheManager: cacheManager,
+              ));
             },
             backgroundColor: lightColorScheme.primary,
             shape: const CircleBorder(),
