@@ -217,49 +217,49 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 ),
               ),
             ),
-            const SizedBox(width: 12,),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  HapticFeedback.lightImpact();
-                  likeCourse = !likeCourse;
-                  if (likeCourse) {
-                    _likeButtonController.animateTo(1);
-                  } else {
-                    _likeButtonController.animateBack(0);
-                  }
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      // width: 24,
-                      // height: 24,
-                      child: lottie.Lottie.asset(
-                          "assets/lottie/animation_like_button.json",
-                          repeat: false,
-                          reverse: false,
-                          width: 28,
-                          height: 28,
-                          controller: _likeButtonController,
-                          onLoaded: (conposition) {
-                            _likeButtonController.duration = conposition.duration;
-                            if (likeCourse) {
-                              _likeButtonController.animateTo(1);
-                            } else {
-                              _likeButtonController.animateBack(0);
-                            }
-                          }
-                      ),
-                    ),
-                    const Text("1.2K")
-                  ],
-                ),
-              ),
-            )
+            // const SizedBox(width: 12,),
+            // GestureDetector(
+            //   onTap: () {
+            //     setState(() {
+            //       HapticFeedback.lightImpact();
+            //       likeCourse = !likeCourse;
+            //       if (likeCourse) {
+            //         _likeButtonController.animateTo(1);
+            //       } else {
+            //         _likeButtonController.animateBack(0);
+            //       }
+            //     });
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(4),
+            //     child: Column(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         Container(
+            //           // width: 24,
+            //           // height: 24,
+            //           child: lottie.Lottie.asset(
+            //               "assets/lottie/animation_like_button.json",
+            //               repeat: false,
+            //               reverse: false,
+            //               width: 28,
+            //               height: 28,
+            //               controller: _likeButtonController,
+            //               onLoaded: (conposition) {
+            //                 _likeButtonController.duration = conposition.duration;
+            //                 if (likeCourse) {
+            //                   _likeButtonController.animateTo(1);
+            //                 } else {
+            //                   _likeButtonController.animateBack(0);
+            //                 }
+            //               }
+            //           ),
+            //         ),
+            //         const Text("1.2K")
+            //       ],
+            //     ),
+            //   ),
+            // )
           ],
         )
       ],
