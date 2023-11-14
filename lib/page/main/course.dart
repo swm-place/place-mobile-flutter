@@ -140,8 +140,8 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 24,),
-              _recommendKeywordSection(),
+              // const SizedBox(height: 24,),
+              // _recommendKeywordSection(),
               const SizedBox(height: 24,),
               _createMyCourseSection(),
               const SizedBox(height: 24,)
