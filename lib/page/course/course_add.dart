@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
@@ -17,7 +18,7 @@ class _CourseAddPageState extends State<CourseAddPage> {
   late final TextEditingController placeEditController;
 
   List<Map<String, dynamic>> _selectedAddPlace = [];
-  List<Map<String, dynamic>> _places = [];
+  List<dynamic> _places = [];
 
   @override
   void initState() {
@@ -77,7 +78,11 @@ class _CourseAddPageState extends State<CourseAddPage> {
                         return;
                       }
                       List<dynamic>? result = await _placeProvider.getPlaceSearchData('google', null, keyword, 37.574863, 126.977725, 5000);
-                      print(result);
+                      if (result != null) {
+                        setState(() {
+                          _places = result;
+                        });
+                      }
                     },
                   ),
                   //TODO: search position check
@@ -124,11 +129,13 @@ class _CourseAddPageState extends State<CourseAddPage> {
                   itemCount: _places.length,
                   itemBuilder: (BuildContext context, int index) {
                     return RoundedRowRectanglePlaceCard(
-                      imageUrl: _places[0]['imageUrl'],
-                      tags: _places[0]['tags'],
-                      placeName: _places[0]['placeName'],
-                      placeType: _places[0]['placeType'],
-                      open: _places[0]['open'],
+                      imageUrl: _places[index]['photos'] != null && _places[index]['photos'].length > 0 ?
+                        "$baseUrlDev/api-recommender/place-photo/?${_places[index]['photos'][0]['url'].split('?')[1]}&max_width=480" :
+                        null,
+                      tags: _places[index]['hashtags'],
+                      placeName: _places[index]['name'],
+                      placeType: _places[index]['category'],
+                      open: _places[index]['open_now'] ? '영업중' : '영업중 아님',
                       distance: '1.3km',
                       elevation: 0,
                       borderRadius: 0,

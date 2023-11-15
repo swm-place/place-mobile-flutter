@@ -182,7 +182,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
 class RoundedRowRectanglePlaceCard extends StatelessWidget {
   RoundedRowRectanglePlaceCard({
     required this.tags,
-    required this.imageUrl,
+    this.imageUrl,
     required this.placeName,
     required this.placeType,
     required this.distance,
@@ -194,9 +194,9 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final List<Map<String, dynamic>> tags;
+  final List<dynamic> tags;
 
-  final String imageUrl;
+  final String? imageUrl;
   String placeName;
   String placeType;
 
@@ -278,10 +278,9 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(imageBorderRadius),
                   child: AspectRatio(
                     aspectRatio: 1.1 / 1,
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                    ),
+                    child: imageUrl != null ?
+                    Image.network(imageUrl!, fit: BoxFit.cover,) :
+                    Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
                   ),
                 ),
               ),

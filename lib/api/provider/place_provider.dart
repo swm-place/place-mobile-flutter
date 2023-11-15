@@ -43,8 +43,6 @@ class PlaceProvider extends DefaultProvider {
     if (source != null) uriString += "&source=$source";
     if (hashtag != null) uriString += "&hashtag=$hashtag";
 
-    print(uriString);
-
     Uri uri = Uri.parse(uriString);
     Response response;
 
