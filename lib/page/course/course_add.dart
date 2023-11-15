@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
+import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
@@ -79,6 +80,22 @@ class _CourseAddPageState extends State<CourseAddPage> {
                       }
                       List<dynamic>? result = await _placeProvider.getPlaceSearchData('google', null, keyword, 37.574863, 126.977725, 5000);
                       if (result != null) {
+                        for (int c = 0;c < result.length;c++) {
+                          for (int i = 0;i < result[c]['hashtags'].length;i++) {
+                            String name = result[c]['hashtags'][i];
+                            result[c]['hashtags'][i] = {
+                              "text": name,
+                              "color": RandomGenerator.generateRandomDarkHexColor()
+                            };
+                          }
+                          if (GISController.to.userPosition.value == null) {
+                            result[c]['distance'] = null;
+                          } else {
+                            double lat2 = result[c]['location']['lat'];
+                            double lon2 = result[c]['location']['lon'];
+                            result[c]['distance'] = GISController.to.haversineDistance(lat2, lon2);
+                          }
+                        }
                         setState(() {
                           _places = result;
                         });
@@ -136,7 +153,8 @@ class _CourseAddPageState extends State<CourseAddPage> {
                       placeName: _places[index]['name'],
                       placeType: _places[index]['category'],
                       open: _places[index]['open_now'] ? '영업중' : '영업중 아님',
-                      distance: '1.3km',
+                      distance:_places[index]['distance'] == null ?
+                        null : UnitConverter.formatDistance(_places[index]['distance']),
                       elevation: 0,
                       borderRadius: 0,
                       imageBorderRadius: 8,
