@@ -107,7 +107,10 @@ class _CourseEditPageState extends State<CourseEditPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.to(
-            () => CourseAddPage(),
+            () => CourseAddPage(
+              cacheManager: widget.cacheManager,
+              courseController: widget.courseController,
+            ),
             transition: Transition.downToUp,
             fullscreenDialog: true,
             popGesture: false

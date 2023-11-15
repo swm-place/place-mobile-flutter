@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
+import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
+import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 
 class CourseAddPage extends StatefulWidget {
+  CourseAddPage({
+    required this.courseController,
+    required this.cacheManager,
+    Key? key
+  }) : super(key: key);
+
+  CourseController courseController;
+  CacheManager cacheManager;
+
   @override
   State<StatefulWidget> createState() => _CourseAddPageState();
 }
@@ -215,7 +227,17 @@ class _CourseAddPageState extends State<CourseAddPage> {
                 width: double.infinity,
                 child: FilledButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      if (_selectedAddPlace.isEmpty) {
+                        Get.showSnackbar(
+                          WarnGetSnackBar(
+                            title: '장소 추가 불가',
+                            message: '추가할 장소가 없습니다.',
+                            showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                          )
+                        );
+                        return;
+                      }
+                      // widget.courseController.
                     },
                     child: const Text('추가')
                 ),
@@ -228,7 +250,6 @@ class _CourseAddPageState extends State<CourseAddPage> {
   }
 
   void addPlaceInCandidate(dynamic placeData) {
-    print(placeData);
     setState(() {
       _selectedAddPlace.insert(0, placeData);
     });

@@ -19,9 +19,7 @@ class CourseController extends GetxController {
   Rxn<Map<String, dynamic>> courseLineData = Rxn(null);
 
   RxList<double> center = RxList([37.574863, 126.977725]);
-
   RxString regionName = RxString('-');
-
   RxString title = RxString('');
 
   Future<bool> getCourseData() async {
@@ -137,7 +135,7 @@ class CourseController extends GetxController {
   Future<int> getGeocodeData() async {
     Map<String, dynamic>? result = await _courseProvider.getReverseGeocode(LatLng(center[0], center[1]));
     if (result == null) {
-      regionName.value = '오류';
+      regionName.value = '-';
       regionName.refresh();
       return ASYNC_ERROR;
     }
@@ -168,5 +166,18 @@ class CourseController extends GetxController {
         [element['location']]).toList().cast<Map<String, double>>()
     );
     placesPosition.refresh();
+  }
+
+  void addPlace(List<dynamic> places) async {
+    for (int i = 0;i < places.length;i++) {
+      coursePlaceData.add({
+        'id': places[i]['id'],
+        'name': places[i]['name'],
+        'category': places[i]['category'],
+        'img_url': places[i]['img_url'],
+        'img_url': places[i]['img_url'],
+        'img_url': places[i]['img_url'],
+      });
+    }
   }
 }
