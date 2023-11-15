@@ -186,7 +186,7 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
     required this.placeName,
     required this.placeType,
     required this.distance,
-    required this.open,
+    this.open,
     this.elevation=2.5,
     this.borderRadius=8,
     this.imageBorderRadius=0,
@@ -201,7 +201,7 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
   String placeType;
 
   String? distance;
-  String open;
+  String? open;
 
   double elevation;
   double borderRadius;
@@ -241,21 +241,23 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
       );
       inform.add(SizedBox(width: 8,));
     }
-    inform.addAll([
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(MdiIcons.clockCheckOutline, size: 18),
-          const SizedBox(
-            width: 2,
-          ),
-          Text(
-            open,
-            style: SectionTextStyle.labelSmall(Colors.grey[700]!),
-          )
-        ],
-      ),
-    ]);
+    if (open != null) {
+      inform.addAll([
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(MdiIcons.clockCheckOutline, size: 18),
+            const SizedBox(
+              width: 2,
+            ),
+            Text(
+              open!,
+              style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+            )
+          ],
+        ),
+      ]);
+    }
     return inform;
   }
 

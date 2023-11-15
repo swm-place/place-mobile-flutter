@@ -250,8 +250,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                         _detailInform(),
                         _detailReview(commentHeight),
                         _detailPicture(),
-                        _detailRelevantPlace(),
-                        _detailRelevantStory(),
+                        // _detailRelevantPlace(),
+                        // _detailRelevantStory(),
                         SizedBox(height: 24,)
                       ]),
                     )

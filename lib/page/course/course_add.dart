@@ -152,7 +152,7 @@ class _CourseAddPageState extends State<CourseAddPage> {
                       tags: _places[index]['hashtags'],
                       placeName: _places[index]['name'],
                       placeType: _places[index]['category'],
-                      open: _places[index]['open_now'] ? '영업중' : '영업중 아님',
+                      open: _places[index]['open_now'] != null ? (_places[index]['open_now'] ? '영업중' : '영업중 아님') : null,
                       distance:_places[index]['distance'] == null ?
                         null : UnitConverter.formatDistance(_places[index]['distance']),
                       elevation: 0,
