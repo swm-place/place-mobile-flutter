@@ -337,8 +337,11 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
 }
 
 class RoundedRowRectangleCartPlaceCard extends StatelessWidget {
+  final Function()? onAddPressed;
+
   RoundedRowRectangleCartPlaceCard({
     required this.tags,
+    required this.onAddPressed,
     this.imageUrl,
     required this.placeName,
     required this.placeType,
@@ -486,9 +489,7 @@ class RoundedRowRectangleCartPlaceCard extends StatelessWidget {
                       Container(
                         height: 35,
                         child: FilledButton.tonal(
-                          onPressed: () {
-
-                          },
+                          onPressed: onAddPressed,
                           style: FilledButton.styleFrom(
                             textStyle: const TextStyle(
                               fontSize: 12.0,
@@ -497,7 +498,7 @@ class RoundedRowRectangleCartPlaceCard extends StatelessWidget {
                             minimumSize: const Size(0, 0),
                             maximumSize: const Size(double.infinity, double.infinity)
                           ),
-                          child: Text('이 장소 추가하기')
+                          child: const Text('이 장소 추가하기')
                         ),
                       ),
                     ],

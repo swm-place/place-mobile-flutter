@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/state/gis_controller.dart';
@@ -18,7 +19,7 @@ class _CourseAddPageState extends State<CourseAddPage> {
 
   late final TextEditingController placeEditController;
 
-  List<Map<String, dynamic>> _selectedAddPlace = [];
+  List<dynamic> _selectedAddPlace = [];
   List<dynamic> _places = [];
 
   @override
@@ -163,6 +164,33 @@ class _CourseAddPageState extends State<CourseAddPage> {
                         borderRadius: 0,
                         imageBorderRadius: 8,
                         imagePadding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                        onAddPressed: () {
+                          bool exist = false;
+                          for (int i = 0;i < _selectedAddPlace.length;i++) {
+                            if (_selectedAddPlace[i]['id'] == _places[index]['id']) {
+                              exist = true;
+                              break;
+                            }
+                          }
+                          if (exist) {
+                            Get.dialog(
+                              AlertDialog(
+                                contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                titlePadding: EdgeInsets.zero,
+                                content: const Text("해당 장소는 이미 추가 목록에 있거나 코스에 포함된 장소입니다. 그래도 추가하시겠습니까?"),
+                                actions: [
+                                  TextButton(onPressed: () {
+                                      Get.back();
+                                      addPlaceInCandidate(_places[index]);
+                                    }, child: const Text('추가')),
+                                  TextButton(onPressed: () {Get.back();}, child: const Text('취소', style: TextStyle(color: Colors.redAccent),))
+                                ],
+                              ),
+                            );
+                            return;
+                          }
+                          addPlaceInCandidate(_places[index]);
+                        },
                       ),
                     );
                   },
@@ -186,5 +214,11 @@ class _CourseAddPageState extends State<CourseAddPage> {
         ),
       ),
     );
+  }
+
+  void addPlaceInCandidate(dynamic placeData) {
+    setState(() {
+      _selectedAddPlace.insert(0, placeData);
+    });
   }
 }
