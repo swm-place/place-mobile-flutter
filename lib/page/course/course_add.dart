@@ -145,20 +145,25 @@ class _CourseAddPageState extends State<CourseAddPage> {
                 child: ListView.separated(
                   itemCount: _places.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return RoundedRowRectanglePlaceCard(
-                      imageUrl: _places[index]['photos'] != null && _places[index]['photos'].length > 0 ?
+                    return GestureDetector(
+                      onTap: () {
+
+                      },
+                      child: RoundedRowRectangleCartPlaceCard(
+                        imageUrl: _places[index]['photos'] != null && _places[index]['photos'].length > 0 ?
                         "$baseUrlDev/api-recommender/place-photo/?${_places[index]['photos'][0]['url'].split('?')[1]}&max_width=480" :
                         null,
-                      tags: _places[index]['hashtags'],
-                      placeName: _places[index]['name'],
-                      placeType: _places[index]['category'],
-                      open: _places[index]['open_now'] != null ? (_places[index]['open_now'] ? '영업중' : '영업중 아님') : null,
-                      distance:_places[index]['distance'] == null ?
+                        tags: _places[index]['hashtags'],
+                        placeName: _places[index]['name'],
+                        placeType: _places[index]['category'],
+                        open: _places[index]['open_now'] != null ? (_places[index]['open_now'] ? '영업중' : '영업중 아님') : null,
+                        distance:_places[index]['distance'] == null ?
                         null : UnitConverter.formatDistance(_places[index]['distance']),
-                      elevation: 0,
-                      borderRadius: 0,
-                      imageBorderRadius: 8,
-                      imagePadding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                        elevation: 0,
+                        borderRadius: 0,
+                        imageBorderRadius: 8,
+                        imagePadding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                      ),
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {

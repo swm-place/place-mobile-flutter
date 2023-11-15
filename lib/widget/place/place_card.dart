@@ -336,6 +336,182 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
   }
 }
 
+class RoundedRowRectangleCartPlaceCard extends StatelessWidget {
+  RoundedRowRectangleCartPlaceCard({
+    required this.tags,
+    this.imageUrl,
+    required this.placeName,
+    required this.placeType,
+    required this.distance,
+    this.open,
+    this.elevation=2.5,
+    this.borderRadius=8,
+    this.imageBorderRadius=0,
+    this.imagePadding=EdgeInsets.zero,
+    Key? key,
+  }) : super(key: key);
+
+   List<dynamic> tags;
+
+  final String? imageUrl;
+  String placeName;
+  String placeType;
+
+  String? distance;
+  String? open;
+
+  double elevation;
+  double borderRadius;
+  double imageBorderRadius;
+
+  EdgeInsets imagePadding;
+
+  List<Widget> __createTags() {
+    List<Widget> chips = [];
+    int tagCount = tags.length < 2 ? tags.length : 2;
+    for (int i = 0; i < tagCount; i++) {
+      if (i != 0) chips.add(SizedBox(width: 4,));
+      chips.add(
+          TagChip(
+            text: tags[i]['text'],
+            backgroundColor: UnitConverter.hexToColor(tags[i]['color']),
+          )
+      );
+    }
+    return chips;
+  }
+
+  List<Widget> __createInfo() {
+    List<Widget> inform = [];
+    if (distance != null) {
+      inform.add(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(MdiIcons.mapMarkerOutline, size: 18,),
+              Text(
+                distance!,
+                style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+              )
+            ],
+          )
+      );
+      inform.add(SizedBox(width: 8,));
+    }
+    if (open != null) {
+      inform.addAll([
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(MdiIcons.clockCheckOutline, size: 18),
+            const SizedBox(
+              width: 2,
+            ),
+            Text(
+              open!,
+              style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+            )
+          ],
+        ),
+      ]);
+    }
+    return inform;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: elevation,
+      shadowColor: Colors.grey[100],
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: SizedBox(
+          height: tags.isNotEmpty ? 135 : 110,
+          width: double.infinity,
+          child: Row(
+            children: [
+              Padding(
+                padding: imagePadding,
+                child: ClipRRect(
+                borderRadius: BorderRadius.circular(imageBorderRadius),
+                  child: AspectRatio(
+                    aspectRatio: 0.9 / 1,
+                    child: imageUrl != null ?
+                    Image.network(imageUrl!, fit: BoxFit.cover,) :
+                    Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(12, 12, 12, tags.isNotEmpty ? 0 : 12),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                placeName,
+                                overflow: TextOverflow.ellipsis,
+                                style: SectionTextStyle.sectionContentExtraLarge(
+                                    Colors.black),
+                              ),
+                            ),
+                            // Text(
+                            //   '카테고리',
+                            //   maxLines: 1,
+                            //   style: SectionTextStyle.labelMedium(
+                            //       Colors.grey[600]!),
+                            // ),
+                          ],
+                        ),
+                      ),
+                      if (tags.isNotEmpty)
+                        SizedBox(
+                          width: double.infinity,
+                          child: Row(
+                            children: __createTags(),
+                          ),
+                        ),
+                      Row(
+                        children: __createInfo(),
+                      ),
+                      Container(
+                        height: 35,
+                        child: FilledButton.tonal(
+                          onPressed: () {
+
+                          },
+                          style: FilledButton.styleFrom(
+                            textStyle: const TextStyle(
+                              fontSize: 12.0,
+                            ),
+                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                            minimumSize: const Size(0, 0),
+                            maximumSize: const Size(double.infinity, double.infinity)
+                          ),
+                          child: Text('이 장소 추가하기')
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class SelectedPlaceCard extends StatelessWidget {
   SelectedPlaceCard({
     Key? key,
