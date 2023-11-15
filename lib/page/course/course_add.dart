@@ -134,7 +134,18 @@ class _CourseAddPageState extends State<CourseAddPage> {
                       scrollDirection: Axis.horizontal,
                       itemCount: _selectedAddPlace.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return SelectedPlaceCard();
+                        return SelectedPlaceCard(
+                          onDeletePressed: () {
+                            setState(() {
+                              _selectedAddPlace.removeAt(index);
+
+                            });
+                          },
+                          imageUrl: _selectedAddPlace[index]['photos'] != null && _selectedAddPlace[index]['photos'].length > 0 ?
+                            "$baseUrlDev/api-recommender/place-photo/?${_selectedAddPlace[index]['photos'][0]['url'].split('?')[1]}&max_width=480" :
+                            null,
+                          placeName: _selectedAddPlace[index]['name'],
+                        );
                       },
                       separatorBuilder: (BuildContext context, int index) => const SizedBox(width: 12,),
                     ),
@@ -152,8 +163,8 @@ class _CourseAddPageState extends State<CourseAddPage> {
                       },
                       child: RoundedRowRectangleCartPlaceCard(
                         imageUrl: _places[index]['photos'] != null && _places[index]['photos'].length > 0 ?
-                        "$baseUrlDev/api-recommender/place-photo/?${_places[index]['photos'][0]['url'].split('?')[1]}&max_width=480" :
-                        null,
+                          "$baseUrlDev/api-recommender/place-photo/?${_places[index]['photos'][0]['url'].split('?')[1]}&max_width=480" :
+                          null,
                         tags: _places[index]['hashtags'],
                         placeName: _places[index]['name'],
                         placeType: _places[index]['category'],
@@ -217,6 +228,7 @@ class _CourseAddPageState extends State<CourseAddPage> {
   }
 
   void addPlaceInCandidate(dynamic placeData) {
+    print(placeData);
     setState(() {
       _selectedAddPlace.insert(0, placeData);
     });

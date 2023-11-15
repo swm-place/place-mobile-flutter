@@ -514,9 +514,17 @@ class RoundedRowRectangleCartPlaceCard extends StatelessWidget {
 }
 
 class SelectedPlaceCard extends StatelessWidget {
+  final Function()? onDeletePressed;
+
   SelectedPlaceCard({
+    required this.onDeletePressed,
+    required this.imageUrl,
+    required this.placeName,
     Key? key,
   }) : super(key: key);
+
+  final String? imageUrl;
+  String placeName;
 
   @override
   Widget build(BuildContext context) {
@@ -542,14 +550,13 @@ class SelectedPlaceCard extends StatelessWidget {
                   children: [
                     AspectRatio(
                       aspectRatio: 1,
-                      child: Image.network(
-                        'https://source.unsplash.com/random',
-                        fit: BoxFit.cover,
-                      ),
+                      child: imageUrl != null ?
+                      Image.network(imageUrl!, fit: BoxFit.cover,) :
+                      Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                      child: Text('장소 이름'),
+                      child: Text(placeName),
                     )
                   ],
                 ),
@@ -560,9 +567,7 @@ class SelectedPlaceCard extends StatelessWidget {
             top: 0,
             right: -5,
             child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: onDeletePressed,
               child: Container(
                 width: 18,
                 height: 18,
