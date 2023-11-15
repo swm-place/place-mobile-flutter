@@ -38,6 +38,29 @@ class PlaceProvider extends DefaultProvider {
     }
   }
 
+  Future<List<dynamic>?> getPlaceSearchData(String? source, String? hashtag, String keyword, double lat, double lon, double radius) async {
+    String uriString = "$baseUrl/api-recommender/places/?keyword=${Uri.encodeComponent(keyword)}&lat=$lat&lon=$lon&radius=$radius";
+    if (source != null) uriString += "&source=$source";
+    if (hashtag != null) uriString += "&hashtag=$hashtag";
+
+    print(uriString);
+
+    Uri uri = Uri.parse(uriString);
+    Response response;
+
+    try {
+      response = await get(uri, headers: await setHeader(AuthController.to.user.value != null));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
+
   Future<List<dynamic>?> getPlaceReviewData(String placeId, String orderBy, int offset, int count, bool my) async {
     Uri uri = Uri.parse("$baseUrl/api-recommender/places/$placeId/reviews?order_by=$orderBy&count=$count&offset=$offset&only_my_reviews=$my");
     Response response;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
@@ -11,17 +12,18 @@ class CourseAddPage extends StatefulWidget {
 }
 
 class _CourseAddPageState extends State<CourseAddPage> {
+  final PlaceProvider _placeProvider = PlaceProvider();
 
-  List<Map<String, dynamic>> _selectedAddPlace = [
-    // {},
-    // {},
-    // {},
-    // {},
-    // {},
-    // {},
-  ];
+  late final TextEditingController placeEditController;
 
+  List<Map<String, dynamic>> _selectedAddPlace = [];
   List<Map<String, dynamic>> _places = [];
+
+  @override
+  void initState() {
+    placeEditController = TextEditingController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,10 +70,28 @@ class _CourseAddPageState extends State<CourseAddPage> {
                     hintText: "검색어",
                     fillColor: Colors.grey[200]!,
                     contentPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                    onSuffixIconPressed: () {
-                      print("searchbar clicked");
+                    textEditingController: placeEditController,
+                    onSuffixIconPressed: () async {
+                      String keyword = placeEditController.text.toString();
+                      if (keyword == '') {
+                        return;
+                      }
+                      List<dynamic>? result = await _placeProvider.getPlaceSearchData('google', null, keyword, 37.574863, 126.977725, 5000);
+                      print(result);
                     },
                   ),
+                  //TODO: search position check
+                  // const SizedBox(height: 12,),
+                  // RoundedRectangleSearchBar(
+                  //   elevation: 0,
+                  //   borderRadius: 8,
+                  //   hintText: "검색어",
+                  //   fillColor: Colors.grey[200]!,
+                  //   contentPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                  //   onSuffixIconPressed: () {
+                  //     print("searchbar clicked");
+                  //   },
+                  // ),
                   const SizedBox(height: 12,),
                   _selectedAddPlace.isEmpty ?
                   Container(
