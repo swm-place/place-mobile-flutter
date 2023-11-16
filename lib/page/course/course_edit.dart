@@ -41,7 +41,6 @@ class _CourseEditPageState extends State<CourseEditPage> {
     // cacheManager = MapCacheManager.instance;
     _mapController = MapController();
     widget.courseController.courseLineData.listen((p0) {
-      print('change');
       final double width = MediaQuery.of(context).size.width;
       final double height = width / 16 * 9;
 
@@ -247,17 +246,41 @@ class _CourseEditPageState extends State<CourseEditPage> {
                   ) :
                   ReorderableListView(
                     children: _createList(),
-                    onReorder: (int oldIndex, int newIndex) {
+                    onReorder: (int oldIndex, int newIndex) async {
                       if (oldIndex < newIndex) {
                         newIndex -= 1;
                       }
-                      widget.courseController.changePlaceOrder(oldIndex, newIndex);
-                      widget.courseController.getCourseLineData()
-                          .then((value) {
-                        if (value == ASYNC_SUCCESS) {
-                          widget.courseController.getGeocodeData();
-                        }
-                      });
+                      Get.dialog(
+                          const AlertDialog(
+                            contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                            actionsPadding: EdgeInsets.zero,
+                            titlePadding: EdgeInsets.zero,
+                            content: Row(
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(width: 24),
+                                Text('코스 순서 변경 반영중'),
+                              ],
+                            ),
+                          ),
+                          barrierDismissible: false
+                      );
+                      bool result = await widget.courseController.changePlaceOrder(oldIndex, newIndex);
+                      Get.back();
+                      if (result) {
+
+                      } else {
+                        Get.dialog(
+                          AlertDialog(
+                            contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                            titlePadding: EdgeInsets.zero,
+                            content: const Text("코스 순서 변경 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                            actions: [
+                              TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                            ],
+                          ),
+                        );
+                      }
                     },
                   ),
               )),

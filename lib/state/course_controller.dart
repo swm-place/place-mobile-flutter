@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/provider/course_provider.dart';
@@ -157,16 +158,98 @@ class CourseController extends GetxController {
     return ASYNC_SUCCESS;
   }
 
-  void changePlaceOrder(int oldIndex, int newIndex) {
-    final Map<String, dynamic> item = coursePlaceData.removeAt(oldIndex);
-    coursePlaceData.insert(newIndex, item);
-    coursePlaceData.refresh();
+  Future<bool> changePlaceOrder(int oldIndex, int newIndex) async {
+    List<dynamic> coursePlaceTmp = List<dynamic>.from(coursePlaceData.value);
+    // List<double> centerTemp = List<double>.from(center.value);
+    // String regionNameTem = '-';
+
+    int beforeOrder = coursePlaceTmp[oldIndex]['order'];
+    coursePlaceTmp[oldIndex]['order'] = coursePlaceTmp[newIndex]['order'];
+    coursePlaceTmp[newIndex]['order'] = beforeOrder;
+
+    List<dynamic> placePatchData = [
+      {
+        'id': coursePlaceTmp[oldIndex]['id'],
+        'place': {
+          'id': coursePlaceTmp[oldIndex]['place']['id']
+        },
+        'order': coursePlaceTmp[oldIndex]['order'],
+        "day": coursePlaceTmp[oldIndex]['day'],
+        "startAt": coursePlaceTmp[oldIndex]['startAt'],
+        "timeRequired": coursePlaceTmp[oldIndex]['timeRequired'],
+        "transportationTime": coursePlaceTmp[oldIndex]['transportationTime'],
+        "createdAt": coursePlaceTmp[oldIndex]['createdAt']
+      },
+      {
+        'id': coursePlaceTmp[newIndex]['id'],
+        'place': {
+          'id': coursePlaceTmp[newIndex]['place']['id']
+        },
+        'order': coursePlaceTmp[newIndex]['order'],
+        "day": coursePlaceTmp[newIndex]['day'],
+        "startAt": coursePlaceTmp[newIndex]['startAt'],
+        "timeRequired": coursePlaceTmp[newIndex]['timeRequired'],
+        "transportationTime": coursePlaceTmp[newIndex]['transportationTime'],
+        "createdAt": coursePlaceTmp[newIndex]['createdAt']
+      }
+    ];
+
+    final Map<String, dynamic> item = coursePlaceTmp.removeAt(oldIndex);
+    coursePlaceTmp.insert(newIndex, item);
+
+    List<dynamic> placePositionTmp = coursePlaceTmp.expand((element) =>
+      [element['place']['location']]).toList();
+
+    Map<String, dynamic> newLine = {};
+    if (placePositionTmp.length > 1) {
+      Map<String, dynamic>? newLineResult = await _courseProvider.getCourseLine(placePositionTmp);
+      if (newLineResult == null) {
+        print('1\n$placePositionTmp');
+        return false;
+      }
+      newLine = newLineResult;
+      // centerTemp = UnitConverter.findCenter(newLine['routes'][0]['geometry']['coordinates']);
+    }
+
+    newLine['center'] = courseLineData.value!['center'];
+    newLine['region_name'] = courseLineData.value!['region_name'];
+
+    // newLine['center'] = centerTemp;
+
+    // Map<String, dynamic>? newRegion = await _courseProvider.getReverseGeocode(LatLng(centerTemp[0], centerTemp[1]));
+    // if (newRegion == null) {
+    //   print(2);
+    //   return false;
+    // }
+    // regionNameTem = newRegion['region_name'];
+    // newLine['region_name'] = regionNameTem;
+
+    Map<String, dynamic>? result = await _courseProvider.patchMyCourseData(courseId, {
+      'placesInCourse': placePatchData,
+      'routesJson': json.encode(newLine)
+    });
+
+    if (result == null) {
+      print('3');
+      return false;
+    }
+
+    coursePlaceData.value = coursePlaceTmp;
+
     placesPosition.clear();
-    placesPosition.addAll(
-        coursePlaceData.expand((element) =>
-        [element['location']]).toList().cast<Map<String, double>>()
-    );
-    placesPosition.refresh();
+    placesPosition.addAll(placePositionTmp);
+
+    // center[0] = centerTemp[0];
+    // center[1] = centerTemp[1];
+    // center.refresh();
+
+    // regionName.value = regionNameTem;
+
+    courseLineData.value = newLine;
+
+    update();
+
+    return true;
   }
 
   void deletePlace(int index) {
@@ -187,11 +270,17 @@ class CourseController extends GetxController {
     String regionNameTem = '-';
 
     for (int i = 0;i < places.length;i++) {
+      int order = 0;
+      if (coursePlaceData.isNotEmpty) {
+        order = coursePlaceData[coursePlaceData.length - 1]['order'] + i + 1;
+      } else {
+        order = i + 1;
+      }
       addData.add({
         'place': {
           'id': places[i]['id']
         },
-        'order': coursePlaceData.length + i + 1
+        'order': order
       });
       placePosTemp.add(places[i]['location']);
     }
@@ -204,8 +293,7 @@ class CourseController extends GetxController {
         return false;
       }
       newLine = newLineResult;
-      centerTemp = UnitConverter.findCenter(placePosTemp.expand(
-              (element) => [[element['lon'], element['lat']]]).toList());
+      centerTemp = UnitConverter.findCenter(newLine['routes'][0]['geometry']['coordinates']);
     } else {
       centerTemp = [placePosTemp[0]['lat'], placePosTemp[0]['lon']];
     }

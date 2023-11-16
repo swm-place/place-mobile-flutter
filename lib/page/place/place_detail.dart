@@ -878,8 +878,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                     child: Text("아직 작성된 한줄평이 없습니다 :("),
                   ),
                 ),
-              )
-            ,
+              ),
           ),
         ),
       ),
