@@ -74,7 +74,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
   ];
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 
   void getMyCourseData() async {
     List<dynamic>? data = await _courseProvider.getMyCourseData();
