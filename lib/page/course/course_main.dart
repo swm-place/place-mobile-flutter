@@ -432,11 +432,15 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   Widget _informationSection() {
     int placeCount = courseController.coursePlaceData.length;
     double distance = 0.0;
-    if (courseController.courseLineData.value != null) {
-      if (courseController.courseLineData.value!['routes'][0]['distance'] is int) {
-        distance = courseController.courseLineData.value!['routes'][0]['distance'].toDouble();
+    if (courseController.courseLineData.value != null && courseController.courseLineData.value != '') {
+      if (courseController.placesPosition.length > 1) {
+        if (courseController.courseLineData.value!['routes'][0]['distance'] is int) {
+          distance = courseController.courseLineData.value!['routes'][0]['distance'].toDouble();
+        } else {
+          distance = courseController.courseLineData.value!['routes'][0]['distance'];
+        }
       } else {
-        distance = courseController.courseLineData.value!['routes'][0]['distance'];
+        distance = 0;
       }
     }
     return Padding(

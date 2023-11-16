@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -228,11 +230,30 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
     List<Widget> course = [];
     for (int i = 0;i < _myCourseData!.length;i++) {
       if (i > 0) course.add(const SizedBox(height: 12,));
+
+      dynamic? courseLineData = null;
+      if (_myCourseData![i]['routesJson'] != null) {
+        courseLineData = json.decode(_myCourseData![i]['routesJson']);
+      }
+
+      double distance = 0.0;
+      if (courseLineData != null && courseLineData != '') {
+        if (_myCourseData![i]['placesInCourse'].length > 1) {
+          if (courseLineData!['routes'][0]['distance'] is int) {
+            distance = courseLineData!['routes'][0]['distance'].toDouble();
+          } else {
+            distance = courseLineData!['routes'][0]['distance'];
+          }
+        } else {
+          distance = 0;
+        }
+      }
+
       course.add(
         CourseListCardItem(
           courseName: _myCourseData![i]['title'],
           placeCount: _myCourseData![i]['placesInCourse'].length,
-          distance: 0,
+          distance: distance.floor(),
           placesImageUrls: _myCourseData![i]['placesInCourse'].map((item) {
             if (item['place']['img_url'] != null) {
               return "$baseUrlDev/api-recommender/place-photo/?${item['place']['img_url'].split('?')[1]}&max_width=480";
@@ -241,7 +262,8 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
             }
           }).toList(),
           placesName: _myCourseData![i]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
-          regionName: '',
+          regionName: courseLineData != null && courseLineData != '' ?
+            courseLineData['region_name'] : '-',
           onPressed: () {
             Get.to(() => CourseMainPage(courseId: _myCourseData![i]['id'],));
           },
