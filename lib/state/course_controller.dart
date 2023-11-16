@@ -28,8 +28,6 @@ class CourseController extends GetxController {
       return false;
     }
 
-    log(result.toString());
-
     title.value = result['title'];
     coursePlaceData.value = result['placesInCourse'];
 

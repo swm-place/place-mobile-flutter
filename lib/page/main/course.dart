@@ -133,7 +133,10 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
             );
             return;
           }
-          Get.to(() => CourseMainPage(courseId: result['id']));
+          Get.to(() => CourseMainPage(courseId: result['id']))!
+            .then((value) {
+              getMyCourseData();
+            });
         },
         backgroundColor: lightColorScheme.primary,
         shape: const CircleBorder(),
@@ -319,7 +322,10 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
           regionName: courseLineData != null && courseLineData != '' ?
             courseLineData['region_name'] : '-',
           onPressed: () {
-            Get.to(() => CourseMainPage(courseId: _myCourseData![i]['id'],));
+            Get.to(() => CourseMainPage(courseId: _myCourseData![i]['id'],))!
+                .then((value) {
+                  getMyCourseData();
+                });
           },
         )
       );
