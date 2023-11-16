@@ -40,12 +40,14 @@ class CourseController extends GetxController {
     );
 
     if (result['routesJson'] != null && result['routesJson'] != '') {
-      courseLineData.value = json.decode(result['routesJson']);
+      dynamic data = json.decode(result['routesJson']);
 
-      center[0] = courseLineData.value!['center'][0];
-      center[1] = courseLineData.value!['center'][1];
+      center[0] = data['center'][0];
+      center[1] = data['center'][1];
 
-      regionName.value = courseLineData.value!['region_name'];
+      regionName.value = data['region_name'];
+
+      courseLineData.value = data;
     } else {
       courseLineData.value = null;
     }
@@ -204,7 +206,8 @@ class CourseController extends GetxController {
         return false;
       }
       newLine = newLineResult;
-      centerTemp = UnitConverter.findCenter(newLine!['routes'][0]['geometry']['coordinates']);
+      centerTemp = UnitConverter.findCenter(placePosTemp.expand(
+              (element) => [[element['lon'], element['lat']]]).toList());
     } else {
       centerTemp = [placePosTemp[0]['lat'], placePosTemp[0]['lon']];
     }
@@ -226,7 +229,7 @@ class CourseController extends GetxController {
     });
 
     if (result == null) {
-      print(3);
+      print('3');
       return false;
     }
 
@@ -235,13 +238,15 @@ class CourseController extends GetxController {
     placesPosition.clear();
     placesPosition.addAll(placePosTemp);
 
-    courseLineData.value = newLine;
-
     center[0] = centerTemp[0];
     center[1] = centerTemp[1];
     center.refresh();
 
     regionName.value = regionNameTem;
+
+    courseLineData.value = newLine;
+
+    update();
     return true;
   }
 }
