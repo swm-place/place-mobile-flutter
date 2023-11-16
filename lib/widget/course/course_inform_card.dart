@@ -19,7 +19,7 @@ class CourseInformationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        height: 65,
+        height: 70,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: Colors.grey[300]
@@ -33,7 +33,11 @@ class CourseInformationCard extends StatelessWidget {
             AutoSizeText(
               content,
               style: SectionTextStyle.sectionContent(Colors.black),
-              maxLines: 1,
+              maxLines: 2,
+              minFontSize: 10,
+              softWrap: true,
+              overflow: TextOverflow.ellipsis,
+              textScaleFactor: 0.9,
             ),
           ],
         ),
