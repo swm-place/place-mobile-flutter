@@ -274,7 +274,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
             ),
             padding: EdgeInsets.all(24),
             child: Center(
-              child: Text("아직 생성된 나의 코스가 없습니다 :(."),
+              child: Text("아직 생성된 나의 코스가 없습니다 :("),
             ),
           ),
         )
