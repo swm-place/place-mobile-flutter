@@ -223,9 +223,63 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
   }
 
   Widget _createMyCourseSection() {
-    if (_loadMyCourseData < 1) return Container();
-    if (_myCourseData == null) return Container();
-    if (_myCourseData!.isEmpty) return Container();
+    if (_loadMyCourseData < 1) {
+      return MainSection(
+        title: '나의 코스',
+        content: Padding(
+          padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.grey[300]
+            ),
+            padding: EdgeInsets.all(24),
+            child: Center(
+              child: Text("데이터를 불러오는 중 입니다."),
+            ),
+          ),
+        )
+      );
+    }
+    if (_myCourseData == null) {
+      return MainSection(
+        title: '나의 코스',
+        content: Padding(
+          padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.grey[300]
+            ),
+            padding: EdgeInsets.all(24),
+            child: Center(
+              child: Text("데이터를 불러오는 중 오류가 발생했습니다."),
+            ),
+          ),
+        )
+      );
+    }
+    if (_myCourseData!.isEmpty) {
+      return MainSection(
+        title: '나의 코스',
+        content: Padding(
+          padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.grey[300]
+            ),
+            padding: EdgeInsets.all(24),
+            child: Center(
+              child: Text("아직 생성된 나의 코스가 없습니다 :(."),
+            ),
+          ),
+        )
+      );
+    }
 
     List<Widget> course = [];
     for (int i = 0;i < _myCourseData!.length;i++) {
