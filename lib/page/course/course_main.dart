@@ -57,6 +57,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   late ScrollController _bookmarkScrollController;
   late final CacheManager cacheManager;
 
+  late final MapController _mapController;
+
   bool likeCourse = false;
   bool bookmarkCourse = false;
 
@@ -91,6 +93,33 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
       setState(() {
         initData = 1;
       });
+
+      courseController.courseLineData.listen((p0) {
+        print('change');
+        final double width = MediaQuery.of(context).size.width - 48;
+        final double height = width / 16 * 9;
+
+        final double initZoom;
+        if (courseController.courseLineData.value != null) {
+          if (courseController.placesPosition.length > 1) {
+            initZoom = UnitConverter.calculateZoomLevel(
+                courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                MediaQuery.of(context).size.width - 48,
+                height < 200 ? 200 : (height < 400 ? height : 400));
+          } else {
+            initZoom = 16.5;
+          }
+        } else {
+          initZoom = 15;
+        }
+
+        _mapController.move(LatLng(
+            courseController.center[0],
+            courseController.center[1]
+        ), initZoom);
+
+        setState(() {});
+      });
     } else {
       setState(() {
         initData = 0;
@@ -107,6 +136,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _bookmarkButtonController = AnimationController(vsync: this);
     _bookmarkScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
+
+    _mapController = MapController();
 
     cacheManager = MapCacheManager.instance;
 
@@ -443,7 +474,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         distance = 0;
       }
     }
-    return Padding(
+    return Obx(() => Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Row(
         children: [
@@ -467,7 +498,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
           ),
         ],
       ),
-    );
+    ));
   }
 
   List<Widget> __createPlaceList() {
@@ -500,7 +531,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
             borderRadius: BorderRadius.circular(8),
             child: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
-                final double width = constraints.maxWidth;
+                final double width = constraints.maxWidth - 48;
                 final double height = width / 16 * 9;
 
                 final double initZoom;
@@ -508,14 +539,16 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                   if (courseController.placesPosition.length > 1) {
                     initZoom = UnitConverter.calculateZoomLevel(
                         courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-                        MediaQuery.of(context).size.width,
-                        height < 200 ? 200 : height);
+                        MediaQuery.of(context).size.width - 48,
+                        height < 200 ? 200 : (height < 400 ? height : 400));
                   } else {
                     initZoom = 16.5;
                   }
                 } else {
                   initZoom = 15;
                 }
+
+                print('1 ${courseController.center}');
 
                 final Widget map = FlutterMap(
                   options: MapOptions(
@@ -530,6 +563,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                       Get.to(() => CourseMapPage());
                     }
                   ),
+                  mapController: _mapController,
                   children: [
                     TileLayer(
                       urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.jpg',
@@ -572,28 +606,24 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
       title: '장소 목록',
       content: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-        child: Obx(() {
-          if (courseController.coursePlaceData.isEmpty) {
-            return Container(
-              height: 288,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.grey[300]
-                ),
-                padding: const EdgeInsets.all(24),
-                child: const Center(
-                  child: Text('장소를 추가해주세요!'),
-                ),
+        child: courseController.coursePlaceData.isEmpty ?
+          Container(
+            height: 288,
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.grey[300]
               ),
-            );
-          } else {
-            return Column(
-              children: __createPlaceList(),
-            );
-          }
-        }),
+              padding: const EdgeInsets.all(24),
+              child: const Center(
+                child: Text('장소를 추가해주세요!'),
+              ),
+            ),
+          ) :
+          Column(
+            children: __createPlaceList(),
+          )
       ),
     );
   }
@@ -630,18 +660,16 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 backgroundColor: Colors.white,
                 flexibleSpace: PictureFlexibleSpace(),
               ),
-              Obx(() {
-                return SliverList(
-                  delegate: SliverChildListDelegate([
-                    _detailHead(),
-                    const SizedBox(height: 12,),
-                    _informationSection(),
-                    const SizedBox(height: 24,),
-                    _visitPlaceSection(),
-                    const SizedBox(height: 24,),
-                  ]),
-                );
-              })
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  _detailHead(),
+                  const SizedBox(height: 12,),
+                  _informationSection(),
+                  const SizedBox(height: 24,),
+                  _visitPlaceSection(),
+                  const SizedBox(height: 24,),
+                ]),
+              )
             ],
           ),
           floatingActionButton: FloatingActionButton(

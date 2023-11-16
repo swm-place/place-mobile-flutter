@@ -49,8 +49,7 @@ class _CourseEditPageState extends State<CourseEditPage> {
       if (widget.courseController.courseLineData.value != null) {
         if (widget.courseController.placesPosition.length > 1) {
           initZoom = UnitConverter.calculateZoomLevel(
-              widget.courseController.placesPosition.expand(
-                      (element) => [[element['lon'], element['lat']]]).toList(),
+              widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
               MediaQuery.of(context).size.width,
               height < 200 ? 200 : (height < 400 ? height : 400));
         } else {
@@ -167,8 +166,7 @@ class _CourseEditPageState extends State<CourseEditPage> {
                 if (widget.courseController.courseLineData.value != null) {
                   if (widget.courseController.placesPosition.length > 1) {
                     initZoom = UnitConverter.calculateZoomLevel(
-                        widget.courseController.placesPosition.expand(
-                                (element) => [[element['lon'], element['lat']]]).toList(),
+                        widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
                         MediaQuery.of(context).size.width,
                         height < 200 ? 200 : (height < 400 ? height : 400));
                   } else {
