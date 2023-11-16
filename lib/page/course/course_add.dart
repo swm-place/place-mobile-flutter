@@ -226,7 +226,7 @@ class _CourseAddPageState extends State<CourseAddPage> {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_selectedAddPlace.isEmpty) {
                         Get.showSnackbar(
                           WarnGetSnackBar(
@@ -237,7 +237,12 @@ class _CourseAddPageState extends State<CourseAddPage> {
                         );
                         return;
                       }
-                      // widget.courseController.
+                      bool result = await widget.courseController.addPlace(_selectedAddPlace);
+                      if (result) {
+                        Navigator.pop(context);
+                      } else {
+                        print('bug');
+                      }
                     },
                     child: const Text('추가')
                 ),

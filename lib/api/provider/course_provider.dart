@@ -13,7 +13,7 @@ class CourseProvider extends DefaultProvider {
     return {API_KEY_MAP_KEY: API_KEY_MAP_VALUE};
   }
 
-  Future<Map<String, dynamic>?> getCourseLine(List<Map<String, dynamic>> coordinates) async {
+  Future<Map<String, dynamic>?> getCourseLine(List<dynamic> coordinates) async {
     String course = coordinates.expand((element) => ["${element['lon']},${element['lat']}"]).toList().join(';');
     Uri uri = Uri.parse("$routeBaseUrl/route/v1/foot/$course?steps=true&overview=full&geometries=geojson");
     Response response;
@@ -67,6 +67,25 @@ class CourseProvider extends DefaultProvider {
     Response response;
     try {
       response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> patchMyCourseData(dynamic id, dynamic data) async {
+    Uri uri = Uri.parse("$baseUrl/api/courses/$id");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await patch(uri, headers: header, body: json.encode(data));
     } catch(e) {
       return null;
     }

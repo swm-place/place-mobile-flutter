@@ -49,11 +49,12 @@ class _CourseEditPageState extends State<CourseEditPage> {
   List<Widget> _createList() {
     List<Widget> course = [];
     int index = 0;
+    print(widget.courseController.coursePlaceData);
     for (var place in widget.courseController.coursePlaceData) {
       int? distance;
       if (GISController.to.userPosition.value != null) {
-        double lat2 = place['location']['lat'];
-        double lon2 = place['location']['lon'];
+        double lat2 = place['place']['location']['lat'];
+        double lon2 = place['place']['location']['lon'];
         distance = GISController.to.haversineDistance(lat2, lon2);
       }
       int targetIndex = index;
@@ -80,11 +81,13 @@ class _CourseEditPageState extends State<CourseEditPage> {
               ],
             ),
             child: RoundedRowRectanglePlaceCard(
-              imageUrl: place['imageUrl'],
-              tags: place['tags'],
-              placeName: place['placeName'],
-              placeType: place['placeType'],
-              open: place['open'],
+              imageUrl: place['place']['img_url'],
+              // tags: place['place']['tags'],
+              tags: [],
+              placeName: place['place']['name'],
+              placeType: place['place']['category'],
+              // open: place['place']['open'],
+              open: '영압중',
               distance: distance == null ? null : UnitConverter.formatDistance(distance),
               elevation: 0,
               borderRadius: 0,
@@ -129,10 +132,14 @@ class _CourseEditPageState extends State<CourseEditPage> {
 
               final double initZoom;
               if (widget.courseController.courseLineData.value != null) {
-                initZoom = UnitConverter.calculateZoomLevel(
-                    widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-                    MediaQuery.of(context).size.width,
-                    height < 200 ? 200 : height);
+                if (widget.courseController.placesPosition.length > 1) {
+                  initZoom = UnitConverter.calculateZoomLevel(
+                      widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                      MediaQuery.of(context).size.width,
+                      height < 200 ? 200 : height);
+                } else {
+                  initZoom = 16.5;
+                }
               } else {
                 initZoom = 15;
               }
@@ -153,13 +160,14 @@ class _CourseEditPageState extends State<CourseEditPage> {
                     userAgentPackageName: 'com.example.app',
                     tileProvider: CacheTileProvider(widget.cacheManager),
                   ),
-                  if (widget.courseController.courseLineData.value != null) PolylineLayer(
+                  if (widget.courseController.courseLineData.value != null &&
+                    widget.courseController.placesPosition.length > 1) PolylineLayer(
                     polylines: MapLayerGenerator.generatePolyLines(
                         widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates']),
                   ),
-                  if (widget.courseController.courseLineData.value != null) MarkerLayer(
+                  if (widget.courseController.placesPosition.isNotEmpty) MarkerLayer(
                     markers: MapLayerGenerator.generateMarkers(
-                        widget.courseController.courseLineData.value!['waypoints']),
+                        widget.courseController.placesPosition.value),
                   )
                 ],
               );

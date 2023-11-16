@@ -15,7 +15,7 @@ class CourseController extends GetxController {
   final CourseProvider _courseProvider = CourseProvider();
 
   RxList<dynamic> coursePlaceData = RxList([]);
-  RxList<Map<String, double>> placesPosition = RxList([]);
+  RxList<dynamic> placesPosition = RxList([]);
   Rxn<Map<String, dynamic>> courseLineData = Rxn(null);
 
   RxList<double> center = RxList([37.574863, 126.977725]);
@@ -32,8 +32,20 @@ class CourseController extends GetxController {
 
     title.value = result['title'];
     coursePlaceData.value = result['placesInCourse'];
-    if (result['routesJson'] != null) {
+
+    placesPosition.clear();
+    placesPosition.addAll(
+        coursePlaceData.expand((element) =>
+        [element['place']['location']]).toList()
+    );
+
+    if (result['routesJson'] != null && result['routesJson'] != '') {
       courseLineData.value = json.decode(result['routesJson']);
+
+      center[0] = courseLineData.value!['center'][0];
+      center[1] = courseLineData.value!['center'][1];
+
+      regionName.value = courseLineData.value!['region_name'];
     } else {
       courseLineData.value = null;
     }
@@ -168,16 +180,68 @@ class CourseController extends GetxController {
     placesPosition.refresh();
   }
 
-  void addPlace(List<dynamic> places) async {
+  Future<bool> addPlace(List<dynamic> places) async {
+    List<dynamic> addData = [];
+    List<dynamic> placePosTemp = List<dynamic>.from(placesPosition.value);
+    List<double> centerTemp = List<double>.from(center.value);
+    String regionNameTem = '-';
+
     for (int i = 0;i < places.length;i++) {
-      coursePlaceData.add({
-        'id': places[i]['id'],
-        'name': places[i]['name'],
-        'category': places[i]['category'],
-        'img_url': places[i]['img_url'],
-        'img_url': places[i]['img_url'],
-        'img_url': places[i]['img_url'],
+      addData.add({
+        'place': {
+          'id': places[i]['id']
+        },
+        'order': coursePlaceData.length + i + 1
       });
+      placePosTemp.add(places[i]['location']);
     }
+
+    Map<String, dynamic> newLine = {};
+    if (placePosTemp.length > 1) {
+      Map<String, dynamic>? newLineResult = await _courseProvider.getCourseLine(placePosTemp);
+      if (newLineResult == null) {
+        print('1\n$placePosTemp');
+        return false;
+      }
+      newLine = newLineResult;
+      centerTemp = UnitConverter.findCenter(newLine!['routes'][0]['geometry']['coordinates']);
+    } else {
+      centerTemp = [placePosTemp[0]['lat'], placePosTemp[0]['lon']];
+    }
+
+    newLine['center'] = centerTemp;
+
+    Map<String, dynamic>? newRegion = await _courseProvider.getReverseGeocode(LatLng(centerTemp[0], centerTemp[1]));
+    if (newRegion == null) {
+      print(2);
+      return false;
+    }
+    regionNameTem = newRegion['region_name'];
+
+    newLine['region_name'] = regionNameTem;
+
+    Map<String, dynamic>? result = await _courseProvider.patchMyCourseData(courseId, {
+      'placesInCourse': addData,
+      'routesJson': json.encode(newLine)
+    });
+
+    if (result == null) {
+      print(3);
+      return false;
+    }
+
+    coursePlaceData.clear();
+    coursePlaceData.addAll(result!['placesInCourse']);
+
+    placesPosition.clear();
+    placesPosition.addAll(placePosTemp);
+
+    courseLineData.value = newLine;
+
+    center[0] = centerTemp[0];
+    center[1] = centerTemp[1];
+
+    regionName.value = regionNameTem;
+    return true;
   }
 }
