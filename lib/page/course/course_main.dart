@@ -471,17 +471,19 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     for (var place in courseController.coursePlaceData) {
       int? distance;
       if (GISController.to.userPosition.value != null) {
-        double lat2 = place['location']['lat'];
-        double lon2 = place['location']['lon'];
+        double lat2 = place['place']['location']['lat'];
+        double lon2 = place['place']['location']['lon'];
         distance = GISController.to.haversineDistance(lat2, lon2);
       }
       course.addAll([
         RoundedRowRectanglePlaceCard(
-          imageUrl: place['imageUrl'],
-          tags: place['tags'],
-          placeName: place['placeName'],
-          placeType: place['placeType'],
-          open: place['open'],
+          imageUrl: place['place']['img_url'],
+          // tags: place['place']['tags'],
+          tags: [],
+          placeName: place['place']['name'],
+          placeType: place['place']['category'],
+          // open: place['place']['open'],
+          open: '영압중',
           distance: distance == null ? null : UnitConverter.formatDistance(distance),
         ),
         const SizedBox(height: 12)
@@ -495,10 +497,19 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 final double width = constraints.maxWidth;
                 final double height = width / 16 * 9;
 
-                final double initZoom = UnitConverter.calculateZoomLevel(
-                    courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-                    constraints.maxWidth,
-                    height < 200 ? 200 : height);
+                final double initZoom;
+                if (courseController.courseLineData.value != null) {
+                  if (courseController.placesPosition.length > 1) {
+                    initZoom = UnitConverter.calculateZoomLevel(
+                        courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                        MediaQuery.of(context).size.width,
+                        height < 200 ? 200 : height);
+                  } else {
+                    initZoom = 16.5;
+                  }
+                } else {
+                  initZoom = 15;
+                }
 
                 final Widget map = FlutterMap(
                   options: MapOptions(
@@ -519,13 +530,14 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                       userAgentPackageName: 'com.example.app',
                       tileProvider: CacheTileProvider(cacheManager),
                     ),
-                    if (courseController.courseLineData.value != null) PolylineLayer(
+                    if (courseController.courseLineData.value != null &&
+                        courseController.placesPosition.length > 1) PolylineLayer(
                       polylines: MapLayerGenerator.generatePolyLines(
                           courseController.courseLineData.value!['routes'][0]['geometry']['coordinates']),
                     ),
-                    if (courseController.courseLineData.value != null) MarkerLayer(
+                    if (courseController.placesPosition.isNotEmpty) MarkerLayer(
                       markers: MapLayerGenerator.generateMarkers(
-                          courseController.courseLineData.value!['waypoints']),
+                          courseController.placesPosition.value),
                     )
                   ],
                 );
