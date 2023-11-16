@@ -230,7 +230,6 @@ class CourseController extends GetxController {
       return false;
     }
 
-    coursePlaceData.clear();
     coursePlaceData.addAll(result!['placesInCourse']);
 
     placesPosition.clear();
@@ -240,6 +239,7 @@ class CourseController extends GetxController {
 
     center[0] = centerTemp[0];
     center[1] = centerTemp[1];
+    center.refresh();
 
     regionName.value = regionNameTem;
     return true;

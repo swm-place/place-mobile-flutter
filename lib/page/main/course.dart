@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
@@ -232,7 +233,13 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
           courseName: _myCourseData![i]['title'],
           placeCount: _myCourseData![i]['placesInCourse'].length,
           distance: 0,
-          placesImageUrls: _myCourseData![i]['placesInCourse'].map((item) => item['place']['imgUrl'].toString()).toList(),
+          placesImageUrls: _myCourseData![i]['placesInCourse'].map((item) {
+            if (item['place']['img_url'] != null) {
+              return "$baseUrlDev/api-recommender/place-photo/?${item['place']['img_url'].split('?')[1]}&max_width=480";
+            } else {
+              return null;
+            }
+          }).toList(),
           placesName: _myCourseData![i]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
           regionName: '',
           onPressed: () {

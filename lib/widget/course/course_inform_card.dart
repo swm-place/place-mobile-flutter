@@ -82,9 +82,13 @@ class CourseListCardItemState extends State<CourseListCardItem> {
   List<Widget> _generatePlaceImage() {
     List<Widget> images = [];
     for (int i = 0;i < widget.placesImageUrls.length;i++) {
-      images.add(
-        Image.network('$baseUrlDev${widget.placesImageUrls[i]}', fit: BoxFit.cover)
-      );
+      if (widget.placesImageUrls[i] != null) {
+        images.add(
+            Image.network(widget.placesImageUrls[i], fit: BoxFit.cover)
+        );
+      } else {
+        images.add(Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,));
+      }
     }
     return images;
   }
@@ -101,11 +105,11 @@ class CourseListCardItemState extends State<CourseListCardItem> {
       _pageController.addListener(() {
         int now = _pageController.page!.round().toInt();
         if (now < 0) now = 0;
-        if (now > 2) now = 2;
+        if (now >= widget.placeCount) now = widget.placeCount - 1;
         setState(() {
           place = widget.placesName[now];
           visibleLeft = _pageController.page!.round() > 0;
-          visibleRight = _pageController.page!.round() < 2;
+          visibleRight = _pageController.page!.round() < widget.placeCount - 1;
         });
       });
     } else {
