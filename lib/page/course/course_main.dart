@@ -52,7 +52,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   late final AnimationController _likeButtonController;
   late final AnimationController _bookmarkButtonController;
 
-  late final TextEditingController _bookmarkNameController;
+  late final TextEditingController _courseNameController;
 
   late ScrollController _bookmarkScrollController;
   late final CacheManager cacheManager;
@@ -62,7 +62,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   bool likeCourse = false;
   bool bookmarkCourse = false;
 
-  String? _bookmarkNameError;
+  String? _courseNameError;
 
   CourseProvider courseProvider= CourseProvider();
 
@@ -135,7 +135,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _likeButtonController = AnimationController(vsync: this);
     _bookmarkButtonController = AnimationController(vsync: this);
     _bookmarkScrollController = ScrollController();
-    _bookmarkNameController = TextEditingController();
+    _courseNameController = TextEditingController();
 
     _mapController = MapController();
 
@@ -150,7 +150,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _likeButtonController.dispose();
     _bookmarkButtonController.dispose();
     _bookmarkScrollController.dispose();
-    _bookmarkNameController.dispose();
+    _courseNameController.dispose();
     cacheManager.dispose();
     courseController.dispose();
     Get.delete<CourseController>();
@@ -425,18 +425,18 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 title: const Text("북마크 추가"),
                 content: TextField(
                   maxLength: 50,
-                  controller: _bookmarkNameController,
+                  controller: _courseNameController,
                   onChanged: (text) {
                     dialogState(() {
                       setState(() {
-                        _bookmarkNameError = bookmarkTextFieldValidator(text);
+                        _courseNameError = bookmarkTextFieldValidator(text);
                       });
                     });
                   },
                   decoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       hintText: "북마크 이름",
-                      errorText: _bookmarkNameError
+                      errorText: _courseNameError
                   ),
                 ),
                 actions: [
@@ -630,6 +630,42 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     );
   }
 
+  void changeTitle(dynamic courseId, String title) async {
+    Get.dialog(
+        const AlertDialog(
+          contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+          actionsPadding: EdgeInsets.zero,
+          titlePadding: EdgeInsets.zero,
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 24),
+              Text('코스 이름 변경중'),
+            ],
+          ),
+        ),
+        barrierDismissible: false
+    );
+
+    bool result = await courseController.changeTitle(title);
+    Get.back();
+
+    if (result) {
+
+    } else {
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("이름 변경 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (initData != -1) {
@@ -654,6 +690,63 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
                       },
                       icon: Icon(Icons.ios_share, size: 18,)
+                  ),
+                  PopupMenuButton(
+                    icon: Icon(Icons.more_vert, size: 18,),
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem(onTap: () {
+                          _courseNameController.text = courseController.title.value;
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return StatefulBuilder(
+                                  builder: (BuildContext context, StateSetter dialogState) {
+                                    return AlertDialog(
+                                      title: Text("코스 이름 변경"),
+                                      content: TextField(
+                                        maxLength: 50,
+                                        controller: _courseNameController,
+                                        onChanged: (text) {
+                                          dialogState(() {
+                                            _courseNameError = courseTextFieldValidator(text);
+                                          });
+                                        },
+                                        decoration: InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            hintText: "북마크 이름",
+                                            errorText: _courseNameError
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context, rootNavigator: true).pop();
+                                          },
+                                          child: Text('취소', style: TextStyle(color: Colors.red),),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            final String title = _courseNameController.text.toString();
+                                            if (courseTextFieldValidator(title) != null) return;
+                                            Navigator.of(context, rootNavigator: true).pop();
+                                            if (courseController.title.value == title) return;
+                                            changeTitle(courseController.courseId, title);
+                                          },
+                                          child: Text('변경', style: TextStyle(color: Colors.blue),),
+                                        )
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                          );
+                        }, child: const Text('이름 변경'),),
+                        PopupMenuItem(onTap: () {
+
+                        }, child: const Text('삭제'),)
+                      ];
+                    },
                   )
                 ],
                 pinned: true,

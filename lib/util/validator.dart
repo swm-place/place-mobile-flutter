@@ -65,3 +65,15 @@ String? bookmarkTextFieldValidator(value) {
   }
   return null;
 }
+
+String? courseTextFieldValidator(value) {
+  RegExp regExp = new RegExp(r'[^a-zA-Z가-힣0-9ㄱ-ㅎㅏ-ㅣ ]',);
+
+  if (value == null || value.isEmpty) {
+    return '코스 이름을 입력해주세요.';
+  }
+  if (regExp.hasMatch(value)) {
+    return '특수문자 제외';
+  }
+  return null;
+}

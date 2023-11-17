@@ -399,4 +399,18 @@ class CourseController extends GetxController {
     update();
     return true;
   }
+
+  Future<bool> changeTitle(String title) async {
+    Map<String, dynamic>? result = await _courseProvider.patchMyCourseData(courseId, {
+      'title': title,
+      'placesInCourse': [],
+    });
+
+    if (result != null) {
+      this.title.value = title;
+      return true;
+    }
+
+    return false;
+  }
 }
