@@ -30,6 +30,23 @@ class CourseController extends GetxController {
     }
 
     title.value = result['title'];
+
+    for (var place in result['placesInCourse']) {
+      if (place['place']['hashtags'] == null) {
+        place['place']['hashtags'] = [];
+        continue;
+      }
+
+      List<dynamic> hashtags = [];
+      for (var tag in place['place']['hashtags']) {
+        hashtags.add({
+          'text': tag,
+          'color': RandomGenerator.generateRandomDarkHexColor()
+        });
+      }
+      place['place']['hashtags'] = hashtags;
+    }
+
     coursePlaceData.value = result['placesInCourse'];
 
     placesPosition.clear();
@@ -380,6 +397,22 @@ class CourseController extends GetxController {
     if (result == null) {
       print('3');
       return false;
+    }
+
+    for (var place in result['placesInCourse']) {
+      if (place['place']['hashtags'] == null) {
+        place['place']['hashtags'] = [];
+        continue;
+      }
+
+      List<dynamic> hashtags = [];
+      for (var tag in place['place']['hashtags']) {
+        hashtags.add({
+          'text': tag,
+          'color': RandomGenerator.generateRandomDarkHexColor()
+        });
+      }
+      place['place']['hashtags'] = hashtags;
     }
 
     coursePlaceData.clear();

@@ -518,8 +518,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
           imageUrl: place['place']['img_url'] != null ?
             "$baseUrlDev/api-recommender/place-photo/?${ place['place']['img_url'].split('?')[1]}&max_width=480" :
             null,
-          // tags: place['place']['tags'],
-          tags: [],
+          tags: place['place']['hashtags'],
+          // tags: [],
           placeName: place['place']['name'],
           placeType: place['place']['category'],
           // open: place['place']['open'],

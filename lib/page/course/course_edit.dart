@@ -134,8 +134,7 @@ class _CourseEditPageState extends State<CourseEditPage> {
               imageUrl: place['place']['img_url'] != null ?
                 "$baseUrlDev/api-recommender/place-photo/?${ place['place']['img_url'].split('?')[1]}&max_width=480" :
                 null,
-              // tags: place['place']['tags'],
-              tags: [],
+              tags: place['place']['hashtags'],
               placeName: place['place']['name'],
               placeType: place['place']['category'],
               // open: place['place']['open'],
