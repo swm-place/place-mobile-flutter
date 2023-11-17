@@ -312,7 +312,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
 
   Widget _locationBookmarkSection() {
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
       child: MainSection(
         title: "장소 북마크",
         action: Ink(

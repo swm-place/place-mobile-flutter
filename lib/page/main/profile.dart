@@ -820,7 +820,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 24,),
+              const SizedBox(height: 12,),
               _createProfileSection(),
               _createWatchPref(),
               // _createStoryPref(),

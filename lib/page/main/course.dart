@@ -185,7 +185,10 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
         child: const Icon(Icons.add, color: Colors.white,),
       ),
       body: SafeArea(
-        child: _createMyCourseSection(),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+          child: _createMyCourseSection(),
+        ),
         // child: Column(
         //   children: [
         //     // const SizedBox(height: 24,),

@@ -370,8 +370,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
 
   List<Widget> _createSection() {
     List<Widget> section = [
-      __searchSection(),
-      const SizedBox(height: 24,),
+      // __searchSection(),
+      // const SizedBox(height: 24,),
       __magazineSection(),
       const SizedBox(height: 24,)
     ];
@@ -394,7 +394,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
             child: Column(
               children: _createSection(),
             ),
