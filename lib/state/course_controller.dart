@@ -252,15 +252,78 @@ class CourseController extends GetxController {
     return true;
   }
 
-  void deletePlace(int index) {
-    coursePlaceData.removeAt(index);
-    coursePlaceData.refresh();
+  Future<bool> deletePlace(int index) async {
+    List<dynamic> coursePlaceTmp = List<dynamic>.from(coursePlaceData.value);
+    List<double> centerTemp = List<double>.from(center.value);
+    String regionNameTem = '-';
+
+    dynamic deletePlaceId = coursePlaceTmp.removeAt(index)['id'];
+    List<dynamic> placePositionTmp = coursePlaceTmp.expand((element) =>
+    [element['place']['location']]).toList();
+
+    Future<bool> getRegionName() async {
+      Map<String, dynamic>? newRegion = await _courseProvider.getReverseGeocode(LatLng(centerTemp[0], centerTemp[1]));
+      if (newRegion == null) {
+        print(2);
+        return false;
+      }
+      regionNameTem = newRegion['region_name'];
+      return true;
+    }
+
+    Map<String, dynamic> newLine = {};
+    if (placePositionTmp.length > 1) {
+      Map<String, dynamic>? newLineResult = await _courseProvider.getCourseLine(placePositionTmp);
+      if (newLineResult == null) {
+        print('1\n$placePositionTmp');
+        return false;
+      }
+      newLine = newLineResult;
+      centerTemp = UnitConverter.findCenter(newLine['routes'][0]['geometry']['coordinates']);
+      getRegionName();
+    } else {
+      if (placePositionTmp.length == 1) {
+        centerTemp = [placePositionTmp[0]['lat'], placePositionTmp[0]['lon']];
+        getRegionName();
+      } else {
+        centerTemp = [37.574863, 126.977725];
+        regionNameTem = '-';
+      }
+    }
+
+    newLine['center'] = centerTemp;
+    newLine['region_name'] = regionNameTem;
+
+    bool resultDelete = await _courseProvider.deletePlaceInMyCourseData(courseId, deletePlaceId);
+    if (!resultDelete) {
+      return false;
+    }
+
+    Map<String, dynamic>? result = await _courseProvider.patchMyCourseData(courseId, {
+      'placesInCourse': [],
+      'routesJson': json.encode(newLine)
+    });
+
+    if (result == null) {
+      return false;
+    }
+
+    coursePlaceData.value = coursePlaceTmp;
+
     placesPosition.clear();
-    placesPosition.addAll(
-        coursePlaceData.expand((element) =>
-        [element['location']]).toList().cast<Map<String, double>>()
-    );
-    placesPosition.refresh();
+    placesPosition.addAll(placePositionTmp);
+
+    center[0] = centerTemp[0];
+    center[1] = centerTemp[1];
+    center.refresh();
+
+    regionName.value = regionNameTem;
+
+    courseLineData.value = newLine;
+
+    update();
+
+    return true;
   }
 
   Future<bool> addPlace(List<dynamic> places) async {

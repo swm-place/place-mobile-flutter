@@ -91,14 +91,38 @@ class _CourseEditPageState extends State<CourseEditPage> {
               motion: const ScrollMotion(),
               children: [
                 SlidableAction(
-                  onPressed: (context) {
-                    widget.courseController.deletePlace(targetIndex);
-                    widget.courseController.getCourseLineData()
-                        .then((value) {
-                      if (value == ASYNC_SUCCESS) {
-                        widget.courseController.getGeocodeData();
-                      }
-                    });
+                  onPressed: (context) async {
+                    Get.dialog(
+                        const AlertDialog(
+                          contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                          actionsPadding: EdgeInsets.zero,
+                          titlePadding: EdgeInsets.zero,
+                          content: Row(
+                            children: [
+                              CircularProgressIndicator(),
+                              SizedBox(width: 24),
+                              Text('장소 삭제 반영중'),
+                            ],
+                          ),
+                        ),
+                        barrierDismissible: false
+                    );
+                    bool result = await widget.courseController.deletePlace(targetIndex);
+                    Get.back();
+                    if (result) {
+
+                    } else {
+                      Get.dialog(
+                        AlertDialog(
+                          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                          titlePadding: EdgeInsets.zero,
+                          content: const Text("장소 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                          actions: [
+                            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                          ],
+                        ),
+                      );
+                    }
                   },
                   label: '삭제',
                   backgroundColor: Colors.red,
