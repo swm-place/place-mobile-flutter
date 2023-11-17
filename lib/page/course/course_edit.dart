@@ -180,7 +180,11 @@ class _CourseEditPageState extends State<CourseEditPage> {
                     ),
                     zoom: initZoom,
                     maxZoom: 18,
-                    interactiveFlags: InteractiveFlag.none
+                    interactiveFlags: InteractiveFlag.drag |
+                      InteractiveFlag.flingAnimation |
+                      InteractiveFlag.pinchMove |
+                      InteractiveFlag.pinchZoom |
+                      InteractiveFlag.doubleTapZoom
                 ),
                 mapController: _mapController,
                 children: [
