@@ -530,29 +530,33 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (placeData['road_address'] != null)
-                            SizedBox(height: 4,),
-                          if (placeData['road_address'] != null)
-                            Expanded(
-                              child: Text(
-                                placeData['road_address'],
-                                style: SectionTextStyle.sectionContent(
-                                    Colors.black),
-                              ),
-                            ),
-                          if (placeData['address'] != null)
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("지번"),
-                                SizedBox(width: 4,),
-                                Expanded(
-                                  child: Text(
-                                    placeData['address'],
-                                  ),
-                                )
-                              ],
-                            )
+                          // SizedBox(height: 4,),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("도로명"),
+                              SizedBox(width: 4,),
+                              Expanded(
+                                child: Text(
+                                  placeData['road_address'] ?? '-',
+                                  style: SectionTextStyle.sectionContent(
+                                      Colors.black),
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("지번 "),
+                              SizedBox(width: 4,),
+                              Expanded(
+                                child: Text(
+                                  placeData['address'] ?? '-',
+                                ),
+                              )
+                            ],
+                          )
                         ],
                       ),
                     )
@@ -570,7 +574,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 4,),
+                            // SizedBox(height: 4,),
                             Ink(
                                 child: InkWell(
                                   onTap: () {
@@ -596,13 +600,13 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                                   .sectionContentLarge(
                                                   Colors.red),
                                             ),
-                                            Text("최근 1시간 동안 5명이 운영중이 아니라고 제보"),
-                                            GestureDetector(
-                                              child: Text("운영중 오류 제보하기"),
-                                              onTap: () {
-                                                __showTimeReportDialog();
-                                              },
-                                            )
+                                            // Text("최근 1시간 동안 5명이 운영중이 아니라고 제보"),
+                                            // GestureDetector(
+                                            //   child: Text("운영중 오류 제보하기"),
+                                            //   onTap: () {
+                                            //     __showTimeReportDialog();
+                                            //   },
+                                            // )
                                           ],
                                         ),
                                       ),
