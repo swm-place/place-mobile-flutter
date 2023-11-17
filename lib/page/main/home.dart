@@ -290,7 +290,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   }
 
   void _getPlaceRecommendationSection() async {
-    Map<String, dynamic>? data = await _placeProvider.getPlaceRecommendSection();
+    Map<String, dynamic>? data = await _placeProvider.getPlaceRecommendNowSection();
+
     if (data == null) {
       _recommendData = null;
       setState(() {

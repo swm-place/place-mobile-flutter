@@ -1,13 +1,47 @@
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/api/provider/default_provider.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
+import 'package:place_mobile_flutter/state/gis_controller.dart';
 
 class PlaceProvider extends DefaultProvider {
   Future<Map<String, dynamic>?> getPlaceRecommendSection() async {
     Uri uri = Uri.parse("$baseUrl/api-recommender/recommendation/collection/preset");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(false));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getPlaceRecommendNowSection() async {
+    Position? position = await GISController.to.getPosition();
+
+    DateTime nowTime = DateTime.now();
+    position ??= Position(
+      longitude: 126.977725,
+      latitude: 37.574863,
+      timestamp: nowTime,
+      accuracy: 0.0,
+      altitude: 0.0,
+      heading: 0.0,
+      speed: 0.0,
+      speedAccuracy: 0.0
+    );
+
+    Uri uri = Uri.parse("$baseUrl/api-recommender/recommendation/collection/now"
+        "?lat=${position.latitude}&lon=${position.longitude}&count=5&time=${DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS").format(nowTime)}");
     Response response;
     try {
       response = await get(uri, headers: await setHeader(false));
