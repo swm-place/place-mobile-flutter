@@ -278,7 +278,7 @@ class UserProvider extends DefaultProvider {
     }
   }
 
-  Future<bool> putUserTagPreferences(dynamic tagData, int rating) async {
+  Future<bool> putUserTagPreferences(dynamic putData) async {
     if (AuthController.to.user.value == null) return false;
 
     Uri uri = Uri.parse("$baseUrl/api-recommender/user_preference/hashtags");
@@ -287,14 +287,7 @@ class UserProvider extends DefaultProvider {
 
     Response response;
     try {
-      response = await put(uri, headers: header, body: json.encode([
-        {
-          "hashtag": tagData['hashtag'],
-          "parent": tagData['parent'],
-          "group_large": tagData['group_large'],
-          "rating": rating
-        }
-      ]));
+      response = await put(uri, headers: header, body: json.encode(putData));
     } catch(e) {
       return false;
     }

@@ -127,6 +127,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
 
   void _createTagPrefSheet() async {
     List<dynamic> _categoryCandidates = [];
+    Map<String, dynamic> _refinedCategory = {};
     int _countTagBestRating = 0;
     bool loadVisibility = true;
 
@@ -152,7 +153,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
       });
     }
 
-    void putTagData(List<Map<String, dynamic>> data, int i) async {
+    void putTagData(List<dynamic> data, int i) async {
       if (data[i]['rating'] == 1 && _countTagBestRating == 5) {
         Get.showSnackbar(
             WarnGetSnackBar(
@@ -170,22 +171,29 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
         });
       });
 
-      int rating = data[i]['rating'];
-      rating++;
-      if (rating > 2) rating = 0;
+      data[i]['rating']++;
+      if (data[i]['rating'] > 2) data[i]['rating'] = 0;
 
-      bool result = await userProvider.putUserTagPreferences(data[i], rating);
+      List<dynamic> putData = [];
+      for (var k in _refinedCategory.keys) {
+        if (k == data[i]['group_large']) continue;
+        putData.addAll(_refinedCategory[k]);
+      }
+      putData.addAll(data);
+
+      bool result = await userProvider.putUserTagPreferences(putData);
 
       if (result) {
-        if (data[i]['rating'] == 1) _countTagBestRating++;
-        if (data[i]['rating'] == 2) _countTagBestRating--;
+        if (data[i]['rating'] == 2) _countTagBestRating++;
+        if (data[i]['rating'] == 0) _countTagBestRating--;
         state!(() {
           setState(() {
             loadVisibility = false;
-            data[i]['rating'] = rating;
           });
         });
       } else {
+        data[i]['rating']--;
+        if (data[i]['rating'] < 0) data[i]['rating'] = 2;
         state!(() {
           setState(() {
             loadVisibility = false;
@@ -194,7 +202,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
       }
     }
 
-    Widget _createChipSection(StateSetter bottomState, List<Map<String, dynamic>> data, String categoryName) {
+    Widget _createChipSection(StateSetter bottomState, List<dynamic> data, String categoryName) {
       List<Widget> chips = [];
       for (int i = 0;i < data.length;i++) {
         // int rating = data[i]['rating'];
@@ -237,14 +245,14 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
       Map<String, dynamic> data = {};
       _countTagBestRating = 0;
       for (int i = 0;i < _categoryCandidates.length;i++) {
-        // print(_categoryCandidates[i]);
         String? group_large = _categoryCandidates[i]['group_large'];
         if (group_large == null) {
-          if (!data.containsKey(group_large)) {
+          if (!data.containsKey(_categoryCandidates[i]['hashtag'])) {
             data[_categoryCandidates[i]['hashtag']] = [];
-            continue;
           }
+          continue;
         }
+        // if (_categoryCandidates[i]['rating'] > 0) _selectedCategory.add(_categoryCandidates[i]);
         if (_categoryCandidates[i]['rating'] == 2) _countTagBestRating++;
         if (data.containsKey(group_large!)) {
           data[group_large!].add(_categoryCandidates[i]);
@@ -257,7 +265,9 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
 
     List<Widget> _createTagPreferenceSection(StateSetter bottomState) {
       Map<String, dynamic> data = _preprocessTagPref();
-      // print(data);
+      _refinedCategory = data;
+      print(_refinedCategory);
+
       List<Widget> section = [
         SizedBox(
           width: double.infinity,
@@ -271,7 +281,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
         const SizedBox(height: 24,)
       ];
       for (var k in data.keys) {
-        section.add(_createChipSection(bottomState, List<Map<String, dynamic>>.from(data[k]), k));
+        section.add(_createChipSection(bottomState, data[k], k));
         section.add(const SizedBox(height: 24,));
       }
       return section;
