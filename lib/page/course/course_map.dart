@@ -60,20 +60,6 @@ class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateM
             builder: (context, constraints) {
               final double width = constraints.maxWidth;
               final double height = width / 16 * 9;
-
-              final double initZoom;
-              if (widget.courseController.courseLineData.value != null) {
-                if (widget.courseController.placesPosition.length > 1) {
-                  initZoom = UnitConverter.calculateZoomLevel(
-                      widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-                      MediaQuery.of(context).size.width,
-                      height < 200 ? 200 : (height < 400 ? height : 400));
-                } else {
-                  initZoom = 16.5;
-                }
-              } else {
-                initZoom = 15;
-              }
               
               LatLng center = const LatLng(37.574863, 126.977725);
               if (widget.courseController.placesPosition.isNotEmpty) {
