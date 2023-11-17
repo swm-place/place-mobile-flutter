@@ -94,6 +94,22 @@ class CourseProvider extends DefaultProvider {
     }
   }
 
+  Future<bool> deleteMyCourseDataById(dynamic courseId) async {
+    Uri uri = Uri.parse("$baseUrl/api/courses/$courseId");
+    Response response;
+    try {
+      response = await delete(uri, headers: await setHeader(true));
+    } catch(e) {
+      return false;
+    }
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<Map<String, dynamic>?> patchMyCourseData(dynamic id, dynamic data) async {
     Uri uri = Uri.parse("$baseUrl/api/courses/$id");
     Map<String, String>? header = await setHeader(true);
