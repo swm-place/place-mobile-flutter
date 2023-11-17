@@ -26,7 +26,8 @@ class PictureFlexibleSpace extends StatelessWidget {
           child: Column(
             children: [
               Flexible(
-                child: Container(
+                child: SizedBox(
+                  height: double.infinity,
                   width: double.infinity,
                   child: imageUrl != null ?
                     Image.network(
