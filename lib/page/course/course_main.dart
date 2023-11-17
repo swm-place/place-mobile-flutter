@@ -560,7 +560,9 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                     maxZoom: 18,
                     interactiveFlags: InteractiveFlag.none,
                     onTap: (tapPos, cord) {
-                      Get.to(() => CourseMapPage());
+                      Get.to(() => CourseMapPage(
+                        courseController: courseController,
+                      ));
                     }
                   ),
                   mapController: _mapController,
