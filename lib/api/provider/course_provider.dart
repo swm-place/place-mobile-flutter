@@ -46,8 +46,8 @@ class CourseProvider extends DefaultProvider {
     }
   }
 
-  Future<List<dynamic>?> getMyCourseData() async {
-    Uri uri = Uri.parse("$baseUrl/api/courses");
+  Future<List<dynamic>?> getMyCourseData(int page, int size) async {
+    Uri uri = Uri.parse("$baseUrl/api/courses?size=$size&page=$page");
     Response response;
     try {
       response = await get(uri, headers: await setHeader(true));

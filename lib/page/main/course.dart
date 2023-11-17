@@ -21,7 +21,13 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
 
   final CourseProvider _courseProvider = CourseProvider();
 
+  late ScrollController _courseScrollController;
+
   int _loadMyCourseData = -1;
+  int page = 0;
+  int count = 25;
+
+  bool loadVisibilityCourse = false;
 
   List<dynamic>? _myCourseData = [];
 
@@ -76,8 +82,9 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
   @override
   bool get wantKeepAlive => false;
 
-  void getMyCourseData() async {
-    List<dynamic>? data = await _courseProvider.getMyCourseData();
+  void initCourseData() async {
+    page = 0;
+    List<dynamic>? data = await _courseProvider.getMyCourseData(page, count);
     if (data == null) {
       _myCourseData = null;
       setState(() {
@@ -92,10 +99,44 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
     });
   }
 
+  void addCourseList() async {
+    if (_myCourseData == null) return;
+    setState(() {
+      loadVisibilityCourse = true;
+    });
+    page += 1;
+    List<dynamic>? data = await _courseProvider.getMyCourseData(page, count);
+    if (data == null) {
+      setState(() {
+        loadVisibilityCourse = false;
+      });
+      return null;
+    }
+
+    setState(() {
+      _myCourseData!.addAll(data);
+      loadVisibilityCourse = false;
+    });
+  }
+
   @override
   void initState() {
-    getMyCourseData();
+    _courseScrollController = ScrollController();
+
+    _courseScrollController.addListener(() {
+      if (_courseScrollController.position.maxScrollExtent == _courseScrollController.offset && !loadVisibilityCourse) {
+        addCourseList();
+      }
+    });
+
+    initCourseData();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _courseScrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -103,6 +144,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          if (loadVisibilityCourse) return;
           Get.dialog(
               const AlertDialog(
                 contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
@@ -135,7 +177,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
           }
           Get.to(() => CourseMainPage(courseId: result['id']))!
             .then((value) {
-              getMyCourseData();
+              initCourseData();
             });
         },
         backgroundColor: lightColorScheme.primary,
@@ -143,17 +185,16 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
         child: const Icon(Icons.add, color: Colors.white,),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // const SizedBox(height: 24,),
-              // _recommendKeywordSection(),
-              const SizedBox(height: 24,),
-              _createMyCourseSection(),
-              const SizedBox(height: 24,)
-            ],
-          ),
-        ),
+        child: _createMyCourseSection(),
+        // child: Column(
+        //   children: [
+        //     // const SizedBox(height: 24,),
+        //     // _recommendKeywordSection(),
+        //     const SizedBox(height: 24,),
+        //     _createMyCourseSection(),
+        //     const SizedBox(height: 24,)
+        //   ],
+        // ),
       ),
     );
   }
@@ -284,60 +325,81 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
       );
     }
 
-    List<Widget> course = [];
-    for (int i = 0;i < _myCourseData!.length;i++) {
-      if (i > 0) course.add(const SizedBox(height: 12,));
-
-      dynamic? courseLineData = null;
-      if (_myCourseData![i]['routesJson'] != null) {
-        courseLineData = json.decode(_myCourseData![i]['routesJson']);
-      }
-
-      double distance = 0.0;
-      if (courseLineData != null && courseLineData != '') {
-        if (_myCourseData![i]['placesInCourse'].length > 1) {
-          if (courseLineData!['routes'][0]['distance'] is int) {
-            distance = courseLineData!['routes'][0]['distance'].toDouble();
-          } else {
-            distance = courseLineData!['routes'][0]['distance'];
-          }
-        } else {
-          distance = 0;
-        }
-      }
-
-      course.add(
-        CourseListCardItem(
-          courseName: _myCourseData![i]['title'],
-          placeCount: _myCourseData![i]['placesInCourse'].length,
-          distance: distance.floor(),
-          placesImageUrls: _myCourseData![i]['placesInCourse'].map((item) {
-            if (item['place']['img_url'] != null) {
-              return "$baseUrlDev/api-recommender/place-photo/?${item['place']['img_url'].split('?')[1]}&max_width=480";
-            } else {
-              return null;
-            }
-          }).toList(),
-          placesName: _myCourseData![i]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
-          regionName: courseLineData != null && courseLineData != '' ?
-            courseLineData['region_name'] : '-',
-          onPressed: () {
-            Get.to(() => CourseMainPage(courseId: _myCourseData![i]['id'],))!
-                .then((value) {
-                  getMyCourseData();
-                });
-          },
-        )
-      );
-    }
-
     return MainSection(
         title: '나의 코스',
-        content: Padding(
-          padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-          child: Column(
-            children: course,
-          ),
+        content: Expanded(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+            child: Stack(
+              children: [
+                ListView.separated(
+                  controller: _courseScrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: _myCourseData!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    dynamic? courseLineData = null;
+                    if (_myCourseData![index]['routesJson'] != null) {
+                      courseLineData = json.decode(_myCourseData![index]['routesJson']);
+                    }
+
+                    double distance = 0.0;
+                    if (courseLineData != null && courseLineData != '') {
+                      if (_myCourseData![index]['placesInCourse'].length > 1) {
+                        if (courseLineData!['routes'][0]['distance'] is int) {
+                          distance = courseLineData!['routes'][0]['distance'].toDouble();
+                        } else {
+                          distance = courseLineData!['routes'][0]['distance'];
+                        }
+                      } else {
+                        distance = 0;
+                      }
+                    }
+
+                    return CourseListCardItem(
+                      courseName: _myCourseData![index]['title'],
+                      placeCount: _myCourseData![index]['placesInCourse'].length,
+                      distance: distance.floor(),
+                      placesImageUrls: _myCourseData![index]['placesInCourse'].map((item) {
+                        if (item['place']['img_url'] != null) {
+                          return "$baseUrlDev/api-recommender/place-photo/?${item['place']['img_url'].split('?')[1]}&max_width=480";
+                        } else {
+                          return null;
+                        }
+                      }).toList(),
+                      placesName: _myCourseData![index]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
+                      regionName: courseLineData != null && courseLineData != '' ?
+                      courseLineData['region_name'] : '-',
+                      onPressed: () {
+                        Get.to(() => CourseMainPage(courseId: _myCourseData![index]['id'],))!
+                            .then((value) {
+                          initCourseData();
+                        });
+                      },
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(height: 12,);
+                  },
+                ),
+                Visibility(
+                  visible: loadVisibilityCourse,
+                  child: AbsorbPointer(
+                    absorbing: true,
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.all(38),
+                        decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(24)
+                        ),
+                        child: const CircularProgressIndicator(),
+                      ),
+                    ),
+                  )
+                )
+              ],
+            ),
+          )
         )
     );
   }
