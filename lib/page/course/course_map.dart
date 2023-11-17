@@ -74,14 +74,19 @@ class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateM
               } else {
                 initZoom = 15;
               }
+              
+              LatLng center = const LatLng(37.574863, 126.977725);
+              if (widget.courseController.placesPosition.isNotEmpty) {
+                center = LatLng(
+                    widget.courseController.placesPosition[0]['lat'],
+                    widget.courseController.placesPosition[0]['lon']
+                );
+              }
 
               return FlutterMap(
                 mapController: _mapController.mapController,
                 options: MapOptions(
-                    center: LatLng(
-                        widget.courseController.center[0],
-                        widget.courseController.center[1]
-                    ),
+                    center: center,
                     zoom: 18,
                     maxZoom: 18,
                     interactiveFlags: InteractiveFlag.drag |
