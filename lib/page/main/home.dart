@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
@@ -256,6 +257,30 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                   if (data['places'][index]['photos'] != null && data['places'][index]['photos'].length > 0) {
                     imgUrl = "https://been-dev.yeoksi.com/api-recommender/place-photo/?${data['places'][index]['photos'][0]['url'].split('?')[1]}&max_width=480";
                   }
+
+                  String openString = '정보 없음';
+                  if (data['places'][index]['opening_hours'] != null) {
+                    final now = DateTime.now();
+                    final currentWeekday = now.weekday - 1;
+                    final currentTime = int.parse(DateFormat('HHmm').format(now));
+
+                    final currentDayHours = data['places'][index]['opening_hours'].firstWhere(
+                          (hours) => hours["weekday"] == currentWeekday,
+                      orElse: () => null,
+                    );
+
+                    if (currentDayHours != null) {
+                      final openTime = currentDayHours["open"];
+                      final closeTime = currentDayHours["close"];
+
+                      if (currentTime >= openTime && currentTime <= closeTime) {
+                        openString = '영업중';
+                      } else {
+                        openString = '영업중 아님';
+                      }
+                    }
+                  }
+
                   return RoundedRectanglePlaceCard(
                     width: 250,
                     aspectRatio: 18/14,
@@ -268,9 +293,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                       null : UnitConverter.formatDistance(data["places"][index]['distance']),
                     // distance: UnitConverter.formatDistance(Random().nextInt(10000)),
                     // open: data["places"][index]['open'],
-                    open: Random().nextBool() ? '영업중' : '영업종료',
+                    open: openString,
                     // likeCount: UnitConverter.formatNumber(data["places"][index]['likeCount']),
-                    likeCount: UnitConverter.formatNumber(Random().nextInt(1000000)),
+                    likeCount: UnitConverter.formatNumber(0),
                     onPressed: () {
                       print(data["places"][index]['id']);
                       Get.to(() => PlaceDetailPage(
