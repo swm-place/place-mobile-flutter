@@ -41,28 +41,28 @@ class _CourseEditPageState extends State<CourseEditPage> {
   void initState() {
     // cacheManager = MapCacheManager.instance;
     _mapController = MapController();
-    widget.courseController.courseLineData.listen((p0) {
-      final double height = mapWidth / 16 * 9;
-
-      final double initZoom;
-      if (widget.courseController.courseLineData.value != null) {
-        if (widget.courseController.placesPosition.length > 1) {
-          initZoom = UnitConverter.calculateZoomLevel(
-              widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-              mapWidth,
-              height < 200 ? 200 : (height < 400 ? height : 400));
-        } else {
-          initZoom = 16.5;
-        }
-      } else {
-        initZoom = 15;
-      }
-
-      _mapController.move(LatLng(
-          widget.courseController.center[0],
-          widget.courseController.center[1]
-      ), initZoom);
-    });
+    // widget.courseController.courseLineData.listen((p0) {
+    //   final double height = mapWidth / 16 * 9;
+    //
+    //   final double initZoom;
+    //   if (widget.courseController.courseLineData.value != null) {
+    //     if (widget.courseController.placesPosition.length > 1) {
+    //       initZoom = UnitConverter.calculateZoomLevel(
+    //           widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+    //           mapWidth,
+    //           height < 200 ? 200 : (height < 400 ? height : 400));
+    //     } else {
+    //       initZoom = 16.5;
+    //     }
+    //   } else {
+    //     initZoom = 15;
+    //   }
+    //
+    //   _mapController.move(LatLng(
+    //       widget.courseController.center[0],
+    //       widget.courseController.center[1]
+    //   ), initZoom);
+    // });
     super.initState();
   }
 
@@ -170,7 +170,31 @@ class _CourseEditPageState extends State<CourseEditPage> {
             transition: Transition.downToUp,
             fullscreenDialog: true,
             popGesture: false
-          );
+          )!
+              .then((value) {
+            setState(() {});
+            final double width = MediaQuery.of(context).size.width - 48;
+            final double height = width / 16 * 9;
+
+            final double initZoom;
+            if (widget.courseController.courseLineData.value != null) {
+              if (widget.courseController.placesPosition.length > 1) {
+                initZoom = UnitConverter.calculateZoomLevel(
+                    widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                    MediaQuery.of(context).size.width - 48,
+                    height < 200 ? 200 : (height < 400 ? height : 400));
+              } else {
+                initZoom = 16.5;
+              }
+            } else {
+              initZoom = 15;
+            }
+
+            _mapController.move(LatLng(
+                widget.courseController.center[0],
+                widget.courseController.center[1]
+            ), initZoom);
+          });
         },
         backgroundColor: lightColorScheme.primary,
         shape: const CircleBorder(),

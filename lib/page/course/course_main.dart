@@ -48,6 +48,7 @@ class CourseMainPage extends StatefulWidget {
 
 class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStateMixin {
   late final CourseController courseController;
+  late final CourseProvider _courseProvider;
 
   late final AnimationController _likeButtonController;
   late final AnimationController _bookmarkButtonController;
@@ -94,32 +95,32 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         initData = 1;
       });
 
-      courseController.courseLineData.listen((p0) {
-        print('change');
-        final double width = MediaQuery.of(context).size.width - 48;
-        final double height = width / 16 * 9;
-
-        final double initZoom;
-        if (courseController.courseLineData.value != null) {
-          if (courseController.placesPosition.length > 1) {
-            initZoom = UnitConverter.calculateZoomLevel(
-                courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-                MediaQuery.of(context).size.width - 48,
-                height < 200 ? 200 : (height < 400 ? height : 400));
-          } else {
-            initZoom = 16.5;
-          }
-        } else {
-          initZoom = 15;
-        }
-
-        _mapController.move(LatLng(
-            courseController.center[0],
-            courseController.center[1]
-        ), initZoom);
-
-        setState(() {});
-      });
+      // courseController.courseLineData.listen((p0) {
+      //   print('change');
+      //   final double width = MediaQuery.of(context).size.width - 48;
+      //   final double height = width / 16 * 9;
+      //
+      //   final double initZoom;
+      //   if (courseController.courseLineData.value != null) {
+      //     if (courseController.placesPosition.length > 1) {
+      //       initZoom = UnitConverter.calculateZoomLevel(
+      //           courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+      //           MediaQuery.of(context).size.width - 48,
+      //           height < 200 ? 200 : (height < 400 ? height : 400));
+      //     } else {
+      //       initZoom = 16.5;
+      //     }
+      //   } else {
+      //     initZoom = 15;
+      //   }
+      //
+      //   _mapController.move(LatLng(
+      //       courseController.center[0],
+      //       courseController.center[1]
+      //   ), initZoom);
+      //
+      //   setState(() {});
+      // });
     } else {
       setState(() {
         initData = 0;
@@ -131,6 +132,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   void initState() {
     courseController = CourseController();
     courseController.courseId = widget.courseId;
+
+    _courseProvider = CourseProvider();
 
     _likeButtonController = AnimationController(vsync: this);
     _bookmarkButtonController = AnimationController(vsync: this);
@@ -666,6 +669,42 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     }
   }
 
+  void deleteCourse(dynamic courseId) async {
+    Get.dialog(
+        const AlertDialog(
+          contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+          actionsPadding: EdgeInsets.zero,
+          titlePadding: EdgeInsets.zero,
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 24),
+              Text('코스 삭제중'),
+            ],
+          ),
+        ),
+        barrierDismissible: false
+    );
+
+    bool result = await _courseProvider.deleteMyCourseDataById(courseId);
+    Get.back();
+
+    if (result) {
+      Get.back();
+    } else {
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("코스 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (initData != -1) {
@@ -743,7 +782,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                           );
                         }, child: const Text('이름 변경'),),
                         PopupMenuItem(onTap: () {
-
+                          deleteCourse(courseController.courseId);
                         }, child: const Text('삭제'),)
                       ];
                     },
@@ -772,7 +811,31 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
               Get.to(() => CourseEditPage(
                 courseController: courseController,
                 cacheManager: cacheManager,
-              ));
+              ))!
+              .then((value) {
+                setState(() {});
+                final double width = MediaQuery.of(context).size.width - 48;
+                final double height = width / 16 * 9;
+
+                final double initZoom;
+                if (courseController.courseLineData.value != null) {
+                  if (courseController.placesPosition.length > 1) {
+                    initZoom = UnitConverter.calculateZoomLevel(
+                        courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                        MediaQuery.of(context).size.width - 48,
+                        height < 200 ? 200 : (height < 400 ? height : 400));
+                  } else {
+                    initZoom = 16.5;
+                  }
+                } else {
+                  initZoom = 15;
+                }
+
+                _mapController.move(LatLng(
+                    courseController.center[0],
+                    courseController.center[1]
+                ), initZoom);
+              });
             },
             backgroundColor: lightColorScheme.primary,
             shape: const CircleBorder(),
