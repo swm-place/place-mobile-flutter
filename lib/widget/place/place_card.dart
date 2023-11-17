@@ -140,7 +140,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                               child: Text(
                                 placeName,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: 'Pretendard',
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,

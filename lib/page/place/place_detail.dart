@@ -530,18 +530,27 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 4,),
-                          Text(
-                            placeData['road_address'],
-                            style: SectionTextStyle.sectionContent(
-                                Colors.black),
-                          ),
+                          if (placeData['road_address'] != null)
+                            SizedBox(height: 4,),
+                          if (placeData['road_address'] != null)
+                            Expanded(
+                              child: Text(
+                                placeData['road_address'],
+                                style: SectionTextStyle.sectionContent(
+                                    Colors.black),
+                              ),
+                            ),
                           if (placeData['address'] != null)
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("지번"),
                                 SizedBox(width: 4,),
-                                Text(placeData['address'])
+                                Expanded(
+                                  child: Text(
+                                    placeData['address'],
+                                  ),
+                                )
                               ],
                             )
                         ],
