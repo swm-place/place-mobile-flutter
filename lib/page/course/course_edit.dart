@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/page/course/course_add.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
@@ -84,6 +85,30 @@ class _CourseEditPageState extends State<CourseEditPage> {
         distance = GISController.to.haversineDistance(lat2, lon2);
       }
       int targetIndex = index;
+
+      String openString = '정보 없음';
+      if (place['place']['opening_hours'] != null) {
+        final now = DateTime.now();
+        final currentWeekday = now.weekday - 1;
+        final currentTime = int.parse(DateFormat('HHmm').format(now));
+
+        final currentDayHours = place['place']['opening_hours'].firstWhere(
+              (hours) => hours["weekday"] == currentWeekday,
+          orElse: () => null,
+        );
+
+        if (currentDayHours != null) {
+          final openTime = currentDayHours["open"];
+          final closeTime = currentDayHours["close"];
+
+          if (currentTime >= openTime && currentTime <= closeTime) {
+            openString = '영업중';
+          } else {
+            openString = '영업중 아님';
+          }
+        }
+      }
+
       course.add(
           Slidable(
             key: Key('$index'),
@@ -138,7 +163,7 @@ class _CourseEditPageState extends State<CourseEditPage> {
               placeName: place['place']['name'],
               placeType: place['place']['category'],
               // open: place['place']['open'],
-              open: '영압중',
+              open: openString,
               distance: distance == null ? null : UnitConverter.formatDistance(distance),
               elevation: 0,
               borderRadius: 0,

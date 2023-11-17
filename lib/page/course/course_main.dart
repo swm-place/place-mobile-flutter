@@ -9,6 +9,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_geojson/flutter_map_geojson.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart' as lottie;
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/course_provider.dart';
@@ -513,6 +514,30 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         double lon2 = place['place']['location']['lon'];
         distance = GISController.to.haversineDistance(lat2, lon2);
       }
+
+      String openString = '정보 없음';
+      if (place['place']['opening_hours'] != null) {
+        final now = DateTime.now();
+        final currentWeekday = now.weekday - 1;
+        final currentTime = int.parse(DateFormat('HHmm').format(now));
+
+        final currentDayHours = place['place']['opening_hours'].firstWhere(
+              (hours) => hours["weekday"] == currentWeekday,
+          orElse: () => null,
+        );
+
+        if (currentDayHours != null) {
+          final openTime = currentDayHours["open"];
+          final closeTime = currentDayHours["close"];
+
+          if (currentTime >= openTime && currentTime <= closeTime) {
+            openString = '영업중';
+          } else {
+            openString = '영업중 아님';
+          }
+        }
+      }
+
       course.addAll([
         RoundedRowRectanglePlaceCard(
           imageUrl: place['place']['img_url'] != null ?
@@ -523,7 +548,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
           placeName: place['place']['name'],
           placeType: place['place']['category'],
           // open: place['place']['open'],
-          open: '영압중',
+          open: openString,
           distance: distance == null ? null : UnitConverter.formatDistance(distance),
         ),
         const SizedBox(height: 12)
