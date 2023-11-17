@@ -35,21 +35,21 @@ class _CourseEditPageState extends State<CourseEditPage> {
   // late final CacheManager cacheManager;
 
   late final MapController _mapController;
+  late final double mapWidth;
 
   @override
   void initState() {
     // cacheManager = MapCacheManager.instance;
     _mapController = MapController();
     widget.courseController.courseLineData.listen((p0) {
-      final double width = MediaQuery.of(context).size.width;
-      final double height = width / 16 * 9;
+      final double height = mapWidth / 16 * 9;
 
       final double initZoom;
       if (widget.courseController.courseLineData.value != null) {
         if (widget.courseController.placesPosition.length > 1) {
           initZoom = UnitConverter.calculateZoomLevel(
               widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-              MediaQuery.of(context).size.width,
+              mapWidth,
               height < 200 ? 200 : (height < 400 ? height : 400));
         } else {
           initZoom = 16.5;
@@ -62,8 +62,6 @@ class _CourseEditPageState extends State<CourseEditPage> {
           widget.courseController.center[0],
           widget.courseController.center[1]
       ), initZoom);
-
-      setState(() {});
     });
     super.initState();
   }
@@ -133,6 +131,7 @@ class _CourseEditPageState extends State<CourseEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    mapWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text('편집'),
@@ -156,76 +155,73 @@ class _CourseEditPageState extends State<CourseEditPage> {
       body: SafeArea(
         child: Column(
           children: [
-            LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                final double width = constraints.maxWidth;
-                final double height = width / 16 * 9;
+            Obx(() {
+              final double height = mapWidth / 16 * 9;
 
-                final double initZoom;
-                if (widget.courseController.courseLineData.value != null) {
-                  if (widget.courseController.placesPosition.length > 1) {
-                    initZoom = UnitConverter.calculateZoomLevel(
-                        widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-                        MediaQuery.of(context).size.width,
-                        height < 200 ? 200 : (height < 400 ? height : 400));
-                  } else {
-                    initZoom = 16.5;
-                  }
+              final double initZoom;
+              if (widget.courseController.courseLineData.value != null) {
+                if (widget.courseController.placesPosition.length > 1) {
+                  initZoom = UnitConverter.calculateZoomLevel(
+                      widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                      mapWidth,
+                      height < 200 ? 200 : (height < 400 ? height : 400));
                 } else {
-                  initZoom = 15;
+                  initZoom = 16.5;
                 }
+              } else {
+                initZoom = 15;
+              }
 
-                final Widget map = FlutterMap(
-                  options: MapOptions(
-                      center: LatLng(
-                          widget.courseController.center[0],
-                          widget.courseController.center[1]
-                      ),
-                      zoom: initZoom,
-                      maxZoom: 18,
-                      interactiveFlags: InteractiveFlag.none
+              final Widget map = FlutterMap(
+                options: MapOptions(
+                    center: LatLng(
+                        widget.courseController.center[0],
+                        widget.courseController.center[1]
+                    ),
+                    zoom: initZoom,
+                    maxZoom: 18,
+                    interactiveFlags: InteractiveFlag.none
+                ),
+                mapController: _mapController,
+                children: [
+                  TileLayer(
+                    urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.jpg',
+                    userAgentPackageName: 'com.example.app',
+                    tileProvider: CacheTileProvider(widget.cacheManager),
                   ),
-                  mapController: _mapController,
-                  children: [
-                    TileLayer(
-                      urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.jpg',
-                      userAgentPackageName: 'com.example.app',
-                      tileProvider: CacheTileProvider(widget.cacheManager),
-                    ),
-                    if (widget.courseController.courseLineData.value != null &&
-                        widget.courseController.placesPosition.length > 1) PolylineLayer(
-                      polylines: MapLayerGenerator.generatePolyLines(
-                          widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates']),
-                    ),
-                    if (widget.courseController.placesPosition.isNotEmpty) MarkerLayer(
-                      markers: MapLayerGenerator.generateMarkers(
-                          widget.courseController.placesPosition.value),
-                    )
-                  ],
-                );
+                  if (widget.courseController.courseLineData.value != null &&
+                      widget.courseController.placesPosition.length > 1) PolylineLayer(
+                    polylines: MapLayerGenerator.generatePolyLines(
+                        widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates']),
+                  ),
+                  if (widget.courseController.placesPosition.isNotEmpty) MarkerLayer(
+                    markers: MapLayerGenerator.generateMarkers(
+                        widget.courseController.placesPosition.value),
+                  )
+                ],
+              );
 
-                if (height < 200) {
-                  return SizedBox(
-                    width: double.infinity,
-                    height: 200,
-                    child: map,
-                  );
-                }
-
-                if (height < 400) {
-                  return AspectRatio(
-                    aspectRatio: 16/9,
-                    child: map,
-                  );
-                }
-
+              if (height < 200) {
                 return SizedBox(
                   width: double.infinity,
-                  height: 400,
+                  height: 200,
                   child: map,
                 );
-              },
-            ),
+              }
+
+              if (height < 400) {
+                return AspectRatio(
+                  aspectRatio: 16/9,
+                  child: map,
+                );
+              }
+
+              return SizedBox(
+                width: double.infinity,
+                height: 400,
+                child: map,
+              );
+            }),
             Flexible(
               child: Obx(() => Padding(
                 padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),

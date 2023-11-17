@@ -319,6 +319,7 @@ class CourseController extends GetxController {
       return false;
     }
 
+    coursePlaceData.clear();
     coursePlaceData.addAll(result!['placesInCourse']);
 
     placesPosition.clear();
