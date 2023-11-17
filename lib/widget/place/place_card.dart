@@ -127,7 +127,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(14, 12, 14, 12),
+                  padding: EdgeInsets.fromLTRB(14, 10, 14, 10),
                   child: Column(
                     children: [
                       SizedBox(
@@ -140,7 +140,13 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                               child: Text(
                                 placeName,
                                 overflow: TextOverflow.ellipsis,
-                                style: SectionTextStyle.sectionContentExtraLarge(Colors.black),
+                                style: TextStyle(
+                                  fontFamily: 'Pretendard',
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                  height: 1.1,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 8,),
