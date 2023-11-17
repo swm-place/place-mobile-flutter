@@ -337,24 +337,25 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
               SizedBox(
                 height: 6,
               ),
-              SizedBox(
-                height: 25.5,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return TagChip(
-                      text: "#${placeData['hashtags'][index]['name']}",
-                      textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                      padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                      backgroundColor: UnitConverter.hexToColor(placeData['hashtags'][index]['color']),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(width: 4,);
-                  },
-                  itemCount: placeData['hashtags'].length,
-                ),
-              )
+              if (placeData['hashtags'] != null && placeData['hashtags'].isNotEmpty)
+                SizedBox(
+                  height: 25.5,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (BuildContext context, int index) {
+                      return TagChip(
+                        text: "#${placeData['hashtags'][index]['name']}",
+                        textStyle: SectionTextStyle.labelMediumThick(Colors.white),
+                        padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                        backgroundColor: UnitConverter.hexToColor(placeData['hashtags'][index]['color']),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return SizedBox(width: 4,);
+                    },
+                    itemCount: placeData['hashtags'].length,
+                  ),
+                )
             ],
           ),
         ),
