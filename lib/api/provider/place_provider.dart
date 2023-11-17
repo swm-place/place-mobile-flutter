@@ -44,7 +44,7 @@ class PlaceProvider extends DefaultProvider {
         "?lat=${position.latitude}&lon=${position.longitude}&count=5&time=${DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSSS").format(nowTime)}");
     Response response;
     try {
-      response = await get(uri, headers: await setHeader(false));
+      response = await get(uri, headers: await setHeader(AuthController.to.user.value != null));
     } catch(e) {
       return null;
     }
