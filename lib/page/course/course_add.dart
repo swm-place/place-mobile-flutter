@@ -205,6 +205,14 @@ class _CourseAddPageState extends State<CourseAddPage> {
                               break;
                             }
                           }
+                          if (!exist) {
+                            for (int i = 0;i < widget.courseController.coursePlaceData.length;i++) {
+                              if (widget.courseController.coursePlaceData[i]['place']['id'] == _places[index]['id']) {
+                                exist = true;
+                                break;
+                              }
+                            }
+                          }
                           if (exist) {
                             Get.dialog(
                               AlertDialog(
