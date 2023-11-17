@@ -31,13 +31,22 @@ class _CourseAddPageState extends State<CourseAddPage> {
 
   late final TextEditingController placeEditController;
 
+  late final ScrollController scrollController;
+
   List<dynamic> _selectedAddPlace = [];
   List<dynamic> _places = [];
 
   @override
   void initState() {
     placeEditController = TextEditingController();
+    scrollController = ScrollController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -143,6 +152,7 @@ class _CourseAddPageState extends State<CourseAddPage> {
                   ) : Container(
                     height: 45,
                     child: ListView.separated(
+                      controller: scrollController,
                       scrollDirection: Axis.horizontal,
                       itemCount: _selectedAddPlace.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -150,7 +160,7 @@ class _CourseAddPageState extends State<CourseAddPage> {
                           onDeletePressed: () {
                             setState(() {
                               _selectedAddPlace.removeAt(index);
-
+                              scrollController.jumpTo(scrollController.position.maxScrollExtent);
                             });
                           },
                           imageUrl: _selectedAddPlace[index]['photos'] != null && _selectedAddPlace[index]['photos'].length > 0 ?
@@ -256,7 +266,7 @@ class _CourseAddPageState extends State<CourseAddPage> {
 
   void addPlaceInCandidate(dynamic placeData) {
     setState(() {
-      _selectedAddPlace.insert(0, placeData);
+      _selectedAddPlace.add(placeData);
     });
   }
 }
