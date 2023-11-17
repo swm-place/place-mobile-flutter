@@ -35,7 +35,7 @@ class _CourseEditPageState extends State<CourseEditPage> {
   // late final CacheManager cacheManager;
 
   late final MapController _mapController;
-  late final double mapWidth;
+  double mapWidth = 0;
 
   @override
   void initState() {

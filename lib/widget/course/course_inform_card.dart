@@ -38,6 +38,7 @@ class CourseInformationCard extends StatelessWidget {
               softWrap: true,
               overflow: TextOverflow.ellipsis,
               textScaleFactor: 0.9,
+              textAlign: TextAlign.center,
             ),
           ],
         ),
