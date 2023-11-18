@@ -974,7 +974,18 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 expandedHeight: 220.0,
                 surfaceTintColor: Colors.white,
                 backgroundColor: Colors.white,
-                flexibleSpace: PictureFlexibleSpace(),
+                flexibleSpace: Obx(() {
+                  return MultiplePictureFlexibleSpace(
+                    imageUrl: courseController.coursePlaceData
+                        .map<String?>((item) {
+                          String? url = item['place']['img_url'];
+                          if (url != null) {
+                            url = "$baseUrlDev/api-recommender/place-photo/?${url.split('?')[1]}&max_width=480";
+                          }
+                          return url;
+                        }).toList(),
+                  );
+                }),
               ),
               SliverList(
                 delegate: SliverChildListDelegate([
