@@ -29,6 +29,9 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
   bool loadVisibilityPlace = false;
   bool loadVisibilityCourse = false;
 
+  int placeBookmarkInit = -1;
+  int courseBookmarkInit = -1;
+
   String? _bookmarkNameError;
 
   @override
@@ -44,6 +47,38 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     loadVisibilityCourse = true;
     await _bookmarkController.addCourseBookmarkList();
     loadVisibilityCourse = false;
+  }
+
+  Future<void> initPlaceBookmark() async {
+    setState(() {
+      loadVisibilityPlace = true;
+      placeBookmarkInit = 0;
+    });
+    bool result = await _bookmarkController.loadPlaceBookmark();
+    if (result) {
+      placeBookmarkInit = 1;
+    } else {
+      placeBookmarkInit = -1;
+    }
+    setState(() {
+      loadVisibilityPlace = false;
+    });
+  }
+
+  Future<void> initCourseBookmark() async {
+    setState(() {
+      loadVisibilityCourse = true;
+      courseBookmarkInit = 0;
+    });
+    bool result = await _bookmarkController.loadCourseBookmark();
+    if (result) {
+      courseBookmarkInit = 1;
+    } else {
+      courseBookmarkInit = -1;
+    }
+    setState(() {
+      loadVisibilityCourse = false;
+    });
   }
 
   @override
@@ -65,8 +100,8 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
       }
     });
 
-    _bookmarkController.loadPlaceBookmark();
-    _bookmarkController.loadCourseBookmark();
+    initPlaceBookmark();
+    initCourseBookmark();
     super.initState();
   }
 
@@ -171,7 +206,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     bool result = await _bookmarkController.addPlaceBookmark(text);
     Get.back();
     if (result) {
-      _bookmarkController.loadPlaceBookmark();
+      initPlaceBookmark();
     } else {
       Get.dialog(
         AlertDialog(
@@ -205,7 +240,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     bool result = await _bookmarkController.addCourseBookmark(text);
     Get.back();
     if (result) {
-      _bookmarkController.loadCourseBookmark();
+      initCourseBookmark();
     } else {
       Get.dialog(
         AlertDialog(
@@ -247,9 +282,9 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
 
     if (result) {
       if (type == 'place') {
-        _bookmarkController.loadPlaceBookmark();
+        initPlaceBookmark();
       } else {
-        _bookmarkController.loadCourseBookmark();
+        initCourseBookmark();
       }
     } else {
       Get.dialog(
@@ -292,9 +327,9 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
 
     if (result) {
       if (type == 'place') {
-        _bookmarkController.loadPlaceBookmark();
+        initPlaceBookmark();
       } else {
-        _bookmarkController.loadCourseBookmark();
+        initCourseBookmark();
       }
     } else {
       Get.dialog(

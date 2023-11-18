@@ -274,18 +274,22 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
       return MainSection(
         title: '나의 코스',
         content: Padding(
-          padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
           child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: Colors.grey[300]
             ),
-            padding: EdgeInsets.all(24),
-            child: Center(
-              child: Text("데이터를 불러오는 중 입니다."),
-            ),
-          ),
+            padding: const EdgeInsets.all(24),
+            child: const Column(
+                children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 12,),
+                Text("데이터를 불러오는 중 입니다.")
+              ],
+            )
+          )
         )
       );
     }

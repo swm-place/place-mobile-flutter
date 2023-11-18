@@ -15,7 +15,7 @@ class BookmarkController extends GetxController {
   int _placeCount = 20;
   int _placePage = 0;
 
-  void loadPlaceBookmark() async {
+  Future<bool> loadPlaceBookmark() async {
     _placePage = 0;
 
     if (placeBookmark.value != null) placeBookmark.value!.clear();
@@ -25,14 +25,15 @@ class BookmarkController extends GetxController {
     if (result == null) {
       placeBookmark.value = null;
       placeBookmark.refresh();
-      return;
+      return false;
     }
 
     placeBookmark.value = result['result'];
     placeBookmark.refresh();
+    return true;
   }
 
-  void loadCourseBookmark() async {
+  Future<bool> loadCourseBookmark() async {
     _coursePage = 0;
 
     if (courseBookmark.value != null) courseBookmark.value!.clear();
@@ -42,11 +43,12 @@ class BookmarkController extends GetxController {
     if (result == null) {
       courseBookmark.value = null;
       courseBookmark.refresh();
-      return;
+      return false;
     }
 
     courseBookmark.value = result;
     courseBookmark.refresh();
+    return true;
   }
 
   Future<void> addPlaceBookmarkList() async {
