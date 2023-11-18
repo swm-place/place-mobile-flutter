@@ -216,7 +216,7 @@ class UserProvider extends DefaultProvider {
     }
   }
 
-  Future<bool> patchPlaceBookmark(dynamic bookmarkId) async {
+  Future<bool> patchPlaceBookmark(dynamic bookmarkId, String title) async {
     User? user = AuthController.to.user.value;
     if (user == null) return false;
 
@@ -226,7 +226,9 @@ class UserProvider extends DefaultProvider {
 
     Response response;
     try {
-      response = await delete(uri, headers: header);
+      response = await patch(uri, headers: header, body: json.encode({
+        'title': title
+      }));
     } catch(e) {
       return false;
     }
