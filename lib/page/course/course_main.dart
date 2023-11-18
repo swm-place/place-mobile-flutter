@@ -13,8 +13,10 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart' as lottie;
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/course_provider.dart';
+import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_edit.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
+import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/state/state_const.dart';
@@ -50,11 +52,14 @@ class CourseMainPage extends StatefulWidget {
 class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStateMixin {
   late final CourseController courseController;
   late final CourseProvider _courseProvider;
+  late final UserProvider _userProvider;
+  final BookmarkController _bookmarkController = BookmarkController();
 
   late final AnimationController _likeButtonController;
   late final AnimationController _bookmarkButtonController;
 
   late final TextEditingController _courseNameController;
+  late final TextEditingController _bookmarkNameController;
 
   late ScrollController _bookmarkScrollController;
   late final CacheManager cacheManager;
@@ -65,6 +70,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   bool bookmarkCourse = false;
 
   String? _courseNameError;
+  String? _bookmarkNameError;
 
   CourseProvider courseProvider= CourseProvider();
 
@@ -135,11 +141,13 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     courseController.courseId = widget.courseId;
 
     _courseProvider = CourseProvider();
+    _userProvider = UserProvider();
 
     _likeButtonController = AnimationController(vsync: this);
     _bookmarkButtonController = AnimationController(vsync: this);
     _bookmarkScrollController = ScrollController();
     _courseNameController = TextEditingController();
+    _bookmarkNameController = TextEditingController();
 
     _mapController = MapController();
 
@@ -155,6 +163,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     _bookmarkButtonController.dispose();
     _bookmarkScrollController.dispose();
     _courseNameController.dispose();
+    _bookmarkNameController.dispose();
     cacheManager.dispose();
     courseController.dispose();
     Get.delete<CourseController>();
@@ -211,16 +220,17 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
           children: [
             GestureDetector(
               onTap: () {
+                HapticFeedback.lightImpact();
                 __showBookmarkSelectionSheet();
-                setState(() {
-                  HapticFeedback.lightImpact();
-                  bookmarkCourse = !bookmarkCourse;
-                  if (bookmarkCourse) {
-                    _bookmarkButtonController.animateTo(1);
-                  } else {
-                    _bookmarkButtonController.animateBack(0);
-                  }
-                });
+                // setState(() {
+                //   HapticFeedback.lightImpact();
+                //   bookmarkCourse = !bookmarkCourse;
+                //   if (bookmarkCourse) {
+                //     _bookmarkButtonController.animateTo(1);
+                //   } else {
+                //     _bookmarkButtonController.animateBack(0);
+                //   }
+                // });
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(4, 10, 4, 4),
@@ -303,6 +313,119 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
   void __showBookmarkSelectionSheet() {
     bool stateFirst = true;
+    bool loadVisibility = false;
+
+    int page = 0;
+    int size = 25;
+
+    StateSetter? state;
+
+    List<dynamic> _bookmarkData = [];
+
+    void addBookmarks() async {
+      state!(() {
+        setState(() {
+          loadVisibility = true;
+        });
+      });
+      List<dynamic>? result = await _userProvider.getCourseBookmark(page, size, widget.courseId);
+
+      if (result != null) {
+        _bookmarkData.addAll(result);
+        page++;
+      }
+
+      state!(() {
+        setState(() {
+          loadVisibility = false;
+        });
+      });
+    }
+
+    void addCourseBookmark(String text) async {
+      Get.dialog(
+          const AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+            actionsPadding: EdgeInsets.zero,
+            titlePadding: EdgeInsets.zero,
+            content: Row(
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 24),
+                Text('북마크 생성중'),
+              ],
+            ),
+          ),
+          barrierDismissible: false
+      );
+      bool result = await _bookmarkController.addCourseBookmark(text);
+      Get.back();
+      if (result) {
+        page = 0;
+        _bookmarkData.clear();
+        addBookmarks();
+      } else {
+        Get.dialog(
+          AlertDialog(
+            contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+            titlePadding: EdgeInsets.zero,
+            content: const Text("북마크 추가 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+            actions: [
+              TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+            ],
+          ),
+        );
+      }
+    }
+
+    void __showCreateBookmarkDialog() {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder: (BuildContext context, StateSetter dialogState) {
+                return AlertDialog(
+                  title: Text("북마크 추가"),
+                  content: TextField(
+                    maxLength: 50,
+                    controller: _bookmarkNameController,
+                    onChanged: (text) {
+                      dialogState(() {
+                        setState(() {
+                          _bookmarkNameError = bookmarkTextFieldValidator(text);
+                        });
+                      });
+                    },
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "북마크 이름",
+                        errorText: _bookmarkNameError
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      },
+                      child: Text('취소', style: TextStyle(color: Colors.red),),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        final String title = _bookmarkNameController.text.toString();
+                        if (bookmarkTextFieldValidator(title) != null) return;
+                        Navigator.of(context, rootNavigator: true).pop();
+                        addCourseBookmark(title);
+                      },
+                      child: Text('만들기', style: TextStyle(color: Colors.blue),),
+                    )
+                  ],
+                );
+              },
+            );
+          }
+      );
+    }
+
     showModalBottomSheet(
         isScrollControlled: true,
         useSafeArea: true,
@@ -310,17 +433,12 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         builder: (BuildContext context) {
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter bottomState) {
+              state = bottomState;
               if (stateFirst) {
                 _bookmarkScrollController.addListener(() {
-                  if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset) {
+                  if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset && !loadVisibility) {
                     stateFirst = false;
-                    bottomState(() {
-                      setState(() {
-                        for (int i = 0;i < 20;i++) {
-                          _bookmarkData.add({"name": "북마크", "include": math.Random().nextBool()});
-                        }
-                      });
-                    });
+                    addBookmarks();
                   }
                 });
               }
@@ -333,78 +451,113 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 ),
                 child: Column(
                   children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                    Expanded(
+                      child: Stack(
                         children: [
-                          Expanded(child: Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),),
-                          Ink(
-                            child: InkWell(
-                                onTap: () {
-                                  print('add bookmark');
-                                  __showCreateBookmarkDialog();
-                                },
-                                child: const Row(
+                          Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                                child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.playlist_add),
-                                    Text("북마크 추가")
+                                    Expanded(child: Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),),
+                                    Ink(
+                                      child: InkWell(
+                                          onTap: () {
+                                            print('add bookmark');
+                                            __showCreateBookmarkDialog();
+                                          },
+                                          child: const Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.playlist_add),
+                                              Text("북마크 추가")
+                                            ],
+                                          )
+                                      ),
+                                    )
                                   ],
-                                )
-                            ),
+                                ),
+                              ),
+                              SizedBox(height: 18,),
+                              Expanded(
+                                child: Scrollbar(
+                                  controller: _bookmarkScrollController,
+                                  child: ListView.separated(
+                                    controller: _bookmarkScrollController,
+                                    padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                    itemCount: _bookmarkData.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        minVerticalPadding: 0,
+                                        contentPadding: EdgeInsets.zero,
+                                        title: Text("${_bookmarkData[index]['title']}"),
+                                        trailing: _bookmarkData[index]['bookmark']
+                                            ? Icon(Icons.check_box, color: lightColorScheme.primary,)
+                                            : Icon(Icons.check_box_outline_blank),
+                                        onTap: () async {
+                                          bottomState(() {
+                                            setState(() {
+                                              loadVisibility = true;
+                                            });
+                                          });
+                                          bool result;
+                                          if (_bookmarkData[index]['bookmark']) {
+                                            result = await _userProvider.deleteCourseInBookmark(
+                                                _bookmarkData[index]['placeBookmarkId'], widget.courseId);
+                                          } else {
+                                            result = await _userProvider.postCourseInBookmark(
+                                                _bookmarkData[index]['placeBookmarkId'], widget.courseId);
+                                          }
+                                          if (result) {
+                                            bottomState(() {
+                                              setState(() {
+                                                loadVisibility = false;
+                                                _bookmarkData[index]['bookmark'] = !_bookmarkData[index]['bookmark'];
+                                              });
+                                            });
+                                          }
+                                        },
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return Divider(height: 0, color: Colors.grey[250],);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Visibility(
+                              visible: loadVisibility,
+                              child: AbsorbPointer(
+                                absorbing: true,
+                                child: Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(38),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(24)
+                                    ),
+                                    child: const CircularProgressIndicator(),
+                                  ),
+                                ),
+                              )
                           )
                         ],
                       ),
                     ),
-                    const SizedBox(height: 18,),
-                    Expanded(
-                        child: Scrollbar(
-                          controller: _bookmarkScrollController,
-                          child: ListView.separated(
-                            controller: _bookmarkScrollController,
-                            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-                            itemCount: _bookmarkData.length + 1,
-                            itemBuilder: (context, index) {
-                              if (index < _bookmarkData.length) {
-                                return ListTile(
-                                  minVerticalPadding: 0,
-                                  contentPadding: EdgeInsets.zero,
-                                  title: Text("${_bookmarkData[index]['name']} $index"),
-                                  trailing: _bookmarkData[index]['include']
-                                      ? Icon(Icons.check_box, color: lightColorScheme.primary,)
-                                      : const Icon(Icons.check_box_outline_blank),
-                                  onTap: () {
-                                    bottomState(() {
-                                      setState(() {
-                                        _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
-                                      });
-                                    });
-                                  },
-                                );
-                              } else {
-                                return const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 32),
-                                  child: Center(child: CircularProgressIndicator(),),
-                                );
-                              }
-                            },
-                            separatorBuilder: (context, index) {
-                              return Divider(height: 0, color: Colors.grey[250],);
-                            },
-                          ),
-                        )
-                    ),
                     // SizedBox(height: 18,),
                     Container(
-                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 18),
+                      padding: EdgeInsets.fromLTRB(24, 0, 24, 18),
                       width: double.infinity,
                       child: FilledButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text('닫기')
+                          child: Text('닫기')
                       ),
                     )
                   ],
@@ -416,6 +569,10 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     ).whenComplete(() {
       _bookmarkScrollController.dispose();
       _bookmarkScrollController = ScrollController();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      addBookmarks();
     });
   }
 
