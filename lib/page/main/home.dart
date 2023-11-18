@@ -2,11 +2,14 @@ import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:place_mobile_flutter/api/api_const.dart';
+import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/page/place/place_detail.dart';
-import 'package:place_mobile_flutter/state/place_controller.dart';
+import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
@@ -29,6 +32,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<HomePage> {
 
   final PlaceProvider _placeProvider = PlaceProvider();
+  final MagazineProvider _magazineProvider = MagazineProvider();
 
   final List<Map<String, dynamic>> _recommendTagsData = [
     {'icon': Icons.add, 'title': 'test1', 'background': Colors.blue},
@@ -40,64 +44,22 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     {'icon': Icons.accessibility, 'title': 'test7', 'background': Colors.pink},
   ];
 
-  final List<Map<String, dynamic>> _storyData = [
-    {
-      'background': "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
-      'title': '감성여행',
-      'message': '바쁜 일상에 지친 마음을 회복',
-      'location': '대부도, 안산'
-    },
-    {
-      'background': "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2560&q=80",
-      'title': '피톤치드',
-      'message': '도심에서는 느낄수 없는 맑은 공기',
-      'location': '사려니 숲길, 제주도'
-    },
-    {
-      'background': "https://images.unsplash.com/photo-1548115184-bc6544d06a58?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
-      'title': '전통',
-      'message': '한국의 전통적인 아름다움',
-      'location': '한옥마을, 전주'
-    },
-  ];
-
-  final Map<String, dynamic> _courseData = {
-    'title': '코스 추천',
-    'summary': '코스 설명',
-    'courses': [
-      {
-        'background': "https://images.unsplash.com/photo-1495567720989-cebdbdd97913?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
-        'title': '감성여행',
-        'message': '바쁜 일상에 지친 마음을 회복',
-        'location': '대부도, 안산'
-      },
-      {
-        'background': "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2560&q=80",
-        'title': '피톤치드',
-        'message': '도심에서는 느낄수 없는 맑은 공기',
-        'location': '사려니 숲길, 제주도'
-      },
-      {
-        'background': "https://images.unsplash.com/photo-1548115184-bc6544d06a58?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80",
-        'title': '전통',
-        'message': '한국의 전통적인 아름다움',
-        'location': '한옥마을, 전주'
-      }
-    ]
-  };
+  List<dynamic>? _magazineData = [];
 
   Map<String, dynamic>? _recommendData;
 
   int activeIndex = 0;
 
+  int _loadRecommendData = -1;
+  int _loadMagazineData = -1;
+
   @override
   bool get wantKeepAlive => true;
 
-  late final Future<Map<String, dynamic>?> _getPlace;
-
   @override
   void initState() {
-    _getPlace = _getPlaceRecommendationSection();
+    _getPlaceRecommendationSection();
+    _getMagazineSection();
     super.initState();
   }
 
@@ -114,15 +76,15 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             print("searchbar clicked");
           },
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: __createTag(),
-            )
-          ),
-        )
+        // Padding(
+        //   padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
+        //   child: SingleChildScrollView(
+        //     scrollDirection: Axis.horizontal,
+        //     child: Row(
+        //       children: __createTag(),
+        //     )
+        //   ),
+        // )
       ],
     ),
   );
@@ -152,57 +114,87 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     return tags;
   }
 
-  Widget __storySection() => SizedBox(
-    width: double.infinity,
-    child: MainSection(
-      title: "스토리",
-      message: "마음에 드는 스토리를 찾아보세요",
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: CarouselSlider.builder(
-              options: CarouselOptions(
-                  initialPage: 0,
-                  enlargeCenterPage: true,
-                  viewportFraction: 0.9,
-                  autoPlay: true,
-                  aspectRatio: 16/8,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      activeIndex = index;
-                    });
-                  }
+  void _getMagazineSection() async {
+    List<dynamic>? data = await _magazineProvider.getMagazineList();
+    if (data == null) {
+      _magazineData = null;
+      setState(() {
+        _loadMagazineData = 0;
+      });
+      return null;
+    }
+
+    for (int i = 0;i < data.length;i++) {
+      String? imgUrl;
+      if (data[i]['imgUrl'] != null) {
+        imgUrl = "$baseUrlDev${data[i]['imgUrl']}";
+      }
+      data[i]['imgUrl'] = imgUrl;
+    }
+
+    _magazineData = data;
+
+    setState(() {
+      _loadMagazineData = 1;
+    });
+  }
+
+  Widget __magazineSection() {
+    if (_loadMagazineData < 1) return Container();
+    if (_magazineData == null) return Container();
+    if (_magazineData!.isEmpty) return Container();
+    return SizedBox(
+      width: double.infinity,
+      child: MainSection(
+        title: "매거진",
+        // message: "마음에 드는 스토리를 찾아보세요",
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: CarouselSlider.builder(
+                options: CarouselOptions(
+                    initialPage: 0,
+                    enlargeCenterPage: true,
+                    viewportFraction: 0.9,
+                    autoPlay: true,
+                    aspectRatio: 16 / 8,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        activeIndex = index;
+                      });
+                    }),
+                itemCount: _magazineData!.length,
+                itemBuilder: (context, index, realIndex) {
+                  return RoundedRectangleMagazineCard(
+                    imageUrl: _magazineData![index]['imgUrl'],
+                    title: _magazineData![index]['title'],
+                    message: _magazineData![index]['contents'],
+                    messageStyle: SectionTextStyle.sectionContent(Colors.white),
+                    onTap: () {
+                      Get.to(() => Magazine(
+                        magazineId: _magazineData![index]['id'],
+                        imageUrl: _magazineData![index]['imgUrl'],
+                      ));
+                    },
+                  );
+                },
               ),
-              itemCount: _storyData.length,
-              itemBuilder: (context, index, realIndex) {
-                return RoundedRectangleStoryCard(
-                  imageUrl: _storyData[index]['background'],
-                  location: _storyData[index]['location'],
-                  title: _storyData[index]['title'],
-                  message: _storyData[index]['message'],
-                  messageStyle: SectionTextStyle.sectionContent(Colors.white),
-                  onTap: () {
-                    Get.to(() => Magazine());
-                  },
-                );
-              },
             ),
-          ),
-          const SizedBox(height: 8,),
-          AnimatedSmoothIndicator(
-            activeIndex: activeIndex,
-            count: _storyData.length,
-            effect: const JumpingDotEffect(
-                dotHeight: 10,
-                dotWidth: 10
+            const SizedBox(
+              height: 8,
             ),
-          )
-        ],
+            AnimatedSmoothIndicator(
+              activeIndex: activeIndex,
+              count: _magazineData!.length,
+              effect: const JumpingDotEffect(dotHeight: 10, dotWidth: 10),
+            )
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   Widget __courseSection(Map<String, dynamic> data) => SizedBox(
     width: double.infinity,
@@ -220,7 +212,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
               return const SizedBox(width: 24,);
             } else {
               index -= 1;
-              return RoundedRectangleStoryCard(
+              return RoundedRectangleMagazineCard(
                 title: data['courses'][index]['title'],
                 message: data['courses'][index]['message'],
                 location: data['courses'][index]['location'],
@@ -231,7 +223,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                 messageStyle: SectionTextStyle.labelMedium(Colors.white),
                 padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
                 onTap: () {
-                  Get.to(() => CourseMainPage());
+                  // Get.to(() => CourseMainPage());
                 },
               );
             }
@@ -252,37 +244,69 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
           message: data["summary"],
           content: SizedBox(
             height: 195,
-            child: ListView.builder(
+            child: ListView.separated(
               padding: EdgeInsets.zero,
               scrollDirection: Axis.horizontal,
               itemCount: data['places'].length + 2,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0 || index == data['places'].length + 1) {
-                  return const SizedBox(width: 24,);
+                  return const SizedBox(width: 16,);
                 } else {
                   index -= 1;
+                  String? imgUrl;
+                  if (data['places'][index]['photos'] != null && data['places'][index]['photos'].length > 0) {
+                    imgUrl = "https://been-dev.yeoksi.com/api-recommender/place-photo/?${data['places'][index]['photos'][0]['url'].split('?')[1]}&max_width=480";
+                  }
+
+                  String openString = '정보 없음';
+                  if (data['places'][index]['opening_hours'] != null) {
+                    final now = DateTime.now();
+                    final currentWeekday = now.weekday - 1;
+                    final currentTime = int.parse(DateFormat('HHmm').format(now));
+
+                    final currentDayHours = data['places'][index]['opening_hours'].firstWhere(
+                          (hours) => hours["weekday"] == currentWeekday,
+                      orElse: () => null,
+                    );
+
+                    if (currentDayHours != null) {
+                      final openTime = currentDayHours["open"];
+                      final closeTime = currentDayHours["close"];
+
+                      if (currentTime >= openTime && currentTime <= closeTime) {
+                        openString = '영업중';
+                      } else {
+                        openString = '영업중 아님';
+                      }
+                    }
+                  }
+
                   return RoundedRectanglePlaceCard(
                     width: 250,
                     aspectRatio: 18/14,
                     tags: List<Map<String, dynamic>>.from(data["places"][index]['hashtags']),
                     // imageUrl: data["places"][index]['imageUrl'],
-                    imageUrl: 'https://source.unsplash.com/random?seq=$index',
+                    imageUrl: imgUrl,
                     placeName: data["places"][index]['name'],
                     placeType: data["places"][index]['category'],
                     distance: data["places"][index]['distance'] == null ?
                       null : UnitConverter.formatDistance(data["places"][index]['distance']),
                     // distance: UnitConverter.formatDistance(Random().nextInt(10000)),
                     // open: data["places"][index]['open'],
-                    open: Random().nextBool() ? '영업중' : '영업종료',
+                    open: openString,
                     // likeCount: UnitConverter.formatNumber(data["places"][index]['likeCount']),
-                    likeCount: UnitConverter.formatNumber(Random().nextInt(1000000)),
+                    likeCount: UnitConverter.formatNumber(0),
                     onPressed: () {
+                      print(data["places"][index]['id']);
                       Get.to(() => PlaceDetailPage(
-
+                        placeId: data["places"][index]['id'],
                       ));
                     },
                   );
                 }
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(width: 4,);
               },
             ),
           ),
@@ -290,9 +314,16 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     );
   }
 
-  Future<Map<String, dynamic>?> _getPlaceRecommendationSection() async {
-    Map<String, dynamic>? data = await _placeProvider.getPlaceRecommendSection();
-    if (data == null) return null;
+  void _getPlaceRecommendationSection() async {
+    Map<String, dynamic>? data = await _placeProvider.getPlaceRecommendNowSection();
+
+    if (data == null) {
+      _recommendData = null;
+      setState(() {
+        _loadRecommendData = 0;
+      });
+      return null;
+    }
 
     for (int c = 0;c < data['collections'].length;c++) {
       for (int index = 0;index < data['collections'][c]["places"].length;index++) {
@@ -303,54 +334,51 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
             "color": RandomGenerator.generateRandomDarkHexColor()
           };
         }
-        if (PlaceController.to.userPosition.value == null) {
+        if (GISController.to.userPosition.value == null) {
           data['collections'][c]["places"][index]['distance'] = null;
         } else {
           double lat2 = data['collections'][c]["places"][index]['location']['lat'];
           double lon2 = data['collections'][c]["places"][index]['location']['lon'];
-          data['collections'][c]["places"][index]['distance'] = PlaceController.to.haversineDistance(lat2, lon2);
+          data['collections'][c]["places"][index]['distance'] = GISController.to.haversineDistance(lat2, lon2);
         }
       }
     }
-    return data;
+    _recommendData = data;
+    setState(() {
+      _loadRecommendData = 1;
+    });
   }
 
   Widget _loadPlaceRecommendSection() {
-    return FutureBuilder<Map<String, dynamic>?>(
-      future: _getPlace,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          List<Widget> items = [];
-          _recommendData = snapshot.data;
-          if (_recommendData != null) {
-            for (int i = 0;i < _recommendData!['collections'].length;i++) {
-              items.add(__recommendSection(_recommendData!['collections'][i]));
-              items.add(const SizedBox(height: 24,));
-            }
-            return Column(
-              children: items,
-            );
-          } else {
-            return Container();
-          }
-        } else {
-          return Container();
+    if (_loadRecommendData != -1) {
+      List<Widget> items = [];
+      if (_recommendData != null) {
+        for (int i = 0;i < _recommendData!['collections'].length;i++) {
+          items.add(__recommendSection(_recommendData!['collections'][i]));
+          items.add(const SizedBox(height: 24,));
         }
-      },
-    );
+        return Column(
+          children: items,
+        );
+      } else {
+        return Container();
+      }
+    } else {
+      return Container();
+    }
   }
 
   List<Widget> _createSection() {
     List<Widget> section = [
-      __searchSection(),
-      const SizedBox(height: 24,),
-      __storySection(),
+      // __searchSection(),
+      // const SizedBox(height: 24,),
+      __magazineSection(),
       const SizedBox(height: 24,)
     ];
-    section.addAll([
-      __courseSection(_courseData),
-      const SizedBox(height: 24,)
-    ]);
+    // section.addAll([
+    //   __courseSection(_courseData),
+    //   const SizedBox(height: 24,)
+    // ]);
     section.add(_loadPlaceRecommendSection());
     // for (int i = 0;i < _recommendData.length;i++) {
     //   section.add(__recommendSection(_recommendData[i]));
@@ -366,7 +394,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
             child: Column(
               children: _createSection(),
             ),

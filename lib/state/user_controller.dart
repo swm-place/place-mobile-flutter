@@ -43,8 +43,6 @@ class ProfileController extends GetxController {
     String? idToken = AuthController.to.idToken;
     User? user = AuthController.to.user.value;
 
-    if (!await AuthController.to.checkTokenValid()) idToken = AuthController.to.idToken;
-
     if (idToken != null && user != null) {
       Map<String, dynamic> profileData = {
         "nickname": nickname,
@@ -54,7 +52,7 @@ class ProfileController extends GetxController {
         "termIndex": termIndex
       };
       _progressDialogHelper.showProgressDialog('프로필 생성중');
-      int? result = await _userProvider.createProfile(profileData, idToken);
+      int? result = await _userProvider.createProfile(profileData);
       _progressDialogHelper.hideProgressDialog();
       if (result == 200) {
         int? status = await getUserProfile(user!.uid);
@@ -115,8 +113,6 @@ class ProfileController extends GetxController {
     String? idToken = AuthController.to.idToken;
     User? user = AuthController.to.user.value;
 
-    if (!await AuthController.to.checkTokenValid()) idToken = AuthController.to.idToken;
-
     if (idToken != null && user != null) {
       Map<String, dynamic> profileData = {
         "userIndex": user.uid,
@@ -126,7 +122,7 @@ class ProfileController extends GetxController {
         "birthday": birthday,
       };
       _progressDialogHelper.showProgressDialog('프로필 수정중');
-      int? result = await _userProvider.patchProfile(profileData, idToken);
+      int? result = await _userProvider.patchProfile(profileData);
       _progressDialogHelper.hideProgressDialog();
       if (result == 200) {
         int? status = await getUserProfile(user!.uid);

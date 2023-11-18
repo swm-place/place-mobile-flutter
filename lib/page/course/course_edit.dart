@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/page/course/course_add.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
-import 'package:place_mobile_flutter/state/place_controller.dart';
+import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/state/state_const.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -18,36 +19,96 @@ import 'package:get/get.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 
 class CourseEditPage extends StatefulWidget {
+  CourseEditPage({
+    required this.courseController,
+    required this.cacheManager,
+    Key? key
+  }) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _CourseEditPageState();
+
+  CourseController courseController;
+  CacheManager cacheManager;
 }
 
 class _CourseEditPageState extends State<CourseEditPage> {
-  late final CacheManager cacheManager;
+  // late final CacheManager cacheManager;
+
+  late final MapController _mapController;
+  double mapWidth = 0;
 
   @override
   void initState() {
-    cacheManager = MapCacheManager.instance;
+    // cacheManager = MapCacheManager.instance;
+    _mapController = MapController();
+    // widget.courseController.courseLineData.listen((p0) {
+    //   final double height = mapWidth / 16 * 9;
+    //
+    //   final double initZoom;
+    //   if (widget.courseController.courseLineData.value != null) {
+    //     if (widget.courseController.placesPosition.length > 1) {
+    //       initZoom = UnitConverter.calculateZoomLevel(
+    //           widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+    //           mapWidth,
+    //           height < 200 ? 200 : (height < 400 ? height : 400));
+    //     } else {
+    //       initZoom = 16.5;
+    //     }
+    //   } else {
+    //     initZoom = 15;
+    //   }
+    //
+    //   _mapController.move(LatLng(
+    //       widget.courseController.center[0],
+    //       widget.courseController.center[1]
+    //   ), initZoom);
+    // });
     super.initState();
   }
 
   @override
   void dispose() {
-    cacheManager.dispose();
+    // cacheManager.dispose();
+    _mapController.dispose();
     super.dispose();
   }
 
   List<Widget> _createList() {
     List<Widget> course = [];
     int index = 0;
-    for (var place in CourseController.to.coursePlaceData) {
+    for (var place in widget.courseController.coursePlaceData) {
       int? distance;
-      if (PlaceController.to.userPosition.value != null) {
-        double lat2 = place['location']['lat'];
-        double lon2 = place['location']['lon'];
-        distance = PlaceController.to.haversineDistance(lat2, lon2);
+      if (GISController.to.userPosition.value != null) {
+        double lat2 = place['place']['location']['lat'];
+        double lon2 = place['place']['location']['lon'];
+        distance = GISController.to.haversineDistance(lat2, lon2);
       }
       int targetIndex = index;
+
+      String openString = '정보 없음';
+      if (place['place']['opening_hours'] != null) {
+        final now = DateTime.now();
+        final currentWeekday = now.weekday - 1;
+        final currentTime = int.parse(DateFormat('HHmm').format(now));
+
+        final currentDayHours = place['place']['opening_hours'].firstWhere(
+              (hours) => hours["weekday"] == currentWeekday,
+          orElse: () => null,
+        );
+
+        if (currentDayHours != null) {
+          final openTime = currentDayHours["open"];
+          final closeTime = currentDayHours["close"];
+
+          if (currentTime >= openTime && currentTime <= closeTime) {
+            openString = '영업중';
+          } else {
+            openString = '영업중 아님';
+          }
+        }
+      }
+
       course.add(
           Slidable(
             key: Key('$index'),
@@ -55,14 +116,38 @@ class _CourseEditPageState extends State<CourseEditPage> {
               motion: const ScrollMotion(),
               children: [
                 SlidableAction(
-                  onPressed: (context) {
-                    CourseController.to.deletePlace(targetIndex);
-                    CourseController.to.getCourseLineData()
-                        .then((value) {
-                      if (value == ASYNC_SUCCESS) {
-                        CourseController.to.getGeocodeData();
-                      }
-                    });
+                  onPressed: (context) async {
+                    Get.dialog(
+                        const AlertDialog(
+                          contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                          actionsPadding: EdgeInsets.zero,
+                          titlePadding: EdgeInsets.zero,
+                          content: Row(
+                            children: [
+                              CircularProgressIndicator(),
+                              SizedBox(width: 24),
+                              Text('장소 삭제 반영중'),
+                            ],
+                          ),
+                        ),
+                        barrierDismissible: false
+                    );
+                    bool result = await widget.courseController.deletePlace(targetIndex);
+                    Get.back();
+                    if (result) {
+
+                    } else {
+                      Get.dialog(
+                        AlertDialog(
+                          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                          titlePadding: EdgeInsets.zero,
+                          content: const Text("장소 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                          actions: [
+                            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                          ],
+                        ),
+                      );
+                    }
                   },
                   label: '삭제',
                   backgroundColor: Colors.red,
@@ -71,11 +156,14 @@ class _CourseEditPageState extends State<CourseEditPage> {
               ],
             ),
             child: RoundedRowRectanglePlaceCard(
-              imageUrl: place['imageUrl'],
-              tags: place['tags'],
-              placeName: place['placeName'],
-              placeType: place['placeType'],
-              open: place['open'],
+              imageUrl: place['place']['img_url'] != null ?
+                "$baseUrlDev/api-recommender/place-photo/?${ place['place']['img_url'].split('?')[1]}&max_width=480" :
+                null,
+              tags: place['place']['hashtags'],
+              placeName: place['place']['name'],
+              placeType: place['place']['category'],
+              // open: place['place']['open'],
+              open: openString,
               distance: distance == null ? null : UnitConverter.formatDistance(distance),
               elevation: 0,
               borderRadius: 0,
@@ -91,6 +179,7 @@ class _CourseEditPageState extends State<CourseEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    mapWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text('편집'),
@@ -98,11 +187,38 @@ class _CourseEditPageState extends State<CourseEditPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.to(
-            () => CourseAddPage(),
+            () => CourseAddPage(
+              cacheManager: widget.cacheManager,
+              courseController: widget.courseController,
+            ),
             transition: Transition.downToUp,
             fullscreenDialog: true,
             popGesture: false
-          );
+          )!
+              .then((value) {
+            setState(() {});
+            final double width = MediaQuery.of(context).size.width - 48;
+            final double height = width / 16 * 9;
+
+            final double initZoom;
+            if (widget.courseController.courseLineData.value != null) {
+              if (widget.courseController.placesPosition.length > 1) {
+                initZoom = UnitConverter.calculateZoomLevel(
+                    widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                    MediaQuery.of(context).size.width - 48,
+                    height < 200 ? 200 : (height < 400 ? height : 400));
+              } else {
+                initZoom = 16.5;
+              }
+            } else {
+              initZoom = 15;
+            }
+
+            _mapController.move(LatLng(
+                widget.courseController.center[0],
+                widget.courseController.center[1]
+            ), initZoom);
+          });
         },
         backgroundColor: lightColorScheme.primary,
         shape: const CircleBorder(),
@@ -112,37 +228,51 @@ class _CourseEditPageState extends State<CourseEditPage> {
         child: Column(
           children: [
             Obx(() {
-              final double width = MediaQuery.of(context).size.width;
-              final double height = width / 16 * 9;
+              final double height = mapWidth / 16 * 9;
 
-              final double initZoom = UnitConverter.calculateZoomLevel(
-                  CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates'],
-                  MediaQuery.of(context).size.width,
-                  height < 200 ? 200 : height);
+              final double initZoom;
+              if (widget.courseController.courseLineData.value != null) {
+                if (widget.courseController.placesPosition.length > 1) {
+                  initZoom = UnitConverter.calculateZoomLevel(
+                      widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates'],
+                      mapWidth,
+                      height < 200 ? 200 : (height < 400 ? height : 400));
+                } else {
+                  initZoom = 16.5;
+                }
+              } else {
+                initZoom = 15;
+              }
 
               final Widget map = FlutterMap(
                 options: MapOptions(
                     center: LatLng(
-                        CourseController.to.center[0],
-                        CourseController.to.center[1]
+                        widget.courseController.center[0],
+                        widget.courseController.center[1]
                     ),
                     zoom: initZoom,
                     maxZoom: 18,
-                    interactiveFlags: InteractiveFlag.none
+                    interactiveFlags: InteractiveFlag.drag |
+                      InteractiveFlag.flingAnimation |
+                      InteractiveFlag.pinchMove |
+                      InteractiveFlag.pinchZoom |
+                      InteractiveFlag.doubleTapZoom
                 ),
+                mapController: _mapController,
                 children: [
                   TileLayer(
                     urlTemplate: '$mapBaseUrl/styles/bright/{z}/{x}/{y}.jpg',
                     userAgentPackageName: 'com.example.app',
-                    tileProvider: CacheTileProvider(cacheManager),
+                    tileProvider: CacheTileProvider(widget.cacheManager),
                   ),
-                  if (CourseController.to.courseLineData.value != null) PolylineLayer(
+                  if (widget.courseController.courseLineData.value != null &&
+                      widget.courseController.placesPosition.length > 1) PolylineLayer(
                     polylines: MapLayerGenerator.generatePolyLines(
-                        CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates']),
+                        widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates']),
                   ),
-                  if (CourseController.to.courseLineData.value != null) MarkerLayer(
+                  if (widget.courseController.placesPosition.isNotEmpty) MarkerLayer(
                     markers: MapLayerGenerator.generateMarkers(
-                        CourseController.to.courseLineData.value!['waypoints']),
+                        widget.courseController.placesPosition.value),
                   )
                 ],
               );
@@ -171,21 +301,60 @@ class _CourseEditPageState extends State<CourseEditPage> {
             Flexible(
               child: Obx(() => Padding(
                 padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-                child: ReorderableListView(
-                  children: _createList(),
-                  onReorder: (int oldIndex, int newIndex) {
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
-                    }
-                    CourseController.to.changePlaceOrder(oldIndex, newIndex);
-                    CourseController.to.getCourseLineData()
-                        .then((value) {
-                      if (value == ASYNC_SUCCESS) {
-                        CourseController.to.getGeocodeData();
+                child: widget.courseController.coursePlaceData.isEmpty ?
+                  Container(
+                    height: double.infinity,
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.grey[300]
+                      ),
+                      padding: const EdgeInsets.all(24),
+                      child: const Center(
+                        child: Text('장소를 추가해주세요!'),
+                      ),
+                    ),
+                  ) :
+                  ReorderableListView(
+                    children: _createList(),
+                    onReorder: (int oldIndex, int newIndex) async {
+                      if (oldIndex < newIndex) {
+                        newIndex -= 1;
                       }
-                    });
-                  },
-                ),
+                      Get.dialog(
+                          const AlertDialog(
+                            contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                            actionsPadding: EdgeInsets.zero,
+                            titlePadding: EdgeInsets.zero,
+                            content: Row(
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(width: 24),
+                                Text('코스 순서 변경 반영중'),
+                              ],
+                            ),
+                          ),
+                          barrierDismissible: false
+                      );
+                      bool result = await widget.courseController.changePlaceOrder(oldIndex, newIndex);
+                      Get.back();
+                      if (result) {
+
+                      } else {
+                        Get.dialog(
+                          AlertDialog(
+                            contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                            titlePadding: EdgeInsets.zero,
+                            content: const Text("코스 순서 변경 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                            actions: [
+                              TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  ),
               )),
             )
           ],

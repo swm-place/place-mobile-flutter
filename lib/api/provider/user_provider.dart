@@ -13,7 +13,7 @@ class UserProvider extends DefaultProvider {
     Uri uri = Uri.parse("$baseUrl/api/user/${uid}");
     Response response;
     try {
-      response = await get(uri, headers: setHeader(null));
+      response = await get(uri, headers: await setHeader(AuthController.to.user.value != null));
     } catch(e) {
       return null;
     }
@@ -27,7 +27,7 @@ class UserProvider extends DefaultProvider {
     // _progressDialogHelper.showProgressDialog('약관 정보 가져오는중');
     print('open');
     try {
-      response = await get(uri, headers: setHeader(null));
+      response = await get(uri, headers: await setHeader(false));
       // _progressDialogHelper.hideProgressDialog();
       print('close1');
     } catch(e) {
@@ -50,7 +50,7 @@ class UserProvider extends DefaultProvider {
 
     _progressDialogHelper.showProgressDialog('닉네임 중복 검사중');
     try {
-      response = await get(uri, headers: setHeader(null));
+      response = await get(uri, headers: await setHeader(false));
       _progressDialogHelper.hideProgressDialog();
     } catch(e) {
       return null;
@@ -58,11 +58,11 @@ class UserProvider extends DefaultProvider {
     return response.statusCode;
   }
 
-  Future<int?> createProfile(Map<String, dynamic> profileData, String token) async {
+  Future<int?> createProfile(Map<String, dynamic> profileData) async {
     User? user = AuthController.to.user.value;
     if (user != null) {
       Uri uri = Uri.parse("$baseUrl/api/user");
-      Map<String, String>? header = setHeader(token);
+      Map<String, String>? header = await setHeader(true);
       header!["Content-Type"] = 'application/json';
 
       Response response;
@@ -76,11 +76,11 @@ class UserProvider extends DefaultProvider {
     return null;
   }
 
-  Future<int?> patchProfile(Map<String, dynamic> profileData, String token) async {
+  Future<int?> patchProfile(Map<String, dynamic> profileData) async {
     User? user = AuthController.to.user.value;
     if (user != null) {
       Uri uri = Uri.parse("$baseUrl/api/user");
-      Map<String, String>? header = setHeader(token);
+      Map<String, String>? header = await setHeader(true);
       header!["Content-Type"] = 'application/json';
 
       Response response;
@@ -92,5 +92,296 @@ class UserProvider extends DefaultProvider {
       return response.statusCode;
     }
     return null;
+  }
+
+  Future<Map<String, dynamic>?> getPlaceBookmark(int page, int size, dynamic? placeId) async {
+    if (AuthController.to.user.value == null) return null;
+
+    Uri uri = Uri.parse("$baseUrl/api/user/${AuthController.to.user.value!.uid}/place-bookmark?page=$page&size=$size${placeId != null ? '&placeId=$placeId' : ''}");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<dynamic>?> getCourseBookmark(int page, int size, dynamic? courseId) async {
+    if (AuthController.to.user.value == null) return null;
+
+    Uri uri = Uri.parse("$baseUrl/api/bookmarks/${AuthController.to.user.value!.uid}/course-bookmarks?page=$page&size=$size${courseId != null ? '&courseId=$courseId' : ''}");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> postPlaceBookmark(String title) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/user/${user.uid}/place-bookmark");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await post(uri, headers: header, body: json.encode({
+        'title': title
+      }));
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> postCourseBookmark(String title) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/bookmarks/${user.uid}/course-bookmarks");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await post(uri, headers: header, body: json.encode({
+        'title': title
+      }));
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> deletePlaceBookmark(dynamic bookmarkId) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/user/${user.uid}/place-bookmark/$bookmarkId");
+    Map<String, String>? header = await setHeader(true);
+
+    Response response;
+    try {
+      response = await delete(uri, headers: header);
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> deleteCourseBookmark(dynamic bookmarkId) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/bookmarks/${user.uid}/course-bookmarks/$bookmarkId");
+    Map<String, String>? header = await setHeader(true);
+
+    Response response;
+    try {
+      response = await delete(uri, headers: header);
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> patchPlaceBookmark(dynamic bookmarkId, String title) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/user/${user.uid}/place-bookmark/$bookmarkId");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await patch(uri, headers: header, body: json.encode({
+        'title': title
+      }));
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> patchCourseBookmark(dynamic bookmarkId, String title) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/bookmarks/${user.uid}/course-bookmarks/$bookmarkId");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await patch(uri, headers: header, body: json.encode({
+        'title': title
+      }));
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<List<dynamic>?> getUserTagPreferences() async {
+    if (AuthController.to.user.value == null) return null;
+
+    Uri uri = Uri.parse("$baseUrl/api-recommender/user_preference/hashtags");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> putUserTagPreferences(dynamic putData) async {
+    if (AuthController.to.user.value == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api-recommender/user_preference/hashtags");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await put(uri, headers: header, body: json.encode(putData));
+    } catch(e) {
+      return false;
+    }
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> postPlaceInBookmark(dynamic bookmarkId, dynamic placeId) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/place-bookmark/$bookmarkId");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await post(uri, headers: header, body: json.encode({
+        'placeId': placeId
+      }));
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> deletePlaceInBookmark(dynamic bookmarkId, dynamic placeId) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/user/${user.uid}/place-bookmark/$bookmarkId/place/$placeId");
+    Map<String, String>? header = await setHeader(true);
+
+    Response response;
+    try {
+      response = await delete(uri, headers: header);
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> postCourseInBookmark(dynamic bookmarkId, dynamic courseId) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/bookmarks/${user.uid}/course-bookmarks/$bookmarkId/courses/$courseId");
+    Map<String, String>? header = await setHeader(true);
+    header!["Content-Type"] = 'application/json';
+
+    Response response;
+    try {
+      response = await post(uri, headers: header);
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> deleteCourseInBookmark(dynamic bookmarkId, dynamic courseId) async {
+    User? user = AuthController.to.user.value;
+    if (user == null) return false;
+
+    Uri uri = Uri.parse("$baseUrl/api/bookmarks/${user.uid}/course-bookmarks/$bookmarkId/courses/$courseId");
+    Map<String, String>? header = await setHeader(true);
+
+    Response response;
+    try {
+      response = await delete(uri, headers: header);
+    } catch(e) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
