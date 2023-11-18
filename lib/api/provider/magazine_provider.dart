@@ -11,7 +11,7 @@ class MagazineProvider extends DefaultProvider {
     Response response;
 
     try {
-      response = await get(uri, headers: await setHeader(false));
+      response = await get(uri, headers: await setHeader(AuthController.to.user.value != null));
     } catch(e) {
       return null;
     }
@@ -28,7 +28,7 @@ class MagazineProvider extends DefaultProvider {
     Response response;
 
     try {
-      response = await get(uri, headers: await setHeader(false));
+      response = await get(uri, headers: await setHeader(AuthController.to.user.value != null));
     } catch(e) {
       return null;
     }

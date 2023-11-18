@@ -35,60 +35,6 @@ class _MagazineState extends State<Magazine> {
 
   Map<String, dynamic>? _magazineData;
 
-  final Map<String, dynamic> _magazineContents = {
-    'title': '서울에서 느끼는 자연 코스로 즐기기',
-    'author': {
-      'name': "김준철",
-      'profileUrl': 'https://source.unsplash.com/random?seq=2'
-    },
-    'createdAt': '2022.01.01',
-    'contents': [
-      {
-        'type': 'text',
-        'content': '되는 인간이 사람은 인류의 봄바람이다. 피가 길을 봄날의 끓는 트고, 때까지 같지 '
-            '돋고, 인간의 것이다. 풀밭에 고행을 피가 창공에 같지 안고, 구하지 끝까지 이상을 부패뿐이다.'
-            ' 오직 가지에 청춘 같지 따뜻한 사람은 풀이 약동하다. 사랑의 인간은 대한 물방아 긴지라 '
-            '고행을 수 시들어 없으면 것이다. 가슴이 얼마나 밥을 우리의 희망의 뜨고, 지혜는 풀이 '
-            '아름다우냐? 몸이 사랑의 불러 구하지 새 사라지지 이것은 뿐이다. 크고 피는 싹이 것이다. '
-            '석가는 심장은 방지하는 소금이라 가치를 귀는 튼튼하며, 이것이다. 바이며, 천지는 없으면, '
-            '그들의 않는 이상이 피어나기 봄바람이다.'
-      },
-      {
-        'type': 'divider'
-      },
-      {
-        'type': 'placeCard',
-        'title': '장소 1',
-        'placeUrl': '',
-        'placePicture': 'https://images.unsplash.com/photo-1694384580420-46ce717aa50b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80',
-        'placeContent': '이름자를 이제 이런 다 소학교 말 이런 까닭이요, 있습니다. 옥 가을로 무성할'
-            ' 우는 하나에 하나에 이름과 당신은 까닭입니다. 이네들은 지나가는 헤는 언덕 노새, 가을로 '
-            '봅니다. 릴케 이름과 때 위에 있습니다. 가슴속에 별들을 아무 불러 쓸쓸함과 추억과 별빛이 '
-            '애기 있습니다. 무덤 이름을 하늘에는 딴은 아무 자랑처럼 아침이 봅니다.'
-      },
-      {
-        'type': 'placeCard',
-        'title': '장소 2',
-        'placeUrl': '',
-        'placePicture': 'https://images.unsplash.com/photo-1693529831174-17595f68be87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1476&q=80',
-        'placeContent': '이름자를 이제 이런 다 소학교 말 이런 까닭이요, 있습니다. 옥 가을로 무성할'
-            ' 우는 하나에 하나에 이름과 당신은 까닭입니다. 이네들은 지나가는 헤는 언덕 노새, 가을로 '
-            '봅니다. 릴케 이름과 때 위에 있습니다. 가슴속에 별들을 아무 불러 쓸쓸함과 추억과 별빛이 '
-            '애기 있습니다. 무덤 이름을 하늘에는 딴은 아무 자랑처럼 아침이 봅니다.'
-      },
-      {
-        'type': 'image',
-        'imgUrl': 'https://images.unsplash.com/photo-1694530126645-4300ebe5409c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
-        'description': '이미지 설명'
-      },
-      {
-        'type': 'image',
-        'imgUrl': 'https://images.unsplash.com/photo-1694459766923-9ad3145402b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80',
-        'description': null
-      },
-    ]
-  };
-
   @override
   void initState() {
     getMagazineData();
