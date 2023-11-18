@@ -25,7 +25,7 @@ class MapLayerGenerator {
     for (int i = 0;i < points.length;i++) {
       markers.add(
           Marker(
-              point: LatLng(points[i]['location'][1], points[i]['location'][0]),
+              point: LatLng(points[i]['lat'], points[i]['lon']),
               width: 18,
               height: 18,
               builder: (context) => Container(

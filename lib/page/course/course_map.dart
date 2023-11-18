@@ -5,7 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
-import 'package:place_mobile_flutter/state/place_controller.dart';
+import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/util/cache/map/map_cache_manager.dart';
 import 'package:place_mobile_flutter/util/map/map_layer.dart';
 import 'package:place_mobile_flutter/util/map/map_tile_cache.dart';
@@ -16,8 +16,11 @@ import 'package:latlong2/latlong.dart';
 
 class CourseMapPage extends StatefulWidget {
   CourseMapPage({
+    required this.courseController,
     Key? key
   }) : super(key: key);
+  
+  CourseController courseController;
 
   @override
   State<StatefulWidget> createState() => _CourseMapPageState();
@@ -55,13 +58,15 @@ class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateM
         children: [
           LayoutBuilder(
             builder: (context, constraints) {
-              LatLng center;
-              if (CourseController.to.coursePlaceData.isNotEmpty) {
-                double lat = CourseController.to.coursePlaceData[0]['location']['lat'];
-                double lon = CourseController.to.coursePlaceData[0]['location']['lon'];
-                center = LatLng(lat, lon);
-              } else {
-                center = const LatLng(37.575000, 126.976937);
+              final double width = constraints.maxWidth;
+              final double height = width / 16 * 9;
+              
+              LatLng center = const LatLng(37.574863, 126.977725);
+              if (widget.courseController.placesPosition.isNotEmpty) {
+                center = LatLng(
+                    widget.courseController.placesPosition[0]['lat'],
+                    widget.courseController.placesPosition[0]['lon']
+                );
               }
 
               return FlutterMap(
@@ -81,13 +86,14 @@ class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateM
                     userAgentPackageName: 'com.example.app',
                     tileProvider: CacheTileProvider(cacheManager),
                   ),
-                  if (CourseController.to.courseLineData.value != null) PolylineLayer(
+                  if (widget.courseController.courseLineData.value != null &&
+                      widget.courseController.placesPosition.length > 1) PolylineLayer(
                     polylines: MapLayerGenerator.generatePolyLines(
-                        CourseController.to.courseLineData.value!['routes'][0]['geometry']['coordinates']),
+                        widget.courseController.courseLineData.value!['routes'][0]['geometry']['coordinates']),
                   ),
-                  if (CourseController.to.courseLineData.value != null) MarkerLayer(
+                  if (widget.courseController.placesPosition.isNotEmpty) MarkerLayer(
                     markers: MapLayerGenerator.generateMarkers(
-                        CourseController.to.courseLineData.value!['waypoints']),
+                        widget.courseController.placesPosition.value),
                   )
                 ],
               );
@@ -107,8 +113,8 @@ class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateM
                   viewportFraction: 0.85,
                   clipBehavior: Clip.none,
                   onPageChanged: (index, reason) {
-                    double lat = CourseController.to.coursePlaceData[index]['location']['lat'];
-                    double lon = CourseController.to.coursePlaceData[index]['location']['lon'];
+                    double lat = widget.courseController.coursePlaceData[index]['place']['location']['lat'];
+                    double lon = widget.courseController.coursePlaceData[index]['place']['location']['lon'];
                     _mapController.animateTo(
                       dest: LatLng(lat, lon),
                       zoom: _mapController.mapController.zoom
@@ -116,22 +122,26 @@ class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateM
                   }
                 ),
                 carouselController: _carouselController,
-                itemCount: CourseController.to.coursePlaceData.length,
+                itemCount: widget.courseController.coursePlaceData.length,
                 itemBuilder: (context, index, realIndex) {
                   int? distance;
-                  if (PlaceController.to.userPosition.value != null) {
-                    double lat2 = CourseController.to.coursePlaceData[index]['location']['lat'];
-                    double lon2 = CourseController.to.coursePlaceData[index]['location']['lon'];
-                    distance = PlaceController.to.haversineDistance(lat2, lon2);
+                  if (GISController.to.userPosition.value != null) {
+                    double lat2 = widget.courseController.coursePlaceData[index]['place']['location']['lat'];
+                    double lon2 = widget.courseController.coursePlaceData[index]['place']['location']['lon'];
+                    distance = GISController.to.haversineDistance(lat2, lon2);
                   }
                   return Container(
                     padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
                     child: RoundedRowRectanglePlaceCard(
-                      imageUrl: CourseController.to.coursePlaceData[index]['imageUrl'],
-                      tags: CourseController.to.coursePlaceData[index]['tags'],
-                      placeName: CourseController.to.coursePlaceData[index]['placeName'],
-                      placeType: CourseController.to.coursePlaceData[index]['placeType'],
-                      open: CourseController.to.coursePlaceData[index]['open'],
+                      imageUrl: widget.courseController.coursePlaceData[index]['place']['img_url'] != null ?
+                      "$baseUrlDev/api-recommender/place-photo/?${ widget.courseController.coursePlaceData[index]['place']['img_url'].split('?')[1]}&max_width=480" :
+                      null,
+                      // tags: place['place']['tags'],
+                      tags: [],
+                      placeName: widget.courseController.coursePlaceData[index]['place']['name'],
+                      placeType: widget.courseController.coursePlaceData[index]['place']['category'],
+                      // open: place['place']['open'],
+                      open: '영압중',
                       distance: distance == null ? null : UnitConverter.formatDistance(distance),
                     ),
                   );
