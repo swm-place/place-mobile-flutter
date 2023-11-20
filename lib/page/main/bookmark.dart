@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
@@ -384,13 +385,62 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                     padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
                                     itemCount: _bookmarkData.length,
                                     itemBuilder: (context, index) {
-                                      return RoundedRowBookmarkRectanglePlaceCard(
-                                        imageUrl: _bookmarkData[index]['imgUrl'] != null ?
-                                        ImageParser.parseImageUrl(_bookmarkData[index]['imgUrl']) :
-                                        null,
-                                        placeName: _bookmarkData[index]['name'],
-                                        // placeType: _bookmarkData[index]['category'],
-                                        placeType: '',
+                                      return Slidable(
+                                        key: Key('$index'),
+                                        endActionPane: ActionPane(
+                                          motion: const ScrollMotion(),
+                                          children: [
+                                            SlidableAction(
+                                              onPressed: (context) async {
+                                                Get.dialog(
+                                                    const AlertDialog(
+                                                      contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                                      actionsPadding: EdgeInsets.zero,
+                                                      titlePadding: EdgeInsets.zero,
+                                                      content: Row(
+                                                        children: [
+                                                          CircularProgressIndicator(),
+                                                          SizedBox(width: 24),
+                                                          Text('장소 삭제 반영중'),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    barrierDismissible: false
+                                                );
+                                                bool result = await _userProvider.deletePlaceInBookmark(
+                                                    bookmarkId, _bookmarkData[index]['id']);
+                                                Get.back();
+                                                if (result) {
+                                                  _bookmarkData.clear();
+                                                  page = 0;
+                                                  addPlaceData();
+                                                } else {
+                                                  Get.dialog(
+                                                    AlertDialog(
+                                                      contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                                      titlePadding: EdgeInsets.zero,
+                                                      content: const Text("장소 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                                                      actions: [
+                                                        TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                                                      ],
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              label: '삭제',
+                                              backgroundColor: Colors.red,
+                                              icon: Icons.delete,
+                                            )
+                                          ],
+                                        ),
+                                        child: RoundedRowBookmarkRectanglePlaceCard(
+                                          imageUrl: _bookmarkData[index]['imgUrl'] != null ?
+                                          ImageParser.parseImageUrl(_bookmarkData[index]['imgUrl']) :
+                                          null,
+                                          placeName: _bookmarkData[index]['name'],
+                                          // placeType: _bookmarkData[index]['category'],
+                                          placeType: '',
+                                        ),
                                       );
                                     },
                                     separatorBuilder: (context, index) {
