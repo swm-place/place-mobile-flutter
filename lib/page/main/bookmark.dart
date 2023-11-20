@@ -384,18 +384,13 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                     padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
                                     itemCount: _bookmarkData.length,
                                     itemBuilder: (context, index) {
-                                      return RoundedRowRectanglePlaceCard(
+                                      return RoundedRowBookmarkRectanglePlaceCard(
                                         imageUrl: _bookmarkData[index]['imgUrl'] != null ?
                                         ImageParser.parseImageUrl(_bookmarkData[index]['imgUrl']) :
                                         null,
-                                        // tags: place['place']['hashtags'],
-                                        tags: [],
                                         placeName: _bookmarkData[index]['name'],
                                         // placeType: _bookmarkData[index]['category'],
                                         placeType: '',
-                                        // open: place['place']['open'],
-                                        open: '',
-                                        distance: '',
                                       );
                                     },
                                     separatorBuilder: (context, index) {
