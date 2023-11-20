@@ -34,8 +34,7 @@ class PictureFlexibleSpace extends StatelessWidget {
                       imageUrl!,
                       fit: BoxFit.cover,
                     ) :
-                  Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,)
-                  ,
+                    Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
                 ),
               ),
             ],
