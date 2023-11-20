@@ -687,10 +687,14 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
           final openTime = currentDayHours["open"];
           final closeTime = currentDayHours["close"];
 
-          if (currentTime >= openTime && currentTime <= closeTime) {
-            openString = '영업중';
-          } else {
-            openString = '영업중 아님';
+          try {
+            if (currentTime >= openTime && currentTime <= closeTime) {
+              openString = '영업중';
+            } else {
+              openString = '영업중 아님';
+            }
+          } catch(e) {
+            openString = '정보 없음';
           }
         }
       }

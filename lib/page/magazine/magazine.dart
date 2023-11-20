@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/cache_image.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
+import 'package:latlong2/latlong.dart';
 
 class Magazine extends StatefulWidget {
   Magazine({
@@ -94,10 +96,10 @@ class _MagazineState extends State<Magazine> {
       });
     }
     Map<String, dynamic>? result = await _courseProvider.postMyCourseData(title, places);
-    Get.back();
-    if (result != null) {
-      Get.to(() => CourseMainPage(courseId: result['id']));
-    } else {
+
+    if (result == null) {
+      Get.back();
+
       Get.dialog(
         AlertDialog(
           contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
@@ -108,7 +110,82 @@ class _MagazineState extends State<Magazine> {
           ],
         ),
       );
+      return;
     }
+
+    List<double> centerTemp = [];
+    String regionNameTem = '';
+    List<dynamic> placePos = result['placesInCourse'].expand((element) =>
+      [element['place']['location']]).toList();
+
+    Map<String, dynamic> newLine = {};
+    if (placePos.length > 1) {
+      Map<String, dynamic>? newLineResult = await _courseProvider.getCourseLine(placePos);
+      if (newLineResult == null) {
+        print(1);
+        Get.back();
+        Get.dialog(
+          AlertDialog(
+            contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+            titlePadding: EdgeInsets.zero,
+            content: const Text("코스 변환 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+            actions: [
+              TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+            ],
+          ),
+        );
+        return;
+      }
+      newLine = newLineResult;
+      centerTemp = UnitConverter.findCenter(newLine['routes'][0]['geometry']['coordinates']);
+    } else {
+      centerTemp = [placePos[0]['lat'], placePos[0]['lon']];
+    }
+
+    newLine['center'] = centerTemp;
+
+    Map<String, dynamic>? newRegion = await _courseProvider.getReverseGeocode(LatLng(centerTemp[0], centerTemp[1]));
+    if (newRegion == null) {
+      print(2);
+      Get.back();
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("코스 변환 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+      return;
+    }
+    regionNameTem = newRegion['region_name'];
+    newLine['region_name'] = regionNameTem;
+
+    Map<String, dynamic>? patchResult = await _courseProvider.patchMyCourseData(result['id'], {
+      'placesInCourse': [],
+      'routesJson': json.encode(newLine)
+    });
+
+    if (patchResult == null) {
+      print('3');
+      Get.back();
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("코스 변환 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+      return;
+    }
+
+    Get.back();
+    Get.to(() => CourseMainPage(courseId: result['id']));
   }
 
   @override
