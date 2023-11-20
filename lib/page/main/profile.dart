@@ -89,7 +89,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                     SizedBox(
                       width: 64,
                       height: 64,
-                      child: CircleAvatar(
+                      child: CircleAvatar( //TODO: avatar network image
                         backgroundImage: NetworkImage(
                             'https://source.unsplash.com/random'),
                       ),

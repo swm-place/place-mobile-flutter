@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
 
 class BookmarkCard extends StatelessWidget {
   final Function()? onTap;
@@ -99,12 +100,9 @@ class BookmarkCard extends StatelessWidget {
       }
       if (placeImageUrls!.length == 1) {
         return placeImageUrls![0] != null ?
-          Image.network(
+          NetworkCacheImage(
             placeImageUrls![0],
             fit: BoxFit.cover,
-            errorBuilder: (context, exception, stackTrace) {
-              return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-            },
           ) :
           Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
       }
@@ -115,12 +113,9 @@ class BookmarkCard extends StatelessWidget {
               width: width!,
               height: height! / 2,
               child: placeImageUrls![0] != null ?
-                Image.network(
+                NetworkCacheImage(
                   placeImageUrls![0],
                   fit: BoxFit.cover,
-                  errorBuilder: (context, exception, stackTrace) {
-                    return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                  },
                 ) :
                 Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
             ),
@@ -128,12 +123,9 @@ class BookmarkCard extends StatelessWidget {
               width: width!,
               height: height! / 2,
               child: placeImageUrls![1] != null ?
-                Image.network(
+                NetworkCacheImage(
                   placeImageUrls![1],
                   fit: BoxFit.cover,
-                  errorBuilder: (context, exception, stackTrace) {
-                    return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                  },
                 ) :
                 Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
             ),
@@ -149,12 +141,9 @@ class BookmarkCard extends StatelessWidget {
                   width: width! / 2,
                   height: height! / 2,
                   child: placeImageUrls![0] != null ?
-                    Image.network(
+                    NetworkCacheImage(
                       placeImageUrls![0],
                       fit: BoxFit.cover,
-                      errorBuilder: (context, exception, stackTrace) {
-                        return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                      },
                     ) :
                     Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
                 ),
@@ -162,12 +151,9 @@ class BookmarkCard extends StatelessWidget {
                   width: width! / 2,
                   height: height! / 2,
                   child: placeImageUrls![1] != null ?
-                    Image.network(
+                    NetworkCacheImage(
                       placeImageUrls![1],
                       fit: BoxFit.cover,
-                      errorBuilder: (context, exception, stackTrace) {
-                        return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                      },
                     ) :
                     Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
                 ),
@@ -177,12 +163,9 @@ class BookmarkCard extends StatelessWidget {
               width: width! / 2,
               height: height!,
               child: placeImageUrls![2] != null ?
-                Image.network(
+                NetworkCacheImage(
                   placeImageUrls![2],
                   fit: BoxFit.cover,
-                  errorBuilder: (context, exception, stackTrace) {
-                    return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                  },
                 ) :
                 Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
             ),
@@ -197,12 +180,9 @@ class BookmarkCard extends StatelessWidget {
                 width: width! / 2,
                 height: height! / 2,
                 child: placeImageUrls![0] != null ?
-                  Image.network(
+                  NetworkCacheImage(
                     placeImageUrls![0],
                     fit: BoxFit.cover,
-                    errorBuilder: (context, exception, stackTrace) {
-                      return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                    },
                   ) :
                   Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),
@@ -210,12 +190,9 @@ class BookmarkCard extends StatelessWidget {
                 width: width! / 2,
                 height: height! / 2,
                 child: placeImageUrls![1] != null ?
-                  Image.network(
+                  NetworkCacheImage(
                     placeImageUrls![1],
                     fit: BoxFit.cover,
-                    errorBuilder: (context, exception, stackTrace) {
-                      return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                    },
                   ) :
                   Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),
@@ -227,12 +204,9 @@ class BookmarkCard extends StatelessWidget {
                 width: width! / 2,
                 height: height! / 2,
                 child: placeImageUrls![2] != null ?
-                  Image.network(
+                  NetworkCacheImage(
                     placeImageUrls![2],
                     fit: BoxFit.cover,
-                    errorBuilder: (context, exception, stackTrace) {
-                      return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                    },
                   ) :
                   Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),
@@ -240,12 +214,9 @@ class BookmarkCard extends StatelessWidget {
                 width: width! / 2,
                 height: height! / 2,
                 child: placeImageUrls![3] != null ?
-                  Image.network(
+                  NetworkCacheImage(
                     placeImageUrls![3],
                     fit: BoxFit.cover,
-                    errorBuilder: (context, exception, stackTrace) {
-                      return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                    },
                   ) :
                   Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),

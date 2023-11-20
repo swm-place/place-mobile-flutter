@@ -6,6 +6,8 @@ class NetworkCacheImage extends StatefulWidget {
   NetworkCacheImage(this.url, {
     this.retry = 10,
     this.timeout = 3,
+    this.width,
+    this.height,
     this.fit,
     Key? key
   }) : super(key: key);
@@ -14,6 +16,8 @@ class NetworkCacheImage extends StatefulWidget {
   final int retry;
   final int timeout;
   final BoxFit? fit;
+  final double? width;
+  final double? height;
 
   @override
   State<StatefulWidget> createState() => _NetworkCacheImageState();
@@ -50,6 +54,8 @@ class _NetworkCacheImageState extends State<NetworkCacheImage> {
           return Image.memory(
             snapshot.data as Uint8List,
             fit: widget.fit ?? BoxFit.cover,
+            width: widget.width,
+            height: widget.height,
           );
         } else if (snapshot.hasError) {
           return Image.asset('assets/images/no_image.png', fit: widget.fit ?? BoxFit.cover,);

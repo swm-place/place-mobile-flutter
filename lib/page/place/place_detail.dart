@@ -20,6 +20,7 @@ import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
 import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/place/review/place_review.dart';
@@ -909,7 +910,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: imgUrl != null ?
-            Image.network(
+            NetworkCacheImage(
               imgUrl,
               fit: BoxFit.cover,
             ) :

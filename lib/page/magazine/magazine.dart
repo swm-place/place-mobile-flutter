@@ -7,6 +7,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 
@@ -219,10 +220,7 @@ class _MagazineState extends State<Magazine> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: imgUrl != null ?
-                Image.network(
-                  imgUrl,
-                  // fit: BoxFit.cover,
-                ) :
+                NetworkCacheImage(imgUrl) :
                 Image.asset('assets/images/no_image.png'),
             ),
           ),
@@ -244,10 +242,7 @@ class _MagazineState extends State<Magazine> {
           child: Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                imgUrl,
-                // fit: BoxFit.cover,
-              ),
+              child: NetworkCacheImage(imgUrl),
             ),
           ),
         ),
