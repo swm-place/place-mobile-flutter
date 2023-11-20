@@ -53,14 +53,14 @@ class _NetworkCacheImageState extends State<NetworkCacheImage> {
         if (snapshot.hasData) {
           return Image.memory(
             snapshot.data as Uint8List,
-            fit: widget.fit ?? BoxFit.cover,
+            fit: widget.fit,
             width: widget.width,
             height: widget.height,
           );
         } else if (snapshot.hasError) {
-          return Image.asset('assets/images/no_image.png', fit: widget.fit ?? BoxFit.cover,);
+          return Image.asset('assets/images/no_image.png', fit: widget.fit,);
         }
-        return Image.asset('assets/images/no_image.png', fit: widget.fit ?? BoxFit.cover,);
+        return Image.asset('assets/images/no_image.png', fit: widget.fit,);
       },
     );
   }
