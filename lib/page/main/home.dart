@@ -18,6 +18,7 @@ import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_button.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
@@ -144,58 +145,98 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   }
 
   Widget __magazineSection() {
-    if (_loadMagazineData < 1) return Container();
-    if (_magazineData == null) return Container();
-    if (_magazineData!.isEmpty) return Container();
-    return SizedBox(
-      width: double.infinity,
-      child: MainSection(
-        title: "매거진",
-        // message: "마음에 드는 스토리를 찾아보세요",
-        content: Column(
+    if (_loadMagazineData == 0) return Container();
+
+    Widget body;
+    if (_loadMagazineData == 1) {
+      if (_magazineData == null) return Container();
+      if (_magazineData!.isEmpty) return Container();
+
+      body = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: CarouselSlider.builder(
+              options: CarouselOptions(
+                  initialPage: 0,
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.9,
+                  autoPlay: true,
+                  aspectRatio: 16 / 8,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      activeIndex = index;
+                    });
+                  }),
+              itemCount: _magazineData!.length,
+              itemBuilder: (context, index, realIndex) {
+                return RoundedRectangleMagazineCard(
+                  imageUrl: _magazineData![index]['imgUrl'],
+                  title: _magazineData![index]['title'],
+                  message: _magazineData![index]['contents'],
+                  messageStyle: SectionTextStyle.sectionContent(Colors.white),
+                  onTap: () {
+                    Get.to(() => Magazine(
+                      magazineId: _magazineData![index]['id'],
+                      imageUrl: _magazineData![index]['imgUrl'],
+                    ));
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          AnimatedSmoothIndicator(
+            activeIndex: activeIndex,
+            count: _magazineData!.length,
+            effect: const JumpingDotEffect(dotHeight: 10, dotWidth: 10),
+          )
+        ],
+      );
+    } else {
+      body = Shimmer.fromColors(
+          baseColor: const Color.fromRGBO(240, 240, 240, 1),
+          highlightColor: Colors.grey,
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: CarouselSlider.builder(
-                options: CarouselOptions(
-                    initialPage: 0,
-                    enlargeCenterPage: true,
-                    viewportFraction: 0.9,
-                    autoPlay: true,
-                    aspectRatio: 16 / 8,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        activeIndex = index;
-                      });
-                    }),
-                itemCount: _magazineData!.length,
-                itemBuilder: (context, index, realIndex) {
-                  return RoundedRectangleMagazineCard(
-                    imageUrl: _magazineData![index]['imgUrl'],
-                    title: _magazineData![index]['title'],
-                    message: _magazineData![index]['contents'],
-                    messageStyle: SectionTextStyle.sectionContent(Colors.white),
-                    onTap: () {
-                      Get.to(() => Magazine(
-                        magazineId: _magazineData![index]['id'],
-                        imageUrl: _magazineData![index]['imgUrl'],
-                      ));
-                    },
-                  );
-                },
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+              child: SizedBox(
+                width: double.infinity,
+                child: AspectRatio(
+                  aspectRatio: 16/9,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(240, 240, 240, 1),
+                      borderRadius: BorderRadius.circular(8)
+                    ),
+                  ),
+                ),
               ),
             ),
             const SizedBox(
               height: 8,
             ),
-            AnimatedSmoothIndicator(
-              activeIndex: activeIndex,
-              count: _magazineData!.length,
-              effect: const JumpingDotEffect(dotHeight: 10, dotWidth: 10),
+            const AnimatedSmoothIndicator(
+              activeIndex: 0,
+              count: 3,
+              effect: JumpingDotEffect(dotHeight: 10, dotWidth: 10),
             )
           ],
-        ),
+        )
+      );
+    }
+
+    return SizedBox(
+      width: double.infinity,
+      child: MainSection(
+        title: "매거진",
+        // message: "마음에 드는 스토리를 찾아보세요",
+        content: body,
       ),
     );
   }
