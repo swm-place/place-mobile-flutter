@@ -157,7 +157,7 @@ class _CourseEditPageState extends State<CourseEditPage> {
             ),
             child: RoundedRowRectanglePlaceCard(
               imageUrl: place['place']['img_url'] != null ?
-                "$baseUrlDev/api-recommender/place-photo/?${ place['place']['img_url'].split('?')[1]}&max_width=480" :
+                ImageParser.parseImageUrl(place['place']['img_url']) :
                 null,
               tags: place['place']['hashtags'],
               placeName: place['place']['name'],

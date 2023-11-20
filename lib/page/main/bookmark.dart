@@ -5,6 +5,7 @@ import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
@@ -522,7 +523,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                       );
                     },
                     placeImageUrls: _bookmarkController.placeBookmark.value![index]['thumbnailInfoList']
-                        .map((item) => "$baseUrlDev${item['placeImgUrl'].toString()}").toList(),
+                        .map((item) => ImageParser.parseImageUrl(item['placeImgUrl'])).toList(),
                   );
                 },
               ),
@@ -718,7 +719,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                           }
                       );
                     },
-                    placeImageUrls: ["$baseUrlDev${_bookmarkController.courseBookmark.value![index]['imgUrl']}"],
+                    placeImageUrls: [ImageParser.parseImageUrl(_bookmarkController.courseBookmark.value![index]['imgUrl'])],
                   );
                 },
               ),

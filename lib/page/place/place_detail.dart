@@ -232,8 +232,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                       backgroundColor: Colors.white,
                       flexibleSpace: PictureFlexibleSpace(
                         imageUrl: placeData['photos'] != null && placeData['photos'].length > 0 ?
-                        "$baseUrlDev/api-recommender/place-photo/?${placeData['photos'][0]['url'].split('?')[1]}&max_width=480" :
-                        null,
+                          ImageParser.parseImageUrl(placeData['photos'][0]['url']):
+                          null,
                       ),
                     ),
                     SliverList(
@@ -904,13 +904,16 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     int imgCount = placeData['photos'].length;
     if (imgCount > 8) imgCount = 8;
     for (int i = 0;i < imgCount;i++) {
+      String? imgUrl = ImageParser.parseImageUrl(placeData['photos'][i]['url']);
       tiles.add(
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            "https://been-dev.yeoksi.com/api-recommender/place-photo/?${placeData['photos'][i]['url'].split('?')[1]}&max_width=480",
-            fit: BoxFit.cover,
-          ),
+          child: imgUrl != null ?
+            Image.network(
+              imgUrl,
+              fit: BoxFit.cover,
+            ) :
+            Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
         )
       );
     }

@@ -134,8 +134,8 @@ class _CourseMapPageState extends State<CourseMapPage> with TickerProviderStateM
                     padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
                     child: RoundedRowRectanglePlaceCard(
                       imageUrl: widget.courseController.coursePlaceData[index]['place']['img_url'] != null ?
-                      "$baseUrlDev/api-recommender/place-photo/?${ widget.courseController.coursePlaceData[index]['place']['img_url'].split('?')[1]}&max_width=480" :
-                      null,
+                        ImageParser.parseImageUrl(widget.courseController.coursePlaceData[index]['place']['img_url']) :
+                        null,
                       // tags: place['place']['tags'],
                       tags: [],
                       placeName: widget.courseController.coursePlaceData[index]['place']['name'],

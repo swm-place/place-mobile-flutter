@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/api/api_const.dart';
 
 class UnitConverter {
   static String formatDistance(int distanceInMeters) {
@@ -154,5 +155,18 @@ class HtmlParser {
   static String removeHtmlTags(String htmlText) {
     final RegExp regExp = RegExp(r'<[^>]*>', multiLine: true);
     return htmlText.replaceAll(regExp, '');
+  }
+}
+
+class ImageParser {
+  static String? parseImageUrl(String? url) {
+    if (url == null) return null;
+
+    var urlSplit = url.split('?');
+    if (urlSplit.length > 1) {
+      return "$baseUrlDev/api-recommender/place-photo/?${urlSplit[1]}&max_width=480";
+    } else {
+      return "$baseUrlDev$url";
+    }
   }
 }

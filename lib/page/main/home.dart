@@ -127,7 +127,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     for (int i = 0;i < data.length;i++) {
       String? imgUrl;
       if (data[i]['imgUrl'] != null) {
-        imgUrl = "$baseUrlDev${data[i]['imgUrl']}";
+        imgUrl = ImageParser.parseImageUrl(data[i]['imgUrl']);
       }
       data[i]['imgUrl'] = imgUrl;
     }
@@ -255,7 +255,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                   index -= 1;
                   String? imgUrl;
                   if (data['places'][index]['photos'] != null && data['places'][index]['photos'].length > 0) {
-                    imgUrl = "https://been-dev.yeoksi.com/api-recommender/place-photo/?${data['places'][index]['photos'][0]['url'].split('?')[1]}&max_width=480";
+                    imgUrl = ImageParser.parseImageUrl(data['places'][index]['photos'][0]['url']);
                   }
 
                   String openString = '정보 없음';

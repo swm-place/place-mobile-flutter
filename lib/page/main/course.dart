@@ -8,6 +8,7 @@ import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/course/course_inform_card.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
@@ -366,13 +367,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
                       courseName: _myCourseData![index]['title'],
                       placeCount: _myCourseData![index]['placesInCourse'].length,
                       distance: distance.floor(),
-                      placesImageUrls: _myCourseData![index]['placesInCourse'].map((item) {
-                        if (item['place']['img_url'] != null) {
-                          return "$baseUrlDev/api-recommender/place-photo/?${item['place']['img_url'].split('?')[1]}&max_width=480";
-                        } else {
-                          return null;
-                        }
-                      }).toList(),
+                      placesImageUrls: _myCourseData![index]['placesInCourse'].map((item) => ImageParser.parseImageUrl(item['place']['img_url'])).toList(),
                       placesName: _myCourseData![index]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
                       regionName: courseLineData != null && courseLineData != '' ?
                       courseLineData['region_name'] : '-',

@@ -203,7 +203,7 @@ class _CourseAddPageState extends State<CourseAddPage> {
                             });
                           },
                           imageUrl: _selectedAddPlace[index]['photos'] != null && _selectedAddPlace[index]['photos'].length > 0 ?
-                            "$baseUrlDev/api-recommender/place-photo/?${_selectedAddPlace[index]['photos'][0]['url'].split('?')[1]}&max_width=480" :
+                            ImageParser.parseImageUrl(_selectedAddPlace[index]['photos'][0]['url']) :
                             null,
                           placeName: _selectedAddPlace[index]['name'],
                         );
@@ -225,7 +225,7 @@ class _CourseAddPageState extends State<CourseAddPage> {
                         },
                         child: RoundedRowRectangleCartPlaceCard(
                           imageUrl: _places[index]['photos'] != null && _places[index]['photos'].length > 0 ?
-                            "$baseUrlDev/api-recommender/place-photo/?${_places[index]['photos'][0]['url'].split('?')[1]}&max_width=480" :
+                            ImageParser.parseImageUrl(_places[index]['photos'][0]['url']) :
                             null,
                           tags: _places[index]['hashtags'],
                           placeName: _places[index]['name'],

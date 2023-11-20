@@ -698,7 +698,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
       course.addAll([
         RoundedRowRectanglePlaceCard(
           imageUrl: place['place']['img_url'] != null ?
-            "$baseUrlDev/api-recommender/place-photo/?${ place['place']['img_url'].split('?')[1]}&max_width=480" :
+            ImageParser.parseImageUrl(place['place']['img_url']) :
             null,
           tags: place['place']['hashtags'],
           // tags: [],
@@ -977,13 +977,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 flexibleSpace: Obx(() {
                   return MultiplePictureFlexibleSpace(
                     imageUrl: courseController.coursePlaceData
-                        .map<String?>((item) {
-                          String? url = item['place']['img_url'];
-                          if (url != null) {
-                            url = "$baseUrlDev/api-recommender/place-photo/?${url.split('?')[1]}&max_width=480";
-                          }
-                          return url;
-                        }).toList(),
+                        .map<String?>((item) => ImageParser.parseImageUrl(item['place']['img_url'])).toList(),
                   );
                 }),
               ),
