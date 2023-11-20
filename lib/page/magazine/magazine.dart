@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
+import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/cache_image.dart';
@@ -29,6 +31,7 @@ class Magazine extends StatefulWidget {
 class _MagazineState extends State<Magazine> {
 
   final MagazineProvider _magazineProvider = MagazineProvider();
+  final CourseProvider _courseProvider = CourseProvider();
 
   bool likeClicked = false;
   bool asyncLike = false;
@@ -63,6 +66,51 @@ class _MagazineState extends State<Magazine> {
     asyncLike = false;
   }
 
+  void _convertCourse() async {
+    Get.dialog(
+        const AlertDialog(
+          contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+          actionsPadding: EdgeInsets.zero,
+          titlePadding: EdgeInsets.zero,
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 24),
+              Text('코스로 변환중'),
+            ],
+          ),
+        ),
+        barrierDismissible: false
+    );
+
+    String title = '매거진 to 코스';
+    List<dynamic> places = [];
+    for (int i = 0;i < _magazineData!['placesInCourseMagazine'].length;i++) {
+      places.add({
+        "place": {
+          "id": _magazineData!['placesInCourseMagazine'][i]['place']['id']
+        },
+        "order": i + 1,
+      });
+    }
+    Map<String, dynamic>? result = await _courseProvider.postMyCourseData(title, places);
+    Get.back();
+    if (result != null) {
+      Get.to(() => CourseMainPage(courseId: result['id']));
+    } else {
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("코스 변환 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loadData != -1) {
@@ -76,7 +124,7 @@ class _MagazineState extends State<Magazine> {
                       actions: [
                         FlexibleTopBarActionButton(
                             onPressed: () {
-
+                              _convertCourse();
                             },
                             icon: const Icon(Icons.swap_horiz, size: 18,)
                         ),

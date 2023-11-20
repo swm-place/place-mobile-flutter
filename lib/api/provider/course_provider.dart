@@ -137,7 +137,6 @@ class CourseProvider extends DefaultProvider {
 
     Response response;
     try {
-
       response = await post(uri, headers: header, body: json.encode({
         "title": title,
         "description": "",
