@@ -78,7 +78,7 @@ class _MagazineState extends State<Magazine> {
                             onPressed: () {
 
                             },
-                            icon: const Icon(Icons.ios_share, size: 18,)
+                            icon: const Icon(Icons.swap_horiz, size: 18,)
                         ),
                         FlexibleTopBarActionButton(
                           onPressed: () {
@@ -141,6 +141,7 @@ class _MagazineState extends State<Magazine> {
     Map<String, dynamic>? result = await _magazineProvider.getMagazine(widget.magazineId);
     if (result != null) {
       _magazineData = result;
+      if (result['isFavorite'] != null) likeClicked = result['isFavorite'];
 
       setState(() {
         _loadData = 1;
