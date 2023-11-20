@@ -115,6 +115,10 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   }
 
   void _getMagazineSection() async {
+    setState(() {
+      _loadMagazineData = -1;
+    });
+
     List<dynamic>? data = await _magazineProvider.getMagazineList();
     if (data == null) {
       _magazineData = null;
@@ -315,6 +319,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   }
 
   void _getPlaceRecommendationSection() async {
+    setState(() {
+      _loadRecommendData = -1;
+    });
     Map<String, dynamic>? data = await _placeProvider.getPlaceRecommendNowSection();
 
     if (data == null) {
@@ -392,11 +399,18 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     super.build(context);
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-            child: Column(
-              children: _createSection(),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _getPlaceRecommendationSection();
+            _getMagazineSection();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+              child: Column(
+                children: _createSection(),
+              ),
             ),
           ),
         ),
