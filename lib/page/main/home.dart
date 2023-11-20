@@ -397,6 +397,73 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     });
   }
 
+  Widget _createRecommendShimmer() {
+    return Container(
+      width: 250,
+      decoration: BoxDecoration(
+          color: Color.fromRGBO(240, 240, 240, 1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: const Color.fromRGBO(240, 240, 240, 1),
+          )
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                  color: Color.fromRGBO(240, 240, 240, 1)
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: 160,
+                  height: 20,
+                  decoration: BoxDecoration(
+                      color: const Color.fromRGBO(240, 240, 240, 1),
+                      borderRadius: BorderRadius.circular(40)
+                  ),
+                ),
+                const SizedBox(
+                    height: 6
+                ),
+                Container(
+                  width: 119,
+                  height: 20,
+                  decoration: BoxDecoration(
+                      color: const Color.fromRGBO(240, 240, 240, 1),
+                      borderRadius: BorderRadius.circular(40)
+                  ),
+                ),
+                const SizedBox(
+                  height: 6,
+                ),
+                Container(
+                  width: 145,
+                  height: 20,
+                  decoration: BoxDecoration(
+                      color: const Color.fromRGBO(
+                          199, 88, 88, 1.0),
+                      borderRadius: BorderRadius.circular(40)
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _loadPlaceRecommendSection() {
     if (_loadRecommendData == 0) return Container();
 
@@ -413,57 +480,43 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
         children: items,
       );
     } else {
-      return Shimmer.fromColors(
-        baseColor: const Color.fromRGBO(240, 240, 240, 1),
-        highlightColor: Colors.grey,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 120,
-                height: 25,
-                decoration: BoxDecoration(
-                    color: const Color.fromRGBO(240, 240, 240, 1),
-                    borderRadius: BorderRadius.circular(40)
-                ),
+      return Column(
+        children: [
+          Shimmer.fromColors(
+            baseColor: const Color.fromRGBO(240, 240, 240, 1),
+            highlightColor: Colors.grey,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 120,
+                    height: 25,
+                    decoration: BoxDecoration(
+                        color: const Color.fromRGBO(240, 240, 240, 1),
+                        borderRadius: BorderRadius.circular(40)
+                    ),
+                  ),
+                  const SizedBox(height: 10,),
+                  SizedBox(
+                    height: 195,
+                    child: Row(
+                      children: [
+                        _createRecommendShimmer(),
+                        const SizedBox(width: 16,),
+                        _createRecommendShimmer(),
+                        const SizedBox(width: 16,),
+                        _createRecommendShimmer(),
+                      ],
+                    ),
+                  )
+                ],
               ),
-              const SizedBox(height: 10,),
-              SizedBox(
-                height: 195,
-                child: Row(
-                  children: [
-                    Container(
-                      width: 250,
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(240, 240, 240, 1),
-                        borderRadius: BorderRadius.circular(8)
-                      ),
-                    ),
-                    const SizedBox(width: 16,),
-                    Container(
-                      width: 250,
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(240, 240, 240, 1),
-                        borderRadius: BorderRadius.circular(8)
-                      ),
-                    ),
-                    const SizedBox(width: 16,),
-                    Container(
-                      width: 250,
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(240, 240, 240, 1),
-                        borderRadius: BorderRadius.circular(8)
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
+            ),
           ),
-        ),
+        ],
       );
     }
   }
