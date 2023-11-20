@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
@@ -161,7 +162,12 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
               ),
               barrierDismissible: false
           );
-          Map<String, dynamic>? result = await _courseProvider.postMyCourseData();
+
+          DateTime now = DateTime.now();
+          DateFormat dateFormat = DateFormat("yy MM dd");
+          String formattedDate = dateFormat.format(now);
+
+          Map<String, dynamic>? result = await _courseProvider.postMyCourseData("$formattedDate 나의 계획", null);
           Get.back();
           if (result == null) {
             Get.dialog(

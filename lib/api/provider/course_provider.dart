@@ -130,21 +130,18 @@ class CourseProvider extends DefaultProvider {
     }
   }
 
-  Future<Map<String, dynamic>?> postMyCourseData() async {
+  Future<Map<String, dynamic>?> postMyCourseData(String title, List<dynamic>? courseData) async {
     Uri uri = Uri.parse("$baseUrl/api/courses");
     Map<String, String>? header = await setHeader(true);
     header!["Content-Type"] = 'application/json';
 
     Response response;
     try {
-      DateTime now = DateTime.now();
-      DateFormat dateFormat = DateFormat("yy MM dd");
-      String formattedDate = dateFormat.format(now);
 
       response = await post(uri, headers: header, body: json.encode({
-        "title": "$formattedDate 나의 계획",
+        "title": title,
         "description": "",
-        "placesInCourse": [],
+        "placesInCourse": courseData ??= [],
         "inProgress": false,
         "finished": false
       }));
