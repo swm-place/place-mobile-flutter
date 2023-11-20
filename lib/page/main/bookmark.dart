@@ -379,6 +379,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                 child: Scrollbar(
                                   controller: _bookmarkScrollController,
                                   child: ListView.separated(
+                                    physics: const AlwaysScrollableScrollPhysics(),
                                     controller: _bookmarkScrollController,
                                     padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
                                     itemCount: _bookmarkData.length,
