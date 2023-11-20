@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
+import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
+import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/story/story_my_card.dart';
@@ -19,16 +21,18 @@ class BookmarkPage extends StatefulWidget {
 }
 
 class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClientMixin<BookmarkPage> {
+  final UserProvider _userProvider = UserProvider();
 
   late final TextEditingController _bookmarkNameController;
   late final  BookmarkController _bookmarkController;
 
-
   late ScrollController _placeScrollController;
   late ScrollController _courseScrollController;
+  late ScrollController _bookmarkScrollController;
 
   bool loadVisibilityPlace = false;
   bool loadVisibilityCourse = false;
+  bool loadVisibility = false;
 
   int placeBookmarkInit = -1;
   int courseBookmarkInit = -1;
@@ -88,6 +92,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     _bookmarkController = BookmarkController();
     _placeScrollController = ScrollController();
     _courseScrollController = ScrollController();
+    _bookmarkScrollController = ScrollController();
 
     _placeScrollController.addListener(() {
       if (_placeScrollController.position.maxScrollExtent == _placeScrollController.offset && !loadVisibilityPlace) {
@@ -112,6 +117,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     _bookmarkController.dispose();
     _placeScrollController.dispose();
     _courseScrollController.dispose();
+    _bookmarkScrollController.dispose();
     super.dispose();
   }
 
@@ -301,6 +307,150 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     }
   }
 
+  void _showPlaceBookmarkSheet(String bookmarkTitle, dynamic bookmarkId) {
+    //TODO: show place bookmark sheet
+    bool stateFirst = true;
+    bool loadVisibility = false;
+
+    int page = 0;
+    int size = 25;
+
+    StateSetter? state;
+
+    List<dynamic> _bookmarkData = [];
+
+    void addPlaceData() async {
+      state!(() {
+        setState(() {
+          loadVisibility = true;
+        });
+      });
+      List<dynamic>? result = await _userProvider.getPlaceInBookmark(page, size, bookmarkId);
+
+      if (result != null) {
+        _bookmarkData.addAll(result);
+        page++;
+      }
+
+      state!(() {
+        setState(() {
+          loadVisibility = false;
+        });
+      });
+    }
+
+    showModalBottomSheet(
+        isScrollControlled: true,
+        useSafeArea: true,
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter bottomState) {
+              state = bottomState;
+              if (stateFirst) {
+                _bookmarkScrollController.addListener(() {
+                  if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset && !loadVisibility) {
+                    stateFirst = false;
+                    addPlaceData();
+                  }
+                });
+              }
+              return Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    topLeft: Radius.circular(8),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                                child: Text(bookmarkTitle, style: SectionTextStyle.sectionTitle(),)
+                              ),
+                              SizedBox(height: 18,),
+                              Expanded(
+                                child: Scrollbar(
+                                  controller: _bookmarkScrollController,
+                                  child: ListView.separated(
+                                    controller: _bookmarkScrollController,
+                                    padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                    itemCount: _bookmarkData.length,
+                                    itemBuilder: (context, index) {
+                                      return RoundedRowRectanglePlaceCard(
+                                        imageUrl: _bookmarkData[index]['imgUrl'] != null ?
+                                        ImageParser.parseImageUrl(_bookmarkData[index]['imgUrl']) :
+                                        null,
+                                        // tags: place['place']['hashtags'],
+                                        tags: [],
+                                        placeName: _bookmarkData[index]['name'],
+                                        // placeType: _bookmarkData[index]['category'],
+                                        placeType: '',
+                                        // open: place['place']['open'],
+                                        open: '',
+                                        distance: '',
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(height: 8,);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Visibility(
+                              visible: loadVisibility,
+                              child: AbsorbPointer(
+                                absorbing: true,
+                                child: Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(38),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(24)
+                                    ),
+                                    child: const CircularProgressIndicator(),
+                                  ),
+                                ),
+                              )
+                          )
+                        ],
+                      ),
+                    ),
+                    // SizedBox(height: 18,),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(24, 0, 24, 18),
+                      width: double.infinity,
+                      child: FilledButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('닫기')
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        }
+    ).whenComplete(() {
+      _bookmarkScrollController.dispose();
+      _bookmarkScrollController = ScrollController();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      addPlaceData();
+    });
+  }
+
   void patchBookmark(dynamic bookmarkId, String type, String title) async {
     Get.dialog(
       const AlertDialog(
@@ -461,6 +611,10 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                     height: 140,
                     onTap: () {
                       print(_bookmarkController.placeBookmark.value![index]['title']);
+                      _showPlaceBookmarkSheet(
+                        _bookmarkController.placeBookmark.value![index]['title'],
+                        _bookmarkController.placeBookmark.value![index]['placeBookmarkId']
+                      );
                     },
                     onDelete: () {
                       deleteBookmark(

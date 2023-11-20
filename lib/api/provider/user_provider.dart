@@ -384,4 +384,22 @@ class UserProvider extends DefaultProvider {
       return false;
     }
   }
+
+  Future<List<dynamic>?> getPlaceInBookmark(int page, int size, dynamic bookmarkId) async {
+    if (AuthController.to.user.value == null) return null;
+
+    Uri uri = Uri.parse("$baseUrl/api/user/${AuthController.to.user.value!.uid}/place-bookmark/$bookmarkId?page=$page&size=$size");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
 }
