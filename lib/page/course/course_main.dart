@@ -490,11 +490,18 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                                     padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
                                     itemCount: _bookmarkData.length,
                                     itemBuilder: (context, index) {
+                                      bool isContain = false;
+                                      for (var i in courseController.bookmarkData) {
+                                        if (i['id'] == _bookmarkData[index]['id']) {
+                                          isContain = true;
+                                          break;
+                                        }
+                                      }
                                       return ListTile(
                                         minVerticalPadding: 0,
                                         contentPadding: EdgeInsets.zero,
                                         title: Text("${_bookmarkData[index]['title']}"),
-                                        trailing: _bookmarkData[index]['bookmark']
+                                        trailing: isContain
                                             ? Icon(Icons.check_box, color: lightColorScheme.primary,)
                                             : Icon(Icons.check_box_outline_blank),
                                         onTap: () async {
@@ -504,18 +511,36 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                                             });
                                           });
                                           bool result;
-                                          if (_bookmarkData[index]['bookmark']) {
+                                          if (isContain) {
                                             result = await _userProvider.deleteCourseInBookmark(
-                                                _bookmarkData[index]['placeBookmarkId'], widget.courseId);
+                                                _bookmarkData[index]['id'], widget.courseId);
                                           } else {
                                             result = await _userProvider.postCourseInBookmark(
-                                                _bookmarkData[index]['placeBookmarkId'], widget.courseId);
+                                                _bookmarkData[index]['id'], widget.courseId);
                                           }
                                           if (result) {
+                                            if (isContain) {
+                                              int i = 0;
+                                              bool find = false;
+                                              for (;i < courseController.bookmarkData.length;i++) {
+                                                if (courseController.bookmarkData[i]['id'] == _bookmarkData[index]['id']) {
+                                                  find = true;
+                                                  break;
+                                                }
+                                              }
+                                              if (find) {
+                                                courseController.bookmarkData.removeAt(i);
+                                              }
+                                            } else {
+                                              courseController.bookmarkData.add({
+                                                'id': _bookmarkData[index]['id'],
+                                                'title': _bookmarkData[index]['title']
+                                              });
+                                            }
                                             bottomState(() {
                                               setState(() {
                                                 loadVisibility = false;
-                                                _bookmarkData[index]['bookmark'] = !_bookmarkData[index]['bookmark'];
+                                                isContain = !isContain;
                                               });
                                             });
                                           }
