@@ -45,7 +45,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController birthController = TextEditingController();
 
-  late final ScrollController _placeLogScrollController;
+  ScrollController _placeLogScrollController = ScrollController();
 
   bool checkNicknameDup = false;
 
@@ -62,18 +62,6 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
 
   @override
   bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    _placeLogScrollController = ScrollController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _placeLogScrollController.dispose();
-    super.dispose();
-  }
 
   Widget _createProfileSection() {
     return Container(
