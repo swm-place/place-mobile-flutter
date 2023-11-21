@@ -13,6 +13,7 @@ import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/course/course_inform_card.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CoursePage extends StatefulWidget {
   @override
@@ -276,26 +277,61 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
     );
   }
 
+  Widget _createCourseSection() => Column(
+    children: [
+      Container(
+        width: double.infinity,
+        height: 130,
+        decoration: BoxDecoration(
+            color: const Color.fromRGBO(240, 240, 240, 1),
+            borderRadius: BorderRadius.circular(8)
+        ),
+      ),
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 110,
+              height: 23,
+              decoration: BoxDecoration(
+                  color: const Color.fromRGBO(240, 240, 240, 1),
+                  borderRadius: BorderRadius.circular(8)
+              ),
+            ),
+            SizedBox(height: 8,),
+            Container(
+              width: 180,
+              height: 23,
+              decoration: BoxDecoration(
+                  color: const Color.fromRGBO(240, 240, 240, 1),
+                  borderRadius: BorderRadius.circular(8)
+              ),
+            ),
+          ],
+        ),
+      )
+    ],
+  );
+
   Widget _createMyCourseSection() {
     if (_loadMyCourseData == -1) {
       return MainSection(
         title: '나의 코스',
         content: Padding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.grey[300]
-            ),
-            padding: const EdgeInsets.all(24),
-            child: const Column(
-                children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 12,),
-                Text("데이터를 불러오는 중 입니다.")
+          child: Shimmer.fromColors(
+            baseColor: const Color.fromRGBO(240, 240, 240, 1),
+            highlightColor: Colors.grey,
+            child: Column(
+              children: [
+                _createCourseSection(),
+                _createCourseSection(),
+                _createCourseSection(),
               ],
-            )
+            ),
           )
         )
       );
