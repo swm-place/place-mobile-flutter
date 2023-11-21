@@ -6,6 +6,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
+import 'package:place_mobile_flutter/page/course/course_main.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -471,15 +473,20 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                               icon: Icons.delete,
                                             )
                                           ],
-                                        ),//TODO
+                                        ),
                                         child: type == 'place' ?
-                                          RoundedRowBookmarkRectanglePlaceCard(
-                                            imageUrl: _bookmarkData[index]['imgUrl'] != null ?
-                                            ImageParser.parseImageUrl(_bookmarkData[index]['imgUrl']) :
-                                            null,
-                                            placeName: _bookmarkData[index]['name'],
-                                            // placeType: _bookmarkData[index]['category'],
-                                            placeType: '',
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => PlaceDetailPage(placeId: _bookmarkData[index]['id']));
+                                            },
+                                            child: RoundedRowBookmarkRectanglePlaceCard(
+                                              imageUrl: _bookmarkData[index]['imgUrl'] != null ?
+                                              ImageParser.parseImageUrl(_bookmarkData[index]['imgUrl']) :
+                                              null,
+                                              placeName: _bookmarkData[index]['name'],
+                                              // placeType: _bookmarkData[index]['category'],
+                                              placeType: '',
+                                            ),
                                           ) :
                                           CourseListCardItem(
                                             courseName: _bookmarkData![index]['title'],
@@ -490,10 +497,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                             regionName: courseLineData != null && courseLineData != '' ?
                                             courseLineData['region_name'] : '-',
                                             onPressed: () {
-                                              // Get.to(() => CourseMainPage(courseId: _myCourseData![index]['id'],))!
-                                              //     .then((value) {
-                                              //   initCourseData();
-                                              // });
+                                              Get.to(() => CourseMainPage(courseId: _bookmarkData![index]['id'],));
                                             },
                                           ),
                                       );
