@@ -295,3 +295,81 @@ class BookmarkCard extends StatelessWidget {
     );
   }
 }
+
+class LikeCard extends StatelessWidget {
+  final Function()? onTap;
+
+  LikeCard({
+    required this.title,
+    required this.onTap,
+    this.width,
+    this.height,
+    Key? key,
+  }) : super(key: key);
+
+  String title;
+  // String message;
+  // String location;
+  // String imageUrl;
+
+  double? width;
+  double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    width ??= double.infinity;
+    height ??= double.infinity;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Stack(
+        children: [
+          Container(
+            width: width,
+            height: height,
+            child: Center(
+              child: Icon(Icons.favorite),
+            ),
+          ),
+          Container(
+            width: width,
+            height: height,
+            color: const Color.fromARGB(102, 1, 1, 1),
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: onTap,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: AutoSizeText(
+                          title,
+                          style: const TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            height: 1,
+                          ),
+                          maxLines: 1,
+                          minFontSize: 18,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

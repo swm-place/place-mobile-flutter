@@ -707,30 +707,40 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                     crossAxisSpacing: 8
                 ),
                 scrollDirection: Axis.horizontal,
-                itemCount: _bookmarkController.placeBookmark.value!.length,
+                itemCount: _bookmarkController.placeBookmark.value!.length + 1,
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                 itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return LikeCard(
+                      width: 140,
+                      height: 140,
+                      title: '장소 좋아요',
+                      onTap: () {
+
+                      }
+                    );
+                  }
                   return BookmarkCard(
-                    title: _bookmarkController.placeBookmark.value![index]['title'],
+                    title: _bookmarkController.placeBookmark.value![index - 1]['title'],
                     width: 140,
                     height: 140,
                     onTap: () {
-                      print(_bookmarkController.placeBookmark.value![index]['title']);
+                      print(_bookmarkController.placeBookmark.value![index - 1]['title']);
                       _showPlaceBookmarkSheet(
-                        _bookmarkController.placeBookmark.value![index]['title'],
-                        _bookmarkController.placeBookmark.value![index]['placeBookmarkId'],
+                        _bookmarkController.placeBookmark.value![index - 1]['title'],
+                        _bookmarkController.placeBookmark.value![index - 1]['placeBookmarkId'],
                         'place'
                       );
                     },
                     onDelete: () {
                       deleteBookmark(
-                        _bookmarkController.placeBookmark.value![index]['placeBookmarkId'],
+                        _bookmarkController.placeBookmark.value![index - 1]['placeBookmarkId'],
                         'place',
-                        _bookmarkController.placeBookmark.value![index]['title']
+                        _bookmarkController.placeBookmark.value![index - 1]['title']
                       );
                     },
                     onRename: () {
-                      _bookmarkNameController.text = _bookmarkController.placeBookmark.value![index]['title'];
+                      _bookmarkNameController.text = _bookmarkController.placeBookmark.value![index - 1]['title'];
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -766,9 +776,9 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                         final String title = _bookmarkNameController.text.toString();
                                         if (bookmarkTextFieldValidator(title) != null) return;
                                         Navigator.of(context, rootNavigator: true).pop();
-                                        if (_bookmarkController.placeBookmark.value![index]['title'] == title) return;
+                                        if (_bookmarkController.placeBookmark.value![index - 1]['title'] == title) return;
                                         patchBookmark(
-                                            _bookmarkController.placeBookmark.value![index]['placeBookmarkId'],
+                                            _bookmarkController.placeBookmark.value![index - 1]['placeBookmarkId'],
                                             'place',
                                             title
                                         );
@@ -782,7 +792,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                           }
                       );
                     },
-                    placeImageUrls: _bookmarkController.placeBookmark.value![index]['thumbnailInfoList']
+                    placeImageUrls: _bookmarkController.placeBookmark.value![index - 1]['thumbnailInfoList']
                         .map((item) => ImageParser.parseImageUrl(item['placeImgUrl'])).toList(),
                   );
                 },
@@ -909,30 +919,40 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                     crossAxisSpacing: 8
                 ),
                 scrollDirection: Axis.horizontal,
-                itemCount: _bookmarkController.courseBookmark.value!.length,
+                itemCount: _bookmarkController.courseBookmark.value!.length + 1,
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                 itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return LikeCard(
+                        width: 140,
+                        height: 140,
+                        title: '매거진 좋아요',
+                        onTap: () {
+
+                        }
+                    );
+                  }
                   return BookmarkCard(
-                    title: _bookmarkController.courseBookmark.value![index]['title'],
+                    title: _bookmarkController.courseBookmark.value![index - 1]['title'],
                     width: 140,
                     height: 140,
                     onTap: () {
-                      print(_bookmarkController.courseBookmark.value![index]['title']);
+                      print(_bookmarkController.courseBookmark.value![index - 1]['title']);
                       _showPlaceBookmarkSheet(
-                          _bookmarkController.courseBookmark.value![index]['title'],
-                          _bookmarkController.courseBookmark.value![index]['id'],
+                          _bookmarkController.courseBookmark.value![index - 1]['title'],
+                          _bookmarkController.courseBookmark.value![index - 1]['id'],
                           'course'
                       );
                     },
                     onDelete: () {
                       deleteBookmark(
-                          _bookmarkController.courseBookmark.value![index]['id'],
+                          _bookmarkController.courseBookmark.value![index - 1]['id'],
                           'course',
-                          _bookmarkController.courseBookmark.value![index]['title']
+                          _bookmarkController.courseBookmark.value![index - 1]['title']
                       );
                     },
                     onRename: () {
-                      _bookmarkNameController.text = _bookmarkController.courseBookmark.value![index]['title'];
+                      _bookmarkNameController.text = _bookmarkController.courseBookmark.value![index - 1]['title'];
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -968,9 +988,9 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                         final String title = _bookmarkNameController.text.toString();
                                         if (bookmarkTextFieldValidator(title) != null) return;
                                         Navigator.of(context, rootNavigator: true).pop();
-                                        if (_bookmarkController.courseBookmark.value![index]['title'] == title) return;
+                                        if (_bookmarkController.courseBookmark.value![index - 1]['title'] == title) return;
                                         patchBookmark(
-                                          _bookmarkController.courseBookmark.value![index]['id'],
+                                          _bookmarkController.courseBookmark.value![index - 1]['id'],
                                           'course',
                                           title
                                         );
@@ -984,7 +1004,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                           }
                       );
                     },
-                    placeImageUrls: [ImageParser.parseImageUrl(_bookmarkController.courseBookmark.value![index]['imgUrl'])],
+                    placeImageUrls: [ImageParser.parseImageUrl(_bookmarkController.courseBookmark.value![index - 1]['imgUrl'])],
                   );
                 },
               ),
