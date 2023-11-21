@@ -277,7 +277,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
   }
 
   Widget _createMyCourseSection() {
-    if (_loadMyCourseData < 1) {
+    if (_loadMyCourseData == -1) {
       return MainSection(
         title: '나의 코스',
         content: Padding(
@@ -300,7 +300,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
         )
       );
     }
-    if (_myCourseData == null) {
+    if (_loadMyCourseData == 0 || _myCourseData == null) {
       return MainSection(
         title: '나의 코스',
         content: Padding(
