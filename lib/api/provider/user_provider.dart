@@ -402,4 +402,22 @@ class UserProvider extends DefaultProvider {
       return null;
     }
   }
+
+  Future<List<dynamic>?> getCourseInBookmark(int page, int size, dynamic? bookmarkId) async {
+    if (AuthController.to.user.value == null) return null;
+
+    Uri uri = Uri.parse("$baseUrl/api/bookmarks/${AuthController.to.user.value!.uid}/course-bookmarks/$bookmarkId?course_page=$page&course_size=$size");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes))['courses'];
+    } else {
+      return null;
+    }
+  }
 }

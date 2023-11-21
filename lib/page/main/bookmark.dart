@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -9,9 +11,11 @@ import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
+import 'package:place_mobile_flutter/widget/course/course_inform_card.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
+import 'package:place_mobile_flutter/widget/story/story_card.dart';
 import 'package:place_mobile_flutter/widget/story/story_my_card.dart';
 
 class BookmarkPage extends StatefulWidget {
@@ -133,7 +137,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                 // _searchSection(),
                 // _myStorySection(),
                 _locationBookmarkSection(),
-                _storyBookmarkSection(),
+                _courseBookmarkSection(),
                 const SizedBox(height: 24,)
               ],
             ),
@@ -308,8 +312,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     }
   }
 
-  void _showPlaceBookmarkSheet(String bookmarkTitle, dynamic bookmarkId) {
-    //TODO: show place bookmark sheet
+  void _showPlaceBookmarkSheet(String bookmarkTitle, dynamic bookmarkId, String type) {
     bool stateFirst = true;
     bool loadVisibility = false;
 
@@ -320,16 +323,26 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
 
     List<dynamic> _bookmarkData = [];
 
-    void addPlaceData() async {
+    void addBookmarkData() async {
       state!(() {
         setState(() {
           loadVisibility = true;
         });
       });
-      List<dynamic>? result = await _userProvider.getPlaceInBookmark(page, size, bookmarkId);
+
+      List<dynamic>? result;
+      if (type == 'place') {
+        result = await _userProvider.getPlaceInBookmark(page, size, bookmarkId);
+      } else {
+        result = await _userProvider.getCourseInBookmark(page, size, bookmarkId);
+      }
 
       if (result != null) {
-        _bookmarkData.addAll(result);
+        if (type == 'place') {
+          _bookmarkData.addAll(result);
+        } else {
+          _bookmarkData.addAll(result);
+        }
         page++;
       }
 
@@ -352,7 +365,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                 _bookmarkScrollController.addListener(() {
                   if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset && !loadVisibility) {
                     stateFirst = false;
-                    addPlaceData();
+                    addBookmarkData();
                   }
                 });
               }
@@ -385,6 +398,26 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                     padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
                                     itemCount: _bookmarkData.length,
                                     itemBuilder: (context, index) {
+                                      dynamic? courseLineData;
+                                      double distance = 0.0;
+                                      if (type == 'course') {
+                                        if (_bookmarkData![index]['routesJson'] != null) {
+                                          courseLineData = json.decode(_bookmarkData![index]['routesJson']);
+                                        }
+
+                                        if (courseLineData != null && courseLineData != '') {
+                                          if (_bookmarkData![index]['placesInCourse'].length > 1) {
+                                            if (courseLineData!['routes'][0]['distance'] is int) {
+                                              distance = courseLineData!['routes'][0]['distance'].toDouble();
+                                            } else {
+                                              distance = courseLineData!['routes'][0]['distance'];
+                                            }
+                                          } else {
+                                            distance = 0;
+                                          }
+                                        }
+                                      }
+
                                       return Slidable(
                                         key: Key('$index'),
                                         endActionPane: ActionPane(
@@ -401,25 +434,31 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                                         children: [
                                                           CircularProgressIndicator(),
                                                           SizedBox(width: 24),
-                                                          Text('장소 삭제 반영중'),
+                                                          Text('데이터 삭제 반영중'),
                                                         ],
                                                       ),
                                                     ),
                                                     barrierDismissible: false
                                                 );
-                                                bool result = await _userProvider.deletePlaceInBookmark(
-                                                    bookmarkId, _bookmarkData[index]['id']);
+                                                bool result;
+                                                if (type == 'place') {
+                                                  result = await _userProvider.deletePlaceInBookmark(
+                                                      bookmarkId, _bookmarkData[index]['id']);
+                                                } else {
+                                                  result = await _userProvider.deleteCourseInBookmark(
+                                                      bookmarkId, _bookmarkData[index]['id']);
+                                                }
                                                 Get.back();
                                                 if (result) {
                                                   _bookmarkData.clear();
                                                   page = 0;
-                                                  addPlaceData();
+                                                  addBookmarkData();
                                                 } else {
                                                   Get.dialog(
                                                     AlertDialog(
                                                       contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
                                                       titlePadding: EdgeInsets.zero,
-                                                      content: const Text("장소 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                                                      content: const Text("데이터 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
                                                       actions: [
                                                         TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
                                                       ],
@@ -432,15 +471,31 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                               icon: Icons.delete,
                                             )
                                           ],
-                                        ),
-                                        child: RoundedRowBookmarkRectanglePlaceCard(
-                                          imageUrl: _bookmarkData[index]['imgUrl'] != null ?
-                                          ImageParser.parseImageUrl(_bookmarkData[index]['imgUrl']) :
-                                          null,
-                                          placeName: _bookmarkData[index]['name'],
-                                          // placeType: _bookmarkData[index]['category'],
-                                          placeType: '',
-                                        ),
+                                        ),//TODO
+                                        child: type == 'place' ?
+                                          RoundedRowBookmarkRectanglePlaceCard(
+                                            imageUrl: _bookmarkData[index]['imgUrl'] != null ?
+                                            ImageParser.parseImageUrl(_bookmarkData[index]['imgUrl']) :
+                                            null,
+                                            placeName: _bookmarkData[index]['name'],
+                                            // placeType: _bookmarkData[index]['category'],
+                                            placeType: '',
+                                          ) :
+                                          CourseListCardItem(
+                                            courseName: _bookmarkData![index]['title'],
+                                            placeCount: _bookmarkData![index]['placesInCourse'].length,
+                                            distance: distance.floor(),
+                                            placesImageUrls: _bookmarkData![index]['placesInCourse'].map((item) => ImageParser.parseImageUrl(item['place']['img_url'])).toList(),
+                                            placesName: _bookmarkData![index]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
+                                            regionName: courseLineData != null && courseLineData != '' ?
+                                            courseLineData['region_name'] : '-',
+                                            onPressed: () {
+                                              // Get.to(() => CourseMainPage(courseId: _myCourseData![index]['id'],))!
+                                              //     .then((value) {
+                                              //   initCourseData();
+                                              // });
+                                            },
+                                          ),
                                       );
                                     },
                                     separatorBuilder: (context, index) {
@@ -493,7 +548,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      addPlaceData();
+      addBookmarkData();
     });
   }
 
@@ -659,7 +714,8 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                       print(_bookmarkController.placeBookmark.value![index]['title']);
                       _showPlaceBookmarkSheet(
                         _bookmarkController.placeBookmark.value![index]['title'],
-                        _bookmarkController.placeBookmark.value![index]['placeBookmarkId']
+                        _bookmarkController.placeBookmark.value![index]['placeBookmarkId'],
+                        'place'
                       );
                     },
                     onDelete: () {
@@ -734,7 +790,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     );
   }
 
-  Widget _storyBookmarkSection() {
+  Widget _courseBookmarkSection() {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
       child: MainSection(
@@ -858,6 +914,11 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                     height: 140,
                     onTap: () {
                       print(_bookmarkController.courseBookmark.value![index]['title']);
+                      _showPlaceBookmarkSheet(
+                          _bookmarkController.courseBookmark.value![index]['title'],
+                          _bookmarkController.courseBookmark.value![index]['id'],
+                          'course'
+                      );
                     },
                     onDelete: () {
                       deleteBookmark(
