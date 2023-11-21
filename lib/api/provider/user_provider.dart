@@ -420,4 +420,22 @@ class UserProvider extends DefaultProvider {
       return null;
     }
   }
+
+  Future<List<dynamic>?> getLogPlace(int page, int size) async {
+    if (AuthController.to.user.value == null) return null;
+
+    Uri uri = Uri.parse("$baseUrl/api-recommender/logs/${AuthController.to.user.value!.uid}/place-fetch?size=$size&offset=$page");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
 }

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/page/account/login.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/page/preference/preference.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/state/user_controller.dart';
@@ -14,6 +15,7 @@ import 'package:place_mobile_flutter/util/async_dialog.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
 import 'package:place_mobile_flutter/widget/get_snackbar.dart';
+import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/section/preference/preference_list.dart';
@@ -43,6 +45,8 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController birthController = TextEditingController();
 
+  late final ScrollController _placeLogScrollController;
+
   bool checkNicknameDup = false;
 
   String? nicknameError;
@@ -58,6 +62,18 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    _placeLogScrollController = ScrollController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _placeLogScrollController.dispose();
+    super.dispose();
+  }
 
   Widget _createProfileSection() {
     return Container(
@@ -774,6 +790,154 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
     );
   }
 
+  void _showPlaceLogSheet() {
+    bool stateFirst = true;
+    bool loadVisibility = false;
+
+    int page = 0;
+    int size = 25;
+
+    StateSetter? state;
+
+    List<dynamic> _placeLogData = [];
+
+    void addPlaceLogData() async {
+      state!(() {
+        setState(() {
+          loadVisibility = true;
+        });
+      });
+
+      List<dynamic>? result = await userProvider.getLogPlace(page, size);
+
+      if (result != null) {
+        _placeLogData.addAll(result);
+        page++;
+      }
+
+      state!(() {
+        setState(() {
+          loadVisibility = false;
+        });
+      });
+    }
+
+    showModalBottomSheet(
+        isScrollControlled: true,
+        useSafeArea: true,
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter bottomState) {
+              state = bottomState;
+              if (stateFirst) {
+                _placeLogScrollController.addListener(() {
+                  if (_placeLogScrollController.position.maxScrollExtent == _placeLogScrollController.offset && !loadVisibility) {
+                    stateFirst = false;
+                    addPlaceLogData();
+                  }
+                });
+              }
+              return Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    topLeft: Radius.circular(8),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Column(
+                            children: [
+                              Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                                  child: Text('장소 탐색 기록', style: SectionTextStyle.sectionTitle(),)
+                              ),
+                              SizedBox(height: 18,),
+                              Expanded(
+                                child: Scrollbar(
+                                  controller: _placeLogScrollController,
+                                  child: ListView.separated(
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    controller: _placeLogScrollController,
+                                    padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                    itemCount: _placeLogData.length,
+                                    itemBuilder: (context, index) {
+                                      String? imgUrl;
+                                      if (_placeLogData[index]['place']['photos'] != null && _placeLogData[index]['place']['photos'].length > 0) {
+                                        imgUrl = ImageParser.parseImageUrl(_placeLogData[index]['place']['photos'][0]['url']);
+                                      }
+
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Get.to(() => PlaceDetailPage(placeId: _placeLogData[index]['place_id']));
+                                        },
+                                        child: RoundedRowBookmarkRectanglePlaceCard(
+                                          imageUrl: imgUrl,
+                                          placeName: _placeLogData[index]['place']['name'],
+                                          // placeType: _bookmarkData[index]['category'],
+                                          placeType: '',
+                                        ),
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(height: 8,);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Visibility(
+                              visible: loadVisibility,
+                              child: AbsorbPointer(
+                                absorbing: true,
+                                child: Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(38),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(24)
+                                    ),
+                                    child: const CircularProgressIndicator(),
+                                  ),
+                                ),
+                              )
+                          )
+                        ],
+                      ),
+                    ),
+                    // SizedBox(height: 18,),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(24, 0, 24, 18),
+                      width: double.infinity,
+                      child: FilledButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('닫기')
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        }
+    ).whenComplete(() {
+      _placeLogScrollController.dispose();
+      _placeLogScrollController = ScrollController();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      addPlaceLogData();
+    });
+  }
+
   Widget _createWatchPref() {
     return Container(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
@@ -786,7 +950,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
               title: '최근 탐색한 장소',
               textColor: Colors.black,
               onTap: () {
-                print('최근 탐색한 장소');
+                _showPlaceLogSheet();
               },
             ),
             PreferenceItem(
