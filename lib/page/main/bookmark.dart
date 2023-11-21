@@ -9,6 +9,7 @@ import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
+import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
@@ -710,7 +711,24 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                               placeType: '',
                                             ),
                                           ) :
-                                          Container(),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => Magazine(
+                                                magazineId: _bookmarkData![index]['id'],
+                                                imageUrl: _bookmarkData[index]['firstPlace']['imgUrl'] != null ?
+                                                ImageParser.parseImageUrl(_bookmarkData[index]['firstPlace']['imgUrl']) :
+                                                null
+                                              ));
+                                            },
+                                            child: RoundedRowBookmarkRectanglePlaceCard(
+                                              imageUrl: _bookmarkData[index]['firstPlace']['imgUrl'] != null ?
+                                              ImageParser.parseImageUrl(_bookmarkData[index]['firstPlace']['imgUrl']) :
+                                              null,
+                                              placeName: _bookmarkData[index]['title'],
+                                              // placeType: _bookmarkData[index]['category'],
+                                              placeType: '',
+                                            ),
+                                          ),
                                       );
                                     },
                                     separatorBuilder: (context, index) {
