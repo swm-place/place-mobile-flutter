@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
+import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
+import 'package:place_mobile_flutter/api/provider/place_provider.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/place/place_detail.dart';
@@ -314,7 +316,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     }
   }
 
-  void _showPlaceBookmarkSheet(String bookmarkTitle, dynamic bookmarkId, String type) {
+  void _showBookmarkSheet(String bookmarkTitle, dynamic bookmarkId, String type) {
     bool stateFirst = true;
     bool loadVisibility = false;
 
@@ -556,6 +558,215 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     });
   }
 
+  void _showLikeSheet(String bookmarkTitle, String type) {
+    bool stateFirst = true;
+    bool loadVisibility = false;
+
+    int page = 0;
+    int size = 25;
+
+    StateSetter? state;
+
+    List<dynamic> _bookmarkData = [];
+
+    void addBookmarkData() async {
+      state!(() {
+        setState(() {
+          loadVisibility = true;
+        });
+      });
+
+      List<dynamic>? result;
+      if (type == 'place') {
+        result = await _userProvider.getLikePlace(page, size);
+      } else {
+        result = await _userProvider.getLikeMagazine(page, size);
+      }
+
+      if (result != null) {
+        if (type == 'place') {
+          _bookmarkData.addAll(result);
+        } else {
+          _bookmarkData.addAll(result);
+        }
+        page++;
+      }
+
+      state!(() {
+        setState(() {
+          loadVisibility = false;
+        });
+      });
+    }
+
+    showModalBottomSheet(
+        isScrollControlled: true,
+        useSafeArea: true,
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter bottomState) {
+              state = bottomState;
+              if (stateFirst) {
+                _bookmarkScrollController.addListener(() {
+                  if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset && !loadVisibility) {
+                    stateFirst = false;
+                    addBookmarkData();
+                  }
+                });
+              }
+              return Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    topLeft: Radius.circular(8),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                                child: Text(bookmarkTitle, style: SectionTextStyle.sectionTitle(),)
+                              ),
+                              SizedBox(height: 18,),
+                              Expanded(
+                                child: Scrollbar(
+                                  controller: _bookmarkScrollController,
+                                  child: ListView.separated(
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    controller: _bookmarkScrollController,
+                                    padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                    itemCount: _bookmarkData.length,
+                                    itemBuilder: (context, index) {
+                                      return Slidable(
+                                        key: Key('$index'),
+                                        endActionPane: ActionPane(
+                                          motion: const ScrollMotion(),
+                                          children: [
+                                            SlidableAction(
+                                              onPressed: (context) async {
+                                                Get.dialog(
+                                                    const AlertDialog(
+                                                      contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                                      actionsPadding: EdgeInsets.zero,
+                                                      titlePadding: EdgeInsets.zero,
+                                                      content: Row(
+                                                        children: [
+                                                          CircularProgressIndicator(),
+                                                          SizedBox(width: 24),
+                                                          Text('데이터 삭제 반영중'),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    barrierDismissible: false
+                                                );
+                                                bool result;
+                                                if (type == 'place') {
+                                                  result = await PlaceProvider().deletePlaceLike(_bookmarkData[index]['id']);
+                                                } else {
+                                                  result = await MagazineProvider().deleteMagazineLike(_bookmarkData[index]['id']);
+                                                }
+                                                Get.back();
+                                                if (result) {
+                                                  _bookmarkData.clear();
+                                                  page = 0;
+                                                  addBookmarkData();
+                                                } else {
+                                                  Get.dialog(
+                                                    AlertDialog(
+                                                      contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                                      titlePadding: EdgeInsets.zero,
+                                                      content: const Text("좋아요 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                                                      actions: [
+                                                        TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                                                      ],
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              label: '삭제',
+                                              backgroundColor: Colors.red,
+                                              icon: Icons.delete,
+                                            )
+                                          ],
+                                        ),
+                                        child: type == 'place' ?
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => PlaceDetailPage(placeId: _bookmarkData[index]['id']));
+                                            },
+                                            child: RoundedRowBookmarkRectanglePlaceCard(
+                                              imageUrl: _bookmarkData[index]['imgUrl'] != null ?
+                                              ImageParser.parseImageUrl(_bookmarkData[index]['imgUrl']) :
+                                              null,
+                                              placeName: _bookmarkData[index]['name'],
+                                              // placeType: _bookmarkData[index]['category'],
+                                              placeType: '',
+                                            ),
+                                          ) :
+                                          Container(),
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(height: 8,);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Visibility(
+                              visible: loadVisibility,
+                              child: AbsorbPointer(
+                                absorbing: true,
+                                child: Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(38),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(24)
+                                    ),
+                                    child: const CircularProgressIndicator(),
+                                  ),
+                                ),
+                              )
+                          )
+                        ],
+                      ),
+                    ),
+                    // SizedBox(height: 18,),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(24, 0, 24, 18),
+                      width: double.infinity,
+                      child: FilledButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('닫기')
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        }
+    ).whenComplete(() {
+      _bookmarkScrollController.dispose();
+      _bookmarkScrollController = ScrollController();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      addBookmarkData();
+    });
+  }
+
   void patchBookmark(dynamic bookmarkId, String type, String title) async {
     Get.dialog(
       const AlertDialog(
@@ -716,7 +927,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                       height: 140,
                       title: '장소 좋아요',
                       onTap: () {
-
+                        _showLikeSheet('장소 좋아요', 'place');
                       }
                     );
                   }
@@ -726,7 +937,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                     height: 140,
                     onTap: () {
                       print(_bookmarkController.placeBookmark.value![index - 1]['title']);
-                      _showPlaceBookmarkSheet(
+                      _showBookmarkSheet(
                         _bookmarkController.placeBookmark.value![index - 1]['title'],
                         _bookmarkController.placeBookmark.value![index - 1]['placeBookmarkId'],
                         'place'
@@ -928,7 +1139,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                         height: 140,
                         title: '매거진 좋아요',
                         onTap: () {
-
+                          _showLikeSheet('매거진 좋아요', 'magazine');
                         }
                     );
                   }
@@ -938,7 +1149,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                     height: 140,
                     onTap: () {
                       print(_bookmarkController.courseBookmark.value![index - 1]['title']);
-                      _showPlaceBookmarkSheet(
+                      _showBookmarkSheet(
                           _bookmarkController.courseBookmark.value![index - 1]['title'],
                           _bookmarkController.courseBookmark.value![index - 1]['id'],
                           'course'

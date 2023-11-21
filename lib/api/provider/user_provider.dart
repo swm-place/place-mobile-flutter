@@ -438,4 +438,40 @@ class UserProvider extends DefaultProvider {
       return null;
     }
   }
+
+  Future<List<dynamic>?> getLikePlace(int page, int size) async {
+    if (AuthController.to.user.value == null) return null;
+
+    Uri uri = Uri.parse("$baseUrl/api/user/${AuthController.to.user.value!.uid}/place-favorite?size=$size&page=$page");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<dynamic>?> getLikeMagazine(int page, int size) async {
+    if (AuthController.to.user.value == null) return null;
+
+    Uri uri = Uri.parse("$baseUrl/api/favorites/${AuthController.to.user.value!.uid}/magazines?size=$size&page=$page");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      return null;
+    }
+  }
 }
