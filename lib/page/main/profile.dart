@@ -106,10 +106,13 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                     SizedBox(
                       width: 64,
                       height: 64,
-                      child: CircleAvatar( //TODO: avatar network image
-                        backgroundImage: NetworkImage(
-                            'https://source.unsplash.com/random'),
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage('assets/images/avatar_male.png'),
                       ),
+                      // child: CircleAvatar( //TODO: avatar network image
+                      //   backgroundImage: NetworkImage(
+                      //       'https://source.unsplash.com/random'),
+                      // ),
                     ),
                     SizedBox(width: 24,),
                     Expanded(
@@ -940,7 +943,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
 
   Widget _createWatchPref() {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
       child: MainSection(
         title: '장소',
         titleStyle: SectionTextStyle.sectionTitleSmall(Colors.black),
