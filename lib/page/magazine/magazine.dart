@@ -8,6 +8,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/cache_image.dart';
@@ -330,13 +331,30 @@ class _MagazineState extends State<Magazine> {
     ),
   );
 
-  Widget _createPlaceContentSection(String title, String content, String? imgUrl) => Padding(
+  Widget _createPlaceContentSection(String title, String content, String? imgUrl, String placeId) => Padding(
     padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: SectionTextStyle.sectionTitle(),),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: Text(title, style: SectionTextStyle.sectionTitle(),)),
+            SizedBox(
+              width: 32,
+              height: 32,
+              child: IconButton(
+                onPressed: () {
+                  Get.to(() => PlaceDetailPage(placeId: placeId));
+                },
+                  padding: EdgeInsets.all(0),
+                icon: const Icon(Icons.info_outline, size: 24,)
+              ),
+            )
+          ],
+        ),
         const SizedBox(height: 18,),
         Container(
           constraints: const BoxConstraints(
@@ -388,7 +406,8 @@ class _MagazineState extends State<Magazine> {
       section.add(_createPlaceContentSection(
         place['place']['name'],
         place['contents'],
-        ImageParser.parseImageUrl(place['place']['imgUrl'])
+        ImageParser.parseImageUrl(place['place']['imgUrl']),
+        place['place']['id']
       ));
       section.add(const SizedBox(height: 24,));
     }
