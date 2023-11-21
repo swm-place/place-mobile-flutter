@@ -18,6 +18,7 @@ import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/section/preference/preference_list.dart';
 import 'package:place_mobile_flutter/widget/section/preference/preference_list_item.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -792,7 +793,13 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
               title: '장소 추가 요청',
               textColor: Colors.black,
               onTap: () {
-                print('장소 추가 요청');
+                String content = '장소 이름:\n장소 주소(지번/도로명):\n상세 주소(ex 가나다 건물 2층):\n전화번호:\n운영 시간:';
+                final Uri emailLaunchUri = Uri(
+                    scheme: 'mailto',
+                    path: 'our.email@gmail.com',
+                    query: 'subject=[장소추가] 장소추가 요청 정보&body=오류 내용: $content'
+                );
+                launchUrl(emailLaunchUri);
               },
             ),
           ],
