@@ -37,6 +37,7 @@ import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CourseMainPage extends StatefulWidget {
@@ -949,7 +950,8 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     }
 
     String shareJson = json.encode(shareData);
-    log('http://localhost:8080/course?data=${Uri.encodeComponent(shareJson)}');
+    // log('http://localhost:8080/course?data=${Uri.encodeComponent(shareJson)}');
+    Share.share('http://localhost:8080/course?data=${Uri.encodeComponent(shareJson)}');
   }
 
   @override
