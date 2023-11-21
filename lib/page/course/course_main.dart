@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -916,6 +918,40 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     }
   }
 
+  void _generateShareUrl() {
+    int placeCount = courseController.coursePlaceData.length;
+    double distance = 0.0;
+    if (courseController.courseLineData.value != null && courseController.courseLineData.value != '') {
+      if (courseController.placesPosition.length > 1) {
+        if (courseController.courseLineData.value!['routes'][0]['distance'] is int) {
+          distance = courseController.courseLineData.value!['routes'][0]['distance'].toDouble();
+        } else {
+          distance = courseController.courseLineData.value!['routes'][0]['distance'];
+        }
+      } else {
+        distance = 0;
+      }
+    }
+
+    Map<String, dynamic> shareData = {};
+    shareData['title'] = courseController.title.value;
+    shareData['region_name'] = courseController.regionName.value;
+    shareData['distance'] = UnitConverter.formatDistance(distance.floor());
+    shareData['count'] = placeCount;
+    shareData['places'] = [];
+    for (var place in courseController.coursePlaceData) {
+      shareData['places'].add({
+        'name': place['place']['name'],
+        'img': place['place']['img_url'] != null ?
+          ImageParser.parseImageUrl(place['place']['img_url']) :
+          null
+      });
+    }
+
+    String shareJson = json.encode(shareData);
+    log('http://localhost:8080/course?data=${Uri.encodeComponent(shareJson)}');
+  }
+
   @override
   Widget build(BuildContext context) {
     if (initData != -1) {
@@ -936,9 +972,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 ),
                 actions: [
                   FlexibleTopBarActionButton(
-                      onPressed: () {
-
-                      },
+                      onPressed: _generateShareUrl,
                       icon: Icon(Icons.ios_share, size: 18,)
                   ),
                   SizedBox(width: 6,),
