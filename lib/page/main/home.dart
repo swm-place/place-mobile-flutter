@@ -199,7 +199,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     } else {
       body = Shimmer.fromColors(
           baseColor: const Color.fromRGBO(240, 240, 240, 1),
-          highlightColor: Colors.grey,
+          highlightColor: Colors.grey[300]!,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -483,7 +483,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
         children: [
           Shimmer.fromColors(
             baseColor: const Color.fromRGBO(240, 240, 240, 1),
-            highlightColor: Colors.grey,
+            highlightColor: Colors.grey[300]!,
             child: Container(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
               width: double.infinity,

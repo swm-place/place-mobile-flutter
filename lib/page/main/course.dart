@@ -324,7 +324,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
           child: Shimmer.fromColors(
             baseColor: const Color.fromRGBO(240, 240, 240, 1),
-            highlightColor: Colors.grey,
+            highlightColor: Colors.grey[300]!,
             child: Column(
               children: [
                 _createCourseSection(),
