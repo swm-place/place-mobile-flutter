@@ -401,7 +401,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     return Container(
       width: 250,
       decoration: BoxDecoration(
-          color: Color.fromRGBO(240, 240, 240, 1),
+          color: Color.fromRGBO(240, 240, 240, 0.0),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: const Color.fromRGBO(240, 240, 240, 1),
@@ -451,8 +451,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                   width: 145,
                   height: 20,
                   decoration: BoxDecoration(
-                      color: const Color.fromRGBO(
-                          199, 88, 88, 1.0),
+                      color: const Color.fromRGBO(240, 240, 240, 1),
                       borderRadius: BorderRadius.circular(40)
                   ),
                 ),
