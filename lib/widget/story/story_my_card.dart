@@ -328,7 +328,7 @@ class LikeCard extends StatelessWidget {
             width: width,
             height: height,
             child: Center(
-              child: Icon(Icons.favorite),
+              child: Icon(Icons.favorite, size: 48,),
             ),
           ),
           Container(
