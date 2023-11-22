@@ -80,6 +80,7 @@ class RoundedRectangleMagazineCard extends StatelessWidget {
                             style: titleStyle,
                           ),
                         ),
+                        const SizedBox(height: 4,),
                         SizedBox(
                           width: double.infinity,
                           child: Text(

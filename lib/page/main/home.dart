@@ -175,6 +175,13 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                   imageUrl: _magazineData![index]['imgUrl'],
                   title: _magazineData![index]['title'],
                   message: _magazineData![index]['contents'],
+                  titleStyle: const TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 21,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    height: 1,
+                  ),
                   messageStyle: SectionTextStyle.sectionContent(Colors.white),
                   onTap: () {
                     Get.to(() => Magazine(
