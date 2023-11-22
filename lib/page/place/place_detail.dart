@@ -498,7 +498,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           }
                       ),
                     ),
-                    Text("븍마크")
+                    Text("")
                   ],
                 ),
               ),
@@ -546,7 +546,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           }
                       ),
                     ),
-                    Text("1.2K")
+                    Text("")
                   ],
                 ),
               ),

@@ -58,6 +58,7 @@ class CourseProvider extends DefaultProvider {
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
+      print(response.body);
       return null;
     }
   }

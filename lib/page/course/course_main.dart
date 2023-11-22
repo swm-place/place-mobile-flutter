@@ -38,6 +38,7 @@ import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_butto
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CourseMainPage extends StatefulWidget {
@@ -1113,10 +1114,96 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         );
       }
     } else {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
+      return Scaffold(
+          body: SafeArea(
+            child: SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: Shimmer.fromColors(
+                baseColor: const Color.fromRGBO(240, 240, 240, 1),
+                highlightColor: Colors.grey[300]!,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                        width: double.infinity,
+                        height: 220,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                      child: Container(
+                          width: 195,
+                          height: 30,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                      child: Container(
+                          width: 145,
+                          height: 25,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+                      child: Container(
+                          width: 185,
+                          height: 25,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+                      child: Container(
+                          width: 86,
+                          height: 25,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                      child: Container(
+                          width: double.infinity,
+                          height: 100,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                      child: Container(
+                          width: double.infinity,
+                          height: 100,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
       );
     }
   }
