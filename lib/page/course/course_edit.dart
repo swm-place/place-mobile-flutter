@@ -308,9 +308,35 @@ class _CourseEditPageState extends State<CourseEditPage> {
                 child: map,
               );
             }),
+            Obx(() {
+              double distance = 0.0;
+              if (widget.courseController.courseLineData.value != null && widget.courseController.courseLineData.value != '') {
+                if (widget.courseController.placesPosition.length > 1) {
+                  if (widget.courseController.courseLineData.value!['routes'][0]['distance'] is int) {
+                    distance = widget.courseController.courseLineData.value!['routes'][0]['distance'].toDouble();
+                  } else {
+                    distance = widget.courseController.courseLineData.value!['routes'][0]['distance'];
+                  }
+                } else {
+                  distance = 0;
+                }
+              }
+
+              return Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(24, 6, 24, 6),
+                color: lightColorScheme.primary,
+                child: Row(
+                  children: [
+                    Text('총 거리: ${UnitConverter.formatDistance(distance.floor())}',
+                      style: TextStyle(color: Colors.white),)
+                  ],
+                ),
+              );
+            }),
             Flexible(
               child: Obx(() => Padding(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
                 child: widget.courseController.coursePlaceData.isEmpty ?
                   Container(
                     height: double.infinity,
