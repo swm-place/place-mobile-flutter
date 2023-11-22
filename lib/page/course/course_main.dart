@@ -958,7 +958,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
     String shareJson = json.encode(shareData);
     // log('http://localhost:8080/course?data=${Uri.encodeComponent(shareJson)}');
-    Share.share('http://localhost:8080/course?data=${Uri.encodeComponent(shareJson)}');
+    Share.share('https://d1neqdrdl1s3ts.cloudfront.net/#/course?data=${Uri.encodeComponent(shareJson)}');
   }
 
   @override
