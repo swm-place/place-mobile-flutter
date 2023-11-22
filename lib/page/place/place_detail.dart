@@ -557,46 +557,14 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     ),
   );
 
-  List<Widget> _generateSchedule() {
-    Map<int, Text> scheduleList = {
-      0: Text("일 휴무"),
-      1: Text("월 휴무"),
-      2: Text("화 휴무"),
-      3: Text("수 휴무"),
-      4: Text("목 휴무"),
-      5: Text("금 휴무"),
-      6: Text("토 휴무"),
-    };
-
-    DateTime now = DateTime.now();
-    int dayOfWeek = now.weekday % 7;
-    bool checkOpen = false;
-
-    for (var data in placeData['opening_hours']) {
-      String open = data['open'].toString().padLeft(4, '0').replaceRange(2, 2, ':');
-      String close = data['close'].toString().padLeft(4, '0').replaceRange(2, 2, ':');
-      if (close.startsWith('00')) close = close.replaceRange(0, 2, '24');
-      scheduleList[data['weekday']] = Text(scheduleList[data['weekday']]!.data!.replaceAll('휴무', '$open ~ $close'));
-      if (!checkOpen && dayOfWeek == data['weekday']) {
-        checkOpen = true;
-        DateTime startTime = DateTime(now.year, now.month, now.day,
-            int.parse(open.split(":")[0]), int.parse(open.split(":")[1]));
-        DateTime endTime = DateTime(now.year, now.month, now.day,
-            int.parse(close.split(":")[0]), int.parse(close.split(":")[1]));
-
-        nowOpen = now.isAfter(startTime) && now.isBefore(endTime);
-      }
-    }
-
-    if (!checkOpen) {
-      nowOpen = false;
-    }
-    return scheduleList.values.toList();
-  }
-
   Widget _detailInform() {
     List<Widget>? timeList;
-    if (placeData['opening_hours'] != null) timeList = _generateSchedule();
+    if (placeData['opening_hours_text'] != null) {
+      timeList = [];
+      for (var i in placeData['opening_hours_text']) {
+        timeList.add(Text(i));
+      }
+    }
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
       child: MainSection(
@@ -698,17 +666,25 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                                           crossAxisAlignment: CrossAxisAlignment
                                               .start,
                                           children: [
-                                            nowOpen ? Text(
-                                              "현재 운영중",
-                                              style: SectionTextStyle
-                                                  .sectionContentLarge(
-                                                  Colors.green),
-                                            ) : Text(
-                                              "현재 운영중 아님",
-                                              style: SectionTextStyle
-                                                  .sectionContentLarge(
-                                                  Colors.red),
-                                            ),
+                                            if (placeData['open_now'] != null)
+                                              placeData['open_now'] ? Text(
+                                                "현재 운영중",
+                                                style: SectionTextStyle
+                                                    .sectionContentLarge(
+                                                    Colors.green),
+                                              ) : Text(
+                                                "현재 운영중 아님",
+                                                style: SectionTextStyle
+                                                    .sectionContentLarge(
+                                                    Colors.red),
+                                              ),
+                                            if (placeData['open_now'] == null)
+                                              Text(
+                                                "정보 없음",
+                                                style: SectionTextStyle
+                                                    .sectionContentLarge(
+                                                    Colors.grey[900]!),
+                                              )
                                             // Text("최근 1시간 동안 5명이 운영중이 아니라고 제보"),
                                             // GestureDetector(
                                             //   child: Text("운영중 오류 제보하기"),
