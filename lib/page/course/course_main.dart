@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -16,6 +18,7 @@ import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_edit.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/gis_controller.dart';
@@ -35,6 +38,8 @@ import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CourseMainPage extends StatefulWidget {
@@ -490,11 +495,18 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                                     padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
                                     itemCount: _bookmarkData.length,
                                     itemBuilder: (context, index) {
+                                      bool isContain = false;
+                                      for (var i in courseController.bookmarkData) {
+                                        if (i['id'] == _bookmarkData[index]['id']) {
+                                          isContain = true;
+                                          break;
+                                        }
+                                      }
                                       return ListTile(
                                         minVerticalPadding: 0,
                                         contentPadding: EdgeInsets.zero,
                                         title: Text("${_bookmarkData[index]['title']}"),
-                                        trailing: _bookmarkData[index]['bookmark']
+                                        trailing: isContain
                                             ? Icon(Icons.check_box, color: lightColorScheme.primary,)
                                             : Icon(Icons.check_box_outline_blank),
                                         onTap: () async {
@@ -504,18 +516,36 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                                             });
                                           });
                                           bool result;
-                                          if (_bookmarkData[index]['bookmark']) {
+                                          if (isContain) {
                                             result = await _userProvider.deleteCourseInBookmark(
-                                                _bookmarkData[index]['placeBookmarkId'], widget.courseId);
+                                                _bookmarkData[index]['id'], widget.courseId);
                                           } else {
                                             result = await _userProvider.postCourseInBookmark(
-                                                _bookmarkData[index]['placeBookmarkId'], widget.courseId);
+                                                _bookmarkData[index]['id'], widget.courseId);
                                           }
                                           if (result) {
+                                            if (isContain) {
+                                              int i = 0;
+                                              bool find = false;
+                                              for (;i < courseController.bookmarkData.length;i++) {
+                                                if (courseController.bookmarkData[i]['id'] == _bookmarkData[index]['id']) {
+                                                  find = true;
+                                                  break;
+                                                }
+                                              }
+                                              if (find) {
+                                                courseController.bookmarkData.removeAt(i);
+                                              }
+                                            } else {
+                                              courseController.bookmarkData.add({
+                                                'id': _bookmarkData[index]['id'],
+                                                'title': _bookmarkData[index]['title']
+                                              });
+                                            }
                                             bottomState(() {
                                               setState(() {
                                                 loadVisibility = false;
-                                                _bookmarkData[index]['bookmark'] = !_bookmarkData[index]['bookmark'];
+                                                isContain = !isContain;
                                               });
                                             });
                                           }
@@ -687,26 +717,35 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
           final openTime = currentDayHours["open"];
           final closeTime = currentDayHours["close"];
 
-          if (currentTime >= openTime && currentTime <= closeTime) {
-            openString = '영업중';
-          } else {
-            openString = '영업중 아님';
+          try {
+            if (currentTime >= openTime && currentTime <= closeTime) {
+              openString = '영업중';
+            } else {
+              openString = '영업중 아님';
+            }
+          } catch(e) {
+            openString = '정보 없음';
           }
         }
       }
 
       course.addAll([
-        RoundedRowRectanglePlaceCard(
-          imageUrl: place['place']['img_url'] != null ?
-            "$baseUrlDev/api-recommender/place-photo/?${ place['place']['img_url'].split('?')[1]}&max_width=480" :
+        GestureDetector(
+          onTap: () {
+            Get.to(() => PlaceDetailPage(placeId: place['place']['id']));
+          },
+          child: RoundedRowRectanglePlaceCard(
+            imageUrl: place['place']['img_url'] != null ?
+            ImageParser.parseImageUrl(place['place']['img_url']) :
             null,
-          tags: place['place']['hashtags'],
-          // tags: [],
-          placeName: place['place']['name'],
-          placeType: place['place']['category'],
-          // open: place['place']['open'],
-          open: openString,
-          distance: distance == null ? null : UnitConverter.formatDistance(distance),
+            tags: place['place']['hashtags'],
+            // tags: [],
+            placeName: place['place']['name'],
+            placeType: place['place']['category'],
+            // open: place['place']['open'],
+            open: openString,
+            distance: distance == null ? null : UnitConverter.formatDistance(distance),
+          ),
         ),
         const SizedBox(height: 12)
       ]);
@@ -887,6 +926,41 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
     }
   }
 
+  void _generateShareUrl() {
+    int placeCount = courseController.coursePlaceData.length;
+    double distance = 0.0;
+    if (courseController.courseLineData.value != null && courseController.courseLineData.value != '') {
+      if (courseController.placesPosition.length > 1) {
+        if (courseController.courseLineData.value!['routes'][0]['distance'] is int) {
+          distance = courseController.courseLineData.value!['routes'][0]['distance'].toDouble();
+        } else {
+          distance = courseController.courseLineData.value!['routes'][0]['distance'];
+        }
+      } else {
+        distance = 0;
+      }
+    }
+
+    Map<String, dynamic> shareData = {};
+    shareData['title'] = courseController.title.value;
+    shareData['region_name'] = courseController.regionName.value;
+    shareData['distance'] = UnitConverter.formatDistance(distance.floor());
+    shareData['count'] = placeCount;
+    shareData['places'] = [];
+    for (var place in courseController.coursePlaceData) {
+      shareData['places'].add({
+        'name': place['place']['name'],
+        'img': place['place']['img_url'] != null ?
+          ImageParser.parseImageUrl(place['place']['img_url']) :
+          null
+      });
+    }
+
+    String shareJson = json.encode(shareData);
+    // log('http://localhost:8080/course?data=${Uri.encodeComponent(shareJson)}');
+    Share.share('http://localhost:8080/course?data=${Uri.encodeComponent(shareJson)}');
+  }
+
   @override
   Widget build(BuildContext context) {
     if (initData != -1) {
@@ -907,68 +981,76 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 ),
                 actions: [
                   FlexibleTopBarActionButton(
-                      onPressed: () {
-
-                      },
+                      onPressed: _generateShareUrl,
                       icon: Icon(Icons.ios_share, size: 18,)
                   ),
-                  PopupMenuButton(
-                    icon: Icon(Icons.more_vert, size: 18,),
-                    itemBuilder: (BuildContext context) {
-                      return [
-                        PopupMenuItem(onTap: () {
-                          _courseNameController.text = courseController.title.value;
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return StatefulBuilder(
-                                  builder: (BuildContext context, StateSetter dialogState) {
-                                    return AlertDialog(
-                                      title: Text("코스 이름 변경"),
-                                      content: TextField(
-                                        maxLength: 50,
-                                        controller: _courseNameController,
-                                        onChanged: (text) {
-                                          dialogState(() {
-                                            _courseNameError = courseTextFieldValidator(text);
-                                          });
-                                        },
-                                        decoration: InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            hintText: "북마크 이름",
-                                            errorText: _courseNameError
-                                        ),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context, rootNavigator: true).pop();
+                  SizedBox(width: 6,),
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child: PopupMenuButton(
+                      icon: Icon(Icons.more_vert, size: 18,),
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          PopupMenuItem(onTap: () {
+                            _courseNameController.text = courseController.title.value;
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return StatefulBuilder(
+                                    builder: (BuildContext context, StateSetter dialogState) {
+                                      return AlertDialog(
+                                        title: Text("코스 이름 변경"),
+                                        content: TextField(
+                                          maxLength: 50,
+                                          controller: _courseNameController,
+                                          onChanged: (text) {
+                                            dialogState(() {
+                                              _courseNameError = courseTextFieldValidator(text);
+                                            });
                                           },
-                                          child: Text('취소', style: TextStyle(color: Colors.red),),
+                                          decoration: InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              hintText: "북마크 이름",
+                                              errorText: _courseNameError
+                                          ),
                                         ),
-                                        TextButton(
-                                          onPressed: () {
-                                            final String title = _courseNameController.text.toString();
-                                            if (courseTextFieldValidator(title) != null) return;
-                                            Navigator.of(context, rootNavigator: true).pop();
-                                            if (courseController.title.value == title) return;
-                                            changeTitle(courseController.courseId, title);
-                                          },
-                                          child: Text('변경', style: TextStyle(color: Colors.blue),),
-                                        )
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                          );
-                        }, child: const Text('이름 변경'),),
-                        PopupMenuItem(onTap: () {
-                          deleteCourse(courseController.courseId);
-                        }, child: const Text('삭제'),)
-                      ];
-                    },
-                  )
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context, rootNavigator: true).pop();
+                                            },
+                                            child: Text('취소', style: TextStyle(color: Colors.red),),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              final String title = _courseNameController.text.toString();
+                                              if (courseTextFieldValidator(title) != null) return;
+                                              Navigator.of(context, rootNavigator: true).pop();
+                                              if (courseController.title.value == title) return;
+                                              changeTitle(courseController.courseId, title);
+                                            },
+                                            child: Text('변경', style: TextStyle(color: Colors.blue),),
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                            );
+                          }, child: const Text('이름 변경'),),
+                          PopupMenuItem(onTap: () {
+                            deleteCourse(courseController.courseId);
+                          }, child: const Text('삭제'),)
+                        ];
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 12,)
                 ],
                 pinned: true,
                 expandedHeight: 220.0,
@@ -977,13 +1059,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                 flexibleSpace: Obx(() {
                   return MultiplePictureFlexibleSpace(
                     imageUrl: courseController.coursePlaceData
-                        .map<String?>((item) {
-                          String? url = item['place']['img_url'];
-                          if (url != null) {
-                            url = "$baseUrlDev/api-recommender/place-photo/?${url.split('?')[1]}&max_width=480";
-                          }
-                          return url;
-                        }).toList(),
+                        .map<String?>((item) => ImageParser.parseImageUrl(item['place']['img_url'])).toList(),
                   );
                 }),
               ),
@@ -1044,10 +1120,96 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
         );
       }
     } else {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
+      return Scaffold(
+          body: SafeArea(
+            child: SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: Shimmer.fromColors(
+                baseColor: const Color.fromRGBO(240, 240, 240, 1),
+                highlightColor: Colors.grey[300]!,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                        width: double.infinity,
+                        height: 220,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                      child: Container(
+                          width: 195,
+                          height: 30,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                      child: Container(
+                          width: 145,
+                          height: 25,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+                      child: Container(
+                          width: 185,
+                          height: 25,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+                      child: Container(
+                          width: 86,
+                          height: 25,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                      child: Container(
+                          width: double.infinity,
+                          height: 100,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                      child: Container(
+                          width: double.infinity,
+                          height: 100,
+                          decoration: BoxDecoration(
+                              color: const Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(8)
+                          )
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
       );
     }
   }

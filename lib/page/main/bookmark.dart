@@ -1,13 +1,27 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
+import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
+import 'package:place_mobile_flutter/api/provider/place_provider.dart';
+import 'package:place_mobile_flutter/api/provider/user_provider.dart';
+import 'package:place_mobile_flutter/page/course/course_main.dart';
+import 'package:place_mobile_flutter/page/magazine/magazine.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
+import 'package:place_mobile_flutter/widget/course/course_inform_card.dart';
+import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
+import 'package:place_mobile_flutter/widget/story/story_card.dart';
 import 'package:place_mobile_flutter/widget/story/story_my_card.dart';
 
 class BookmarkPage extends StatefulWidget {
@@ -18,16 +32,18 @@ class BookmarkPage extends StatefulWidget {
 }
 
 class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClientMixin<BookmarkPage> {
+  final UserProvider _userProvider = UserProvider();
 
   late final TextEditingController _bookmarkNameController;
   late final  BookmarkController _bookmarkController;
 
-
   late ScrollController _placeScrollController;
   late ScrollController _courseScrollController;
+  late ScrollController _bookmarkScrollController;
 
   bool loadVisibilityPlace = false;
   bool loadVisibilityCourse = false;
+  bool loadVisibility = false;
 
   int placeBookmarkInit = -1;
   int courseBookmarkInit = -1;
@@ -87,6 +103,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     _bookmarkController = BookmarkController();
     _placeScrollController = ScrollController();
     _courseScrollController = ScrollController();
+    _bookmarkScrollController = ScrollController();
 
     _placeScrollController.addListener(() {
       if (_placeScrollController.position.maxScrollExtent == _placeScrollController.offset && !loadVisibilityPlace) {
@@ -111,12 +128,33 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     _bookmarkController.dispose();
     _placeScrollController.dispose();
     _courseScrollController.dispose();
+    _bookmarkScrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    if (AuthController.to.user.value == null) {
+      return Scaffold(
+        body: SafeArea(
+          child: Container(
+            height: 288,
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.grey[300]
+              ),
+              padding: EdgeInsets.all(24),
+              child: Center(
+                child: Text('북마크는 로그인 후 이용할 수 있습니다'),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Scaffold(
       body: SafeArea(
           child: SingleChildScrollView(
@@ -125,7 +163,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                 // _searchSection(),
                 // _myStorySection(),
                 _locationBookmarkSection(),
-                _storyBookmarkSection(),
+                _courseBookmarkSection(),
                 const SizedBox(height: 24,)
               ],
             ),
@@ -300,6 +338,474 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     }
   }
 
+  void _showBookmarkSheet(String bookmarkTitle, dynamic bookmarkId, String type) {
+    bool stateFirst = true;
+    bool loadVisibility = false;
+
+    int page = 0;
+    int size = 25;
+
+    StateSetter? state;
+
+    List<dynamic> _bookmarkData = [];
+
+    void addBookmarkData() async {
+      state!(() {
+        setState(() {
+          loadVisibility = true;
+        });
+      });
+
+      List<dynamic>? result;
+      if (type == 'place') {
+        result = await _userProvider.getPlaceInBookmark(page, size, bookmarkId);
+      } else {
+        result = await _userProvider.getCourseInBookmark(page, size, bookmarkId);
+      }
+
+      if (result != null) {
+        if (type == 'place') {
+          _bookmarkData.addAll(result);
+        } else {
+          _bookmarkData.addAll(result);
+        }
+        page++;
+      }
+
+      state!(() {
+        setState(() {
+          loadVisibility = false;
+        });
+      });
+    }
+
+    showModalBottomSheet(
+        isScrollControlled: true,
+        useSafeArea: true,
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter bottomState) {
+              state = bottomState;
+              if (stateFirst) {
+                _bookmarkScrollController.addListener(() {
+                  if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset && !loadVisibility) {
+                    stateFirst = false;
+                    addBookmarkData();
+                  }
+                });
+              }
+              return Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    topLeft: Radius.circular(8),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                                child: Text(bookmarkTitle, style: SectionTextStyle.sectionTitle(),)
+                              ),
+                              SizedBox(height: 18,),
+                              Expanded(
+                                child: Scrollbar(
+                                  controller: _bookmarkScrollController,
+                                  child: ListView.separated(
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    controller: _bookmarkScrollController,
+                                    padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                    itemCount: _bookmarkData.length,
+                                    itemBuilder: (context, index) {
+                                      dynamic? courseLineData;
+                                      double distance = 0.0;
+                                      if (type == 'course') {
+                                        if (_bookmarkData![index]['routesJson'] != null) {
+                                          courseLineData = json.decode(_bookmarkData![index]['routesJson']);
+                                        }
+
+                                        if (courseLineData != null && courseLineData != '') {
+                                          if (_bookmarkData![index]['placesInCourse'].length > 1) {
+                                            if (courseLineData!['routes'][0]['distance'] is int) {
+                                              distance = courseLineData!['routes'][0]['distance'].toDouble();
+                                            } else {
+                                              distance = courseLineData!['routes'][0]['distance'];
+                                            }
+                                          } else {
+                                            distance = 0;
+                                          }
+                                        }
+                                      }
+
+                                      return Slidable(
+                                        key: Key('$index'),
+                                        endActionPane: ActionPane(
+                                          motion: const ScrollMotion(),
+                                          children: [
+                                            SlidableAction(
+                                              onPressed: (context) async {
+                                                Get.dialog(
+                                                    const AlertDialog(
+                                                      contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                                      actionsPadding: EdgeInsets.zero,
+                                                      titlePadding: EdgeInsets.zero,
+                                                      content: Row(
+                                                        children: [
+                                                          CircularProgressIndicator(),
+                                                          SizedBox(width: 24),
+                                                          Text('데이터 삭제 반영중'),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    barrierDismissible: false
+                                                );
+                                                bool result;
+                                                if (type == 'place') {
+                                                  result = await _userProvider.deletePlaceInBookmark(
+                                                      bookmarkId, _bookmarkData[index]['id']);
+                                                } else {
+                                                  result = await _userProvider.deleteCourseInBookmark(
+                                                      bookmarkId, _bookmarkData[index]['id']);
+                                                }
+                                                Get.back();
+                                                if (result) {
+                                                  _bookmarkData.clear();
+                                                  page = 0;
+                                                  addBookmarkData();
+                                                } else {
+                                                  Get.dialog(
+                                                    AlertDialog(
+                                                      contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                                      titlePadding: EdgeInsets.zero,
+                                                      content: const Text("데이터 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                                                      actions: [
+                                                        TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                                                      ],
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              label: '삭제',
+                                              backgroundColor: Colors.red,
+                                              icon: Icons.delete,
+                                            )
+                                          ],
+                                        ),
+                                        child: type == 'place' ?
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => PlaceDetailPage(placeId: _bookmarkData[index]['id']));
+                                            },
+                                            child: RoundedRowBookmarkRectanglePlaceCard(
+                                              imageUrl: _bookmarkData[index]['imgUrl'] != null ?
+                                              ImageParser.parseImageUrl(_bookmarkData[index]['imgUrl']) :
+                                              null,
+                                              placeName: _bookmarkData[index]['name'],
+                                              // placeType: _bookmarkData[index]['category'],
+                                              placeType: '',
+                                            ),
+                                          ) :
+                                          CourseListCardItem(
+                                            courseName: _bookmarkData![index]['title'],
+                                            placeCount: _bookmarkData![index]['placesInCourse'].length,
+                                            distance: distance.floor(),
+                                            placesImageUrls: _bookmarkData![index]['placesInCourse'].map((item) => ImageParser.parseImageUrl(item['place']['img_url'])).toList(),
+                                            placesName: _bookmarkData![index]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
+                                            regionName: courseLineData != null && courseLineData != '' ?
+                                            courseLineData['region_name'] : '-',
+                                            onPressed: () {
+                                              Get.to(() => CourseMainPage(courseId: _bookmarkData![index]['id'],));
+                                            },
+                                          ),
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(height: 8,);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Visibility(
+                              visible: loadVisibility,
+                              child: AbsorbPointer(
+                                absorbing: true,
+                                child: Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(38),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(24)
+                                    ),
+                                    child: const CircularProgressIndicator(),
+                                  ),
+                                ),
+                              )
+                          )
+                        ],
+                      ),
+                    ),
+                    // SizedBox(height: 18,),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(24, 0, 24, 18),
+                      width: double.infinity,
+                      child: FilledButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('닫기')
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        }
+    ).whenComplete(() {
+      _bookmarkScrollController.dispose();
+      _bookmarkScrollController = ScrollController();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      addBookmarkData();
+    });
+  }
+
+  void _showLikeSheet(String bookmarkTitle, String type) {
+    bool stateFirst = true;
+    bool loadVisibility = false;
+
+    int page = 0;
+    int size = 25;
+
+    StateSetter? state;
+
+    List<dynamic> _bookmarkData = [];
+
+    void addBookmarkData() async {
+      state!(() {
+        setState(() {
+          loadVisibility = true;
+        });
+      });
+
+      List<dynamic>? result;
+      if (type == 'place') {
+        result = await _userProvider.getLikePlace(page, size);
+      } else {
+        result = await _userProvider.getLikeMagazine(page, size);
+      }
+
+      if (result != null) {
+        if (type == 'place') {
+          _bookmarkData.addAll(result);
+        } else {
+          _bookmarkData.addAll(result);
+        }
+        page++;
+      }
+
+      state!(() {
+        setState(() {
+          loadVisibility = false;
+        });
+      });
+    }
+
+    showModalBottomSheet(
+        isScrollControlled: true,
+        useSafeArea: true,
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter bottomState) {
+              state = bottomState;
+              if (stateFirst) {
+                _bookmarkScrollController.addListener(() {
+                  if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset && !loadVisibility) {
+                    stateFirst = false;
+                    addBookmarkData();
+                  }
+                });
+              }
+              return Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    topLeft: Radius.circular(8),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                                child: Text(bookmarkTitle, style: SectionTextStyle.sectionTitle(),)
+                              ),
+                              SizedBox(height: 18,),
+                              Expanded(
+                                child: Scrollbar(
+                                  controller: _bookmarkScrollController,
+                                  child: ListView.separated(
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    controller: _bookmarkScrollController,
+                                    padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                    itemCount: _bookmarkData.length,
+                                    itemBuilder: (context, index) {
+                                      return Slidable(
+                                        key: Key('$index'),
+                                        endActionPane: ActionPane(
+                                          motion: const ScrollMotion(),
+                                          children: [
+                                            SlidableAction(
+                                              onPressed: (context) async {
+                                                Get.dialog(
+                                                    const AlertDialog(
+                                                      contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                                      actionsPadding: EdgeInsets.zero,
+                                                      titlePadding: EdgeInsets.zero,
+                                                      content: Row(
+                                                        children: [
+                                                          CircularProgressIndicator(),
+                                                          SizedBox(width: 24),
+                                                          Text('데이터 삭제 반영중'),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    barrierDismissible: false
+                                                );
+                                                bool result;
+                                                if (type == 'place') {
+                                                  result = await PlaceProvider().deletePlaceLike(_bookmarkData[index]['id']);
+                                                } else {
+                                                  result = await MagazineProvider().deleteMagazineLike(_bookmarkData[index]['id']);
+                                                }
+                                                Get.back();
+                                                if (result) {
+                                                  _bookmarkData.clear();
+                                                  page = 0;
+                                                  addBookmarkData();
+                                                } else {
+                                                  Get.dialog(
+                                                    AlertDialog(
+                                                      contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                                      titlePadding: EdgeInsets.zero,
+                                                      content: const Text("좋아요 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                                                      actions: [
+                                                        TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                                                      ],
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              label: '삭제',
+                                              backgroundColor: Colors.red,
+                                              icon: Icons.delete,
+                                            )
+                                          ],
+                                        ),
+                                        child: type == 'place' ?
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => PlaceDetailPage(placeId: _bookmarkData[index]['id']));
+                                            },
+                                            child: RoundedRowBookmarkRectanglePlaceCard(
+                                              imageUrl: _bookmarkData[index]['imgUrl'] != null ?
+                                              ImageParser.parseImageUrl(_bookmarkData[index]['imgUrl']) :
+                                              null,
+                                              placeName: _bookmarkData[index]['name'],
+                                              // placeType: _bookmarkData[index]['category'],
+                                              placeType: '',
+                                            ),
+                                          ) :
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.to(() => Magazine(
+                                                magazineId: _bookmarkData![index]['id'],
+                                                imageUrl: _bookmarkData[index]['firstPlace']['imgUrl'] != null ?
+                                                ImageParser.parseImageUrl(_bookmarkData[index]['firstPlace']['imgUrl']) :
+                                                null
+                                              ));
+                                            },
+                                            child: RoundedRowBookmarkRectanglePlaceCard(
+                                              imageUrl: _bookmarkData[index]['firstPlace']['imgUrl'] != null ?
+                                              ImageParser.parseImageUrl(_bookmarkData[index]['firstPlace']['imgUrl']) :
+                                              null,
+                                              placeName: _bookmarkData[index]['title'],
+                                              // placeType: _bookmarkData[index]['category'],
+                                              placeType: '',
+                                            ),
+                                          ),
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const SizedBox(height: 8,);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Visibility(
+                              visible: loadVisibility,
+                              child: AbsorbPointer(
+                                absorbing: true,
+                                child: Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(38),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(24)
+                                    ),
+                                    child: const CircularProgressIndicator(),
+                                  ),
+                                ),
+                              )
+                          )
+                        ],
+                      ),
+                    ),
+                    // SizedBox(height: 18,),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(24, 0, 24, 18),
+                      width: double.infinity,
+                      child: FilledButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('닫기')
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        }
+    ).whenComplete(() {
+      _bookmarkScrollController.dispose();
+      _bookmarkScrollController = ScrollController();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      addBookmarkData();
+    });
+  }
+
   void patchBookmark(dynamic bookmarkId, String type, String title) async {
     Get.dialog(
       const AlertDialog(
@@ -451,25 +957,40 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                     crossAxisSpacing: 8
                 ),
                 scrollDirection: Axis.horizontal,
-                itemCount: _bookmarkController.placeBookmark.value!.length,
+                itemCount: _bookmarkController.placeBookmark.value!.length + 1,
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                 itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return LikeCard(
+                      width: 140,
+                      height: 140,
+                      title: '장소 좋아요',
+                      onTap: () {
+                        _showLikeSheet('장소 좋아요', 'place');
+                      }
+                    );
+                  }
                   return BookmarkCard(
-                    title: _bookmarkController.placeBookmark.value![index]['title'],
+                    title: _bookmarkController.placeBookmark.value![index - 1]['title'],
                     width: 140,
                     height: 140,
                     onTap: () {
-                      print(_bookmarkController.placeBookmark.value![index]['title']);
+                      print(_bookmarkController.placeBookmark.value![index - 1]['title']);
+                      _showBookmarkSheet(
+                        _bookmarkController.placeBookmark.value![index - 1]['title'],
+                        _bookmarkController.placeBookmark.value![index - 1]['placeBookmarkId'],
+                        'place'
+                      );
                     },
                     onDelete: () {
                       deleteBookmark(
-                        _bookmarkController.placeBookmark.value![index]['placeBookmarkId'],
+                        _bookmarkController.placeBookmark.value![index - 1]['placeBookmarkId'],
                         'place',
-                        _bookmarkController.placeBookmark.value![index]['title']
+                        _bookmarkController.placeBookmark.value![index - 1]['title']
                       );
                     },
                     onRename: () {
-                      _bookmarkNameController.text = _bookmarkController.placeBookmark.value![index]['title'];
+                      _bookmarkNameController.text = _bookmarkController.placeBookmark.value![index - 1]['title'];
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -505,9 +1026,9 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                         final String title = _bookmarkNameController.text.toString();
                                         if (bookmarkTextFieldValidator(title) != null) return;
                                         Navigator.of(context, rootNavigator: true).pop();
-                                        if (_bookmarkController.placeBookmark.value![index]['title'] == title) return;
+                                        if (_bookmarkController.placeBookmark.value![index - 1]['title'] == title) return;
                                         patchBookmark(
-                                            _bookmarkController.placeBookmark.value![index]['placeBookmarkId'],
+                                            _bookmarkController.placeBookmark.value![index - 1]['placeBookmarkId'],
                                             'place',
                                             title
                                         );
@@ -521,8 +1042,8 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                           }
                       );
                     },
-                    placeImageUrls: _bookmarkController.placeBookmark.value![index]['thumbnailInfoList']
-                        .map((item) => "$baseUrlDev${item['placeImgUrl'].toString()}").toList(),
+                    placeImageUrls: _bookmarkController.placeBookmark.value![index - 1]['thumbnailInfoList']
+                        .map((item) => ImageParser.parseImageUrl(item['placeImgUrl'])).toList(),
                   );
                 },
               ),
@@ -533,7 +1054,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
     );
   }
 
-  Widget _storyBookmarkSection() {
+  Widget _courseBookmarkSection() {
     return Padding(
       padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
       child: MainSection(
@@ -648,25 +1169,40 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                     crossAxisSpacing: 8
                 ),
                 scrollDirection: Axis.horizontal,
-                itemCount: _bookmarkController.courseBookmark.value!.length,
+                itemCount: _bookmarkController.courseBookmark.value!.length + 1,
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                 itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return LikeCard(
+                        width: 140,
+                        height: 140,
+                        title: '매거진 좋아요',
+                        onTap: () {
+                          _showLikeSheet('매거진 좋아요', 'magazine');
+                        }
+                    );
+                  }
                   return BookmarkCard(
-                    title: _bookmarkController.courseBookmark.value![index]['title'],
+                    title: _bookmarkController.courseBookmark.value![index - 1]['title'],
                     width: 140,
                     height: 140,
                     onTap: () {
-                      print(_bookmarkController.courseBookmark.value![index]['title']);
+                      print(_bookmarkController.courseBookmark.value![index - 1]['title']);
+                      _showBookmarkSheet(
+                          _bookmarkController.courseBookmark.value![index - 1]['title'],
+                          _bookmarkController.courseBookmark.value![index - 1]['id'],
+                          'course'
+                      );
                     },
                     onDelete: () {
                       deleteBookmark(
-                          _bookmarkController.courseBookmark.value![index]['id'],
+                          _bookmarkController.courseBookmark.value![index - 1]['id'],
                           'course',
-                          _bookmarkController.courseBookmark.value![index]['title']
+                          _bookmarkController.courseBookmark.value![index - 1]['title']
                       );
                     },
                     onRename: () {
-                      _bookmarkNameController.text = _bookmarkController.courseBookmark.value![index]['title'];
+                      _bookmarkNameController.text = _bookmarkController.courseBookmark.value![index - 1]['title'];
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -702,9 +1238,9 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                                         final String title = _bookmarkNameController.text.toString();
                                         if (bookmarkTextFieldValidator(title) != null) return;
                                         Navigator.of(context, rootNavigator: true).pop();
-                                        if (_bookmarkController.courseBookmark.value![index]['title'] == title) return;
+                                        if (_bookmarkController.courseBookmark.value![index - 1]['title'] == title) return;
                                         patchBookmark(
-                                          _bookmarkController.courseBookmark.value![index]['id'],
+                                          _bookmarkController.courseBookmark.value![index - 1]['id'],
                                           'course',
                                           title
                                         );
@@ -718,7 +1254,7 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
                           }
                       );
                     },
-                    placeImageUrls: ["$baseUrlDev${_bookmarkController.courseBookmark.value![index]['imgUrl']}"],
+                    placeImageUrls: [ImageParser.parseImageUrl(_bookmarkController.courseBookmark.value![index - 1]['imgUrl'])],
                   );
                 },
               ),

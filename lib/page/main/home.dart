@@ -18,6 +18,7 @@ import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_button.dart';
 import 'package:place_mobile_flutter/widget/search_bar.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
@@ -115,6 +116,10 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   }
 
   void _getMagazineSection() async {
+    setState(() {
+      _loadMagazineData = -1;
+    });
+
     List<dynamic>? data = await _magazineProvider.getMagazineList();
     if (data == null) {
       _magazineData = null;
@@ -127,7 +132,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     for (int i = 0;i < data.length;i++) {
       String? imgUrl;
       if (data[i]['imgUrl'] != null) {
-        imgUrl = "$baseUrlDev${data[i]['imgUrl']}";
+        imgUrl = ImageParser.parseImageUrl(data[i]['imgUrl']);
       }
       data[i]['imgUrl'] = imgUrl;
     }
@@ -140,58 +145,105 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   }
 
   Widget __magazineSection() {
-    if (_loadMagazineData < 1) return Container();
-    if (_magazineData == null) return Container();
-    if (_magazineData!.isEmpty) return Container();
-    return SizedBox(
-      width: double.infinity,
-      child: MainSection(
-        title: "매거진",
-        // message: "마음에 드는 스토리를 찾아보세요",
-        content: Column(
+    if (_loadMagazineData == 0) return Container();
+
+    Widget body;
+    if (_loadMagazineData == 1) {
+      if (_magazineData == null) return Container();
+      if (_magazineData!.isEmpty) return Container();
+
+      body = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: CarouselSlider.builder(
+              options: CarouselOptions(
+                  initialPage: 0,
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.9,
+                  autoPlay: true,
+                  aspectRatio: 16 / 8,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      activeIndex = index;
+                    });
+                  }),
+              itemCount: _magazineData!.length,
+              itemBuilder: (context, index, realIndex) {
+                return RoundedRectangleMagazineCard(
+                  imageUrl: _magazineData![index]['imgUrl'],
+                  title: _magazineData![index]['title'],
+                  message: _magazineData![index]['contents'],
+                  titleStyle: const TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 21,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    height: 1,
+                  ),
+                  messageStyle: SectionTextStyle.sectionContent(Colors.white),
+                  onTap: () {
+                    Get.to(() => Magazine(
+                      magazineId: _magazineData![index]['id'],
+                      imageUrl: _magazineData![index]['imgUrl'],
+                    ));
+                  },
+                );
+              },
+            ),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          AnimatedSmoothIndicator(
+            activeIndex: activeIndex,
+            count: _magazineData!.length,
+            effect: const JumpingDotEffect(dotHeight: 10, dotWidth: 10),
+          )
+        ],
+      );
+    } else {
+      body = Shimmer.fromColors(
+          baseColor: const Color.fromRGBO(240, 240, 240, 1),
+          highlightColor: Colors.grey[300]!,
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: CarouselSlider.builder(
-                options: CarouselOptions(
-                    initialPage: 0,
-                    enlargeCenterPage: true,
-                    viewportFraction: 0.9,
-                    autoPlay: true,
-                    aspectRatio: 16 / 8,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        activeIndex = index;
-                      });
-                    }),
-                itemCount: _magazineData!.length,
-                itemBuilder: (context, index, realIndex) {
-                  return RoundedRectangleMagazineCard(
-                    imageUrl: _magazineData![index]['imgUrl'],
-                    title: _magazineData![index]['title'],
-                    message: _magazineData![index]['contents'],
-                    messageStyle: SectionTextStyle.sectionContent(Colors.white),
-                    onTap: () {
-                      Get.to(() => Magazine(
-                        magazineId: _magazineData![index]['id'],
-                        imageUrl: _magazineData![index]['imgUrl'],
-                      ));
-                    },
-                  );
-                },
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+              child: SizedBox(
+                width: double.infinity,
+                child: AspectRatio(
+                  aspectRatio: 16/9,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(240, 240, 240, 1),
+                      borderRadius: BorderRadius.circular(8)
+                    ),
+                  ),
+                ),
               ),
             ),
             const SizedBox(
               height: 8,
             ),
-            AnimatedSmoothIndicator(
-              activeIndex: activeIndex,
-              count: _magazineData!.length,
-              effect: const JumpingDotEffect(dotHeight: 10, dotWidth: 10),
+            const AnimatedSmoothIndicator(
+              activeIndex: 0,
+              count: 3,
+              effect: JumpingDotEffect(dotHeight: 10, dotWidth: 10),
             )
           ],
-        ),
+        )
+      );
+    }
+
+    return SizedBox(
+      width: double.infinity,
+      child: MainSection(
+        title: "매거진",
+        // message: "마음에 드는 스토리를 찾아보세요",
+        content: body,
       ),
     );
   }
@@ -255,7 +307,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                   index -= 1;
                   String? imgUrl;
                   if (data['places'][index]['photos'] != null && data['places'][index]['photos'].length > 0) {
-                    imgUrl = "https://been-dev.yeoksi.com/api-recommender/place-photo/?${data['places'][index]['photos'][0]['url'].split('?')[1]}&max_width=480";
+                    imgUrl = ImageParser.parseImageUrl(data['places'][index]['photos'][0]['url']);
                   }
 
                   String openString = '정보 없음';
@@ -315,6 +367,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
   }
 
   void _getPlaceRecommendationSection() async {
+    setState(() {
+      _loadRecommendData = -1;
+    });
     Map<String, dynamic>? data = await _placeProvider.getPlaceRecommendNowSection();
 
     if (data == null) {
@@ -349,22 +404,126 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     });
   }
 
+  Widget _createRecommendShimmer() {
+    return Container(
+      width: 250,
+      decoration: BoxDecoration(
+          color: Color.fromRGBO(240, 240, 240, 0.0),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: const Color.fromRGBO(240, 240, 240, 1),
+          )
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                  color: Color.fromRGBO(240, 240, 240, 1)
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: 160,
+                  height: 20,
+                  decoration: BoxDecoration(
+                      color: const Color.fromRGBO(240, 240, 240, 1),
+                      borderRadius: BorderRadius.circular(40)
+                  ),
+                ),
+                const SizedBox(
+                    height: 6
+                ),
+                Container(
+                  width: 119,
+                  height: 20,
+                  decoration: BoxDecoration(
+                      color: const Color.fromRGBO(240, 240, 240, 1),
+                      borderRadius: BorderRadius.circular(40)
+                  ),
+                ),
+                const SizedBox(
+                  height: 6,
+                ),
+                Container(
+                  width: 145,
+                  height: 20,
+                  decoration: BoxDecoration(
+                      color: const Color.fromRGBO(240, 240, 240, 1),
+                      borderRadius: BorderRadius.circular(40)
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _loadPlaceRecommendSection() {
-    if (_loadRecommendData != -1) {
+    if (_loadRecommendData == 0) return Container();
+
+    if (_loadRecommendData == 1) {
+      if (_recommendData == null) return Container();
+      if (_recommendData!.isEmpty) return Container();
+
       List<Widget> items = [];
-      if (_recommendData != null) {
-        for (int i = 0;i < _recommendData!['collections'].length;i++) {
-          items.add(__recommendSection(_recommendData!['collections'][i]));
-          items.add(const SizedBox(height: 24,));
-        }
-        return Column(
-          children: items,
-        );
-      } else {
-        return Container();
+      for (int i = 0;i < _recommendData!['collections'].length;i++) {
+        items.add(__recommendSection(_recommendData!['collections'][i]));
+        items.add(const SizedBox(height: 24,));
       }
+      return Column(
+        children: items,
+      );
     } else {
-      return Container();
+      return Column(
+        children: [
+          Shimmer.fromColors(
+            baseColor: const Color.fromRGBO(240, 240, 240, 1),
+            highlightColor: Colors.grey[300]!,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 120,
+                    height: 25,
+                    decoration: BoxDecoration(
+                        color: const Color.fromRGBO(240, 240, 240, 1),
+                        borderRadius: BorderRadius.circular(40)
+                    ),
+                  ),
+                  const SizedBox(height: 10,),
+                  SizedBox(
+                    height: 195,
+                    child: Row(
+                      children: [
+                        _createRecommendShimmer(),
+                        const SizedBox(width: 16,),
+                        _createRecommendShimmer(),
+                        const SizedBox(width: 16,),
+                        _createRecommendShimmer(),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
     }
   }
 
@@ -392,11 +551,18 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
     super.build(context);
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-            child: Column(
-              children: _createSection(),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _getPlaceRecommendationSection();
+            _getMagazineSection();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+              child: Column(
+                children: _createSection(),
+              ),
             ),
           ),
         ),

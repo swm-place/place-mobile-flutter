@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
 import 'package:place_mobile_flutter/widget/place/tag/tag_chip.dart';
 
 class RoundedRectanglePlaceCard extends StatelessWidget {
@@ -118,8 +119,8 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                       children: [
                         Container(
                           width: double.infinity,
-                          child: imageUrl != null ? 
-                            Image.network(imageUrl!, fit: BoxFit.cover,) :
+                          child: imageUrl != null ?
+                            NetworkCacheImage(imageUrl!, fit: BoxFit.cover) :
                             Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
                         ),
                       ],
@@ -287,7 +288,7 @@ class RoundedRowRectanglePlaceCard extends StatelessWidget {
                   child: AspectRatio(
                     aspectRatio: 1.1 / 1,
                     child: imageUrl != null ?
-                    Image.network(imageUrl!, fit: BoxFit.cover,) :
+                    NetworkCacheImage(imageUrl!, fit: BoxFit.cover) :
                     Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
                   ),
                 ),
@@ -447,7 +448,7 @@ class RoundedRowRectangleCartPlaceCard extends StatelessWidget {
                   child: AspectRatio(
                     aspectRatio: 0.9 / 1,
                     child: imageUrl != null ?
-                    Image.network(imageUrl!, fit: BoxFit.cover,) :
+                    NetworkCacheImage(imageUrl!, fit: BoxFit.cover) :
                     Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
                   ),
                 ),
@@ -557,7 +558,7 @@ class SelectedPlaceCard extends StatelessWidget {
                     AspectRatio(
                       aspectRatio: 1,
                       child: imageUrl != null ?
-                      Image.network(imageUrl!, fit: BoxFit.cover,) :
+                      NetworkCacheImage(imageUrl!, fit: BoxFit.cover) :
                       Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
                     ),
                     Padding(
@@ -610,6 +611,88 @@ class SelectedPlaceCard extends StatelessWidget {
           //   ),
           // )
         ],
+      ),
+    );
+  }
+}
+
+
+class RoundedRowBookmarkRectanglePlaceCard extends StatelessWidget {
+  RoundedRowBookmarkRectanglePlaceCard({
+    this.imageUrl,
+    required this.placeName,
+    required this.placeType,
+    this.elevation=2.5,
+    this.borderRadius=8,
+    this.imageBorderRadius=0,
+    this.imagePadding=EdgeInsets.zero,
+    Key? key,
+  }) : super(key: key);
+
+  final String? imageUrl;
+  String placeName;
+  String? placeType;
+
+  double elevation;
+  double borderRadius;
+  double imageBorderRadius;
+
+  EdgeInsets imagePadding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: elevation,
+      shadowColor: Colors.grey[100],
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: SizedBox(
+          height: 95,
+          width: double.infinity,
+          child: Row(
+            children: [
+              Padding(
+                padding: imagePadding,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(imageBorderRadius),
+                  child: AspectRatio(
+                    aspectRatio: 1.1 / 1,
+                    child: imageUrl != null ?
+                    NetworkCacheImage(imageUrl!, fit: BoxFit.cover) :
+                    Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        placeName,
+                        overflow: TextOverflow.ellipsis,
+                        style: SectionTextStyle.sectionContentExtraLarge(
+                            Colors.black),
+                      ),
+                      const SizedBox(height: 4,),
+                      if (placeType != null)
+                        Text(
+                          placeType!,
+                          maxLines: 1,
+                          style: SectionTextStyle.labelMedium(
+                              Colors.grey[600]!),
+                        ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

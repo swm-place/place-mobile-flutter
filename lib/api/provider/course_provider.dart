@@ -58,6 +58,24 @@ class CourseProvider extends DefaultProvider {
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
+      print(response.body);
+      return null;
+    }
+  }
+
+  Future<List<dynamic>?> getMyCourseDataOne(int page, int size) async {
+    Uri uri = Uri.parse("$baseUrl/api/courses/:one-place-each?size=$size&page=$page");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      print(response.body);
       return null;
     }
   }
@@ -130,21 +148,17 @@ class CourseProvider extends DefaultProvider {
     }
   }
 
-  Future<Map<String, dynamic>?> postMyCourseData() async {
+  Future<Map<String, dynamic>?> postMyCourseData(String title, List<dynamic>? courseData) async {
     Uri uri = Uri.parse("$baseUrl/api/courses");
     Map<String, String>? header = await setHeader(true);
     header!["Content-Type"] = 'application/json';
 
     Response response;
     try {
-      DateTime now = DateTime.now();
-      DateFormat dateFormat = DateFormat("yy MM dd");
-      String formattedDate = dateFormat.format(now);
-
       response = await post(uri, headers: header, body: json.encode({
-        "title": "$formattedDate 나의 계획",
+        "title": title,
         "description": "",
-        "placesInCourse": [],
+        "placesInCourse": courseData ??= [],
         "inProgress": false,
         "finished": false
       }));

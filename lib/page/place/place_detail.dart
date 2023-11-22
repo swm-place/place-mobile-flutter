@@ -20,6 +20,7 @@ import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
 import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/place/review/place_review.dart';
@@ -31,6 +32,7 @@ import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -218,22 +220,22 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                         ),
                         iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
                       ),
-                      actions: [
-                        FlexibleTopBarActionButton(
-                            onPressed: () {
-
-                            },
-                            icon: Icon(Icons.ios_share, size: 18,)
-                        )
-                      ],
+                      // actions: [
+                      //   FlexibleTopBarActionButton(
+                      //       onPressed: () {
+                      //
+                      //       },
+                      //       icon: Icon(Icons.ios_share, size: 18,)
+                      //   )
+                      // ],
                       pinned: true,
                       expandedHeight: 220.0,
                       surfaceTintColor: Colors.white,
                       backgroundColor: Colors.white,
                       flexibleSpace: PictureFlexibleSpace(
                         imageUrl: placeData['photos'] != null && placeData['photos'].length > 0 ?
-                        "$baseUrlDev/api-recommender/place-photo/?${placeData['photos'][0]['url'].split('?')[1]}&max_width=480" :
-                        null,
+                          ImageParser.parseImageUrl(placeData['photos'][0]['url']):
+                          null,
                       ),
                     ),
                     SliverList(
@@ -269,10 +271,96 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         );
       }
     } else {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
+      return Scaffold(
+        body: SafeArea(
+          child: SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: Shimmer.fromColors(
+              baseColor: const Color.fromRGBO(240, 240, 240, 1),
+              highlightColor: Colors.grey[300]!,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 220,
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(240, 240, 240, 1),
+                      borderRadius: BorderRadius.circular(8)
+                    )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                    child: Container(
+                      width: 195,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(240, 240, 240, 1),
+                        borderRadius: BorderRadius.circular(8)
+                      )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                    child: Container(
+                        width: 145,
+                        height: 25,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+                    child: Container(
+                        width: 185,
+                        height: 25,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+                    child: Container(
+                        width: 86,
+                        height: 25,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                    child: Container(
+                        width: double.infinity,
+                        height: 100,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                    child: Container(
+                        width: double.infinity,
+                        height: 100,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
       );
     }
   }
@@ -364,8 +452,18 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           children: [
             GestureDetector(
               onTap: () {
-                HapticFeedback.lightImpact();
-                __showBookmarkSelectionSheet();
+                if (AuthController.to.user.value != null) {
+                  HapticFeedback.lightImpact();
+                  __showBookmarkSelectionSheet();
+                } else {
+                  Get.showSnackbar(
+                    ErrorGetSnackBar(
+                      title: '로그인 필요',
+                      message: '로그인 후 이용 가능한 기능입니다.',
+                      showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                    ),
+                  );
+                }
                 // setState(() {
                   // bookmarkPlace = !bookmarkPlace;
                   // if (bookmarkPlace) {
@@ -400,7 +498,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           }
                       ),
                     ),
-                    Text("븍마크")
+                    Text("")
                   ],
                 ),
               ),
@@ -408,10 +506,20 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             SizedBox(width: 12,),
             GestureDetector(
               onTap: () {
-                setState(() {
-                  if (asyncLike) return;
-                  like();
-                });
+                if (AuthController.to.user.value != null) {
+                  setState(() {
+                    if (asyncLike) return;
+                    like();
+                  });
+                } else {
+                  Get.showSnackbar(
+                    ErrorGetSnackBar(
+                      title: '로그인 필요',
+                      message: '로그인 후 이용 가능한 기능입니다.',
+                      showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                    ),
+                  );
+                }
               },
               child: Padding(
                 padding: EdgeInsets.all(4),
@@ -438,7 +546,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           }
                       ),
                     ),
-                    Text("1.2K")
+                    Text("")
                   ],
                 ),
               ),
@@ -757,10 +865,11 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             onTap: () {
               if (AuthController.to.user.value == null) {
                 Get.showSnackbar(
-                    WarnGetSnackBar(
-                        title: "로그인 필요",
-                        message: "한줄평 작성은 로그인이 필요합니다."
-                    )
+                  ErrorGetSnackBar(
+                    title: '로그인 필요',
+                    message: '로그인 후 이용 가능한 기능입니다.',
+                    showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                  ),
                 );
                 return;
               }
@@ -904,13 +1013,16 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     int imgCount = placeData['photos'].length;
     if (imgCount > 8) imgCount = 8;
     for (int i = 0;i < imgCount;i++) {
+      String? imgUrl = ImageParser.parseImageUrl(placeData['photos'][i]['url']);
       tiles.add(
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            "https://been-dev.yeoksi.com/api-recommender/place-photo/?${placeData['photos'][i]['url'].split('?')[1]}&max_width=480",
-            fit: BoxFit.cover,
-          ),
+          child: imgUrl != null ?
+            NetworkCacheImage(
+              imgUrl,
+              fit: BoxFit.cover,
+            ) :
+            Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
         )
       );
     }

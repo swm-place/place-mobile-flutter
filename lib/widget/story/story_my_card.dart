@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
 
 class BookmarkCard extends StatelessWidget {
   final Function()? onTap;
@@ -98,13 +99,12 @@ class BookmarkCard extends StatelessWidget {
         return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
       }
       if (placeImageUrls!.length == 1) {
-        return Image.network(
-          placeImageUrls![0],
-          fit: BoxFit.cover,
-          errorBuilder: (context, exception, stackTrace) {
-            return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-          },
-        );
+        return placeImageUrls![0] != null ?
+          NetworkCacheImage(
+            placeImageUrls![0],
+            fit: BoxFit.cover,
+          ) :
+          Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
       }
       if (placeImageUrls!.length == 2) {
         return Column(
@@ -112,24 +112,22 @@ class BookmarkCard extends StatelessWidget {
             SizedBox(
               width: width!,
               height: height! / 2,
-              child: Image.network(
-                placeImageUrls![0],
-                fit: BoxFit.cover,
-                errorBuilder: (context, exception, stackTrace) {
-                  return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                },
-              ),
+              child: placeImageUrls![0] != null ?
+                NetworkCacheImage(
+                  placeImageUrls![0],
+                  fit: BoxFit.cover,
+                ) :
+                Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
             ),
             SizedBox(
               width: width!,
               height: height! / 2,
-              child: Image.network(
-                placeImageUrls![1],
-                fit: BoxFit.cover,
-                errorBuilder: (context, exception, stackTrace) {
-                  return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                },
-              ),
+              child: placeImageUrls![1] != null ?
+                NetworkCacheImage(
+                  placeImageUrls![1],
+                  fit: BoxFit.cover,
+                ) :
+                Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
             ),
           ],
         );
@@ -142,37 +140,34 @@ class BookmarkCard extends StatelessWidget {
                 SizedBox(
                   width: width! / 2,
                   height: height! / 2,
-                  child: Image.network(
-                    placeImageUrls![0],
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, exception, stackTrace) {
-                      return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                    },
-                  ),
+                  child: placeImageUrls![0] != null ?
+                    NetworkCacheImage(
+                      placeImageUrls![0],
+                      fit: BoxFit.cover,
+                    ) :
+                    Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
                 ),
                 SizedBox(
                   width: width! / 2,
                   height: height! / 2,
-                  child: Image.network(
-                    placeImageUrls![1],
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, exception, stackTrace) {
-                      return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                    },
-                  ),
+                  child: placeImageUrls![1] != null ?
+                    NetworkCacheImage(
+                      placeImageUrls![1],
+                      fit: BoxFit.cover,
+                    ) :
+                    Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
                 ),
               ],
             ),
             SizedBox(
               width: width! / 2,
               height: height!,
-              child: Image.network(
-                placeImageUrls![2],
-                fit: BoxFit.cover,
-                errorBuilder: (context, exception, stackTrace) {
-                  return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                },
-              ),
+              child: placeImageUrls![2] != null ?
+                NetworkCacheImage(
+                  placeImageUrls![2],
+                  fit: BoxFit.cover,
+                ) :
+                Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
             ),
           ],
         );
@@ -184,24 +179,22 @@ class BookmarkCard extends StatelessWidget {
               SizedBox(
                 width: width! / 2,
                 height: height! / 2,
-                child: Image.network(
-                  placeImageUrls![0],
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, exception, stackTrace) {
-                    return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                  },
-                ),
+                child: placeImageUrls![0] != null ?
+                  NetworkCacheImage(
+                    placeImageUrls![0],
+                    fit: BoxFit.cover,
+                  ) :
+                  Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),
               SizedBox(
                 width: width! / 2,
                 height: height! / 2,
-                child: Image.network(
-                  placeImageUrls![1],
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, exception, stackTrace) {
-                    return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                  },
-                ),
+                child: placeImageUrls![1] != null ?
+                  NetworkCacheImage(
+                    placeImageUrls![1],
+                    fit: BoxFit.cover,
+                  ) :
+                  Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),
             ],
           ),
@@ -210,24 +203,22 @@ class BookmarkCard extends StatelessWidget {
               SizedBox(
                 width: width! / 2,
                 height: height! / 2,
-                child: Image.network(
-                  placeImageUrls![2],
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, exception, stackTrace) {
-                    return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                  },
-                ),
+                child: placeImageUrls![2] != null ?
+                  NetworkCacheImage(
+                    placeImageUrls![2],
+                    fit: BoxFit.cover,
+                  ) :
+                  Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),
               SizedBox(
                 width: width! / 2,
                 height: height! / 2,
-                child: Image.network(
-                  placeImageUrls![3],
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, exception, stackTrace) {
-                    return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
-                  },
-                ),
+                child: placeImageUrls![3] != null ?
+                  NetworkCacheImage(
+                    placeImageUrls![3],
+                    fit: BoxFit.cover,
+                  ) :
+                  Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),
             ],
           ),
@@ -295,6 +286,84 @@ class BookmarkCard extends StatelessWidget {
                   ),
                   SizedBox(height: editors == null ? 0: 4,),
                   _editorSection()
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class LikeCard extends StatelessWidget {
+  final Function()? onTap;
+
+  LikeCard({
+    required this.title,
+    required this.onTap,
+    this.width,
+    this.height,
+    Key? key,
+  }) : super(key: key);
+
+  String title;
+  // String message;
+  // String location;
+  // String imageUrl;
+
+  double? width;
+  double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    width ??= double.infinity;
+    height ??= double.infinity;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Stack(
+        children: [
+          Container(
+            width: width,
+            height: height,
+            child: Center(
+              child: Icon(Icons.favorite, size: 48,),
+            ),
+          ),
+          Container(
+            width: width,
+            height: height,
+            color: const Color.fromARGB(102, 1, 1, 1),
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: onTap,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: AutoSizeText(
+                          title,
+                          style: const TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            height: 1,
+                          ),
+                          maxLines: 1,
+                          minFontSize: 18,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

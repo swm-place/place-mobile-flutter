@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
 
 class PictureFlexibleSpace extends StatelessWidget {
   PictureFlexibleSpace({
@@ -30,12 +31,11 @@ class PictureFlexibleSpace extends StatelessWidget {
                   height: double.infinity,
                   width: double.infinity,
                   child: imageUrl != null ?
-                    Image.network(
+                    NetworkCacheImage(
                       imageUrl!,
                       fit: BoxFit.cover,
                     ) :
-                  Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,)
-                  ,
+                    Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
                 ),
               ),
             ],
@@ -62,7 +62,7 @@ class MultiplePictureFlexibleSpace extends StatelessWidget {
       if (image != null) {
         images.add(
           Expanded(
-            child: Image.network(
+            child: NetworkCacheImage(
               image!,
               fit: BoxFit.cover,
               height: double.infinity,
