@@ -18,6 +18,7 @@ import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_edit.dart';
 import 'package:place_mobile_flutter/page/course/course_map.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/gis_controller.dart';
@@ -729,17 +730,22 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
       }
 
       course.addAll([
-        RoundedRowRectanglePlaceCard(
-          imageUrl: place['place']['img_url'] != null ?
+        GestureDetector(
+          onTap: () {
+            Get.to(() => PlaceDetailPage(placeId: place['place']['id']));
+          },
+          child: RoundedRowRectanglePlaceCard(
+            imageUrl: place['place']['img_url'] != null ?
             ImageParser.parseImageUrl(place['place']['img_url']) :
             null,
-          tags: place['place']['hashtags'],
-          // tags: [],
-          placeName: place['place']['name'],
-          placeType: place['place']['category'],
-          // open: place['place']['open'],
-          open: openString,
-          distance: distance == null ? null : UnitConverter.formatDistance(distance),
+            tags: place['place']['hashtags'],
+            // tags: [],
+            placeName: place['place']['name'],
+            placeType: place['place']['category'],
+            // open: place['place']['open'],
+            open: openString,
+            distance: distance == null ? null : UnitConverter.formatDistance(distance),
+          ),
         ),
         const SizedBox(height: 12)
       ]);

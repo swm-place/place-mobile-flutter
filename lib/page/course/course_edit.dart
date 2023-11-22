@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/page/course/course_add.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/state/state_const.dart';
@@ -159,20 +160,25 @@ class _CourseEditPageState extends State<CourseEditPage> {
                 )
               ],
             ),
-            child: RoundedRowRectanglePlaceCard(
-              imageUrl: place['place']['img_url'] != null ?
+            child: GestureDetector(
+              onTap: () {
+                Get.to(() => PlaceDetailPage(placeId: place['place']['id']));
+              },
+              child: RoundedRowRectanglePlaceCard(
+                imageUrl: place['place']['img_url'] != null ?
                 ImageParser.parseImageUrl(place['place']['img_url']) :
                 null,
-              tags: place['place']['hashtags'],
-              placeName: place['place']['name'],
-              placeType: place['place']['category'],
-              // open: place['place']['open'],
-              open: openString,
-              distance: distance == null ? null : UnitConverter.formatDistance(distance),
-              elevation: 0,
-              borderRadius: 0,
-              imageBorderRadius: 8,
-              imagePadding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                tags: place['place']['hashtags'],
+                placeName: place['place']['name'],
+                placeType: place['place']['category'],
+                // open: place['place']['open'],
+                open: openString,
+                distance: distance == null ? null : UnitConverter.formatDistance(distance),
+                elevation: 0,
+                borderRadius: 0,
+                imageBorderRadius: 8,
+                imagePadding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+              ),
             ),
           )
       );

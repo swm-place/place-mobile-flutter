@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/place_provider.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -221,7 +222,7 @@ class _CourseAddPageState extends State<CourseAddPage> {
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
                         onTap: () {
-
+                          Get.to(() => PlaceDetailPage(placeId: _places[index]['id']));
                         },
                         child: RoundedRowRectangleCartPlaceCard(
                           imageUrl: _places[index]['photos'] != null && _places[index]['photos'].length > 0 ?
