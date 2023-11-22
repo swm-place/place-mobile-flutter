@@ -19,6 +19,8 @@ class CourseController extends GetxController {
   RxList<dynamic> placesPosition = RxList([]);
   Rxn<Map<String, dynamic>> courseLineData = Rxn(null);
 
+  RxList<dynamic> bookmarkData = RxList();
+
   RxList<double> center = RxList([37.574863, 126.977725]);
   RxString regionName = RxString('-');
   RxString title = RxString('');
@@ -48,6 +50,7 @@ class CourseController extends GetxController {
     }
 
     coursePlaceData.value = result['placesInCourse'];
+    if (result['bookmarks'] != null) bookmarkData.value = result['bookmarks'];
 
     placesPosition.clear();
     placesPosition.addAll(

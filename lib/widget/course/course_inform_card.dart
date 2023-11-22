@@ -4,6 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
 
 class CourseInformationCard extends StatelessWidget {
   CourseInformationCard({
@@ -89,7 +90,7 @@ class CourseListCardItemState extends State<CourseListCardItem> {
     for (int i = 0;i < widget.placesImageUrls.length;i++) {
       if (widget.placesImageUrls[i] != null) {
         images.add(
-            Image.network(widget.placesImageUrls[i], fit: BoxFit.cover)
+            NetworkCacheImage(widget.placesImageUrls[i], fit: BoxFit.cover)
         );
       } else {
         images.add(Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,));

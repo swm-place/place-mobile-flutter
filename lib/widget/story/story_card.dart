@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
 
 class RoundedRectangleMagazineCard extends StatelessWidget {
   final Function()? onTap;
@@ -50,7 +51,8 @@ class RoundedRectangleMagazineCard extends StatelessWidget {
               width: width,
               height: height,
               child: imageUrl != null ?
-                Image.network(imageUrl!, fit: BoxFit.cover,) :
+                // Image.network(imageUrl!, fit: BoxFit.cover,) :
+                NetworkCacheImage(imageUrl!, fit: BoxFit.cover,) :
                 Image.asset('assets/images/empty.png', fit: BoxFit.fitHeight,),
             ),
             Container(
@@ -78,6 +80,7 @@ class RoundedRectangleMagazineCard extends StatelessWidget {
                             style: titleStyle,
                           ),
                         ),
+                        const SizedBox(height: 4,),
                         SizedBox(
                           width: double.infinity,
                           child: Text(
@@ -135,12 +138,13 @@ class RoundedRectangleCourseCard extends StatelessWidget {
     if (length > 5) length = 5;
     for (int i = 0;i < length;i++) {
       images.add(Expanded(child:
-        Image.network(
+        NetworkCacheImage(
           imageUrls[i],
           fit: BoxFit.cover,
           height: double.infinity,
           width: double.infinity,
-        )));
+        )
+      ));
     }
     return images;
   }

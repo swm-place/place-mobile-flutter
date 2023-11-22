@@ -3,14 +3,18 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/course/course_inform_card.dart';
 import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CoursePage extends StatefulWidget {
   @override
@@ -84,7 +88,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
 
   void initCourseData() async {
     page = 0;
-    List<dynamic>? data = await _courseProvider.getMyCourseData(page, count);
+    List<dynamic>? data = await _courseProvider.getMyCourseDataOne(page, count);
     if (data == null) {
       _myCourseData = null;
       setState(() {
@@ -105,7 +109,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
       loadVisibilityCourse = true;
     });
     page += 1;
-    List<dynamic>? data = await _courseProvider.getMyCourseData(page, count);
+    List<dynamic>? data = await _courseProvider.getMyCourseDataOne(page, count);
     if (data == null) {
       setState(() {
         loadVisibilityCourse = false;
@@ -141,6 +145,29 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
 
   @override
   Widget build(BuildContext context) {
+    if (AuthController.to.user.value == null) {
+      return Scaffold(
+        body: SafeArea(
+          child: MainSection(
+            title: '나의 코스',
+            content: Padding(
+              padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.grey[300]
+                ),
+                padding: EdgeInsets.all(24),
+                child: Center(
+                  child: Text("내 코스 생성은 로그인 후 이용 가능합니다."),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -160,7 +187,12 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
               ),
               barrierDismissible: false
           );
-          Map<String, dynamic>? result = await _courseProvider.postMyCourseData();
+
+          DateTime now = DateTime.now();
+          DateFormat dateFormat = DateFormat("yy MM dd");
+          String formattedDate = dateFormat.format(now);
+
+          Map<String, dynamic>? result = await _courseProvider.postMyCourseData("$formattedDate 나의 계획", null);
           Get.back();
           if (result == null) {
             Get.dialog(
@@ -269,31 +301,66 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
     );
   }
 
+  Widget _createCourseSection() => Column(
+    children: [
+      Container(
+        width: double.infinity,
+        height: 130,
+        decoration: BoxDecoration(
+            color: const Color.fromRGBO(240, 240, 240, 1),
+            borderRadius: BorderRadius.circular(8)
+        ),
+      ),
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 110,
+              height: 23,
+              decoration: BoxDecoration(
+                  color: const Color.fromRGBO(240, 240, 240, 1),
+                  borderRadius: BorderRadius.circular(8)
+              ),
+            ),
+            SizedBox(height: 8,),
+            Container(
+              width: 180,
+              height: 23,
+              decoration: BoxDecoration(
+                  color: const Color.fromRGBO(240, 240, 240, 1),
+                  borderRadius: BorderRadius.circular(8)
+              ),
+            ),
+          ],
+        ),
+      )
+    ],
+  );
+
   Widget _createMyCourseSection() {
-    if (_loadMyCourseData < 1) {
+    if (_loadMyCourseData == -1) {
       return MainSection(
         title: '나의 코스',
         content: Padding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.grey[300]
-            ),
-            padding: const EdgeInsets.all(24),
-            child: const Column(
-                children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 12,),
-                Text("데이터를 불러오는 중 입니다.")
+          child: Shimmer.fromColors(
+            baseColor: const Color.fromRGBO(240, 240, 240, 1),
+            highlightColor: Colors.grey[300]!,
+            child: Column(
+              children: [
+                _createCourseSection(),
+                _createCourseSection(),
+                _createCourseSection(),
               ],
-            )
+            ),
           )
         )
       );
     }
-    if (_myCourseData == null) {
+    if (_loadMyCourseData == 0 || _myCourseData == null) {
       return MainSection(
         title: '나의 코스',
         content: Padding(
@@ -366,13 +433,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
                       courseName: _myCourseData![index]['title'],
                       placeCount: _myCourseData![index]['placesInCourse'].length,
                       distance: distance.floor(),
-                      placesImageUrls: _myCourseData![index]['placesInCourse'].map((item) {
-                        if (item['place']['img_url'] != null) {
-                          return "$baseUrlDev/api-recommender/place-photo/?${item['place']['img_url'].split('?')[1]}&max_width=480";
-                        } else {
-                          return null;
-                        }
-                      }).toList(),
+                      placesImageUrls: _myCourseData![index]['placesInCourse'].map((item) => ImageParser.parseImageUrl(item['place']['img_url'])).toList(),
                       placesName: _myCourseData![index]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
                       regionName: courseLineData != null && courseLineData != '' ?
                       courseLineData['region_name'] : '-',

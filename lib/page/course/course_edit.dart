@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/page/course/course_add.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
 import 'package:place_mobile_flutter/state/course_controller.dart';
 import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/state/state_const.dart';
@@ -101,10 +102,14 @@ class _CourseEditPageState extends State<CourseEditPage> {
           final openTime = currentDayHours["open"];
           final closeTime = currentDayHours["close"];
 
-          if (currentTime >= openTime && currentTime <= closeTime) {
-            openString = '영업중';
-          } else {
-            openString = '영업중 아님';
+          try {
+            if (currentTime >= openTime && currentTime <= closeTime) {
+              openString = '영업중';
+            } else {
+              openString = '영업중 아님';
+            }
+          } catch(e) {
+            openString = '정보 없음';
           }
         }
       }
@@ -155,20 +160,25 @@ class _CourseEditPageState extends State<CourseEditPage> {
                 )
               ],
             ),
-            child: RoundedRowRectanglePlaceCard(
-              imageUrl: place['place']['img_url'] != null ?
-                "$baseUrlDev/api-recommender/place-photo/?${ place['place']['img_url'].split('?')[1]}&max_width=480" :
+            child: GestureDetector(
+              onTap: () {
+                Get.to(() => PlaceDetailPage(placeId: place['place']['id']));
+              },
+              child: RoundedRowRectanglePlaceCard(
+                imageUrl: place['place']['img_url'] != null ?
+                ImageParser.parseImageUrl(place['place']['img_url']) :
                 null,
-              tags: place['place']['hashtags'],
-              placeName: place['place']['name'],
-              placeType: place['place']['category'],
-              // open: place['place']['open'],
-              open: openString,
-              distance: distance == null ? null : UnitConverter.formatDistance(distance),
-              elevation: 0,
-              borderRadius: 0,
-              imageBorderRadius: 8,
-              imagePadding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                tags: place['place']['hashtags'],
+                placeName: place['place']['name'],
+                placeType: place['place']['category'],
+                // open: place['place']['open'],
+                open: openString,
+                distance: distance == null ? null : UnitConverter.formatDistance(distance),
+                elevation: 0,
+                borderRadius: 0,
+                imageBorderRadius: 8,
+                imagePadding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+              ),
             ),
           )
       );
@@ -298,9 +308,35 @@ class _CourseEditPageState extends State<CourseEditPage> {
                 child: map,
               );
             }),
+            Obx(() {
+              double distance = 0.0;
+              if (widget.courseController.courseLineData.value != null && widget.courseController.courseLineData.value != '') {
+                if (widget.courseController.placesPosition.length > 1) {
+                  if (widget.courseController.courseLineData.value!['routes'][0]['distance'] is int) {
+                    distance = widget.courseController.courseLineData.value!['routes'][0]['distance'].toDouble();
+                  } else {
+                    distance = widget.courseController.courseLineData.value!['routes'][0]['distance'];
+                  }
+                } else {
+                  distance = 0;
+                }
+              }
+
+              return Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(24, 6, 24, 6),
+                color: lightColorScheme.primary,
+                child: Row(
+                  children: [
+                    Text('총 거리: ${UnitConverter.formatDistance(distance.floor())}',
+                      style: TextStyle(color: Colors.white),)
+                  ],
+                ),
+              );
+            }),
             Flexible(
               child: Obx(() => Padding(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
                 child: widget.courseController.coursePlaceData.isEmpty ?
                   Container(
                     height: double.infinity,

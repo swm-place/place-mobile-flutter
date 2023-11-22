@@ -1,13 +1,23 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
+import 'package:place_mobile_flutter/page/course/course_main.dart';
+import 'package:place_mobile_flutter/page/place/place_detail.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/util/utility.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
+import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Magazine extends StatefulWidget {
   Magazine({
@@ -27,6 +37,7 @@ class Magazine extends StatefulWidget {
 class _MagazineState extends State<Magazine> {
 
   final MagazineProvider _magazineProvider = MagazineProvider();
+  final CourseProvider _courseProvider = CourseProvider();
 
   bool likeClicked = false;
   bool asyncLike = false;
@@ -61,6 +72,126 @@ class _MagazineState extends State<Magazine> {
     asyncLike = false;
   }
 
+  void _convertCourse() async {
+    Get.dialog(
+        const AlertDialog(
+          contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+          actionsPadding: EdgeInsets.zero,
+          titlePadding: EdgeInsets.zero,
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 24),
+              Text('코스로 변환중'),
+            ],
+          ),
+        ),
+        barrierDismissible: false
+    );
+
+    String title = '매거진 to 코스';
+    List<dynamic> places = [];
+    for (int i = 0;i < _magazineData!['placesInCourseMagazine'].length;i++) {
+      places.add({
+        "place": {
+          "id": _magazineData!['placesInCourseMagazine'][i]['place']['id']
+        },
+        "order": i + 1,
+      });
+    }
+    Map<String, dynamic>? result = await _courseProvider.postMyCourseData(title, places);
+
+    if (result == null) {
+      Get.back();
+
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("코스 변환 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+      return;
+    }
+
+    List<double> centerTemp = [];
+    String regionNameTem = '';
+    List<dynamic> placePos = result['placesInCourse'].expand((element) =>
+      [element['place']['location']]).toList();
+
+    Map<String, dynamic> newLine = {};
+    if (placePos.length > 1) {
+      Map<String, dynamic>? newLineResult = await _courseProvider.getCourseLine(placePos);
+      if (newLineResult == null) {
+        print(1);
+        Get.back();
+        Get.dialog(
+          AlertDialog(
+            contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+            titlePadding: EdgeInsets.zero,
+            content: const Text("코스 변환 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+            actions: [
+              TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+            ],
+          ),
+        );
+        return;
+      }
+      newLine = newLineResult;
+      centerTemp = UnitConverter.findCenter(newLine['routes'][0]['geometry']['coordinates']);
+    } else {
+      centerTemp = [placePos[0]['lat'], placePos[0]['lon']];
+    }
+
+    newLine['center'] = centerTemp;
+
+    Map<String, dynamic>? newRegion = await _courseProvider.getReverseGeocode(LatLng(centerTemp[0], centerTemp[1]));
+    if (newRegion == null) {
+      print(2);
+      Get.back();
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("코스 변환 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+      return;
+    }
+    regionNameTem = newRegion['region_name'];
+    newLine['region_name'] = regionNameTem;
+
+    Map<String, dynamic>? patchResult = await _courseProvider.patchMyCourseData(result['id'], {
+      'placesInCourse': [],
+      'routesJson': json.encode(newLine)
+    });
+
+    if (patchResult == null) {
+      print('3');
+      Get.back();
+      Get.dialog(
+        AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+          titlePadding: EdgeInsets.zero,
+          content: const Text("코스 변환 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+          actions: [
+            TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+          ],
+        ),
+      );
+      return;
+    }
+
+    Get.back();
+    Get.to(() => CourseMainPage(courseId: result['id']));
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loadData != -1) {
@@ -74,13 +205,33 @@ class _MagazineState extends State<Magazine> {
                       actions: [
                         FlexibleTopBarActionButton(
                             onPressed: () {
-
+                              if (AuthController.to.user.value != null) {
+                                _convertCourse();
+                              } else {
+                                Get.showSnackbar(
+                                  ErrorGetSnackBar(
+                                    title: '로그인 필요',
+                                    message: '로그인 후 이용 가능한 기능입니다.',
+                                    showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                                  ),
+                                );
+                              }
                             },
-                            icon: const Icon(Icons.ios_share, size: 18,)
+                            icon: const Icon(Icons.swap_horiz, size: 18,)
                         ),
                         FlexibleTopBarActionButton(
                           onPressed: () {
-                            like();
+                            if (AuthController.to.user.value != null) {
+                              like();
+                            } else {
+                              Get.showSnackbar(
+                                ErrorGetSnackBar(
+                                  title: '로그인 필요',
+                                  message: '로그인 후 이용 가능한 기능입니다.',
+                                  showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                                ),
+                              );
+                            }
                           },
                           icon: likeClicked ? Icon(
                             MdiIcons.heart,
@@ -127,9 +278,91 @@ class _MagazineState extends State<Magazine> {
         );
       }
     } else {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
+      return Scaffold(
+        body: SafeArea(
+          child: Shimmer.fromColors(
+            baseColor: const Color.fromRGBO(240, 240, 240, 1),
+            highlightColor: Colors.grey[300]!,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                    width: double.infinity,
+                    height: 220,
+                    decoration: BoxDecoration(
+                        color: const Color.fromRGBO(240, 240, 240, 1),
+                        borderRadius: BorderRadius.circular(8)
+                    )
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                  child: Container(
+                      width: 195,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          color: const Color.fromRGBO(240, 240, 240, 1),
+                          borderRadius: BorderRadius.circular(8)
+                      )
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                  child: Container(
+                      width: 145,
+                      height: 25,
+                      decoration: BoxDecoration(
+                          color: const Color.fromRGBO(240, 240, 240, 1),
+                          borderRadius: BorderRadius.circular(8)
+                      )
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+                  child: Container(
+                      width: 185,
+                      height: 25,
+                      decoration: BoxDecoration(
+                          color: const Color.fromRGBO(240, 240, 240, 1),
+                          borderRadius: BorderRadius.circular(8)
+                      )
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+                  child: Container(
+                      width: 86,
+                      height: 25,
+                      decoration: BoxDecoration(
+                          color: const Color.fromRGBO(240, 240, 240, 1),
+                          borderRadius: BorderRadius.circular(8)
+                      )
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                  child: Container(
+                      width: double.infinity,
+                      height: 100,
+                      decoration: BoxDecoration(
+                          color: const Color.fromRGBO(240, 240, 240, 1),
+                          borderRadius: BorderRadius.circular(8)
+                      )
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                  child: Container(
+                      width: double.infinity,
+                      height: 100,
+                      decoration: BoxDecoration(
+                          color: const Color.fromRGBO(240, 240, 240, 1),
+                          borderRadius: BorderRadius.circular(8)
+                      )
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       );
     }
@@ -139,6 +372,7 @@ class _MagazineState extends State<Magazine> {
     Map<String, dynamic>? result = await _magazineProvider.getMagazine(widget.magazineId);
     if (result != null) {
       _magazineData = result;
+      if (result['isFavorite'] != null) likeClicked = result['isFavorite'];
 
       setState(() {
         _loadData = 1;
@@ -202,13 +436,30 @@ class _MagazineState extends State<Magazine> {
     ),
   );
 
-  Widget _createPlaceContentSection(String title, String content, String imgUrl) => Padding(
+  Widget _createPlaceContentSection(String title, String content, String? imgUrl, String placeId) => Padding(
     padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: SectionTextStyle.sectionTitle(),),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: Text(title, style: SectionTextStyle.sectionTitle(),)),
+            SizedBox(
+              width: 32,
+              height: 32,
+              child: IconButton(
+                onPressed: () {
+                  Get.to(() => PlaceDetailPage(placeId: placeId));
+                },
+                  padding: EdgeInsets.all(0),
+                icon: const Icon(Icons.info_outline, size: 24,)
+              ),
+            )
+          ],
+        ),
         const SizedBox(height: 18,),
         Container(
           constraints: const BoxConstraints(
@@ -217,10 +468,9 @@ class _MagazineState extends State<Magazine> {
           child: Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                imgUrl,
-                // fit: BoxFit.cover,
-              ),
+              child: imgUrl != null ?
+                NetworkCacheImage(imgUrl) :
+                Image.asset('assets/images/no_image.png'),
             ),
           ),
         ),
@@ -241,10 +491,7 @@ class _MagazineState extends State<Magazine> {
           child: Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                imgUrl,
-                // fit: BoxFit.cover,
-              ),
+              child: NetworkCacheImage(imgUrl),
             ),
           ),
         ),
@@ -264,7 +511,8 @@ class _MagazineState extends State<Magazine> {
       section.add(_createPlaceContentSection(
         place['place']['name'],
         place['contents'],
-        "https://been-dev.yeoksi.com${place['place']['imgUrl']}"
+        ImageParser.parseImageUrl(place['place']['imgUrl']),
+        place['place']['id']
       ));
       section.add(const SizedBox(height: 24,));
     }
