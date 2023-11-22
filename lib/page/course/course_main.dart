@@ -176,7 +176,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   }
 
   Widget _detailHead() => Obx(() => Padding(
-    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+    padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
