@@ -412,13 +412,15 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
                   itemCount: _myCourseData!.length,
                   itemBuilder: (BuildContext context, int index) {
                     dynamic? courseLineData = null;
+                    int placeCount = 0;
                     if (_myCourseData![index]['routesJson'] != null) {
                       courseLineData = json.decode(_myCourseData![index]['routesJson']);
+                      placeCount = courseLineData['waypoints'].length;
                     }
 
                     double distance = 0.0;
                     if (courseLineData != null && courseLineData != '') {
-                      if (_myCourseData![index]['placesInCourse'].length > 1) {
+                      if (placeCount > 1) {
                         if (courseLineData!['routes'][0]['distance'] is int) {
                           distance = courseLineData!['routes'][0]['distance'].toDouble();
                         } else {
@@ -431,7 +433,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
 
                     return CourseListCardItem(
                       courseName: _myCourseData![index]['title'],
-                      placeCount: _myCourseData![index]['placesInCourse'].length,
+                      placeCount: placeCount,
                       distance: distance.floor(),
                       placesImageUrls: _myCourseData![index]['placesInCourse'].map((item) => ImageParser.parseImageUrl(item['place']['img_url'])).toList(),
                       placesName: _myCourseData![index]['placesInCourse'].map((item) => item['place']['name'].toString()).toList(),
