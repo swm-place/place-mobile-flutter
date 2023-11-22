@@ -404,7 +404,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
   }
 
   Widget _detailHead() => Padding(
-    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+    padding: EdgeInsets.fromLTRB(24, 18, 24, 0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -598,7 +598,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     List<Widget>? timeList;
     if (placeData['opening_hours'] != null) timeList = _generateSchedule();
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
       child: MainSection(
           title: '정보',
           action: TextButton.icon(
