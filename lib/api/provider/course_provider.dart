@@ -63,6 +63,23 @@ class CourseProvider extends DefaultProvider {
     }
   }
 
+  Future<List<dynamic>?> getMyCourseDataOne(int page, int size) async {
+    Uri uri = Uri.parse("$baseUrl/api/courses/:one-place-each?size=$size&page=$page");
+    Response response;
+    try {
+      response = await get(uri, headers: await setHeader(true));
+    } catch(e) {
+      return null;
+    }
+
+    if (response.statusCode == 200) {
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      print(response.body);
+      return null;
+    }
+  }
+
   Future<Map<String, dynamic>?> getMyCourseDataById(dynamic id) async {
     Uri uri = Uri.parse("$baseUrl/api/courses/$id");
     Response response;

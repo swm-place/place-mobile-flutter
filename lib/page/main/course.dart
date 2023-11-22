@@ -88,7 +88,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
 
   void initCourseData() async {
     page = 0;
-    List<dynamic>? data = await _courseProvider.getMyCourseData(page, count);
+    List<dynamic>? data = await _courseProvider.getMyCourseDataOne(page, count);
     if (data == null) {
       _myCourseData = null;
       setState(() {
@@ -109,7 +109,7 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
       loadVisibilityCourse = true;
     });
     page += 1;
-    List<dynamic>? data = await _courseProvider.getMyCourseData(page, count);
+    List<dynamic>? data = await _courseProvider.getMyCourseDataOne(page, count);
     if (data == null) {
       setState(() {
         loadVisibilityCourse = false;
