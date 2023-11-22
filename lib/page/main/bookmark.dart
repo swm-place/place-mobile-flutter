@@ -11,6 +11,7 @@ import 'package:place_mobile_flutter/api/provider/user_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
 import 'package:place_mobile_flutter/page/place/place_detail.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
@@ -133,7 +134,27 @@ class BookmarkPageState extends State<BookmarkPage> with AutomaticKeepAliveClien
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    if (AuthController.to.user.value == null) {
+      return Scaffold(
+        body: SafeArea(
+          child: Container(
+            height: 288,
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.grey[300]
+              ),
+              padding: EdgeInsets.all(24),
+              child: Center(
+                child: Text('북마크는 로그인 후 이용할 수 있습니다'),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Scaffold(
       body: SafeArea(
           child: SingleChildScrollView(

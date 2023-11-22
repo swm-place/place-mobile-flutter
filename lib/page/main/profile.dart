@@ -97,7 +97,7 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
                       child: CircleAvatar(
                         backgroundImage: AssetImage('assets/images/avatar_male.png'),
                       ),
-                      // child: CircleAvatar( //TODO: avatar network image
+                      // child: CircleAvatar(
                       //   backgroundImage: NetworkImage(
                       //       'https://source.unsplash.com/random'),
                       // ),
@@ -937,13 +937,14 @@ class ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientM
         titleStyle: SectionTextStyle.sectionTitleSmall(Colors.black),
         content: PreferenceListSection(
           children: [
-            PreferenceItem(
-              title: '최근 탐색한 장소',
-              textColor: Colors.black,
-              onTap: () {
-                _showPlaceLogSheet();
-              },
-            ),
+            if (AuthController.to.user.value != null)
+              PreferenceItem(
+                title: '최근 탐색한 장소',
+                textColor: Colors.black,
+                onTap: () {
+                  _showPlaceLogSheet();
+                },
+              ),
             PreferenceItem(
               title: '장소 추가 요청',
               textColor: Colors.black,

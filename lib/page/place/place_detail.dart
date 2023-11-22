@@ -452,8 +452,18 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
           children: [
             GestureDetector(
               onTap: () {
-                HapticFeedback.lightImpact();
-                __showBookmarkSelectionSheet();
+                if (AuthController.to.user.value != null) {
+                  HapticFeedback.lightImpact();
+                  __showBookmarkSelectionSheet();
+                } else {
+                  Get.showSnackbar(
+                    ErrorGetSnackBar(
+                      title: '로그인 필요',
+                      message: '로그인 후 이용 가능한 기능입니다.',
+                      showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                    ),
+                  );
+                }
                 // setState(() {
                   // bookmarkPlace = !bookmarkPlace;
                   // if (bookmarkPlace) {
@@ -496,10 +506,20 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             SizedBox(width: 12,),
             GestureDetector(
               onTap: () {
-                setState(() {
-                  if (asyncLike) return;
-                  like();
-                });
+                if (AuthController.to.user.value != null) {
+                  setState(() {
+                    if (asyncLike) return;
+                    like();
+                  });
+                } else {
+                  Get.showSnackbar(
+                    ErrorGetSnackBar(
+                      title: '로그인 필요',
+                      message: '로그인 후 이용 가능한 기능입니다.',
+                      showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                    ),
+                  );
+                }
               },
               child: Padding(
                 padding: EdgeInsets.all(4),
@@ -845,10 +865,11 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             onTap: () {
               if (AuthController.to.user.value == null) {
                 Get.showSnackbar(
-                    WarnGetSnackBar(
-                        title: "로그인 필요",
-                        message: "한줄평 작성은 로그인이 필요합니다."
-                    )
+                  ErrorGetSnackBar(
+                    title: '로그인 필요',
+                    message: '로그인 후 이용 가능한 기능입니다.',
+                    showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                  ),
                 );
                 return;
               }

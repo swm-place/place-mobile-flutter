@@ -152,10 +152,11 @@ class _ShortPlaceReviewCardState extends State<ShortPlaceReviewCard> {
 
                         if (AuthController.to.user.value == null) {
                           Get.showSnackbar(
-                              WarnGetSnackBar(
-                                  title: "로그인 필요",
-                                  message: "한줄평 작성은 로그인이 필요합니다."
-                              )
+                            ErrorGetSnackBar(
+                              title: '로그인 필요',
+                              message: '로그인 후 이용 가능한 기능입니다.',
+                              showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                            ),
                           );
                           return;
                         }

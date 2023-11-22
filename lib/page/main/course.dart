@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:place_mobile_flutter/api/api_const.dart';
 import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
@@ -144,6 +145,29 @@ class CoursePageState extends State<CoursePage> with AutomaticKeepAliveClientMix
 
   @override
   Widget build(BuildContext context) {
+    if (AuthController.to.user.value == null) {
+      return Scaffold(
+        body: SafeArea(
+          child: MainSection(
+            title: '나의 코스',
+            content: Padding(
+              padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.grey[300]
+                ),
+                padding: EdgeInsets.all(24),
+                child: Center(
+                  child: Text("내 코스 생성은 로그인 후 이용 가능합니다."),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {

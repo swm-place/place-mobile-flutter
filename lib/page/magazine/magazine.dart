@@ -9,9 +9,11 @@ import 'package:place_mobile_flutter/api/provider/course_provider.dart';
 import 'package:place_mobile_flutter/api/provider/magazine_provider.dart';
 import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/place/place_detail.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/widget/cache_image.dart';
+import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 import 'package:latlong2/latlong.dart';
@@ -202,13 +204,33 @@ class _MagazineState extends State<Magazine> {
                       actions: [
                         FlexibleTopBarActionButton(
                             onPressed: () {
-                              _convertCourse();
+                              if (AuthController.to.user.value != null) {
+                                _convertCourse();
+                              } else {
+                                Get.showSnackbar(
+                                  ErrorGetSnackBar(
+                                    title: '로그인 필요',
+                                    message: '로그인 후 이용 가능한 기능입니다.',
+                                    showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                                  ),
+                                );
+                              }
                             },
                             icon: const Icon(Icons.swap_horiz, size: 18,)
                         ),
                         FlexibleTopBarActionButton(
                           onPressed: () {
-                            like();
+                            if (AuthController.to.user.value != null) {
+                              like();
+                            } else {
+                              Get.showSnackbar(
+                                ErrorGetSnackBar(
+                                  title: '로그인 필요',
+                                  message: '로그인 후 이용 가능한 기능입니다.',
+                                  showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                                ),
+                              );
+                            }
                           },
                           icon: likeClicked ? Icon(
                             MdiIcons.heart,
