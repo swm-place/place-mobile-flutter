@@ -262,7 +262,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                           }
                       ),
                     ),
-                    const Text("븍마크")
+                    const Text("북마크")
                   ],
                 ),
               ),
