@@ -176,7 +176,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
   }
 
   Widget _detailHead() => Obx(() => Padding(
-    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+    padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -262,7 +262,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
                           }
                       ),
                     ),
-                    const Text("븍마크")
+                    const Text("북마크")
                   ],
                 ),
               ),
@@ -958,7 +958,7 @@ class _CourseMainPageState extends State<CourseMainPage> with TickerProviderStat
 
     String shareJson = json.encode(shareData);
     // log('http://localhost:8080/course?data=${Uri.encodeComponent(shareJson)}');
-    Share.share('http://localhost:8080/course?data=${Uri.encodeComponent(shareJson)}');
+    Share.share('https://d1neqdrdl1s3ts.cloudfront.net/#/course?data=${Uri.encodeComponent(shareJson)}');
   }
 
   @override
