@@ -30,7 +30,7 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
   String placeName;
   String placeType;
   String? distance;
-  String open;
+  String? open;
   String likeCount;
 
   double width;
@@ -69,19 +69,22 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
       );
     }
     inform.addAll([
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(MdiIcons.clockCheckOutline, size: 18),
-          const SizedBox(
-            width: 2,
-          ),
-          Text(
-            open,
-            style: SectionTextStyle.labelSmall(Colors.grey[700]!),
-          )
-        ],
-      ),
+      if (open != null)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(MdiIcons.clockCheckOutline, size: 18),
+            const SizedBox(
+              width: 2,
+            ),
+            Text(
+              open!,
+              style: SectionTextStyle.labelSmall(Colors.grey[700]!),
+            )
+          ],
+        ),
+      if (open == null)
+        SizedBox(width: 8,),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -171,7 +174,8 @@ class RoundedRectanglePlaceCard extends StatelessWidget {
                         height: 6,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: open != null ?
+                          MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
                         children: __createInfo(),
                       )
                     ],

@@ -310,7 +310,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin<H
                     imgUrl = ImageParser.parseImageUrl(data['places'][index]['photos'][0]['url']);
                   }
 
-                  String openString = '정보 없음';
+                  String? openString;
                   if (data['places'][index]['opening_hours'] != null) {
                     final now = DateTime.now();
                     final currentWeekday = now.weekday - 1;
