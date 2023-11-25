@@ -12,7 +12,7 @@ import 'package:place_mobile_flutter/util/async_dialog.dart';
 class ProfileController extends GetxController {
   static ProfileController get to => Get.find();
 
-  UserProvider _userProvider = UserProvider();
+  final UserProvider _userProvider = UserProvider();
 
   RxnString nickname = RxnString();
   RxnString email = RxnString();
@@ -43,8 +43,6 @@ class ProfileController extends GetxController {
     String? idToken = AuthController.to.idToken;
     User? user = AuthController.to.user.value;
 
-    if (!await AuthController.to.checkTokenValid()) idToken = AuthController.to.idToken;
-
     if (idToken != null && user != null) {
       Map<String, dynamic> profileData = {
         "nickname": nickname,
@@ -54,7 +52,7 @@ class ProfileController extends GetxController {
         "termIndex": termIndex
       };
       _progressDialogHelper.showProgressDialog('프로필 생성중');
-      int? result = await _userProvider.createProfile(profileData, idToken);
+      int? result = await _userProvider.createProfile(profileData);
       _progressDialogHelper.hideProgressDialog();
       if (result == 200) {
         int? status = await getUserProfile(user!.uid);
@@ -109,5 +107,35 @@ class ProfileController extends GetxController {
       );
     }
     // return null;
+  }
+
+  Future<bool> changeUserProfile(String nickname, phoneNumber, birthday, int gender) async {
+    String? idToken = AuthController.to.idToken;
+    User? user = AuthController.to.user.value;
+
+    if (idToken != null && user != null) {
+      Map<String, dynamic> profileData = {
+        "userIndex": user.uid,
+        "nickname": nickname,
+        "phoneNumber": phoneNumber,
+        "gender": gender,
+        "birthday": birthday,
+      };
+      _progressDialogHelper.showProgressDialog('프로필 수정중');
+      int? result = await _userProvider.patchProfile(profileData);
+      _progressDialogHelper.hideProgressDialog();
+      if (result == 200) {
+        int? status = await getUserProfile(user!.uid);
+        if (status == 200) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 }

@@ -7,11 +7,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:place_mobile_flutter/page/account/login.dart';
 import 'package:place_mobile_flutter/page/main/bookmark.dart';
+import 'package:place_mobile_flutter/page/main/course.dart';
 import 'package:place_mobile_flutter/page/main/home.dart';
 import 'package:place_mobile_flutter/page/main/profile.dart';
 import 'package:place_mobile_flutter/page/main/random.dart';
 import 'package:place_mobile_flutter/state/auth_controller.dart';
-import 'package:place_mobile_flutter/state/place_controller.dart';
+import 'package:place_mobile_flutter/state/gis_controller.dart';
 import 'package:place_mobile_flutter/state/user_controller.dart';
 import 'theme/color_schemes.g.dart';
 import 'package:get/get.dart';
@@ -21,12 +22,12 @@ Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp();
-  Get.put(PlaceController());
+  Get.put(GISController());
   Get.put(ProfileController());
   Get.put(AuthController());
 
-  await PlaceController.to.checkPermission();
-  await PlaceController.to.getPosition();
+  await GISController.to.checkPermission();
+  await GISController.to.getPosition();
 
   runApp(GetMaterialApp(
     // builder: (context, child) {
@@ -117,8 +118,9 @@ class _MainPageState extends State<MainPage> {
     _selectedPageIndex = 0;
     _pages = [
       HomePage(),
+      CoursePage(),
       BookmarkPage(),
-      RandomPage(),
+      // RandomPage(),
       ProfilePage()
     ];
     _pageController = PageController(initialPage: _selectedPageIndex);
@@ -145,8 +147,9 @@ class _MainPageState extends State<MainPage> {
         selectedIndex: _selectedPageIndex,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: 'home'),
+          NavigationDestination(icon: Icon(Icons.route), label: 'course'),
           NavigationDestination(icon: Icon(Icons.bookmark_border_outlined), label: 'bookmark'),
-          NavigationDestination(icon: Icon(Icons.lightbulb_outline), label: 'discover'),
+          // NavigationDestination(icon: Icon(Icons.lightbulb_outline), label: 'discover'),
           NavigationDestination(icon: Icon(Icons.person), label: 'profile'),
         ],
         onDestinationSelected: (selectedPageIndex) {

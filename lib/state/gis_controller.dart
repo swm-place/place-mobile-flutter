@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
-class PlaceController extends GetxController {
-  static PlaceController get to => Get.find();
+class GISController extends GetxController {
+  static GISController get to => Get.find();
 
   Rxn<Position> userPosition = Rxn(null);
 

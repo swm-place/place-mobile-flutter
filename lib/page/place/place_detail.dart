@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,11 +9,19 @@ import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:place_mobile_flutter/api/api_const.dart';
+import 'package:place_mobile_flutter/api/provider/place_provider.dart';
+import 'package:place_mobile_flutter/api/provider/user_provider.dart';
+import 'package:place_mobile_flutter/page/course/course_main.dart';
 import 'package:place_mobile_flutter/page/magazine/magazine.dart';
+import 'package:place_mobile_flutter/state/auth_controller.dart';
+import 'package:place_mobile_flutter/state/bookmark_controller.dart';
 import 'package:place_mobile_flutter/theme/color_schemes.g.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
 import 'package:place_mobile_flutter/util/utility.dart';
 import 'package:place_mobile_flutter/util/validator.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
+import 'package:place_mobile_flutter/widget/get_snackbar.dart';
 import 'package:place_mobile_flutter/widget/place/place_card.dart';
 import 'package:place_mobile_flutter/widget/place/review/place_review.dart';
 
@@ -23,10 +32,18 @@ import 'package:place_mobile_flutter/widget/section/main_section.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/picture_flexible.dart';
 import 'package:place_mobile_flutter/widget/section/topbar/topbar_flexible_button.dart';
 import 'package:place_mobile_flutter/widget/story/story_card.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PlaceDetailPage extends StatefulWidget {
+  PlaceDetailPage({
+    required this.placeId,
+    Key? key
+  }) : super(key: key);
+
+  String placeId;
+
   @override
   State<StatefulWidget> createState() {
     return _PlaceDetailPageState();
@@ -34,89 +51,30 @@ class PlaceDetailPage extends StatefulWidget {
 }
 
 class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderStateMixin {
+  final PlaceProvider _placeProvider = PlaceProvider();
+  final UserProvider _userProvider = UserProvider();
+  final BookmarkController _bookmarkController = BookmarkController();
+
   late final AnimationController _likeButtonController;
   late final AnimationController _bookmarkButtonController;
 
   late final TextEditingController _bookmarkNameController;
 
+  late TextEditingController _commentEditingController;
+
   late ScrollController _bookmarkScrollController;
   late ScrollController _commentScrollController;
 
   bool likePlace = false;
+  bool asyncLike = false;
   bool bookmarkPlace = false;
 
   bool isTimeOpen = false;
+  bool nowOpen = false;
 
   String? _bookmarkNameError;
 
   int? commentSortKey = 0;
-
-  final List<Map<String, dynamic>> _commentData = [
-    {
-     "name": "민준",
-     "date": "2023-08-05T14:29:20.725Z",
-     "comment": "사려니 숲길은 제주도 여행의 필수 코스! 자연의 아름다움을 느낄 수 있어요.",
-     "profileUrl": "https://source.unsplash.com/random",
-     "likeCount": 3254546,
-     "likeComment": false,
-    },
-    {
-     "name": "Ethan",
-     "date": "2023-08-04T14:29:20.725Z",
-     "comment": "여행 중 가장 기억에 남는 곳이었어요. 특히 아침 일찍 방문해서 조용한 분위기를 느끼는 것을 추천합니다.",
-     "profileUrl": "https://source.unsplash.com/random",
-     "likeCount": 42355,
-     "likeComment": true,
-    },
-    {
-     "name": "Emma",
-     "date": "2023-07-30T14:29:20.725Z",
-     "comment": "가족과 함께 방문했는데, 아이들도 너무 좋아했어요. 자연과 함께하는 시간이 너무 소중했습니다.",
-     "profileUrl": "https://source.unsplash.com/random",
-     "likeCount": 534,
-     "likeComment": false,
-    },
-    {
-     "name": "예은",
-     "date": "2023-07-26T14:29:20.725Z",
-     "comment": "비오는 날은 미끄러울 수 있으니 조심하세요. 그래도 뷰는 최고!",
-     "profileUrl": "https://source.unsplash.com/random",
-     "likeCount": 356578,
-     "likeComment": false,
-    },
-    {
-     "name": "sdsfsfdsdcvb",
-     "date": "2023-08-05T14:29:20.725Z",
-     "comment": "사afddasfgsgsg! 자연의 아sgsfsdafds어요.",
-     "profileUrl": "https://source.unsplash.com/random",
-     "likeCount": 3254546,
-     "likeComment": false,
-    },
-    {
-     "name": "fsdgfvsgrw",
-     "date": "2023-08-04T14:29:20.725Z",
-     "comment": "여행adfadf남는 곳이었어요. 특히 sffeqfaf것을 추천합니다.",
-     "profileUrl": "https://source.unsplash.com/random",
-     "likeCount": 42355,
-     "likeComment": true,
-    },
-    {
-     "name": "rwgw4rgdsg",
-     "date": "2023-07-30T14:29:20.725Z",
-     "comment": "가dasdfsgsrgh너무 소중했습니다.",
-     "profileUrl": "https://source.unsplash.com/random",
-     "likeCount": 534,
-     "likeComment": false,
-    },
-    {
-     "name": "adsasra",
-     "date": "2023-07-26T14:29:20.725Z",
-     "comment": "asdefcfsfs",
-     "profileUrl": "https://source.unsplash.com/random",
-     "likeCount": 356578,
-     "likeComment": false,
-    },
-  ];
 
   final List<Map<String, dynamic>> _relevantPlaceData = [
     {
@@ -178,28 +136,21 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     },
   ];
 
-  final List<Map<String, dynamic>> _bookmarkData = [
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": true},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-    {"name": "북마크", "include": false},
-  ];
+  int _loadData = -1;
+
+  late final Map<String, dynamic> placeData;
+
+  List<dynamic> _commentData = [];
+
+  void _loadComments() async {
+    _commentData.clear();
+    List<dynamic>? result = await _placeProvider.getPlaceReviewData(widget.placeId, 'likes', 0, 5, false);
+    if (result != null) {
+      setState(() {
+        _commentData = result;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -208,6 +159,9 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     _bookmarkScrollController = ScrollController();
     _commentScrollController = ScrollController();
     _bookmarkNameController = TextEditingController();
+    _commentEditingController = TextEditingController();
+    _loadComments();
+    getPlaceData();
     super.initState();
   }
 
@@ -218,7 +172,26 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     _bookmarkScrollController.dispose();
     _commentScrollController.dispose();
     _bookmarkNameController.dispose();
+    _commentEditingController.dispose();
     super.dispose();
+  }
+
+  void getPlaceData() async {
+    Map<String, dynamic>? result = await _placeProvider.getPlaceData(widget.placeId);
+    if (result != null) {
+      placeData = result;
+      for (int i = 0;i < placeData['hashtags'].length;i++) {
+        placeData['hashtags'][i] = {'name': placeData['hashtags'][i], 'color': RandomGenerator.generateRandomDarkHexColor()};
+      }
+      setState(() {
+        likePlace = placeData['is_favorite'];
+        _loadData = 1;
+      });
+    } else {
+      setState(() {
+        _loadData = 0;
+      });
+    }
   }
 
   @override
@@ -226,58 +199,212 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     //   statusBarColor: Colors.transparent
     // ));
-    return Scaffold(
-      // extendBodyBehindAppBar: true,
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          // print(constraints.maxWidth);
-          double commentHeight = 58640 / (constraints.maxWidth - 96);
-          return CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                leading: FlexibleTopBarActionButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  icon: Icon(
-                    Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-                    size: 18,
+    if (_loadData != -1) {
+      if (_loadData == 1) {
+        return Scaffold(
+          // extendBodyBehindAppBar: true,
+            body: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                // print(constraints.maxWidth);
+                double commentHeight = 58640 / (constraints.maxWidth - 96);
+                return CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      leading: FlexibleTopBarActionButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: Icon(
+                          Platform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+                          size: 18,
+                        ),
+                        iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
+                      ),
+                      // actions: [
+                      //   FlexibleTopBarActionButton(
+                      //       onPressed: () {
+                      //
+                      //       },
+                      //       icon: Icon(Icons.ios_share, size: 18,)
+                      //   )
+                      // ],
+                      pinned: true,
+                      expandedHeight: 220.0,
+                      surfaceTintColor: Colors.white,
+                      backgroundColor: Colors.white,
+                      flexibleSpace: PictureFlexibleSpace(
+                        imageUrl: placeData['photos'] != null && placeData['photos'].length > 0 ?
+                          ImageParser.parseImageUrl(placeData['photos'][0]['url']):
+                          null,
+                      ),
+                    ),
+                    SliverList(
+                      delegate: SliverChildListDelegate([
+                        _detailHead(),
+                        if (placeData['summary'] != null)
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+                            child: Text(
+                              placeData['summary'],
+                              style: SectionTextStyle.sectionContentLargeLine(Colors.black),
+                            ),
+                          ),
+                        _detailInform(),
+                        _detailReview(commentHeight),
+                        _detailPicture(),
+                        // _detailRelevantPlace(),
+                        // _detailRelevantStory(),
+                        SizedBox(height: 24,)
+                      ]),
+                    )
+                  ],
+                );
+              },
+            )
+        );
+      } else {
+        return Scaffold(
+          appBar: AppBar(),
+          body: const Center(
+            child: Text('오류 발생')
+          ),
+        );
+      }
+    } else {
+      return Scaffold(
+        body: SafeArea(
+          child: SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: Shimmer.fromColors(
+              baseColor: const Color.fromRGBO(240, 240, 240, 1),
+              highlightColor: Colors.grey[300]!,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 220,
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(240, 240, 240, 1),
+                      borderRadius: BorderRadius.circular(8)
+                    )
                   ),
-                  iconPadding: Platform.isAndroid ? EdgeInsets.zero : const EdgeInsets.fromLTRB(6, 0, 0, 0),
-                ),
-                pinned: true,
-                expandedHeight: 220.0,
-                surfaceTintColor: Colors.white,
-                backgroundColor: Colors.white,
-                flexibleSpace: const PictureFlexibleSpace(),
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  _detailHead(),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-                    child: Text(
-                      "장소에 대한 소개글입니다 장소에대한 소개글입니다 장소에대한 소개글입니다",
-                      style: SectionTextStyle.sectionContentLargeLine(Colors.black),
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                    child: Container(
+                      width: 195,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(240, 240, 240, 1),
+                        borderRadius: BorderRadius.circular(8)
+                      )
                     ),
                   ),
-                  _detailInform(),
-                  _detailReview(commentHeight),
-                  _detailPicture(),
-                  _detailRelevantPlace(),
-                  _detailRelevantStory(),
-                  SizedBox(height: 24,)
-                ]),
-              )
-            ],
-          );
-        },
-      )
-    );
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                    child: Container(
+                        width: 145,
+                        height: 25,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+                    child: Container(
+                        width: 185,
+                        height: 25,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+                    child: Container(
+                        width: 86,
+                        height: 25,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                    child: Container(
+                        width: double.infinity,
+                        height: 100,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                    child: Container(
+                        width: double.infinity,
+                        height: 100,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(240, 240, 240, 1),
+                            borderRadius: BorderRadius.circular(8)
+                        )
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
+      );
+    }
+  }
+
+  List<Widget> __generateTags() {
+    List<Widget> tags = [];
+    for (int i = 0;i < placeData['hashtags'].length;i++) {
+      tags.add(
+        TagChip(
+          text: "#${placeData['hashtags'][i]['name']}",
+          textStyle: SectionTextStyle.labelMediumThick(Colors.white),
+          padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+          backgroundColor: UnitConverter.hexToColor(placeData['hashtags'][i]['color']),
+        )
+      );
+    }
+    return tags;
+  }
+
+  void like() async {
+    asyncLike = true;
+
+    bool result;
+    if (!likePlace) {
+      result = await _placeProvider.postPlaceLike(widget.placeId);
+    } else {
+      result = await _placeProvider.deletePlaceLike(widget.placeId);
+    }
+
+    if (result) {
+      HapticFeedback.lightImpact();
+      likePlace = !likePlace;
+      if (likePlace) {
+        _likeButtonController.animateTo(1);
+      } else {
+        _likeButtonController.animateBack(0);
+      }
+    }
+
+    asyncLike = false;
   }
 
   Widget _detailHead() => Padding(
-    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+    padding: EdgeInsets.fromLTRB(24, 18, 24, 0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -286,52 +413,65 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             children: [
               SizedBox(
                 width: double.infinity,
-                child: Text(
-                  "사려니 숲길",
+                child: AutoSizeText(
+                  placeData['name'],
                   style: PageTextStyle.headlineExtraLarge(Colors.black),
+                  maxLines: 1,
+                  minFontSize: 24,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               SizedBox(
                 height: 6,
               ),
-              Row(
-                children: [
-                  TagChip(
-                    text: "#자연",
-                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+              if (placeData['hashtags'] != null && placeData['hashtags'].isNotEmpty)
+                SizedBox(
+                  height: 25.5,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (BuildContext context, int index) {
+                      return TagChip(
+                        text: "#${placeData['hashtags'][index]['name']}",
+                        textStyle: SectionTextStyle.labelMediumThick(Colors.white),
+                        padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                        backgroundColor: UnitConverter.hexToColor(placeData['hashtags'][index]['color']),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return SizedBox(width: 4,);
+                    },
+                    itemCount: placeData['hashtags'].length,
                   ),
-                  SizedBox(width: 4,),
-                  TagChip(
-                    text: "#자연",
-                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                  ),
-                  SizedBox(width: 4,),
-                  TagChip(
-                    text: "#자연",
-                    textStyle: SectionTextStyle.labelMediumThick(Colors.white),
-                    padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                  ),
-                ],
-              )
+                )
             ],
           ),
         ),
+        SizedBox(width: 6,),
         Row(
           children: [
             GestureDetector(
               onTap: () {
-                __showBookmarkSelectionSheet();
-                setState(() {
+                if (AuthController.to.user.value != null) {
                   HapticFeedback.lightImpact();
-                  bookmarkPlace = !bookmarkPlace;
-                  if (bookmarkPlace) {
-                    _bookmarkButtonController.animateTo(1);
-                  } else {
-                    _bookmarkButtonController.animateBack(0);
-                  }
-                });
+                  __showBookmarkSelectionSheet();
+                } else {
+                  Get.showSnackbar(
+                    ErrorGetSnackBar(
+                      title: '로그인 필요',
+                      message: '로그인 후 이용 가능한 기능입니다.',
+                      showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                    ),
+                  );
+                }
+                // setState(() {
+                  // bookmarkPlace = !bookmarkPlace;
+                  // if (bookmarkPlace) {
+                  //   _bookmarkButtonController.animateTo(1);
+                  // } else {
+                  //   _bookmarkButtonController.animateBack(0);
+                  // }
+                // });
               },
               child: Padding(
                 padding: EdgeInsets.fromLTRB(4, 10, 4, 4),
@@ -358,7 +498,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           }
                       ),
                     ),
-                    Text("븍마크")
+                    Text("")
                   ],
                 ),
               ),
@@ -366,15 +506,20 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             SizedBox(width: 12,),
             GestureDetector(
               onTap: () {
-                setState(() {
-                  HapticFeedback.lightImpact();
-                  likePlace = !likePlace;
-                  if (likePlace) {
-                    _likeButtonController.animateTo(1);
-                  } else {
-                    _likeButtonController.animateBack(0);
-                  }
-                });
+                if (AuthController.to.user.value != null) {
+                  setState(() {
+                    if (asyncLike) return;
+                    like();
+                  });
+                } else {
+                  Get.showSnackbar(
+                    ErrorGetSnackBar(
+                      title: '로그인 필요',
+                      message: '로그인 후 이용 가능한 기능입니다.',
+                      showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                    ),
+                  );
+                }
               },
               child: Padding(
                 padding: EdgeInsets.all(4),
@@ -401,7 +546,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                           }
                       ),
                     ),
-                    Text("1.2K")
+                    Text("")
                   ],
                 ),
               ),
@@ -412,212 +557,427 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     ),
   );
 
-  Widget _detailInform() => Padding(
-    padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
-    child: MainSection(
-      title: '정보',
-      action: TextButton.icon(
-        onPressed: () {
-          final Uri emailLaunchUri = Uri(
-            scheme: 'mailto',
-            path: 'our.email@gmail.com',
-            query: 'subject=[오류제보] {장소이름} 정보 오류 제보&body=오류 내용: '
-          );
-          launchUrl(emailLaunchUri);
-        },
-        label: Text("오류 신고"),
-        icon: Icon(MdiIcons.alertOctagon, size: 20,),
-        style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            minimumSize: Size(30, 30),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            alignment: Alignment.centerLeft,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8)
+  Widget _detailInform() {
+    List<Widget>? timeList;
+    if (placeData['opening_hours_text'] != null) {
+      timeList = [];
+      for (var i in placeData['opening_hours_text']) {
+        timeList.add(Text(i));
+      }
+    }
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
+      child: MainSection(
+          title: '정보',
+          action: TextButton.icon(
+            onPressed: () {
+              final Uri emailLaunchUri = Uri(
+                  scheme: 'mailto',
+                  path: 'our.email@gmail.com',
+                  query: 'subject=[오류제보] ${placeData["name"]} 정보 오류 제보&body=오류 내용: '
+              );
+              launchUrl(emailLaunchUri);
+            },
+            label: Text("오류 신고"),
+            icon: Icon(MdiIcons.alertOctagon, size: 20,),
+            style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: Size(30, 30),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                alignment: Alignment.centerLeft,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)
+                ),
+                iconColor: Colors.red,
+                surfaceTintColor: Colors.red,
+                foregroundColor: Colors.red
             ),
-            iconColor: Colors.red,
-            surfaceTintColor: Colors.red,
-            foregroundColor: Colors.red
-        ),
-      ),
-      content: Padding(
-        padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          content: Padding(
+            padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+            child: Column(
               children: [
-                Icon(MdiIcons.mapMarkerOutline, color: Colors.grey[700], size: 24,),
-                SizedBox(width: 10,),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 4,),
-                      Text(
-                        "제주 제주시 봉개동 산 64-5",
-                        style: SectionTextStyle.sectionContent(Colors.black),
-                      ),
-                      Row(
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(MdiIcons.mapMarkerOutline, color: Colors.grey[700],
+                      size: 24,),
+                    SizedBox(width: 10,),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("지번"),
-                          SizedBox(width: 4,),
-                          Text("제주 제주시 봉개동 산 64-5")
+                          // SizedBox(height: 4,),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("도로명"),
+                              SizedBox(width: 4,),
+                              Expanded(
+                                child: Text(
+                                  placeData['road_address'] ?? '-',
+                                  style: SectionTextStyle.sectionContent(
+                                      Colors.black),
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("지번 "),
+                              SizedBox(width: 4,),
+                              Expanded(
+                                child: Text(
+                                  placeData['address'] ?? '-',
+                                ),
+                              )
+                            ],
+                          )
                         ],
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: 8,),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(MdiIcons.clockOutline, color: Colors.grey[700], size: 24,),
-                SizedBox(width: 10,),
-                Expanded(
-                  child: Column(
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: 8,),
+                if (placeData['opening_hours'] != null)
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 4,),
-                      Ink(
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                isTimeOpen = !isTimeOpen;
-                              });
-                            },
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                      Icon(MdiIcons.clockOutline, color: Colors.grey[700],
+                        size: 24,),
+                      SizedBox(width: 10,),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // SizedBox(height: 4,),
+                            Ink(
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      isTimeOpen = !isTimeOpen;
+                                    });
+                                  },
+                                  child: Row(
                                     children: [
-                                      Text(
-                                        "현재 운영중",
-                                        style: SectionTextStyle.sectionContentLarge(Colors.green),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            if (placeData['open_now'] != null)
+                                              placeData['open_now'] ? Text(
+                                                "현재 운영중",
+                                                style: SectionTextStyle
+                                                    .sectionContentLarge(
+                                                    Colors.green),
+                                              ) : Text(
+                                                "현재 운영중 아님",
+                                                style: SectionTextStyle
+                                                    .sectionContentLarge(
+                                                    Colors.red),
+                                              ),
+                                            if (placeData['open_now'] == null)
+                                              Text(
+                                                "정보 없음",
+                                                style: SectionTextStyle
+                                                    .sectionContentLarge(
+                                                    Colors.grey[900]!),
+                                              )
+                                            // Text("최근 1시간 동안 5명이 운영중이 아니라고 제보"),
+                                            // GestureDetector(
+                                            //   child: Text("운영중 오류 제보하기"),
+                                            //   onTap: () {
+                                            //     __showTimeReportDialog();
+                                            //   },
+                                            // )
+                                          ],
+                                        ),
                                       ),
-                                      Text("최근 1시간 동안 5명이 운영중이 아니라고 제보"),
-                                      GestureDetector(
-                                        child: Text("운영중 오류 제보하기"),
-                                        onTap: () {
-                                          __showTimeReportDialog();
-                                        },
+                                      AnimatedCrossFade(
+                                        duration: Duration(milliseconds: 250),
+                                        crossFadeState: isTimeOpen
+                                            ? CrossFadeState.showSecond
+                                            : CrossFadeState.showFirst,
+                                        firstChild: Icon(
+                                            Icons.keyboard_arrow_down),
+                                        secondChild: Icon(
+                                            Icons.keyboard_arrow_up),
                                       )
                                     ],
                                   ),
-                                ),
-                                AnimatedCrossFade(
-                                  duration: Duration(milliseconds: 250),
-                                  crossFadeState: isTimeOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                                  firstChild: Icon(Icons.keyboard_arrow_down),
-                                  secondChild: Icon(Icons.keyboard_arrow_up),
                                 )
-                              ],
                             ),
-                          )
-                      ),
-                      AnimatedSize(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.fastOutSlowIn,
-                          child: Container(
-                            height: isTimeOpen ? null : 0,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("월 10:00~22:00"),
-                                Text("화 10:00~22:00"),
-                                Text("수 10:00~22:00"),
-                                Text("목 10:00~22:00"),
-                                Text("금 10:00~22:00"),
-                                Text("토 휴무"),
-                                Text("일 휴무"),
-                              ],
+                            AnimatedSize(
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.fastOutSlowIn,
+                                child: Container(
+                                  height: isTimeOpen ? null : 0,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: timeList!,
+                                  ),
+                                )
                             ),
-                          )
-                      ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
-                )
-              ],
-            ),
-            SizedBox(height: 8,),
-            GestureDetector(
-              onTap: () {
-                print("call");
-                launchUrlString("tel:010-0000-0000");
-              },
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(MdiIcons.phone, color: Colors.grey[700], size: 24,),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: Column(
+                if (placeData['opening_hours'] != null)
+                  SizedBox(height: 8,),
+                if (placeData['phone_number'] != null)
+                  GestureDetector(
+                    onTap: () {
+                      print("call");
+                      launchUrlString("tel:${placeData['phone_number']}");
+                    },
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 4,),
-                        Text(
-                          "010-0000-0000",
-                          style: SectionTextStyle.sectionContent(Colors.black),
-                        ),
+                        Icon(MdiIcons.phone, color: Colors.grey[700], size: 24,),
+                        SizedBox(width: 10,),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 4,),
+                              Text(
+                                placeData['phone_number'],
+                                style: SectionTextStyle.sectionContent(
+                                    Colors.black),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
+                    ),
+                  ),
+              ],
+            ),
+          )
+      ),
+    );
+  }
+
+  void _openWriteCommentSection() {
+    double bottomPad = MediaQuery.of(context).viewPadding.bottom;
+    if (bottomPad == 0) {
+      bottomPad = 24;
+    } else {
+      // bottomPad = 0;
+    }
+    _commentEditingController.text = '';
+
+    showModalBottomSheet(
+      context: context,
+        isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.fromLTRB(24, 16, 24, bottomPad + MediaQuery.of(context).viewInsets.bottom),
+          child: Wrap(
+            children: [
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text("한줄평 작성", style: SectionTextStyle.sectionTitle(),)
+                  ),
+                  SizedBox(height: 16,),
+                  TextFormField(
+                    controller: _commentEditingController,
+                    minLines: 3,
+                    maxLength: 250,
+                    keyboardType: TextInputType.text,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      alignLabelWithHint: true,
+                      border: OutlineInputBorder(),
+                      hintText: "자신의 경험을 공유해주세요!"
+                    ),
+                  ),
+                  SizedBox(height: 12,),
+                  Container(
+                    width: double.infinity,
+                    child: FilledButton(
+                        onPressed: () async {
+                          String content = _commentEditingController.text.toString();
+                          if (content == '') {
+                            Navigator.of(context).pop();
+                            return;
+                          }
+
+                          Map<String, dynamic>? result = await _placeProvider.postPlaceReviewData(widget.placeId, content);
+                          if (result != null) {
+                            setState(() {
+                              _commentData.insert(0, result);
+                              if (_commentData.length > 5) _commentData.removeLast();
+                            });
+                          }
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('게시')
                     ),
                   )
                 ],
-              ),
-            ),
-          ],
-        ),
-      )
-    ),
-  );
+              )
+            ],
+          ),
+        );
+      }
+    );
+  }
 
   Widget _detailReview(double commentHeight) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 24, 0, 0),
+      padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
       child: MainSection(
         title: "한줄평",
         action: Ink(
           child: InkWell(
             onTap: () {
-              __showCommentSheet(commentHeight);
+              if (AuthController.to.user.value == null) {
+                Get.showSnackbar(
+                  ErrorGetSnackBar(
+                    title: '로그인 필요',
+                    message: '로그인 후 이용 가능한 기능입니다.',
+                    showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                  ),
+                );
+                return;
+              }
+              _openWriteCommentSection();
             },
             child: Text(
-              "더보기 (100)",
+              "한줄평 작성",
               style: SectionTextStyle.labelMedium(Colors.blue),
             ),
           ),
         ),
         content: Padding(
-          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
           child: SizedBox(
             width: double.infinity,
-            child: CarouselSlider.builder(
-              options: CarouselOptions(
-                initialPage: 0,
-                autoPlay: false,
-                enableInfiniteScroll: false,
-                height: commentHeight,
-              ),
-              itemCount: _commentData.length,
-              itemBuilder: (context, index, realIndex) {
-                return Padding(
-                  padding: EdgeInsets.fromLTRB(6, 0, 6, 0),
-                  child: ShortPlaceReviewCard(
-                    vsync: this,
-                    name: _commentData[index]['name'],
-                    comment: _commentData[index]['comment'],
-                    profileUrl: _commentData[index]['profileUrl'],
-                    date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
-                    likeComment: _commentData[index]['likeComment'],
-                    likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
+            child: _commentData.isNotEmpty ?
+              CarouselSlider.builder(
+                options: CarouselOptions(
+                  initialPage: 0,
+                  autoPlay: false,
+                  enableInfiniteScroll: false,
+                  height: commentHeight,
+                ),
+                itemCount: _commentData.length + 1,
+                itemBuilder: (context, index, realIndex) {
+                  if (index == _commentData.length) {
+                    return GestureDetector(
+                      onTap: () {
+                        __showCommentSheet(commentHeight);
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+                        child: Row(
+                          children: [
+                            Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(8)
+                                ),
+                                height: double.infinity,
+                                child: const Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.navigate_next),
+                                    Text("더보기")
+                                  ],
+                                )
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  } else {
+                    bool myReview = false;
+                    if (AuthController.to.user.value != null) {
+                      myReview = AuthController.to.user.value!.uid == _commentData[index]['user']['id'];
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+                      child: ShortPlaceReviewCard(
+                        vsync: this,
+                        name: _commentData[index]['user']['nickname'],
+                        comment: _commentData[index]['contents'],
+                        profileUrl: _commentData[index]['user']['img_url'],
+                        date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
+                        likeComment: _commentData[index]['is_liked'],
+                        likeCount: _commentData[index]['likes'],
+                        myReview: myReview,
+                        placeId: widget.placeId,
+                        reviewId: _commentData[index]['id'],
+                        onDeletePressed: () async {
+                          Get.dialog(
+                            const AlertDialog(
+                              contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                              actionsPadding: EdgeInsets.zero,
+                              titlePadding: EdgeInsets.zero,
+                              content: Row(
+                                children: [
+                                  CircularProgressIndicator(),
+                                  SizedBox(width: 24),
+                                  Text("삭제중..."),
+                                ],
+                              ),
+                            ),
+                            barrierDismissible: false,
+                          );
+                          bool result = await _placeProvider.deletePlaceReview(widget.placeId, _commentData[index]['id']);
+                          if (result) {
+                            _loadComments();
+                            Get.back();
+                          } else {
+                            Get.back();
+                            Get.dialog(
+                              AlertDialog(
+                                contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                titlePadding: EdgeInsets.zero,
+                                content: const Text("한줄평 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                                actions: [
+                                  TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                                ],
+                              ),
+                            );
+                            // Get.showSnackbar(
+                            //     ErrorGetSnackBar(
+                            //         title: "삭제 실패",
+                            //         message: "한줄평 삭제 중 오류가 발생했습니다.",
+                            //       showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                            //     )
+                            // );
+                          }
+                        },
+                      ),
+                    );
+                  }
+                },
+              ) :
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.grey[300]
                   ),
-                );
-              },
-            ),
+                  padding: EdgeInsets.all(24),
+                  child: Center(
+                    child: Text("아직 작성된 한줄평이 없습니다 :("),
+                  ),
+                ),
+              ),
           ),
         ),
       ),
@@ -626,14 +986,19 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   List<Widget> __createImageTile() {
     List<Widget> tiles = [];
-    for (int i = 0;i < 8;i++) {
+    int imgCount = placeData['photos'].length;
+    if (imgCount > 8) imgCount = 8;
+    for (int i = 0;i < imgCount;i++) {
+      String? imgUrl = ImageParser.parseImageUrl(placeData['photos'][i]['url']);
       tiles.add(
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            'https://source.unsplash.com/random?sig=$i',
-            fit: BoxFit.cover,
-          ),
+          child: imgUrl != null ?
+            NetworkCacheImage(
+              imgUrl,
+              fit: BoxFit.cover,
+            ) :
+            Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
         )
       );
     }
@@ -645,17 +1010,17 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       padding: EdgeInsets.fromLTRB(0, 28, 0, 0),
       child: MainSection(
         title: '사진',
-        action: Ink(
-          child: InkWell(
-            onTap: () {
-              __showPhotoSheet();
-            },
-            child: Text(
-              "더보기 (100)",
-              style: SectionTextStyle.labelMedium(Colors.blue),
-            ),
-          ),
-        ),
+        // action: Ink(
+        //   child: InkWell(
+        //     onTap: () {
+        //       __showPhotoSheet();
+        //     },
+        //     child: Text(
+        //       "더보기 (100)",
+        //       style: SectionTextStyle.labelMedium(Colors.blue),
+        //     ),
+        //   ),
+        // ),
         content: Padding(
           padding: EdgeInsets.fromLTRB(24, 8, 24, 0),
           child: GridView.custom(
@@ -668,6 +1033,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 crossAxisSpacing: 6,
                 crossAxisCount: 4,
                 pattern: [
+                  // QuiltedGridTile(1, 1),
+                  // QuiltedGridTile(1, 1),
                   QuiltedGridTile(2, 2),
                   QuiltedGridTile(1, 1),
                   QuiltedGridTile(1, 1),
@@ -697,7 +1064,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             likeCount: UnitConverter.formatNumber(_relevantPlaceData[i]['likeCount']),
             onPressed: () {
               print("place");
-              Get.to(() => PlaceDetailPage(), preventDuplicates: false);
+              // Get.to(() => PlaceDetailPage(), preventDuplicates: false);
             },
           )
       );
@@ -734,7 +1101,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     List<Widget> placeCards = [const SizedBox(width: 24,)];
     for (int i = 0;i < _relevantPlaceData.length;i++) {
       placeCards.add(
-          RoundedRectangleStoryCard(
+          RoundedRectangleMagazineCard(
             title: _relevanceStoryData[i]['title'],
             message: _relevanceStoryData[i]['message'],
             location: _relevanceStoryData[i]['location'],
@@ -742,7 +1109,7 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
             width: 250,
             height: 194,
             onTap: () {
-              Get.to(() => Magazine());
+              // Get.to(() => CourseMainPage());
             },
           )
       );
@@ -778,6 +1145,119 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
 
   void __showBookmarkSelectionSheet() {
     bool stateFirst = true;
+    bool loadVisibility = false;
+
+    int page = 0;
+    int size = 25;
+
+    StateSetter? state;
+
+    List<dynamic> _bookmarkData = [];
+
+    void addBookmarks() async {
+      state!(() {
+        setState(() {
+          loadVisibility = true;
+        });
+      });
+      Map<String, dynamic>? result = await _userProvider.getPlaceBookmark(page, size, widget.placeId);
+
+      if (result != null) {
+        _bookmarkData.addAll(result['result']);
+        page++;
+      }
+
+      state!(() {
+        setState(() {
+          loadVisibility = false;
+        });
+      });
+    }
+
+    void addPlaceBookmark(String text) async {
+      Get.dialog(
+          const AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+            actionsPadding: EdgeInsets.zero,
+            titlePadding: EdgeInsets.zero,
+            content: Row(
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 24),
+                Text('북마크 생성중'),
+              ],
+            ),
+          ),
+          barrierDismissible: false
+      );
+      bool result = await _bookmarkController.addPlaceBookmark(text);
+      Get.back();
+      if (result) {
+        page = 0;
+        _bookmarkData.clear();
+        addBookmarks();
+      } else {
+        Get.dialog(
+          AlertDialog(
+            contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+            titlePadding: EdgeInsets.zero,
+            content: const Text("북마크 추가 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+            actions: [
+              TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+            ],
+          ),
+        );
+      }
+    }
+
+    void __showCreateBookmarkDialog() {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return StatefulBuilder(
+              builder: (BuildContext context, StateSetter dialogState) {
+                return AlertDialog(
+                  title: Text("북마크 추가"),
+                  content: TextField(
+                    maxLength: 50,
+                    controller: _bookmarkNameController,
+                    onChanged: (text) {
+                      dialogState(() {
+                        setState(() {
+                          _bookmarkNameError = bookmarkTextFieldValidator(text);
+                        });
+                      });
+                    },
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "북마크 이름",
+                        errorText: _bookmarkNameError
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      },
+                      child: Text('취소', style: TextStyle(color: Colors.red),),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        final String title = _bookmarkNameController.text.toString();
+                        if (bookmarkTextFieldValidator(title) != null) return;
+                        Navigator.of(context, rootNavigator: true).pop();
+                        addPlaceBookmark(title);
+                      },
+                      child: Text('만들기', style: TextStyle(color: Colors.blue),),
+                    )
+                  ],
+                );
+              },
+            );
+          }
+      );
+    }
+
     showModalBottomSheet(
         isScrollControlled: true,
         useSafeArea: true,
@@ -785,22 +1265,17 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
         builder: (BuildContext context) {
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter bottomState) {
+              state = bottomState;
               if (stateFirst) {
                 _bookmarkScrollController.addListener(() {
-                  if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset) {
+                  if (_bookmarkScrollController.position.maxScrollExtent == _bookmarkScrollController.offset && !loadVisibility) {
                     stateFirst = false;
-                    bottomState(() {
-                      setState(() {
-                        for (int i = 0;i < 20;i++) {
-                          _bookmarkData.add({"name": "북마크", "include": math.Random().nextBool()});
-                        }
-                      });
-                    });
+                    addBookmarks();
                   }
                 });
               }
               return Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(8),
                     topLeft: Radius.circular(8),
@@ -808,68 +1283,103 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
                 ),
                 child: Column(
                   children: [
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                    Expanded(
+                      child: Stack(
                         children: [
-                          Expanded(child: Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),),
-                          Ink(
-                            child: InkWell(
-                                onTap: () {
-                                  print('add bookmark');
-                                  __showCreateBookmarkDialog();
-                                },
+                          Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.playlist_add),
-                                    Text("북마크 추가")
+                                    Expanded(child: Text("북마크 관리", style: SectionTextStyle.sectionTitle(),),),
+                                    Ink(
+                                      child: InkWell(
+                                          onTap: () {
+                                            print('add bookmark');
+                                            __showCreateBookmarkDialog();
+                                          },
+                                          child: const Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.playlist_add),
+                                              Text("북마크 추가")
+                                            ],
+                                          )
+                                      ),
+                                    )
                                   ],
-                                )
-                            ),
+                                ),
+                              ),
+                              SizedBox(height: 18,),
+                              Expanded(
+                                child: Scrollbar(
+                                  controller: _bookmarkScrollController,
+                                  child: ListView.separated(
+                                    controller: _bookmarkScrollController,
+                                    padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                    itemCount: _bookmarkData.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        minVerticalPadding: 0,
+                                        contentPadding: EdgeInsets.zero,
+                                        title: Text("${_bookmarkData[index]['title']}"),
+                                        trailing: _bookmarkData[index]['bookmark']
+                                            ? Icon(Icons.check_box, color: lightColorScheme.primary,)
+                                            : Icon(Icons.check_box_outline_blank),
+                                        onTap: () async {
+                                          bottomState(() {
+                                            setState(() {
+                                              loadVisibility = true;
+                                            });
+                                          });
+                                          bool result;
+                                          if (_bookmarkData[index]['bookmark']) {
+                                            result = await _userProvider.deletePlaceInBookmark(
+                                                _bookmarkData[index]['placeBookmarkId'], widget.placeId);
+                                          } else {
+                                            result = await _userProvider.postPlaceInBookmark(
+                                                _bookmarkData[index]['placeBookmarkId'], widget.placeId);
+                                          }
+                                          if (result) {
+                                            bottomState(() {
+                                              setState(() {
+                                                loadVisibility = false;
+                                                _bookmarkData[index]['bookmark'] = !_bookmarkData[index]['bookmark'];
+                                              });
+                                            });
+                                          }
+                                        },
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return Divider(height: 0, color: Colors.grey[250],);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Visibility(
+                              visible: loadVisibility,
+                              child: AbsorbPointer(
+                                absorbing: true,
+                                child: Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(38),
+                                    decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(24)
+                                    ),
+                                    child: const CircularProgressIndicator(),
+                                  ),
+                                ),
+                              )
                           )
                         ],
                       ),
-                    ),
-                    SizedBox(height: 18,),
-                    Expanded(
-                      child: Scrollbar(
-                        controller: _bookmarkScrollController,
-                        child: ListView.separated(
-                          controller: _bookmarkScrollController,
-                          padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-                          itemCount: _bookmarkData.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index < _bookmarkData.length) {
-                              return ListTile(
-                                minVerticalPadding: 0,
-                                contentPadding: EdgeInsets.zero,
-                                title: Text("${_bookmarkData[index]['name']} $index"),
-                                trailing: _bookmarkData[index]['include']
-                                    ? Icon(Icons.check_box, color: lightColorScheme.primary,)
-                                    : Icon(Icons.check_box_outline_blank),
-                                onTap: () {
-                                  bottomState(() {
-                                    setState(() {
-                                      _bookmarkData[index]['include'] = !_bookmarkData[index]['include'];
-                                    });
-                                  });
-                                },
-                              );
-                            } else {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 32),
-                                child: Center(child: CircularProgressIndicator(),),
-                              );
-                            }
-                          },
-                          separatorBuilder: (context, index) {
-                            return Divider(height: 0, color: Colors.grey[250],);
-                          },
-                        ),
-                      )
                     ),
                     // SizedBox(height: 18,),
                     Container(
@@ -892,51 +1402,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       _bookmarkScrollController.dispose();
       _bookmarkScrollController = ScrollController();
     });
-  }
 
-  void __showCreateBookmarkDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return StatefulBuilder(
-            builder: (BuildContext context, StateSetter dialogState) {
-              return AlertDialog(
-                title: Text("북마크 추가"),
-                content: TextField(
-                  maxLength: 50,
-                  controller: _bookmarkNameController,
-                  onChanged: (text) {
-                    dialogState(() {
-                      setState(() {
-                        _bookmarkNameError = bookmarkTextFieldValidator(text);
-                      });
-                    });
-                  },
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: "북마크 이름",
-                      errorText: _bookmarkNameError
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop();
-                    },
-                    child: Text('취소', style: TextStyle(color: Colors.red),),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop();
-                    },
-                    child: Text('만들기', style: TextStyle(color: Colors.blue),),
-                  )
-                ],
-              );
-            },
-          );
-        }
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      addBookmarks();
+    });
   }
 
   void __showTimeReportDialog() {
@@ -980,8 +1449,62 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     );
   }
 
-  void __showCommentSheet(double commentHeight) {
+  void __showCommentSheet(double commentHeight) async {
+    List<dynamic> _commentData = [];
+
+    String sortKey = 'likes';
+    bool myReviews = false;
+    int offset = 0;
+    int count = 5;
+
     bool stateFirst = true;
+    bool loadVisibility = false;
+
+    StateSetter? state;
+
+    void _addComments() async {
+      state!(() {
+        setState(() {
+          loadVisibility = true;
+          _commentScrollController.jumpTo(_commentScrollController.position.maxScrollExtent);
+        });
+      });
+      List<dynamic>? result = await _placeProvider.getPlaceReviewData(widget.placeId, sortKey, offset, count, myReviews);
+      if (result != null) {
+        _commentData.addAll(result);
+        offset += count;
+      }
+      state!(() {
+        setState(() {
+          loadVisibility = false;
+        });
+      });
+    }
+
+    void _changeSort() {
+      offset = 0;
+      count = 5;
+      _commentData.clear();
+      switch(commentSortKey) {
+        case 0: {
+          sortKey = 'created_at';
+          myReviews = false;
+          break;
+        }
+        case 1: {
+          sortKey = 'likes';
+          myReviews = false;
+          break;
+        }
+        case 2: {
+          sortKey = 'created_at';
+          myReviews = true;
+          break;
+        }
+      }
+      _addComments();
+    }
+
     showModalBottomSheet(
       isScrollControlled: true,
       useSafeArea: true,
@@ -989,85 +1512,17 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter bottomState) {
+            state = bottomState;
             if (stateFirst) {
               _commentScrollController.addListener(() {
-                if (_commentScrollController.position.maxScrollExtent == _commentScrollController.offset) {
+                if (_commentScrollController.position.maxScrollExtent == _commentScrollController.offset && !loadVisibility) {
                   stateFirst = false;
-                  bottomState(() {
-                    setState(() {
-                      _commentData.addAll([
-                        {
-                          "name": "민준",
-                          "date": "2023-08-05T14:29:20.725Z",
-                          "comment": "사려니 숲길은 제주도 여행의 필수 코스! 자연의 아름다움을 느낄 수 있어요.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 3254546,
-                          "likeComment": false,
-                        },
-                        {
-                          "name": "Ethan",
-                          "date": "2023-08-04T14:29:20.725Z",
-                          "comment": "여행 중 가장 기억에 남는 곳이었어요. 특히 아침 일찍 방문해서 조용한 분위기를 느끼는 것을 추천합니다.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 42355,
-                          "likeComment": true,
-                        },
-                        {
-                          "name": "Emma",
-                          "date": "2023-07-30T14:29:20.725Z",
-                          "comment": "가족과 함께 방문했는데, 아이들도 너무 좋아했어요. 자연과 함께하는 시간이 너무 소중했습니다.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 534,
-                          "likeComment": false,
-                        },
-                        {
-                          "name": "예은",
-                          "date": "2023-07-26T14:29:20.725Z",
-                          "comment": "비오는 날은 미끄러울 수 있으니 조심하세요. 그래도 뷰는 최고!",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 356578,
-                          "likeComment": false,
-                        },
-                        {
-                          "name": "sdsfsfdsdcvb",
-                          "date": "2023-08-05T14:29:20.725Z",
-                          "comment": "사afddasfgsgsg! 자연의 아sgsfsdafds어요.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 3254546,
-                          "likeComment": false,
-                        },
-                        {
-                          "name": "fsdgfvsgrw",
-                          "date": "2023-08-04T14:29:20.725Z",
-                          "comment": "여행adfadf남는 곳이었어요. 특히 sffeqfaf것을 추천합니다.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 42355,
-                          "likeComment": true,
-                        },
-                        {
-                          "name": "rwgw4rgdsg",
-                          "date": "2023-07-30T14:29:20.725Z",
-                          "comment": "가dasdfsgsrgh너무 소중했습니다.",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 534,
-                          "likeComment": false,
-                        },
-                        {
-                          "name": "adsasra",
-                          "date": "2023-07-26T14:29:20.725Z",
-                          "comment": "asdefcfsfs",
-                          "profileUrl": "https://source.unsplash.com/random",
-                          "likeCount": 356578,
-                          "likeComment": false,
-                        },
-                      ]);
-                    });
-                  });
+                  _addComments();
                 }
               });
             }
             return Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(8),
                   topLeft: Radius.circular(8),
@@ -1075,74 +1530,150 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
               ),
               child: Column(
                 children: [
-                  Container(
-                    padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
-                    width: double.infinity,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                  Expanded(
+                    child: Stack(
                       children: [
-                        Expanded(child: Text("한줄평", style: SectionTextStyle.sectionTitle(),),),
-                        SizedBox(
-                          height: 30,
-                          child: DropdownButton<int>(
-                            padding: EdgeInsets.zero,
-                            value: commentSortKey,
-                            underline: SizedBox(),
-                            items: [
-                              DropdownMenuItem(child: Text('최신순'), value: 0,),
-                              DropdownMenuItem(child: Text('좋아요순'), value: 1,),
-                            ],
-                            onChanged: (int? value) {
-                              bottomState(() {
-                                setState(() {
-                                  commentSortKey = value!;
-                                });
-                              });
-                            },
-                          ),
+                        Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                              width: double.infinity,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(child: Text("한줄평", style: SectionTextStyle.sectionTitle(),),),
+                                  SizedBox(
+                                    height: 30,
+                                    child: DropdownButton<int>(
+                                      padding: EdgeInsets.zero,
+                                      value: commentSortKey,
+                                      underline: const SizedBox(),
+                                      items: [
+                                        const DropdownMenuItem(child: Text('최신순'), value: 0,),
+                                        const DropdownMenuItem(child: Text('좋아요순'), value: 1,),
+                                        if (AuthController.to.user.value != null) const DropdownMenuItem(child: Text('내 한줄평'), value: 2,),
+                                      ],
+                                      onChanged: loadVisibility ? null :
+                                          (int? value) {
+                                        bottomState(() {
+                                          setState(() {
+                                            commentSortKey = value!;
+                                          });
+                                        });
+                                        _changeSort();
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 18,),
+                            Expanded(
+                              child: Scrollbar(
+                                controller: _commentScrollController,
+                                child: ListView.separated(
+                                  controller: _commentScrollController,
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  padding: EdgeInsets.zero,
+                                  itemCount: _commentData.length,
+                                  itemBuilder: (context, index) {
+                                    bool myReview = false;
+                                    if (AuthController.to.user.value != null) {
+                                      myReview = AuthController.to.user.value!.uid == _commentData[index]['user']['id'];
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                      child: ShortPlaceReviewCard(
+                                        vsync: this,
+                                        height: commentHeight,
+                                        name: _commentData[index]['user']['nickname'],
+                                        comment: _commentData[index]['contents'],
+                                        profileUrl: _commentData[index]['user']['img_url'],
+                                        date: _commentData[index]['created_at'].split('T')[0].replaceAll('-', '.'),
+                                        likeComment: _commentData[index]['is_liked'],
+                                        likeCount: _commentData[index]['likes'],
+                                        myReview: myReview,
+                                        placeId: widget.placeId,
+                                        reviewId: _commentData[index]['id'],
+                                        onDeletePressed: () async {
+                                          Get.dialog(
+                                            const AlertDialog(
+                                              contentPadding: EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                              actionsPadding: EdgeInsets.zero,
+                                              titlePadding: EdgeInsets.zero,
+                                              content: Row(
+                                                children: [
+                                                  CircularProgressIndicator(),
+                                                  SizedBox(width: 24),
+                                                  Text("삭제중..."),
+                                                ],
+                                              ),
+                                            ),
+                                            barrierDismissible: false,
+                                          );
+                                          bool result = await _placeProvider.deletePlaceReview(widget.placeId, _commentData[index]['id']);
+
+                                          if (result) {
+                                            offset = 0;
+                                            count = 5;
+                                            _commentData.clear();
+                                            _addComments();
+                                            _loadComments();
+                                            Get.back();
+                                          } else {
+                                            Get.back();
+                                            Get.dialog(
+                                              AlertDialog(
+                                                contentPadding: const EdgeInsets.fromLTRB(32, 24, 32, 24),
+                                                titlePadding: EdgeInsets.zero,
+                                                content: const Text("한줄평 삭제 과정에서 오류가 발생했습니다. 다시 시도해주세요."),
+                                                actions: [
+                                                  TextButton(onPressed: () {Get.back();}, child: const Text('확인'))
+                                                ],
+                                              ),
+                                            );
+                                            // Get.showSnackbar(
+                                            //     ErrorGetSnackBar(
+                                            //         title: "삭제 실패",
+                                            //         message: "한줄평 삭제 중 오류가 발생했습니다.",
+                                            //       showDuration: CustomGetSnackBar.GET_SNACKBAR_DURATION_SHORT,
+                                            //     )
+                                            // );
+                                          }
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(height: 12,);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Visibility(
+                          visible: loadVisibility,
+                          child: AbsorbPointer(
+                            absorbing: true,
+                            child: Center(
+                              child: Container(
+                                padding: EdgeInsets.all(38),
+                                decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(24)
+                                ),
+                                child: const CircularProgressIndicator(),
+                              ),
+                            ),
+                          )
                         )
                       ],
                     ),
                   ),
-                  SizedBox(height: 18,),
-                  Expanded(
-                    child: Scrollbar(
-                      controller: _commentScrollController,
-                      child: ListView.separated(
-                        controller: _commentScrollController,
-                        padding: EdgeInsets.zero,
-                        itemCount: _commentData.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index < _commentData.length) {
-                            return Padding(
-                              padding: EdgeInsets.fromLTRB(24, 0, 24, 0),
-                              child: ShortPlaceReviewCard(
-                                vsync: this,
-                                height: commentHeight,
-                                name: _commentData[index]['name'],
-                                comment: _commentData[index]['comment'],
-                                profileUrl: _commentData[index]['profileUrl'],
-                                date: _commentData[index]['date'].split('T')[0].replaceAll('-', '.'),
-                                likeComment: _commentData[index]['likeComment'],
-                                likeCount: UnitConverter.formatNumber(_commentData[index]['likeCount']),
-                              ),
-                            );
-                          } else {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 32),
-                              child: Center(child: CircularProgressIndicator(),),
-                            );
-                          }
-                        },
-                        separatorBuilder: (context, index) {
-                          return SizedBox(height: 12,);
-                        },
-                      ),
-                    )
-                  ),
                   // SizedBox(height: 18,),
                   Container(
-                    padding: EdgeInsets.fromLTRB(24, 0, 24, 18),
+                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 18),
                     width: double.infinity,
                     child: FilledButton(
                         onPressed: () {
@@ -1160,6 +1691,10 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> with TickerProviderSt
     ).whenComplete(() {
       _commentScrollController.dispose();
       _commentScrollController = ScrollController();
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _addComments();
     });
   }
 

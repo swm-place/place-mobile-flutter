@@ -1,15 +1,24 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:place_mobile_flutter/theme/text_style.dart';
+import 'package:place_mobile_flutter/widget/cache_image.dart';
 
-class MyStoryCard extends StatelessWidget {
-  MyStoryCard({
+class BookmarkCard extends StatelessWidget {
+  final Function()? onTap;
+  final Function()? onDelete;
+  final Function()? onRename;
+
+  BookmarkCard({
     required this.title,
+    required this.onTap,
+    required this.onDelete,
+    required this.onRename,
     // required this.message,
     // required this.location,
     // required this.imageUrl,
     this.width,
     this.height,
-    this.places,
+    this.placeImageUrls,
     this.editors,
     Key? key,
   }) : super(key: key);
@@ -23,7 +32,7 @@ class MyStoryCard extends StatelessWidget {
   double? height;
 
   List<Map<String, dynamic>>? editors;
-  List<Map<String, dynamic>>? places;
+  List<dynamic>? placeImageUrls;
 
   Widget _editorSection() {
     if (editors == null) return const SizedBox();
@@ -77,7 +86,7 @@ class MyStoryCard extends StatelessWidget {
   }
 
   Widget _createBackground() {
-    if (places == null) {
+    if (placeImageUrls == null) {
       return Container(
         width: double.infinity,
         height: double.infinity,
@@ -86,35 +95,44 @@ class MyStoryCard extends StatelessWidget {
     } else {
       List<Widget> top = [];
       List<Widget> bottom = [];
-      if (places!.length == 1) {
-        return Image.network(
-          places![0]['imageUrl'],
-          fit: BoxFit.cover,
-        );
+      if (placeImageUrls!.isEmpty) {
+        return Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
       }
-      if (places!.length == 2) {
+      if (placeImageUrls!.length == 1) {
+        return placeImageUrls![0] != null ?
+          NetworkCacheImage(
+            placeImageUrls![0],
+            fit: BoxFit.cover,
+          ) :
+          Image.asset('assets/images/no_image.png', fit: BoxFit.cover,);
+      }
+      if (placeImageUrls!.length == 2) {
         return Column(
           children: [
             SizedBox(
               width: width!,
               height: height! / 2,
-              child: Image.network(
-                places![0]['imageUrl'],
-                fit: BoxFit.cover,
-              ),
+              child: placeImageUrls![0] != null ?
+                NetworkCacheImage(
+                  placeImageUrls![0],
+                  fit: BoxFit.cover,
+                ) :
+                Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
             ),
             SizedBox(
               width: width!,
               height: height! / 2,
-              child: Image.network(
-                places![1]['imageUrl'],
-                fit: BoxFit.cover,
-              ),
+              child: placeImageUrls![1] != null ?
+                NetworkCacheImage(
+                  placeImageUrls![1],
+                  fit: BoxFit.cover,
+                ) :
+                Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
             ),
           ],
         );
       }
-      if (places!.length == 3) {
+      if (placeImageUrls!.length == 3) {
         return Row(
           children: [
             Column(
@@ -122,28 +140,34 @@ class MyStoryCard extends StatelessWidget {
                 SizedBox(
                   width: width! / 2,
                   height: height! / 2,
-                  child: Image.network(
-                    places![0]['imageUrl'],
-                    fit: BoxFit.cover,
-                  ),
+                  child: placeImageUrls![0] != null ?
+                    NetworkCacheImage(
+                      placeImageUrls![0],
+                      fit: BoxFit.cover,
+                    ) :
+                    Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
                 ),
                 SizedBox(
                   width: width! / 2,
                   height: height! / 2,
-                  child: Image.network(
-                    places![1]['imageUrl'],
-                    fit: BoxFit.cover,
-                  ),
+                  child: placeImageUrls![1] != null ?
+                    NetworkCacheImage(
+                      placeImageUrls![1],
+                      fit: BoxFit.cover,
+                    ) :
+                    Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
                 ),
               ],
             ),
             SizedBox(
               width: width! / 2,
               height: height!,
-              child: Image.network(
-                places![2]['imageUrl'],
-                fit: BoxFit.cover,
-              ),
+              child: placeImageUrls![2] != null ?
+                NetworkCacheImage(
+                  placeImageUrls![2],
+                  fit: BoxFit.cover,
+                ) :
+                Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
             ),
           ],
         );
@@ -155,18 +179,22 @@ class MyStoryCard extends StatelessWidget {
               SizedBox(
                 width: width! / 2,
                 height: height! / 2,
-                child: Image.network(
-                  places![0]['imageUrl'],
-                  fit: BoxFit.cover,
-                ),
+                child: placeImageUrls![0] != null ?
+                  NetworkCacheImage(
+                    placeImageUrls![0],
+                    fit: BoxFit.cover,
+                  ) :
+                  Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),
               SizedBox(
                 width: width! / 2,
                 height: height! / 2,
-                child: Image.network(
-                  places![1]['imageUrl'],
-                  fit: BoxFit.cover,
-                ),
+                child: placeImageUrls![1] != null ?
+                  NetworkCacheImage(
+                    placeImageUrls![1],
+                    fit: BoxFit.cover,
+                  ) :
+                  Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),
             ],
           ),
@@ -175,18 +203,22 @@ class MyStoryCard extends StatelessWidget {
               SizedBox(
                 width: width! / 2,
                 height: height! / 2,
-                child: Image.network(
-                  places![2]['imageUrl'],
-                  fit: BoxFit.cover,
-                ),
+                child: placeImageUrls![2] != null ?
+                  NetworkCacheImage(
+                    placeImageUrls![2],
+                    fit: BoxFit.cover,
+                  ) :
+                  Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),
               SizedBox(
                 width: width! / 2,
                 height: height! / 2,
-                child: Image.network(
-                  places![3]['imageUrl'],
-                  fit: BoxFit.cover,
-                ),
+                child: placeImageUrls![3] != null ?
+                  NetworkCacheImage(
+                    placeImageUrls![3],
+                    fit: BoxFit.cover,
+                  ) :
+                  Image.asset('assets/images/no_image.png', fit: BoxFit.cover,),
               ),
             ],
           ),
@@ -202,45 +234,141 @@ class MyStoryCard extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: GestureDetector(
-        onTap: () => {
-          print("story card")
-        },
-        child: Stack(
-          children: [
-            SizedBox(
-              width: width,
-              height: height,
-              child: _createBackground(),
-            ),
-            Container(
-              width: width,
-              height: height,
-              color: const Color.fromARGB(102, 1, 1, 1),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: Text(
-                            title,
-                            style: SectionTextStyle.sectionTitleSmall(Colors.white),
+      child: Stack(
+        children: [
+          SizedBox(
+            width: width,
+            height: height,
+            child: _createBackground(),
+          ),
+          Container(
+            width: width,
+            height: height,
+            color: const Color.fromARGB(102, 1, 1, 1),
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: onTap,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // IconButton(onPressed: () {}, icon: Icon(Icons.more_vert, color: Colors.white,)),
+                  PopupMenuButton(
+                    icon: Icon(Icons.more_vert, color: Colors.white,),
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem(onTap: onRename, child: const Text('이름 변경'),),
+                        PopupMenuItem(onTap: onDelete, child: const Text('삭제'),)
+                      ];
+                    },
+                  ),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: AutoSizeText(
+                          title,
+                          style: const TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            height: 1,
                           ),
+                          maxLines: 1,
+                          minFontSize: 18,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        SizedBox(height: editors == null ? 0: 4,),
-                        _editorSection()
-                      ],
-                    )
-                  ],
-                ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: editors == null ? 0: 4,),
+                  _editorSection()
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class LikeCard extends StatelessWidget {
+  final Function()? onTap;
+
+  LikeCard({
+    required this.title,
+    required this.onTap,
+    this.width,
+    this.height,
+    Key? key,
+  }) : super(key: key);
+
+  String title;
+  // String message;
+  // String location;
+  // String imageUrl;
+
+  double? width;
+  double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    width ??= double.infinity;
+    height ??= double.infinity;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Stack(
+        children: [
+          Container(
+            width: width,
+            height: height,
+            child: Center(
+              child: Icon(Icons.favorite, size: 48,),
+            ),
+          ),
+          Container(
+            width: width,
+            height: height,
+            color: const Color.fromARGB(102, 1, 1, 1),
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: onTap,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: AutoSizeText(
+                          title,
+                          style: const TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            height: 1,
+                          ),
+                          maxLines: 1,
+                          minFontSize: 18,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

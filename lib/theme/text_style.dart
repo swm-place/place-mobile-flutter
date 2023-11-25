@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class PageTextStyle {
   static TextStyle titleLarge() => const TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 22,
     fontWeight: FontWeight.w400,
     color: Colors.black,
@@ -9,6 +10,7 @@ class PageTextStyle {
   );
 
   static TextStyle bodyLarge(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: color,
@@ -16,6 +18,7 @@ class PageTextStyle {
   );
 
   static TextStyle headlineSmall(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 24,
     fontWeight: FontWeight.w400,
     color: color,
@@ -23,6 +26,7 @@ class PageTextStyle {
   );
 
   static TextStyle headlineBold(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 26,
     fontWeight: FontWeight.w600,
     color: color,
@@ -30,6 +34,7 @@ class PageTextStyle {
   );
 
   static TextStyle headlineExtraLarge(Color color) => const TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 30,
     fontWeight: FontWeight.w700,
     color: Color(0xff000000),
@@ -40,13 +45,16 @@ class PageTextStyle {
 
 class SectionTextStyle {
   static TextStyle labelMedium(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: color,
-    height: 20/14,
+    height: 1,
+    // height: 20/14,
   );
 
   static TextStyle labelMediumThick(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 14,
     fontWeight: FontWeight.w700,
     color: color,
@@ -54,6 +62,7 @@ class SectionTextStyle {
   );
 
   static TextStyle labelSmall(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 12,
     fontWeight: FontWeight.w500,
     color: color,
@@ -61,6 +70,7 @@ class SectionTextStyle {
   );
 
   static TextStyle sectionTitle() => const TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 24,
     fontWeight: FontWeight.w700,
     color: Color(0xff000000),
@@ -68,6 +78,7 @@ class SectionTextStyle {
   );
 
   static TextStyle sectionTitleSmall(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 22,
     fontWeight: FontWeight.w600,
     color: color,
@@ -75,6 +86,7 @@ class SectionTextStyle {
   );
 
   static TextStyle sectionContent(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 16,
     fontWeight: FontWeight.w500,
     color: color,
@@ -82,6 +94,7 @@ class SectionTextStyle {
   );
 
   static TextStyle sectionContentLine(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: color,
@@ -89,6 +102,7 @@ class SectionTextStyle {
   );
 
   static TextStyle sectionContentLarge(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 18,
     fontWeight: FontWeight.w500,
     color: color,
@@ -96,6 +110,7 @@ class SectionTextStyle {
   );
 
   static TextStyle sectionContentLargeLine(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 18,
     fontWeight: FontWeight.w400,
     color: color,
@@ -103,9 +118,18 @@ class SectionTextStyle {
   );
 
   static TextStyle sectionContentExtraLarge(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
     fontSize: 20,
     fontWeight: FontWeight.w600,
     color: color,
     height: 0.9,
+  );
+
+  static TextStyle lineContentExtraLarge(Color color) => TextStyle(
+    fontFamily: 'Pretendard',
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: color,
+    height: 1.2,
   );
 }
